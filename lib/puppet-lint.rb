@@ -8,6 +8,8 @@ class PuppetLint
 
   def initialize
     @data = nil
+    @errors = 0
+    @warnings = 0
   end
 
   def file=(path)
@@ -20,11 +22,29 @@ class PuppetLint
     @data = value
   end
 
+  def report(kind, message)
+    if kind == :warnings
+      @warnings += 1
+      echo "WARNING: #{message}"
+    else
+      @errors += 1
+      echo "ERROR: #{message}"
+    end
+  end
+
+  def errors?
+    @errors != 0
+  end
+
+  def warnings?
+    @warnings != 0
+  end
+
   def run
     PuppetLint::CheckPlugin.repository.each do |plugin|
       problems = plugin.new.run(@data)
-      problems[:errors].each { |error| puts "ERROR: #{error}" }
-      problems[:warnings].each { |warning| puts "WARNING: #{warning}" }
+      problems[:errors].each { |error| report :errors, error }
+      problems[:warnings].each { |warning| report :warnings, warning }
     end
   end
 end
