@@ -6,6 +6,7 @@ Gem::Specification.new do |s|
   s.description = 'Checks your Puppet manifests against the Puppetlabs
   style guide and alerts you to any discrepancies.'
 
+  s.executables = ['puppet-lint']
   s.files = [
     'bin/puppet-lint',
     'lib/puppet-lint/plugin.rb',
