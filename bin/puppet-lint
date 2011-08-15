@@ -1,0 +1,47 @@
+#!/usr/bin/env ruby
+
+$:.unshift File.join(File.dirname(__FILE__), *%w[.. lib])
+
+help = <<HELP
+Puppet-lint
+
+Basic Command Line Usage:
+  puppet-lint [OPTIONS] [PATH]
+
+        PATH                         The path to the Puppet manifest.
+
+Options:
+HELP
+
+require 'optparse'
+require 'rubygems'
+require 'puppet-lint'
+
+opts = OptionParser.new do |opts|
+  opts.banner = help
+
+  opts.on("--version", "Display current version.") do
+    puts "Puppet-lint " + PuppetLint::VERSION
+    exit 0
+  end
+end
+
+# Read command line options into `options` hash
+begin
+  opts.parse!
+rescue OptionParser::InvalidOption
+  puts "puppet-lint: #{$!.message}"
+  puts "puppet-lint: try 'puppet-lint --help' for more information"
+  exit
+end
+
+if ARGV[0].nil?
+  puts "puppet-lint: no file specified"
+  puts "puppet-lint: try 'puppet-lint --help' for more information"
+  exit
+end
+
+l = PuppetLint.new
+l.file = ARGV[0]
+l.run
+
