@@ -25,10 +25,10 @@ class PuppetLint
   def report(kind, message)
     if kind == :warnings
       @warnings += 1
-      echo "WARNING: #{message}"
+      puts "WARNING: #{message}"
     else
       @errors += 1
-      echo "ERROR: #{message}"
+      puts "ERROR: #{message}"
     end
   end
 

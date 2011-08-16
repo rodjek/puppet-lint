@@ -4,3 +4,4 @@ class PuppetLint
 end
 
 require 'puppet-lint/plugins/check_strings'
+require 'puppet-lint/plugins/check_whitespace'
