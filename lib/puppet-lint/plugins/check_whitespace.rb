@@ -4,6 +4,8 @@
 class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
   def test(data)
     line_no = 0
+    in_block = false
+    prefix_length = 0
     data.split("\n").each do |line|
       line_no += 1
 
@@ -23,7 +25,20 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
         end
       end
 
-      # TODO: SHOULD align fat comma arrows (=>) within blocks of attributes
+      # SHOULD align fat comma arrows (=>) within blocks of attributes
+      if line =~ /^( +\w+ +)=>/
+        if in_block
+          unless $1.length == prefix_length
+            warn "=> on line #{line_no} isn't aligned with the previous line"
+          end
+        else
+          prefix_length = $1.length
+          in_block = true
+        end
+      else
+        in_block = false
+        prefix_length = 0
+      end
     end
   end
 end
