@@ -30,8 +30,18 @@ class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
               warn "ensure found on line #{line_no} but it's not the first attribute"
             end
           end
+
+          # File modes SHOULD be represented as a 4 digits instead of 3, to
+          # explicitly show that they are octal values.
+          if attr == 'mode'
+            unless value =~ /'\d{4}'/
+              warn "mode should be represented as a 4 digit octal value on line #{line_no}"
+            end
+          end
+
           first_attribute = false
         end
+        first_attribute = false
       end
 
       if line.include? "}"
