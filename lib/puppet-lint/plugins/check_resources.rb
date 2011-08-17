@@ -41,11 +41,11 @@ class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
 
           first_attribute = false
         end
-        first_attribute = false
       end
 
       if line.include? "}"
         in_resource = false
+        first_attribute = false
       end
     end
   end
