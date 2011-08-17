@@ -5,3 +5,4 @@ end
 
 require 'puppet-lint/plugins/check_strings'
 require 'puppet-lint/plugins/check_whitespace'
+require 'puppet-lint/plugins/check_resources'
