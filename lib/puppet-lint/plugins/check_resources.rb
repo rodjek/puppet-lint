@@ -35,7 +35,7 @@ class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
           # explicitly show that they are octal values.
           if attr == 'mode'
             unless value =~ /'\d{4}'/
-              warn "mode should be represented as a 4 digit octal value on line #{line_no}"
+              warn "mode should be represented as a 4 digit octal value in single quotes on line #{line_no}"
             end
           end
 
