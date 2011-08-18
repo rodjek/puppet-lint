@@ -56,7 +56,5 @@ class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
         end
       end
     end
-
-
   end
 end
