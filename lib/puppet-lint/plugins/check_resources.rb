@@ -3,50 +3,60 @@
 
 class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
   def test(data)
-    line_no = 0
-    in_resource = true
-    first_attribute = false
-    data.split("\n").each do |line|
-      line_no += 1
+    lexer = Puppet::Parser::Lexer.new
+    lexer.string = data
+    tokens = lexer.fullscan
 
-      if line.include? "{"
-        in_resource = true
-        first_attribute = true
-        line = line.slice(line.index('{')..-1)
-      end
-
-      if in_resource
-        # Resource titles SHOULD be quoted
-        line.scan(/[^'"]\s*:/) do |match|
-          unless line =~ /\$[\w:]+\s*:/
-            warn "unquoted resource title on line #{line_no}"
-          end
+    title_tokens = []
+    resource_indexes = []
+    tokens.each_index do |token_idx|
+      if tokens[token_idx].first == :COLON
+        # gather a list of tokens that are resource titles
+        if tokens[token_idx-1].first == :RBRACK
+          title_array_tokens = tokens[tokens.rindex { |r| r.first == :LBRACK }+1..token_idx-2]
+          title_tokens += title_array_tokens.select { |token| [:STRING, :NAME].include? token.first }
+        else
+          title_tokens << tokens[token_idx-1]
         end
 
-        line.scan(/(\w+)\s*=>\s*([^\n,;]+)/) do |attr, value|
-          # Ensure SHOULD be the first attribute listed
-          if attr == 'ensure'
-            unless first_attribute
-              warn "ensure found on line #{line_no} but it's not the first attribute"
-            end
-          end
-
-          # File modes SHOULD be represented as a 4 digits instead of 3, to
-          # explicitly show that they are octal values.
-          if attr == 'mode'
-            unless value =~ /'\d{4}'/
-              warn "mode should be represented as a 4 digit octal value on line #{line_no}"
-            end
-          end
-
-          first_attribute = false
-        end
-      end
-
-      if line.include? "}"
-        in_resource = false
-        first_attribute = false
+        # gather a list of start and end indexes for resource attribute blocks
+        resource_indexes << {:start => token_idx+1, :end => tokens[token_idx+1..-1].index { |r| [:SEMIC, :RBRACE].include? r.first }+token_idx}
       end
     end
+
+    title_tokens.each do |token|
+      if token.first == :NAME
+        warn "unquoted resource title on line #{token.last[:line]}"
+      end
+    end
+
+    resource_indexes.each do |resource|
+      resource_tokens = tokens[resource[:start]..resource[:end]]
+      ensure_attr_index = resource_tokens.index { |token| token.first == :NAME and token.last[:value] == 'ensure' }
+      unless ensure_attr_index.nil?
+        if ensure_attr_index > 1
+          ensure_attr_line_no = resource_tokens[ensure_attr_index].last[:line]
+          warn "ensure found on line #{ensure_attr_line_no} but it's not the first attribute"
+        end
+      end
+
+      resource_type_token = tokens[tokens[0..resource[:start]].rindex { |r| r.first == :LBRACE } - 1]
+      if resource_type_token.last[:value] == "file"
+        resource_tokens.each_index do |resource_token_idx|
+          attr_token = resource_tokens[resource_token_idx]
+          if attr_token.first == :NAME and attr_token.last[:value] == 'mode'
+            value_token = resource_tokens[resource_token_idx + 2]
+            if value_token.first == :NAME
+              warn "unquoted file mode on line #{value_token.last[:line]}"
+            end
+            if value_token.last[:value] !~ /\d{4}/
+              warn "mode should be represented as a 4 digit octal value on line #{value_token.last[:line]}"
+            end
+          end
+        end
+      end
+    end
+
+
   end
 end
