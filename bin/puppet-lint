@@ -41,7 +41,13 @@ if ARGV[0].nil?
   exit
 end
 
-l = PuppetLint.new
-l.file = ARGV[0]
-l.run
+begin
+  l = PuppetLint.new
+  l.file = ARGV[0]
+  l.run
+rescue PuppetLint::NoCodeError
+  puts "puppet-lint: no file specified or specified file does not exist"
+  puts "puppet-lint: try 'puppet-lint --help' for more information"
+  exit
+end
 

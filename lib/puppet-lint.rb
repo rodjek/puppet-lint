@@ -1,5 +1,8 @@
 require 'puppet-lint/plugin'
 require 'puppet-lint/plugins'
+require 'puppet'
+
+class PuppetLint::NoCodeError < StandardError; end
 
 class PuppetLint
   VERSION = '0.0.3'
@@ -41,6 +44,10 @@ class PuppetLint
   end
 
   def run
+    if @data.nil?
+      raise PuppetLint::NoCodeError
+    end
+
     PuppetLint::CheckPlugin.repository.each do |plugin|
       problems = plugin.new.run(@data)
       problems[:errors].each { |error| report :errors, error }
@@ -48,3 +55,4 @@ class PuppetLint
     end
   end
 end
+
