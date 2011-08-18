@@ -18,6 +18,7 @@ end
 
 class PuppetLint::CheckPlugin
   include PuppetLint::Plugin
+  attr_reader :warnings, :errors
 
   def initialize
     @warnings = []
