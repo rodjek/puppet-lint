@@ -17,7 +17,7 @@ describe PuppetLint::Plugins::CheckStrings do
   describe 'multiple strings in a line' do
     let(:code) { "\"aoeu\" '${foo}'" }
 
-    its(:warnings) { should be_empty }
+    its(:warnings) { should include "double quoted string containing no variables on line 1" }
     its(:errors) { should include "single quoted string containing a variable found on line 1" }
   end
 end
