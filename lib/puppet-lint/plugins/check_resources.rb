@@ -20,7 +20,9 @@ class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
         end
 
         # gather a list of start and end indexes for resource attribute blocks
-        resource_indexes << {:start => token_idx+1, :end => tokens[token_idx+1..-1].index { |r| [:SEMIC, :RBRACE].include? r.first }+token_idx}
+        if tokens[token_idx+1].first != :LBRACE
+          resource_indexes << {:start => token_idx+1, :end => tokens[token_idx+1..-1].index { |r| [:SEMIC, :RBRACE].include? r.first }+token_idx}
+        end
       end
     end
 
