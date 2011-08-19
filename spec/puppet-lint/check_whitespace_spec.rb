@@ -21,4 +21,15 @@ describe PuppetLint::Plugins::CheckWhitespace do
     its(:warnings) { should be_empty }
     its(:errors) { should be_empty }
   end
+
+  describe 'file resource with a source line > 80c' do
+    let(:code) { "
+      file {
+        source  => 'puppet:///modules/certificates/etc/ssl/private/wildcard.example.com.crt',
+      }"
+    }
+
+    its(:warnings) { should be_empty }
+    its(:errors) { should be_empty }
+  end
 end

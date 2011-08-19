@@ -18,7 +18,9 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
       error "trailing whitespace found on line #{line_no}" if line.end_with? " "
 
       # SHOULD NOT exceed an 80 character line width
-      warn "line #{line_no} has more than 80 characters" if line.length > 80
+      unless line =~ /puppet:\/\//
+        warn "line #{line_no} has more than 80 characters" if line.length > 80
+      end
 
       # MUST use two-space soft tabs
       line.scan(/^ +/) do |prefix|
