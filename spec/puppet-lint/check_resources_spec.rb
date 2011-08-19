@@ -127,4 +127,19 @@ describe PuppetLint::Plugins::CheckResources do
     its(:warnings) { should be_empty }
     its(:errors) { should be_empty }
   end
+
+  describe 'resource inside a case statement' do
+    let(:code) { "
+      case $ensure {
+        'absent': {
+          file { \"some_file_${name}\":
+            ensure => absent,
+          }
+        }
+      }"
+    }
+
+    its(:warnings) { should be_empty }
+    its(:errors) { should be_empty }
+  end
 end
