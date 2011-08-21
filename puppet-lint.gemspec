@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
     'lib/puppet-lint/plugins/check_whitespace.rb',
     'lib/puppet-lint/plugins.rb',
     'lib/puppet-lint.rb',
-    'lib/tasks/puppet-lint.rake',
+    'lib/puppet-lint/tasks/puppet-lint.rb',
     'LICENSE',
     'puppet-lint.gemspec',
     'Rakefile',
