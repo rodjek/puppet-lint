@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = 'puppet-lint'
-  s.version = '0.0.6'
+  s.version = '0.0.7'
   s.homepage = 'https://github.com/rodjek/puppet-lint/'
   s.summary = 'Ensure your Puppet manifests conform with the Puppetlabs style guide'
   s.description = 'Checks your Puppet manifests against the Puppetlabs
@@ -14,8 +14,8 @@ Gem::Specification.new do |s|
     'lib/puppet-lint/plugins/check_strings.rb',
     'lib/puppet-lint/plugins/check_whitespace.rb',
     'lib/puppet-lint/plugins.rb',
-    'lib/puppet-lint.rb',
     'lib/puppet-lint/tasks/puppet-lint.rb',
+    'lib/puppet-lint.rb',
     'LICENSE',
     'puppet-lint.gemspec',
     'Rakefile',
