@@ -2,7 +2,7 @@
 
 The goal of this project is to implement as many of the recommended Puppet
 style guidelines from the [Puppetlabs style
-guide](http://docs.puppetlabs.com/guides/style_guide.html).
+guide](http://docs.puppetlabs.com/guides/style_guide.html) as practical.
 
 ## Installation
 
@@ -51,7 +51,7 @@ At the moment, the following tests have been implemented:
  * File modes should be represented as a 4 digit string enclosed in single
    quotes.
 
-## Conditionals
+### Conditionals
 
  * You should not intermingle conditionals inside resource declarations (i.e.
    selectors inside resources).
