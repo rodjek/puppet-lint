@@ -16,7 +16,9 @@ class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
           title_array_tokens = tokens[tokens.rindex { |r| r.first == :LBRACK }+1..token_idx-2]
           title_tokens += title_array_tokens.select { |token| [:STRING, :NAME].include? token.first }
         else
-          title_tokens << tokens[token_idx-1]
+          if tokens[token_idx + 1].first != :LBRACE
+            title_tokens << tokens[token_idx-1]
+          end
         end
 
         # gather a list of start and end indexes for resource attribute blocks

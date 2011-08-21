@@ -56,6 +56,7 @@ At the moment, the following tests have been implemented:
 
  * You should not intermingle conditionals inside resource declarations (i.e.
    selectors inside resources).
+ * Case statements should have a default case.
 
 ## Reporting bugs or incorrect results
 
