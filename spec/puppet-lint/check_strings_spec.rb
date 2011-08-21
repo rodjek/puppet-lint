@@ -20,4 +20,11 @@ describe PuppetLint::Plugins::CheckStrings do
     its(:warnings) { should include "double quoted string containing no variables on line 1" }
     its(:errors) { should include "single quoted string containing a variable found on line 1" }
   end
+
+  describe 'string containing only a variable' do
+    let(:code) { '"${foo}"' }
+
+    its(:warnings) { should include "string containing only a variable on line 1" }
+    its(:errors) { should be_empty }
+  end
 end

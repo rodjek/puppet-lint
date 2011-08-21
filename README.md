@@ -40,6 +40,7 @@ At the moment, the following tests have been implemented:
    quotes.
  * All strings that contain variables must be enclosed in double quotes.
  * All variables should be enclosed in braces when interpolated in a string.
+ * Variables standing by themselves should not be quoted.
 
 ### Resources
 

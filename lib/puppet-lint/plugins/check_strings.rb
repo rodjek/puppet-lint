@@ -18,6 +18,10 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
           unless variable_found
             warn "double quoted string containing no variables on line #{line_no}"
           end
+          if s =~ /^"\$\{[\w\:]+\}"$/
+            warn "string containing only a variable on line #{line_no}"
+          end
+
           line = line[line.index('"', line.index('"')+1)..-1]
         end
       end
