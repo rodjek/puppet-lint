@@ -25,7 +25,7 @@ At the moment, the following tests have been implemented:
 
 ### Spacing, Indentation & Whitespace
 
-* Must use two-space soft tabs.
+ * Must use two-space soft tabs.
  * Must not use literal tab characters.
  * Must not contain trailing white space.
  * Should not exceed an 80 character line width
