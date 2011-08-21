@@ -46,6 +46,8 @@ At the moment, the following tests have been implemented:
  * All resource titles should be quoted.
  * If a resource declaration includes an `ensure` attribute, it should be the
    first attribute specified.
+ * Symbolic links should be declared by using an ensure value of `link` and
+   explicitly specifying a value for the `target` attribute.
  * File modes should be represented as a 4 digit string enclosed in single
    quotes.
 

@@ -142,4 +142,27 @@ describe PuppetLint::Plugins::CheckResources do
     its(:warnings) { should be_empty }
     its(:errors) { should be_empty }
   end
+
+  describe 'file resource creating a symlink with seperate target attr' do
+    let(:code) { "
+      file { 'foo':
+        ensure => link,
+        target => '/foo/bar',
+      }"
+    }
+
+    its(:warnings) { should be_empty }
+    its(:errors) { should be_empty }
+  end
+
+  describe 'file resource creating a symlink with target specified in ensure' do
+    let(:code) { "
+      file { 'foo':
+        ensure => '/foo/bar',
+      }"
+    }
+
+    its(:warnings) { should include "symlink target specified in ensure attr on line 3" }
+    its(:errors) { should be_empty }
+  end
 end

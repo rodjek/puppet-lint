@@ -54,6 +54,11 @@ class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
             if value_token.last[:value] !~ /\d{4}/
               warn "mode should be represented as a 4 digit octal value on line #{value_token.last[:line]}"
             end
+          elsif attr_token.first == :NAME and attr_token.last[:value] == 'ensure'
+            value_token = resource_tokens[resource_token_idx + 2]
+            if value_token.last[:value].start_with? '/'
+              warn "symlink target specified in ensure attr on line #{value_token.last[:line]}"
+            end
           end
         end
       end
