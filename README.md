@@ -51,6 +51,11 @@ At the moment, the following tests have been implemented:
  * File modes should be represented as a 4 digit string enclosed in single
    quotes.
 
+## Conditionals
+
+ * You should not intermingle conditionals inside resource declarations (i.e.
+   selectors inside resources).
+
 ## Reporting bugs or incorrect results
 
 If you find a bug in puppet-lint or its results, please create an issue in the

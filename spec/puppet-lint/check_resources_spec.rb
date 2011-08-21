@@ -165,4 +165,29 @@ describe PuppetLint::Plugins::CheckResources do
     its(:warnings) { should include "symlink target specified in ensure attr on line 3" }
     its(:errors) { should be_empty }
   end
+
+  describe 'resource with a selector' do
+    let(:code) { "
+      file { 'foo':
+        ensure => $bar ? {
+          true    => present,
+          default => absent,
+        },
+      }"
+    }
+
+    its(:warnings) { should include "selector inside resource block on line 3" }
+    its(:errors) { should be_empty }
+  end
+
+  describe 'resource with a variable as a attr value' do
+    let(:code) { "
+      file { 'foo',
+        ensure => $bar,
+      }"
+    }
+
+    its(:warnings) { should be_empty }
+    its(:errors) { should be_empty }
+  end
 end
