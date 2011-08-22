@@ -10,6 +10,8 @@ Gem::Specification.new do |s|
   s.files = [
     'bin/puppet-lint',
     'lib/puppet-lint/plugin.rb',
+    'lib/puppet-lint/plugins/check_classes.rb',
+    'lib/puppet-lint/plugins/check_conditionals.rb',
     'lib/puppet-lint/plugins/check_resources.rb',
     'lib/puppet-lint/plugins/check_strings.rb',
     'lib/puppet-lint/plugins/check_whitespace.rb',
@@ -20,6 +22,8 @@ Gem::Specification.new do |s|
     'puppet-lint.gemspec',
     'Rakefile',
     'README.md',
+    'spec/puppet-lint/check_classes_spec.rb',
+    'spec/puppet-lint/check_conditionals_spec.rb',
     'spec/puppet-lint/check_resources_spec.rb',
     'spec/puppet-lint/check_strings_spec.rb',
     'spec/puppet-lint/check_whitespace_spec.rb',
