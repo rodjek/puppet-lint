@@ -11,6 +11,14 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
     class_indexes = []
     tokens.each_index do |token_idx|
       if tokens[token_idx].first == :CLASS
+        if tokens[token_idx+2].first == :INHERITS
+          class_name = tokens[token_idx+1].last[:value]
+          inherited_class = tokens[token_idx+3].last[:value]
+
+          unless class_name =~ /^#{inherited_class}::/
+            warn "class inherits across namespaces on line #{tokens[token_idx].last[:line]}"
+          end
+        end
         lbrace_count = 0
         tokens[token_idx+1..-1].each_index do |class_token_idx|
           idx = class_token_idx + token_idx

@@ -64,6 +64,7 @@ At the moment, the following tests have been implemented:
    the 'left to right' direction.
  * Classes should not be defined inside a class.
  * Defines should not be defined inside a class.
+ * Classes should not inherit between namespaces.
 
 ## Reporting bugs or incorrect results
 

@@ -51,4 +51,18 @@ describe PuppetLint::Plugins::CheckClasses do
     its(:warnings) { should include "define defined inside a class on line 3" }
     its(:errors) { should be_empty }
   end
+
+  describe 'class inheriting from its namespace' do
+    let(:code) { "class foo::bar inherits foo { }" }
+
+    its(:warnings) { should be_empty }
+    its(:errors) { should be_empty }
+  end
+
+  describe 'class inheriting from another namespace' do
+    let(:code) { "class foo::bar inherits baz { }" }
+
+    its(:warnings) { should include "class inherits across namespaces on line 1" }
+    its(:errors) { should be_empty }
+  end
 end
