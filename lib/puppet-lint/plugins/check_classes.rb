@@ -10,7 +10,29 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
 
     class_indexes = []
     tokens.each_index do |token_idx|
+      if [:DEFINE, :CLASS].include? tokens[token_idx].first
+        header_end_idx = tokens[token_idx..-1].index { |r| r.first == :LBRACE }
+        lparen_idx = tokens[token_idx..(header_end_idx + token_idx)].index { |r| r.first == :LPAREN }
+        rparen_idx = tokens[token_idx..(header_end_idx + token_idx)].rindex { |r| r.first == :RPAREN }
+
+        unless lparen_idx.nil? or rparen_idx.nil?
+          param_tokens = tokens[lparen_idx..rparen_idx]
+          param_tokens.each_index do |param_tokens_idx|
+            this_token = param_tokens[param_tokens_idx]
+            next_token = param_tokens[param_tokens_idx+1]
+            if this_token.first == :VARIABLE
+              if next_token.first == :COMMA or next_token.first == :RPAREN
+                unless param_tokens[0..param_tokens_idx].rindex { |r| r.first == :EQUALS }.nil?
+                  warn "optional parameter listed before required parameter on line #{this_token.last[:line]}"
+                end
+              end
+            end
+          end
+        end
+      end
+
       if tokens[token_idx].first == :CLASS
+
         if tokens[token_idx+2].first == :INHERITS
           class_name = tokens[token_idx+1].last[:value]
           inherited_class = tokens[token_idx+3].last[:value]
@@ -19,6 +41,7 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
             warn "class inherits across namespaces on line #{tokens[token_idx].last[:line]}"
           end
         end
+
         lbrace_count = 0
         tokens[token_idx+1..-1].each_index do |class_token_idx|
           idx = class_token_idx + token_idx

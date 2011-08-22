@@ -65,4 +65,32 @@ describe PuppetLint::Plugins::CheckClasses do
     its(:warnings) { should include "class inherits across namespaces on line 1" }
     its(:errors) { should be_empty }
   end
+
+  describe 'class with attrs in order' do
+    let(:code) { "class foo($bar, $baz='gronk') { }" }
+
+    its(:warnings) { should be_empty }
+    its(:errors) { should be_empty }
+  end
+
+  describe 'class with attrs out of order' do
+    let(:code) { "class foo($bar='baz', $gronk) { }" }
+
+    its(:warnings) { should include "optional parameter listed before required parameter on line 1" }
+    its(:errors) { should be_empty }
+  end
+
+  describe 'define with attrs in order' do
+    let(:code) { "define foo($bar, $baz='gronk') { }" }
+
+    its(:warnings) { should be_empty }
+    its(:errors) { should be_empty }
+  end
+
+  describe 'define with attrs out of order' do
+    let(:code) { "define foo($bar='baz', $gronk) { }" }
+
+    its(:warnings) { should include "optional parameter listed before required parameter on line 1" }
+    its(:errors) { should be_empty }
+  end
 end

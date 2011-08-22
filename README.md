@@ -65,6 +65,8 @@ At the moment, the following tests have been implemented:
  * Classes should not be defined inside a class.
  * Defines should not be defined inside a class.
  * Classes should not inherit between namespaces.
+ * Required parameters in class & defined type definitions should be listed
+   before optional parameters.
 
 ## Reporting bugs or incorrect results
 
