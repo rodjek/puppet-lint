@@ -22,6 +22,21 @@ describe PuppetLint::Plugins::CheckWhitespace do
     its(:errors) { should be_empty }
   end
 
+  describe 'selectors in the middle of a resource' do
+    let(:code) { "
+      file { 'foo':
+        ensure => $ensure ? {
+          present => directory,
+          absent  => undef,
+        },
+        owner  => 'tomcat6',
+      }"
+    }
+
+    its(:warnings) { should be_empty }
+    its(:errors) { should be_empty }
+  end
+
   describe 'file resource with a source line > 80c' do
     let(:code) { "
       file {

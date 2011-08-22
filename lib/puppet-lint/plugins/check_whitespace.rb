@@ -34,6 +34,10 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
         line_indent = $1
         if in_resource
           if in_selector
+            if selector_indent_length == 0
+              selector_indent_length = line_indent.length
+            end
+
             unless line_indent.length == selector_indent_length
               warn "=> on line #{line_no} isn't aligned with the previous line"
             end
@@ -45,7 +49,6 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
           else
             if line.strip.end_with? "{"
               in_selector = true
-              selector_indent_length = resource_indent_length + 2
             end
             unless line_indent.length == resource_indent_length
               warn "=> on line #{line_no} isn't aligned with the previous line"
@@ -54,6 +57,9 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
         else
           resource_indent_length = line_indent.length
           in_resource = true
+          if line.strip.end_with? "{"
+            in_selector = true
+          end
         end
       else
         in_resource = false
