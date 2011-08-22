@@ -20,4 +20,35 @@ describe PuppetLint::Plugins::CheckClasses do
     its(:warnings) { should include "right-to-left (<-) relationship on line 1" }
     its(:errors) { should be_empty }
   end
+
+  describe 'class on its own' do
+    let(:code) { "class foo { }" }
+
+    its(:warnings) { should be_empty }
+    its(:errors) { should be_empty }
+  end
+
+  describe 'class inside a class' do
+    let(:code) { "
+      class foo {
+        class bar {
+        }
+      }"
+    }
+
+    its(:warnings) { should include "class defined inside a class on line 3" }
+    its(:errors) { should be_empty }
+  end
+
+  describe 'define inside a class' do
+    let(:code) { "
+      class foo {
+        define bar() {
+        }
+      }"
+    }
+
+    its(:warnings) { should include "define defined inside a class on line 3" }
+    its(:errors) { should be_empty }
+  end
 end

@@ -62,6 +62,8 @@ At the moment, the following tests have been implemented:
 
  * Relationship declarations with the chaining syntax should only be used in
    the 'left to right' direction.
+ * Classes should not be defined inside a class.
+ * Defines should not be defined inside a class.
 
 ## Reporting bugs or incorrect results
 
