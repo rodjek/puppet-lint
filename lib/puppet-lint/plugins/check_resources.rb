@@ -44,16 +44,6 @@ class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
         end
       end
 
-      resource_tokens.each_index do |resource_token_idx|
-        if resource_tokens[resource_token_idx].first == :FARROW
-          if resource_tokens[resource_token_idx + 1].first == :VARIABLE
-            if resource_tokens[resource_token_idx + 2].first == :QMARK
-              warn "selector inside resource block on line #{resource_tokens[resource_token_idx].last[:line]}"
-            end
-          end
-        end
-      end
-
       resource_type_token = tokens[tokens[0..resource[:start]].rindex { |r| r.first == :LBRACE } - 1]
       if resource_type_token.last[:value] == "file"
         resource_tokens.each_index do |resource_token_idx|
