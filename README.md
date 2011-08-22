@@ -67,6 +67,8 @@ At the moment, the following tests have been implemented:
  * Classes should not inherit between namespaces.
  * Required parameters in class & defined type definitions should be listed
    before optional parameters.
+ # When using top-scope variables, including facts, Puppet modules should
+   explicitly specify the empty namespace.
 
 ## Reporting bugs or incorrect results
 

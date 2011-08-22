@@ -93,4 +93,71 @@ describe PuppetLint::Plugins::CheckClasses do
     its(:warnings) { should include "optional parameter listed before required parameter on line 1" }
     its(:errors) { should be_empty }
   end
+
+  describe 'class with no variables declared accessing top scope' do
+    let(:code) { "
+      class foo {
+        $bar = $baz
+      }"
+    }
+
+    its(:warnings) { should include "top-scope variable being used without an explicit namespace on line 3" }
+    its(:errors) { should be_empty}
+  end
+
+  describe 'class with no variables declared accessing top scope explicitly' do
+    let(:code) { "
+      class foo {
+        $bar = $::baz
+      }"
+    }
+
+    its(:warnings) { should be_empty }
+    its(:errors) { should be_empty }
+  end
+
+  describe 'class with variables declared accessing local scope' do
+    let(:code) { "
+      class foo {
+        $bar = 1
+        $baz = $bar
+      }"
+    }
+
+    its(:warnings) { should be_empty }
+    its(:errors) { should be_empty }
+  end
+
+  describe 'class with parameters accessing local scope' do
+    let(:code) { "
+      class foo($bar) {
+        $baz = $bar
+      }"
+    }
+
+    its(:warnings) { should be_empty }
+    its(:errors) { should be_empty }
+  end
+
+  describe 'defined type with no variables declared accessing top scope' do
+    let(:code) { "
+      define foo() {
+        $bar = $fqdn
+      }"
+    }
+
+    its(:warnings) { should include "top-scope variable being used without an explicit namespace on line 3" }
+    its(:errors) { should be_empty }
+  end
+
+  describe 'defined type with no variables declared accessing top scope explicitly' do
+    let(:code) { "
+      define foo() {
+        $bar = $::fqdn
+      }"
+    }
+
+    its(:warnings) { should be_empty }
+    its(:errors) { should be_empty }
+  end
 end

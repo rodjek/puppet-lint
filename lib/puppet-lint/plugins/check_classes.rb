@@ -9,6 +9,7 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
     end
 
     class_indexes = []
+    defined_type_indexes = []
     tokens.each_index do |token_idx|
       if [:DEFINE, :CLASS].include? tokens[token_idx].first
         header_end_idx = tokens[token_idx..-1].index { |r| r.first == :LBRACE }
@@ -31,14 +32,15 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
         end
       end
 
-      if tokens[token_idx].first == :CLASS
+      if [:CLASS, :DEFINE].include? tokens[token_idx].first
+        if tokens[token_idx].first == :CLASS
+          if tokens[token_idx+2].first == :INHERITS
+            class_name = tokens[token_idx+1].last[:value]
+            inherited_class = tokens[token_idx+3].last[:value]
 
-        if tokens[token_idx+2].first == :INHERITS
-          class_name = tokens[token_idx+1].last[:value]
-          inherited_class = tokens[token_idx+3].last[:value]
-
-          unless class_name =~ /^#{inherited_class}::/
-            warn "class inherits across namespaces on line #{tokens[token_idx].last[:line]}"
+            unless class_name =~ /^#{inherited_class}::/
+              warn "class inherits across namespaces on line #{tokens[token_idx].last[:line]}"
+            end
           end
         end
 
@@ -50,7 +52,8 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
           elsif tokens[idx].first == :RBRACE
             lbrace_count -= 1
             if lbrace_count == 0
-              class_indexes << {:start => token_idx, :end => idx}
+              class_indexes << {:start => token_idx, :end => idx} if tokens[token_idx].first == :CLASS
+              defined_type_indexes << {:start => token_idx, :end => idx} if tokens[token_idx].first == :DEFINE
               break
             end
           end
@@ -65,6 +68,49 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
       end
       class_tokens[1..-1].select { |r| r.first == :DEFINE }.each do |token|
         warn "define defined inside a class on line #{token.last[:line]}"
+      end
+    end
+
+    (class_indexes + defined_type_indexes).each do |idx|
+      object_tokens = tokens[idx[:start]..idx[:end]]
+      variables_in_scope = []
+      referenced_variables = []
+      header_end_idx = object_tokens.index { |r| r.first == :LBRACE }
+      lparen_idx = object_tokens[0..header_end_idx].index { |r| r.first == :LPAREN }
+      rparen_idx = object_tokens[0..header_end_idx].rindex { |r| r.first == :RPAREN }
+
+      unless lparen_idx.nil? or rparen_idx.nil?
+        param_tokens = object_tokens[lparen_idx..rparen_idx]
+        param_tokens.each_index do |param_tokens_idx|
+          this_token = param_tokens[param_tokens_idx]
+          next_token = param_tokens[param_tokens_idx+1]
+          if this_token.first == :VARIABLE
+            if [:COMMA, :EQUALS, :RPAREN].include? next_token.first
+              variables_in_scope << this_token.last[:value]
+            end
+          end
+        end
+      end
+
+      object_tokens.each_index do |object_token_idx|
+        this_token = object_tokens[object_token_idx]
+        next_token = object_tokens[object_token_idx + 1]
+
+        if this_token.first == :VARIABLE
+          if next_token.first == :EQUALS
+            variables_in_scope << this_token.last[:value]
+          else
+            referenced_variables << this_token
+          end
+        end
+      end
+
+      referenced_variables.each do |token|
+        unless token.last[:value].include? '::'
+          unless variables_in_scope.include? token.last[:value]
+            warn "top-scope variable being used without an explicit namespace on line #{token.last[:line]}"
+          end
+        end
       end
     end
   end
