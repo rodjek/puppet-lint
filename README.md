@@ -58,6 +58,11 @@ At the moment, the following tests have been implemented:
    selectors inside resources).
  * Case statements should have a default case.
 
+### Classes
+
+ * Relationship declarations with the chaining syntax should only be used in
+   the 'left to right' direction.
+
 ## Reporting bugs or incorrect results
 
 If you find a bug in puppet-lint or its results, please create an issue in the
