@@ -4,8 +4,6 @@ class PuppetLint::Plugins::CheckConditionals < PuppetLint::CheckPlugin
     lexer.string = data
     tokens = lexer.fullscan
 
-    #p tokens
-
     resource_indexes = []
     case_indexes = []
 
@@ -40,8 +38,10 @@ class PuppetLint::Plugins::CheckConditionals < PuppetLint::CheckPlugin
       resource_tokens.each_index do |resource_token_idx|
         if resource_tokens[resource_token_idx].first == :FARROW
           if resource_tokens[resource_token_idx + 1].first == :VARIABLE
-            if resource_tokens[resource_token_idx + 2].first == :QMARK
-              warn "selector inside resource block on line #{resource_tokens[resource_token_idx].last[:line]}"
+            unless resource_tokens[resource_token_idx + 2].nil?
+              if resource_tokens[resource_token_idx + 2].first == :QMARK
+                warn "selector inside resource block on line #{resource_tokens[resource_token_idx].last[:line]}"
+              end
             end
           end
         end
