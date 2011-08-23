@@ -1,7 +1,7 @@
 # Puppet-lint
 
 The goal of this project is to implement as many of the recommended Puppet
-style guidelines from the [Puppetlabs style
+style guidelines from the [Puppet Labs style
 guide](http://docs.puppetlabs.com/guides/style_guide.html) as practical.
 
 ## Installation
@@ -67,7 +67,7 @@ At the moment, the following tests have been implemented:
  * Classes should not inherit between namespaces.
  * Required parameters in class & defined type definitions should be listed
    before optional parameters.
- # When using top-scope variables, including facts, Puppet modules should
+ * When using top-scope variables, including facts, Puppet modules should
    explicitly specify the empty namespace.
 
 ## Reporting bugs or incorrect results
