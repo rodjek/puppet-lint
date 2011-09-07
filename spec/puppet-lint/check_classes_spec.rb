@@ -160,4 +160,15 @@ describe PuppetLint::Plugins::CheckClasses do
     its(:warnings) { should be_empty }
     its(:errors) { should be_empty }
   end
+
+  describe '$name should be auto defined' do
+    let(:code) { "
+      define foo() {
+        $bar = $name
+      }"
+    }
+
+    its(:warnings) { should be_empty }
+    its(:errors) { should be_empty }
+  end
 end
