@@ -3,7 +3,7 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
     line_no = 0
     data.each_line do |line|
       line_no += 1
-      line.match(/"([^\\"]|\\\\|\\")*"/).to_a.each do |s|
+      line.match(/^[^\s?#].*"([^\\"]|\\\\|\\")*"/).to_a.each do |s|
         if s.is_a? String and s.start_with? '"'
           variable_found = false
           s.scan(/.\$./) do |w|
