@@ -27,4 +27,25 @@ describe PuppetLint::Plugins::CheckStrings do
     its(:warnings) { should include "string containing only a variable on line 1" }
     its(:errors) { should be_empty }
   end
+
+  describe 'variable not enclosed in {}' do
+    let(:code) { '" $gronk"' }
+
+    its(:warnings) { should include "variable not enclosed in {} on line 1" }
+    its(:errors) { should be_empty }
+  end
+
+  describe 'double quoted string nested in a single quoted string' do
+    let(:code) { "'grep \"status=sent\" /var/log/mail.log'" }
+
+    its(:warnings) { should be_empty }
+    its(:errors) { should be_empty }
+  end
+
+  describe 'double quoted string after a comment' do
+    let(:code) { "service { 'foo': } # \"bar\"" }
+
+    its(:warnings) { should be_empty }
+    its(:errors) { should be_empty }
+  end
 end
