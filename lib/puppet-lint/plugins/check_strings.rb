@@ -25,21 +25,26 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
       token = tokens[token_idx]
 
       if token.first == :STRING
-        contents = token.last[:value]
-        line_no = token.last[:line]
-        variable_found = false
+        warn "double quoted string containing no variables on line #{token.last[:line]}"
+      end
 
-        contents.scan(/.\$./) do |w|
-          if w.start_with? '\\'
-            next
-          elsif w.end_with? '{'
-            variable_found = true
-          else
-            warn "variable not enclosed in {} on line #{line_no}"
+      if token.first == :DQPRE and token.last[:value] == ""
+        if tokens[token_idx + 1].first == :VARIABLE
+          if tokens[token_idx + 2].first == :DQPOST and tokens[token_idx + 2].last[:value] == ""
+            warn "string containing only a variable on line #{tokens[token_idx + 1].last[:line]}"
           end
         end
-        unless variable_found
-          warn "double quoted string containing no variables on line #{line_no}"
+      end
+
+      if token.first == :DQPRE
+        end_of_string_idx = tokens[token_idx..-1].index { |r| r.first == :DQPOST }
+        tokens[token_idx..end_of_string_idx].each do |t|
+          if t.first == :VARIABLE
+            line = data.split("\n")[t.last[:line] - 1]
+            if line.is_a? String and line.include? "$#{t.last[:value]}"
+              warn "variable not enclosed in {} on line #{t.last[:line]}"
+            end
+          end
         end
       end
 
@@ -48,7 +53,7 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
         line_no = token.last[:line]
 
         if contents.include? '${'
-          error "single quoted string containing a variable found on line #{line_no}"
+          error "single quoted string containing a variable found on line #{token.last[:line]}"
         end
       end
     end
