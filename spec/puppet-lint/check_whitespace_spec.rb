@@ -47,4 +47,18 @@ describe PuppetLint::Plugins::CheckWhitespace do
     its(:warnings) { should be_empty }
     its(:errors) { should be_empty }
   end
+
+  describe 'selector inside a resource' do
+    let(:code) { "
+    ensure => $ensure ? {
+      present => directory,
+      absent  => undef,
+    },
+    owner  => 'foo4',
+    group  => 'foo4',
+    mode   => '0755'," }
+
+    its(:warnings) { should be_empty }
+    its(:errors) { should be_empty }
+  end
 end

@@ -30,6 +30,13 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
       end
 
       # SHOULD align fat comma arrows (=>) within blocks of attributes
+      if in_selector
+        if line.strip =~ /\}[,;]?$/
+          in_selector = false
+          selector_indent_length = 0
+        end
+      end
+
       if line =~ /^( +\w+ +)=>/
         line_indent = $1
         if in_resource
