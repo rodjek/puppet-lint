@@ -48,4 +48,11 @@ describe PuppetLint::Plugins::CheckStrings do
     its(:warnings) { should be_empty }
     its(:errors) { should be_empty }
   end
+
+  describe 'double quoted string containing newline but no variables' do
+    let(:code) { '"foo\n"' }
+
+    its(:warnings) { should be_empty }
+    its(:errors) { should be_empty }
+  end
 end

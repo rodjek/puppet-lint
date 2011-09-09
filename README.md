@@ -38,6 +38,7 @@ At the moment, the following tests have been implemented:
 
  * All strings that do not contain variables should be enclosed in single
    quotes.
+   * An exception has been made for double quoted strings containing \n or \t.
  * All strings that contain variables must be enclosed in double quotes.
  * All variables should be enclosed in braces when interpolated in a string.
  * Variables standing by themselves should not be quoted.
