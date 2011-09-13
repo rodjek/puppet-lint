@@ -44,6 +44,7 @@ end
 begin
   l = PuppetLint.new
   l.file = ARGV[0]
+  puts ARGV[0]
   l.run
 rescue PuppetLint::NoCodeError
   puts "puppet-lint: no file specified or specified file does not exist"
