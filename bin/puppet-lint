@@ -17,12 +17,17 @@ require 'optparse'
 require 'rubygems'
 require 'puppet-lint'
 
+options = {}
 opts = OptionParser.new do |opts|
   opts.banner = help
 
   opts.on("--version", "Display current version.") do
     puts "Puppet-lint " + PuppetLint::VERSION
     exit 0
+  end
+
+  opts.on("--fail-on-warnings", "Return a non-zero exit status for warnings.") do
+    options[:fail_on_warnings] = true
   end
 end
 
@@ -45,6 +50,10 @@ begin
   l = PuppetLint.new
   l.file = ARGV[0]
   l.run
+
+  if l.errors? or (l.warnings? and options[:fail_on_warnings])
+    exit 1
+  end
 rescue PuppetLint::NoCodeError
   puts "puppet-lint: no file specified or specified file does not exist"
   puts "puppet-lint: try 'puppet-lint --help' for more information"
