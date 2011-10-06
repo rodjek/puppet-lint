@@ -171,4 +171,30 @@ describe PuppetLint::Plugins::CheckClasses do
     its(:warnings) { should be_empty }
     its(:errors) { should be_empty }
   end
+
+  describe 'instantiating a parametised class inside a class' do
+    let(:code) { "
+      class bar {
+        class { 'foo':
+          bar => 'foobar'
+        }
+      }"
+    }
+
+    its(:warnings) { should be_empty }
+    its(:errors) { should be_empty }
+  end
+
+  describe 'instantiating a parametised class inside a define' do
+    let(:code) { "
+      define bar() {
+        class { 'foo':
+          bar => 'foobar'
+        }
+      }"
+    }
+
+    its(:warnings) { should be_empty }
+    its(:errors) { should be_empty }
+  end
 end

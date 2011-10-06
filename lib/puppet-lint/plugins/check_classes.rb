@@ -65,11 +65,19 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
 
     class_indexes.each do |class_idx|
       class_tokens = tokens[class_idx[:start]..class_idx[:end]]
-      class_tokens[1..-1].select { |r| r.first == :CLASS }.each do |token|
-        warn "class defined inside a class on line #{token.last[:line]}"
-      end
-      class_tokens[1..-1].select { |r| r.first == :DEFINE }.each do |token|
-        warn "define defined inside a class on line #{token.last[:line]}"
+      class_tokens[1..-1].each_index do |token_idx|
+        token = class_tokens[1..-1][token_idx]
+        next_token = class_tokens[1..-1][token_idx + 1]
+
+        if token.first == :CLASS
+          if next_token.first != :LBRACE
+            warn "class defined inside a class on line #{token.last[:line]}"
+          end
+        end
+
+        if token.first == :DEFINE
+          warn "define defined inside a class on line #{token.last[:line]}"
+        end
       end
     end
 
