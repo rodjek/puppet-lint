@@ -49,6 +49,7 @@ end
 begin
   l = PuppetLint.new
   l.file = ARGV[0]
+  puts ARGV[0]
   l.run
 
   if l.errors? or (l.warnings? and options[:fail_on_warnings])
