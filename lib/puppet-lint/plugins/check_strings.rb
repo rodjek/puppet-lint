@@ -1,5 +1,3 @@
-require 'puppet'
-
 class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
   class ::Puppet::Parser::Lexer
     class TokenList
