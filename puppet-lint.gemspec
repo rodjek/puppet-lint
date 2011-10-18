@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name = 'puppet-lint'
-  s.version = '0.1.6'
+  s.version = '0.1.7'
   s.homepage = 'https://github.com/rodjek/puppet-lint/'
   s.summary = 'Ensure your Puppet manifests conform with the Puppetlabs style guide'
   s.description = 'Checks your Puppet manifests against the Puppetlabs
