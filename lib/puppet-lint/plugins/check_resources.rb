@@ -53,7 +53,7 @@ class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
             if value_token.first == :NAME
               warn "unquoted file mode on line #{value_token.last[:line]}"
             end
-            if value_token.last[:value] !~ /\d{4}/
+            if value_token.last[:value] !~ /\d{4}/ and value_token.first != :VARIABLE
               warn "mode should be represented as a 4 digit octal value on line #{value_token.last[:line]}"
             end
           elsif attr_token.first == :NAME and attr_token.last[:value] == 'ensure'

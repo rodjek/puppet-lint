@@ -21,6 +21,13 @@ describe PuppetLint::Plugins::CheckResources do
     its(:errors) { should be_empty }
   end
 
+  describe 'file mode as a variable' do
+    let(:code) { "file { 'foo': mode => $file_mode }" }
+
+    its(:warnings) { should be_empty }
+    its(:errors) { should be_empty }
+  end
+
   describe 'ensure as only attr in a single line resource' do
     let(:code) { "file { 'foo': ensure => present }" }
 
