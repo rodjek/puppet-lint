@@ -10,21 +10,32 @@ end
 require 'puppet-lint/plugin'
 require 'puppet-lint/plugins'
 
+unless String.respond_to?('prepend')
+  class String
+    def prepend(lead)
+      self.replace "#{lead}#{self}"
+    end
+  end
+end
+
 class PuppetLint::NoCodeError < StandardError; end
 
 class PuppetLint
   VERSION = '0.1.7'
 
-  attr_reader :code, :file
+  attr_reader :code, :file, :show_filename
 
   def initialize
     @data = nil
     @errors = 0
     @warnings = 0
+    @show_filename = 0
+    @path = ''
   end
 
   def file=(path)
     if File.exist? path
+      @path = path
       @data = File.read(path)
     end
   end
@@ -33,14 +44,23 @@ class PuppetLint
     @data = value
   end
 
+  def show_filename=(value)
+    @show_filename = value
+  end
+
   def report(kind, message)
+    #msg = message
     if kind == :warnings
       @warnings += 1
-      puts "WARNING: #{message}"
+      message.prepend('WARNING: ')
     else
       @errors += 1
-      puts "ERROR: #{message}"
+      message.prepend('ERROR: ')
     end
+    if @show_filename
+      message.prepend("#{@path} - ")
+    end
+    puts message
   end
 
   def errors?
