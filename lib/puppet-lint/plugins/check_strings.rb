@@ -14,7 +14,7 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
     end
   end
 
-  def test(data)
+  def test(path, data)
     l = Puppet::Parser::Lexer.new
     l.string = data
     tokens = l.fullscan

@@ -57,7 +57,7 @@ class PuppetLint
     end
 
     PuppetLint::CheckPlugin.repository.each do |plugin|
-      problems = plugin.new.run(@data)
+      problems = plugin.new.run(@path, @data)
       problems[:errors].each { |error| report :errors, error }
       problems[:warnings].each { |warning| report :warnings, warning }
     end

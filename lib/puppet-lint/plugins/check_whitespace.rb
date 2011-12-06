@@ -2,7 +2,7 @@
 # http://http://docs.puppetlabs.com/guides/style_guide.html#spacing-indentation--whitespace
 
 class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
-  def test(data)
+  def test(path, data)
     line_no = 0
     in_resource = false
     in_selector = false
