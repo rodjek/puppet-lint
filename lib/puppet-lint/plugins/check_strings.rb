@@ -55,6 +55,10 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
         if contents.include? '${'
           error "single quoted string containing a variable found on line #{token.last[:line]}"
         end
+
+        if ['true', 'false'].include? contents
+          warn "quoted boolean value found on line #{token.last[:line]}"
+        end
       end
     end
   end

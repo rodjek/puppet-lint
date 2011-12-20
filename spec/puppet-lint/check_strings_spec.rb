@@ -55,4 +55,18 @@ describe PuppetLint::Plugins::CheckStrings do
     its(:warnings) { should be_empty }
     its(:errors) { should be_empty }
   end
+
+  describe 'quoted false' do
+    let(:code) { "class { 'foo': boolFlag => 'false' }" }
+
+    its(:warnings) { should include "quoted boolean value found on line 1" }
+    its(:errors) { should be_empty }
+  end
+
+  describe 'quoted true' do
+    let(:code) { "class { 'foo': boolFlag => 'true' }" }
+
+    its(:warnings) { should include "quoted boolean value found on line 1" }
+    its(:errors) { should be_empty }
+  end
 end
