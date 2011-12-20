@@ -197,4 +197,24 @@ describe PuppetLint::Plugins::CheckClasses do
     its(:warnings) { should be_empty }
     its(:errors) { should be_empty }
   end
+
+  describe 'class/define parameter set to another variable' do
+    let(:code) { "
+      define foo($bar, $baz = $name, $gronk=$::fqdn) {
+      }"
+    }
+
+    its(:warnings) { should be_empty }
+    its(:errors) { should be_empty }
+  end
+
+  describe 'class/define parameter set to another variable with incorrect order' do
+    let(:code) { "
+      define foo($baz = $name, $bar, $gronk=$::fqdn) {
+      }"
+    }
+
+    its(:warnings) { should include "optional parameter listed before required parameter on line 2" }
+    its(:errors) { should be_empty }
+  end
 end

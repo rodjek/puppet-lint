@@ -21,11 +21,14 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
           param_tokens.each_index do |param_tokens_idx|
             this_token = param_tokens[param_tokens_idx]
             next_token = param_tokens[param_tokens_idx+1]
+            prev_token = param_tokens[param_tokens_idx-1]
             if this_token.first == :VARIABLE
               unless next_token.nil?
                 if next_token.first == :COMMA or next_token.first == :RPAREN
                   unless param_tokens[0..param_tokens_idx].rindex { |r| r.first == :EQUALS }.nil?
-                    warn "optional parameter listed before required parameter on line #{this_token.last[:line]}"
+                    unless prev_token.nil? or prev_token.first == :EQUALS
+                      warn "optional parameter listed before required parameter on line #{this_token.last[:line]}"
+                    end
                   end
                 end
               end
