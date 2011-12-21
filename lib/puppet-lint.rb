@@ -9,6 +9,7 @@ end
 
 require 'puppet-lint/plugin'
 require 'puppet-lint/plugins'
+require 'pp'
 
 class PuppetLint::NoCodeError < StandardError; end
 
@@ -17,10 +18,11 @@ class PuppetLint
 
   attr_reader :code, :file
 
-  def initialize
+  def initialize(options)
     @data = nil
     @errors = 0
     @warnings = 0
+    @error_level = options[:error_level]
   end
 
   def file=(path)
@@ -58,8 +60,15 @@ class PuppetLint
 
     PuppetLint::CheckPlugin.repository.each do |plugin|
       problems = plugin.new.run(@data)
-      problems[:errors].each { |error| report :errors, error }
-      problems[:warnings].each { |warning| report :warnings, warning }
+      case @error_level
+      when :warning
+        problems[:warnings].each { |warning| report :warnings, warning }
+      when :error
+        problems[:errors].each { |error| report :errors, error }
+      else
+        problems[:warnings].each { |warning| report :warnings, warning }
+        problems[:errors].each { |error| report :errors, error }
+      end
     end
   end
 end

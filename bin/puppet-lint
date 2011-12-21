@@ -26,6 +26,11 @@ opts = OptionParser.new do |opts|
     exit 0
   end
 
+  options[:error_level] = :all
+  opts.on("--error-level LEVEL", [:all, :warning, :error], "The level of error to return (warning, error, all).") do |el|
+    options[:error_level] = el
+  end
+
   opts.on("--fail-on-warnings", "Return a non-zero exit status for warnings.") do
     options[:fail_on_warnings] = true
   end
@@ -47,7 +52,7 @@ if ARGV[0].nil?
 end
 
 begin
-  l = PuppetLint.new
+  l = PuppetLint.new(options)
   l.file = ARGV[0]
   l.run
 
