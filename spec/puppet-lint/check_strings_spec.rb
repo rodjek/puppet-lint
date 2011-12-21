@@ -35,11 +35,13 @@ describe PuppetLint::Plugins::CheckStrings do
     its(:errors) { should be_empty }
   end
 
-  describe 'variable containing a dash' do
-    let(:code) { '" $foo-bar"' }
+  if Puppet.version.start_with? "2.7"
+    describe 'variable containing a dash' do
+      let(:code) { '" $foo-bar"' }
 
-    its(:warnings) { should include "variable contains a dash on line 1" }
-    its(:errors) { should be_empty }
+      its(:warnings) { should include "variable contains a dash on line 1" }
+      its(:errors) { should be_empty }
+    end
   end
 
   describe 'double quoted string nested in a single quoted string' do

@@ -7,11 +7,12 @@ describe PuppetLint::Plugins::CheckVariables do
     klass
   end
 
-  describe 'a variable containing a dash' do
-    let(:code) { "$foo-bar" }
+  if Puppet.version.start_with? "2.7"
+    describe 'a variable containing a dash' do
+      let(:code) { "$foo-bar" }
 
-    its(:warnings) { should include "Variable contains a dash on line 1" }
-    its(:errors) { should be_empty }
+      its(:warnings) { should include "Variable contains a dash on line 1" }
+      its(:errors) { should be_empty }
+    end
   end
-
 end
