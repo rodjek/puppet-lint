@@ -1,13 +1,12 @@
 # Spacing, Identation & Whitespace
-# http://http://docs.puppetlabs.com/guides/style_guide.html#spacing-indentation--whitespace
+# http://docs.puppetlabs.com/guides/style_guide.html#spacing-indentation--whitespace
 
 class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
   def test(data)
     line_no = 0
     in_resource = false
-    in_selector = false
+    selectors = []
     resource_indent_length = 0
-    selector_indent_length = 0
     data.split("\n").each do |line|
       line_no += 1
 
@@ -30,44 +29,43 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
       end
 
       # SHOULD align fat comma arrows (=>) within blocks of attributes
-      if in_selector
-        if line.strip =~ /\}[,;]?$/
-          in_selector = false
-          selector_indent_length = 0
-        end
-      end
-
       if line =~ /^( +\w+ +)=>/
         line_indent = $1
         if in_resource
-          if in_selector
-            if selector_indent_length == 0
-              selector_indent_length = line_indent.length
+          if selectors.count > 0
+            if selectors.last == 0
+              selectors[-1] = line_indent.length
             end
 
-            unless line_indent.length == selector_indent_length
-              warn "=> on line #{line_no} isn't aligned with the previous line"
+            # check for length first
+            unless line_indent.length == selectors.last
+              warn "=> on line #{line_no} isn't properly aligned for selector"
             end
 
-            if line.strip =~ /\}[,;]?$/
-              in_selector = false
-              selector_indent_length = 0
+            # then for a new selector or selector finish
+            if line.strip.end_with? "{"
+              selectors.push(0)
+            elsif line.strip =~ /\}[,;]?$/
+              selectors.pop
             end
           else
-            if line.strip.end_with? "{"
-              in_selector = true
-            end
             unless line_indent.length == resource_indent_length
-              warn "=> on line #{line_no} isn't aligned with the previous line"
+              warn "=> on line #{line_no} isn't properly aligned for resource"
+            end
+
+            if line.strip.end_with? "{"
+              selectors.push(0)
             end
           end
         else
           resource_indent_length = line_indent.length
           in_resource = true
           if line.strip.end_with? "{"
-            in_selector = true
+            selectors.push(0)
           end
         end
+      elsif line.strip =~ /\}[,;]?$/ and selectors.count > 0
+        selectors.pop
       else
         in_resource = false
         resource_indent_length = 0
