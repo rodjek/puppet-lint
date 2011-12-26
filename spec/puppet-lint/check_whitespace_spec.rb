@@ -78,4 +78,36 @@ describe PuppetLint::Plugins::CheckWhitespace do
     its(:warnings) { should be_empty }
     its(:errors) { should be_empty }
   end
+
+  describe 'issue #37' do
+    let(:code) { "
+      class { 'lvs::base':
+        virtualeservers => {
+          '192.168.2.13' => {
+            vport           => '11025',
+            service         => 'smtp',
+            scheduler       => 'wlc',
+            protocol        => 'tcp',
+            checktype       => 'external',
+            checkcommand    => '/path/to/checkscript',
+            real_servers    => {
+              'server01' => {
+                real_server => '192.168.2.14',
+                real_port   => '25',
+                forwarding  => 'masq',
+              },
+              'server02' => {
+                real_server => '192.168.2.15',
+                real_port   => '25',
+                forwarding  => 'masq',
+              }
+            }
+          }
+        }
+      }"
+    }
+
+    its(:warnings) { should be_empty }
+    its(:errors) { should be_empty }
+  end
 end
