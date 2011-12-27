@@ -3,7 +3,7 @@ require 'spec_helper'
 describe PuppetLint::Plugins::CheckResources do
   subject do
     klass = described_class.new
-    klass.test(code)
+    klass.test(defined?(path).nil? ? '' : path, code)
     klass
   end
 
