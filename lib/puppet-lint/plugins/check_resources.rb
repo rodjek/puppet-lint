@@ -2,7 +2,7 @@
 # http://docs.puppetlabs.com/guides/style_guide.html#resources
 
 class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
-  def test(data)
+  def test(path, data)
     lexer = Puppet::Parser::Lexer.new
     lexer.string = data
     tokens = lexer.fullscan
