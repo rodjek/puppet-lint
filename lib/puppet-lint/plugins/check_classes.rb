@@ -102,7 +102,7 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
 
     (class_indexes + defined_type_indexes).each do |idx|
       object_tokens = tokens[idx[:start]..idx[:end]]
-      variables_in_scope = ['name']
+      variables_in_scope = ['name', 'title', 'module_name']
       referenced_variables = []
       header_end_idx = object_tokens.index { |r| r.first == :LBRACE }
       lparen_idx = object_tokens[0..header_end_idx].index { |r| r.first == :LPAREN }
@@ -137,7 +137,9 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
       referenced_variables.each do |token|
         unless token.last[:value].include? '::'
           unless variables_in_scope.include? token.last[:value]
-            warn "top-scope variable being used without an explicit namespace on line #{token.last[:line]}"
+            unless token.last[:value] =~ /\d+/
+              warn "top-scope variable being used without an explicit namespace on line #{token.last[:line]}"
+            end
           end
         end
       end

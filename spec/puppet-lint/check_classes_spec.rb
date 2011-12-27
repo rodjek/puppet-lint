@@ -165,6 +165,9 @@ describe PuppetLint::Plugins::CheckClasses do
     let(:code) { "
       define foo() {
         $bar = $name
+        $baz = $title
+        $gronk = $module_name
+        $meep = $1
       }"
     }
 
