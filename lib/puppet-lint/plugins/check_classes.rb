@@ -18,14 +18,14 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
 
         unless path == ""
           title_token = tokens[token_idx+1]
-          if title_token.first == :CLASSNAME
+          if [:CLASSNAME, :NAME].include? title_token.first
             split_title = title_token.last[:value].split('::')
-            expected_path = "#{split_title.first}/manifests/#{split_title[1..-1].join('/')}.pp"
-            unless path.end_with? expected_path
-              error "#{title_token.last[:value]} not in autoload module layout on line #{title_token.last[:line]}"
+            if split_title.length > 1
+              expected_path = "#{split_title.first}/manifests/#{split_title[1..-1].join('/')}.pp"
+            else
+              expected_path = "#{title_token.last[:value]}/manifests/init.pp"
             end
-          elsif title_token.first == :NAME
-            expected_path = "#{title_token.last[:value]}/manifests/init.pp"
+
             unless path.end_with? expected_path
               error "#{title_token.last[:value]} not in autoload module layout on line #{title_token.last[:line]}"
             end
