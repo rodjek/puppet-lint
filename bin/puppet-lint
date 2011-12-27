@@ -17,7 +17,9 @@ require 'optparse'
 require 'rubygems'
 require 'puppet-lint'
 
-options = {}
+options = {
+  :error_level => :all,
+}
 opts = OptionParser.new do |opts|
   opts.banner = help
 
@@ -28,6 +30,10 @@ opts = OptionParser.new do |opts|
 
   opts.on("--with-filename", "Display the filename before the warning") do
     options[:with_filename] = true
+  end
+
+  opts.on("--error-level LEVEL", [:all, :warning, :error], "The level of error to return (warning, error, all).") do |el|
+    options[:error_level] = el
   end
 
   opts.on("--fail-on-warnings", "Return a non-zero exit status for warnings.") do
@@ -51,7 +57,7 @@ if ARGV[0].nil?
 end
 
 begin
-  l = PuppetLint.new
+  l = PuppetLint.new(options)
   l.file = ARGV[0]
   l.show_filename = options.has_key?(:with_filename) ? options[:with_filename] : false
   l.run
