@@ -18,7 +18,8 @@ require 'rubygems'
 require 'puppet-lint'
 
 options = {
-  :error_level => :all,
+  :error_level   => :all,
+  :with_filename => false,
 }
 opts = OptionParser.new do |opts|
   opts.banner = help
@@ -59,7 +60,6 @@ end
 begin
   l = PuppetLint.new(options)
   l.file = ARGV[0]
-  l.show_filename = options.has_key?(:with_filename) ? options[:with_filename] : false
   l.run
 
   if l.errors? or (l.warnings? and options[:fail_on_warnings])

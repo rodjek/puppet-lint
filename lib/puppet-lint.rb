@@ -23,13 +23,13 @@ class PuppetLint::NoCodeError < StandardError; end
 class PuppetLint
   VERSION = '0.1.7'
 
-  attr_reader :code, :file, :show_filename
+  attr_reader :code, :file
 
   def initialize(options)
     @data = nil
     @errors = 0
     @warnings = 0
-    @show_filename = 0
+    @with_filename = options[:with_filename]
     @path = ''
     @error_level = options[:error_level]
   end
@@ -45,10 +45,6 @@ class PuppetLint
     @data = value
   end
 
-  def show_filename=(value)
-    @show_filename = value
-  end
-
   def report(kind, message)
     #msg = message
     if kind == :warnings
@@ -58,7 +54,7 @@ class PuppetLint
       @errors += 1
       message.prepend('ERROR: ')
     end
-    if @show_filename
+    if @with_filename
       message.prepend("#{@path} - ")
     end
     puts message
