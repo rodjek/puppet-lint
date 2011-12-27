@@ -33,8 +33,8 @@ class PuppetLint::CheckPlugin
     @errors << message
   end
 
-  def run(data)
-    test(data)
+  def run(path, data)
+    test(path, data)
 
     {:warnings => @warnings, :errors => @errors}
   end
