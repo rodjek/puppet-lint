@@ -36,7 +36,7 @@ class PuppetLint
 
   def file=(path)
     if File.exist? path
-      @path = path
+      @path = File.expand_path(path)
       @data = File.read(path)
     end
   end
