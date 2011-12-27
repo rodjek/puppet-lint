@@ -217,4 +217,36 @@ describe PuppetLint::Plugins::CheckClasses do
     its(:warnings) { should include "optional parameter listed before required parameter on line 2" }
     its(:errors) { should be_empty }
   end
+
+  describe 'foo::bar in foo/manifests/bar.pp' do
+    let(:code) { "class foo::bar { }" }
+    let(:path) { '/etc/puppet/modules/foo/manifests/bar.pp' }
+
+    its(:warnings) { should be_empty }
+    its(:errors) { should be_empty }
+  end
+
+  describe 'foo::bar::baz in foo/manifests/bar/baz.pp' do
+    let(:code) { 'define foo::bar::baz() { }' }
+    let(:path) { '/etc/puppet/modules/foo/manifests/bar/baz.pp' }
+
+    its(:warnings) { should be_empty }
+    its(:errors) { should be_empty }
+  end
+
+  describe 'foo in foo/manifests/init.pp' do
+    let(:code) { 'class foo { }' }
+    let(:path) { '/etc/puppet/modules/foo/manifests/init.pp' }
+
+    its(:warnings) { should be_empty }
+    its(:errors) { should be_empty }
+  end
+
+  describe 'foo::bar in foo/manifests/init.pp' do
+    let(:code) { 'class foo::bar { }' }
+    let(:path) { '/etc/puppet/modules/foo/manifests/init.pp' }
+
+    its(:warnings) { should be_empty }
+    its(:errors) { should include "foo::bar not in autoload module layout on line 1" }
+  end
 end
