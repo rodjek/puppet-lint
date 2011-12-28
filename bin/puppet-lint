@@ -46,6 +46,8 @@ opts = OptionParser.new do |opts|
       PuppetLint.configuration.send("disable_#{check}")
     end
   end
+
+  opts.load(File.expand_path("~/.puppet-lintrc")) unless opts.load(".puppet-lintrc")
 end
 
 # Read command line options into `options` hash
