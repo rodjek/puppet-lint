@@ -129,6 +129,10 @@ class PuppetLint::CheckPlugin
     @defined_type_indexes
   end
 
+  def manifest_lines
+    @manifest_lines ||= @data.split("\n")
+  end
+
   def self.check(name, &b)
     PuppetLint.configuration.add_check name
     define_method("lint_check_#{name}", b)

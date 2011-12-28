@@ -4,7 +4,7 @@
 class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
   check 'hard_tabs' do
     line_no = 0
-    data.split("\n").each do |line|
+    manifest_lines.each do |line|
       line_no += 1
 
       # MUST NOT use literal tab characters
@@ -14,7 +14,7 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
 
   check 'trailing_whitespace' do
     line_no = 0
-    data.split("\n").each do |line|
+    manifest_lines.each do |line|
       line_no += 1
 
       # MUST NOT contain trailing white space
@@ -24,7 +24,7 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
 
   check '80chars' do
     line_no = 0
-    data.split("\n").each do |line|
+    manifest_lines.each do |line|
       line_no += 1
 
       # SHOULD NOT exceed an 80 character line width
@@ -36,7 +36,7 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
 
   check '2sp_soft_tabs' do
     line_no = 0
-    data.split("\n").each do |line|
+    manifest_lines.each do |line|
       line_no += 1
 
       # MUST use two-space soft tabs
@@ -53,7 +53,7 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
     in_resource = false
     selectors = []
     resource_indent_length = 0
-    data.split("\n").each do |line|
+    manifest_lines.each do |line|
       line_no += 1
 
       # SHOULD align fat comma arrows (=>) within blocks of attributes
