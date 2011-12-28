@@ -7,8 +7,8 @@ rescue LoadError
   exit 1
 end
 
+require 'puppet-lint/configuration'
 require 'puppet-lint/plugin'
-require 'puppet-lint/plugins'
 
 unless String.respond_to?('prepend')
   class String
@@ -32,6 +32,14 @@ class PuppetLint
     @with_filename = options[:with_filename]
     @path = ''
     @error_level = options[:error_level]
+  end
+
+  def self.configuration
+    @configuration ||= PuppetLint::Configuration.new
+  end
+
+  def configuration
+    self.class.configuration
   end
 
   def file=(path)
@@ -68,6 +76,12 @@ class PuppetLint
     @warnings != 0
   end
 
+  def checks
+    PuppetLint::CheckPlugin.repository.map do |plugin|
+      plugin.new.checks
+    end.flatten
+  end
+
   def run
     if @data.nil?
       raise PuppetLint::NoCodeError
@@ -88,3 +102,4 @@ class PuppetLint
   end
 end
 
+require 'puppet-lint/plugins'

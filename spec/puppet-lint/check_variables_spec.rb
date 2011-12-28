@@ -3,7 +3,7 @@ require 'spec_helper'
 describe PuppetLint::Plugins::CheckVariables do
   subject do
     klass = described_class.new
-    klass.test(defined?(path).nil? ? '' : path, code)
+    klass.run(defined?(path).nil? ? '' : path, code)
     klass
   end
 
@@ -12,6 +12,13 @@ describe PuppetLint::Plugins::CheckVariables do
       let(:code) { "$foo-bar" }
 
       its(:warnings) { should include "Variable contains a dash on line 1" }
+      its(:errors) { should be_empty }
+    end
+
+    describe 'variable containing a dash' do
+      let(:code) { '" $foo-bar"' }
+
+      its(:warnings) { should include "variable contains a dash on line 1" }
       its(:errors) { should be_empty }
     end
   end

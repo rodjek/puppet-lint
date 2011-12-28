@@ -3,7 +3,7 @@ require 'spec_helper'
 describe PuppetLint::Plugins::CheckStrings do
   subject do
     klass = described_class.new
-    klass.test(defined?(path).nil? ? '' : path, code)
+    klass.run(defined?(path).nil? ? '' : path, code)
     klass
   end
 
@@ -33,15 +33,6 @@ describe PuppetLint::Plugins::CheckStrings do
 
     its(:warnings) { should include "variable not enclosed in {} on line 1" }
     its(:errors) { should be_empty }
-  end
-
-  if Puppet.version.start_with? "2.7"
-    describe 'variable containing a dash' do
-      let(:code) { '" $foo-bar"' }
-
-      its(:warnings) { should include "variable contains a dash on line 1" }
-      its(:errors) { should be_empty }
-    end
   end
 
   describe 'double quoted string nested in a single quoted string' do

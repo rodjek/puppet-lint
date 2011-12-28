@@ -40,6 +40,12 @@ opts = OptionParser.new do |opts|
   opts.on("--fail-on-warnings", "Return a non-zero exit status for warnings.") do
     options[:fail_on_warnings] = true
   end
+
+  PuppetLint.configuration.checks.each do |check|
+    opts.on("--no-#{check}-check", "Skip the #{check} check") do
+      PuppetLint.configuration.send("disable_#{check}")
+    end
+  end
 end
 
 # Read command line options into `options` hash

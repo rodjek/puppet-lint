@@ -14,11 +14,7 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
     end
   end
 
-  def test(path, data)
-    l = Puppet::Parser::Lexer.new
-    l.string = data
-    tokens = l.fullscan
-
+  check 'double_quoted_strings' do
     tokens.each_index do |token_idx|
       token = tokens[token_idx]
 
@@ -27,6 +23,12 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
           warn "double quoted string containing no variables on line #{token.last[:line]}"
         end
       end
+    end
+  end
+
+  check 'only_variable_string' do
+    tokens.each_index do |token_idx|
+      token = tokens[token_idx]
 
       if token.first == :DQPRE and token.last[:value] == ""
         if tokens[token_idx + 1].first == :VARIABLE
@@ -35,6 +37,12 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
           end
         end
       end
+    end
+  end
+
+  check 'variables_not_enclosed' do
+    tokens.each_index do |token_idx|
+      token = tokens[token_idx]
 
       if token.first == :DQPRE
         end_of_string_idx = tokens[token_idx..-1].index { |r| r.first == :DQPOST }
@@ -47,15 +55,12 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
           end
         end
       end
+    end
+  end
 
-      if token.first == :DQPRE
-        end_of_string_idx = tokens[token_idx..-1].index { |r| r.first == :DQPOST }
-        tokens[token_idx..end_of_string_idx].each do |t|
-          if t.first == :VARIABLE and t.last[:value].match(/-/)
-              warn "variable contains a dash on line #{t.last[:line]}"
-          end
-        end
-      end
+  check 'single_quote_string_with_variables' do
+    tokens.each_index do |token_idx|
+      token = tokens[token_idx]
 
       if token.first == :SSTRING
         contents = token.last[:value]
@@ -64,6 +69,17 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
         if contents.include? '${'
           error "single quoted string containing a variable found on line #{token.last[:line]}"
         end
+      end
+    end
+  end
+
+  check 'quoted_booleans' do
+    tokens.each_index do |token_idx|
+      token = tokens[token_idx]
+
+      if token.first == :SSTRING
+        contents = token.last[:value]
+        line_no = token.last[:line]
 
         if ['true', 'false'].include? contents
           warn "quoted boolean value found on line #{token.last[:line]}"

@@ -1,21 +1,13 @@
 class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
-  def test(path, data)
-    lexer = Puppet::Parser::Lexer.new
-    lexer.string = data
-    tokens = lexer.fullscan
-
+  check 'right_to_left_relationship' do
     tokens.select { |r| r.first == :OUT_EDGE }.each do |token|
       warn "right-to-left (<-) relationship on line #{token.last[:line]}"
     end
+  end
 
-    class_indexes = []
-    defined_type_indexes = []
+  check 'autoloader_layout' do
     tokens.each_index do |token_idx|
       if [:DEFINE, :CLASS].include? tokens[token_idx].first
-        header_end_idx = tokens[token_idx..-1].index { |r| r.first == :LBRACE }
-        lparen_idx = tokens[token_idx..(header_end_idx + token_idx)].index { |r| r.first == :LPAREN }
-        rparen_idx = tokens[token_idx..(header_end_idx + token_idx)].rindex { |r| r.first == :RPAREN }
-
         unless path == ""
           title_token = tokens[token_idx+1]
           if [:CLASSNAME, :NAME].include? title_token.first
@@ -31,6 +23,16 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
             end
           end
         end
+      end
+    end
+  end
+
+  check 'parameter_order' do
+    tokens.each_index do |token_idx|
+      if [:DEFINE, :CLASS].include? tokens[token_idx].first
+        header_end_idx = tokens[token_idx..-1].index { |r| r.first == :LBRACE }
+        lparen_idx = tokens[token_idx..(header_end_idx + token_idx)].index { |r| r.first == :LPAREN }
+        rparen_idx = tokens[token_idx..(header_end_idx + token_idx)].rindex { |r| r.first == :RPAREN }
 
         unless lparen_idx.nil? or rparen_idx.nil?
           param_tokens = tokens[lparen_idx..rparen_idx]
@@ -52,7 +54,11 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
           end
         end
       end
+    end
+  end
 
+  check 'inherits_across_namespaces' do
+    tokens.each_index do |token_idx|
       if [:CLASS, :DEFINE].include? tokens[token_idx].first
         if tokens[token_idx].first == :CLASS
           if tokens[token_idx+2].first == :INHERITS
@@ -64,24 +70,11 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
             end
           end
         end
-
-        lbrace_count = 0
-        tokens[token_idx+1..-1].each_index do |class_token_idx|
-          idx = class_token_idx + token_idx
-          if tokens[idx].first == :LBRACE
-            lbrace_count += 1
-          elsif tokens[idx].first == :RBRACE
-            lbrace_count -= 1
-            if lbrace_count == 0
-              class_indexes << {:start => token_idx, :end => idx} if tokens[token_idx].first == :CLASS
-              defined_type_indexes << {:start => token_idx, :end => idx} if tokens[token_idx].first == :DEFINE
-              break
-            end
-          end
-        end
       end
     end
+  end
 
+  check 'nested_classes_or_defines' do
     class_indexes.each do |class_idx|
       class_tokens = tokens[class_idx[:start]..class_idx[:end]]
       class_tokens[1..-1].each_index do |token_idx|
@@ -99,7 +92,9 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
         end
       end
     end
+  end
 
+  check 'variable_scope' do
     (class_indexes + defined_type_indexes).each do |idx|
       object_tokens = tokens[idx[:start]..idx[:end]]
       variables_in_scope = ['name', 'title', 'module_name']
