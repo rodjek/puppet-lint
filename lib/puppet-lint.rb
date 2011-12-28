@@ -25,13 +25,11 @@ class PuppetLint
 
   attr_reader :code, :file
 
-  def initialize(options)
+  def initialize
     @data = nil
     @errors = 0
     @warnings = 0
-    @with_filename = options[:with_filename]
     @path = ''
-    @error_level = options[:error_level]
   end
 
   def self.configuration
@@ -62,7 +60,7 @@ class PuppetLint
       @errors += 1
       message.prepend('ERROR: ')
     end
-    if @with_filename
+    if configuration.with_filename
       message.prepend("#{@path} - ")
     end
     puts message
@@ -89,7 +87,7 @@ class PuppetLint
 
     PuppetLint::CheckPlugin.repository.each do |plugin|
       problems = plugin.new.run(@path, @data)
-      case @error_level
+      case configuration.error_level
       when :warning
         problems[:warnings].each { |warning| report :warnings, warning }
       when :error
@@ -101,5 +99,10 @@ class PuppetLint
     end
   end
 end
+
+# Default configuration options
+PuppetLint.configuration.fail_on_warnings = false
+PuppetLint.configuration.error_level = :all
+PuppetLint.configuration.with_filename = false
 
 require 'puppet-lint/plugins'

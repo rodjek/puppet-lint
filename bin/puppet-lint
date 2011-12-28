@@ -17,10 +17,6 @@ require 'optparse'
 require 'rubygems'
 require 'puppet-lint'
 
-options = {
-  :error_level   => :all,
-  :with_filename => false,
-}
 opts = OptionParser.new do |opts|
   opts.banner = help
 
@@ -30,15 +26,15 @@ opts = OptionParser.new do |opts|
   end
 
   opts.on("--with-filename", "Display the filename before the warning") do
-    options[:with_filename] = true
+    PuppetLint.configuration.with_filename = true
   end
 
   opts.on("--error-level LEVEL", [:all, :warning, :error], "The level of error to return (warning, error, all).") do |el|
-    options[:error_level] = el
+    PuppetLint.configuration.error_level = el
   end
 
   opts.on("--fail-on-warnings", "Return a non-zero exit status for warnings.") do
-    options[:fail_on_warnings] = true
+    PuppetLint.configuration.fail_on_warnings = true
   end
 
   PuppetLint.configuration.checks.each do |check|
@@ -50,7 +46,6 @@ opts = OptionParser.new do |opts|
   opts.load(File.expand_path("~/.puppet-lintrc")) unless opts.load(".puppet-lintrc")
 end
 
-# Read command line options into `options` hash
 begin
   opts.parse!
 rescue OptionParser::InvalidOption
@@ -66,11 +61,11 @@ if ARGV[0].nil?
 end
 
 begin
-  l = PuppetLint.new(options)
+  l = PuppetLint.new
   l.file = ARGV[0]
   l.run
 
-  if l.errors? or (l.warnings? and options[:fail_on_warnings])
+  if l.errors? or (l.warnings? and PuppetLint.configuration.fail_on_warnings)
     exit 1
   end
 rescue PuppetLint::NoCodeError
