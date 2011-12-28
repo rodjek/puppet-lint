@@ -6,21 +6,19 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
   end
 
   check 'autoloader_layout' do
-    tokens.each_index do |token_idx|
-      if [:DEFINE, :CLASS].include? tokens[token_idx].first
-        unless path == ""
-          title_token = tokens[token_idx+1]
-          if [:CLASSNAME, :NAME].include? title_token.first
-            split_title = title_token.last[:value].split('::')
-            if split_title.length > 1
-              expected_path = "#{split_title.first}/manifests/#{split_title[1..-1].join('/')}.pp"
-            else
-              expected_path = "#{title_token.last[:value]}/manifests/init.pp"
-            end
+    unless path == ""
+      (class_indexes + defined_type_indexes).each do |class_idx|
+        title_token = tokens[class_idx[:start]+1]
+        if [:CLASSNAME, :NAME].include? title_token.first
+          split_title = title_token.last[:value].split('::')
+          if split_title.length > 1
+            expected_path = "#{split_title.first}/manifests/#{split_title[1..-1].join('/')}.pp"
+          else
+            expected_path = "#{title_token.last[:value]}/manifests/init.pp"
+          end
 
-            unless path.end_with? expected_path
-              error "#{title_token.last[:value]} not in autoload module layout on line #{title_token.last[:line]}"
-            end
+          unless path.end_with? expected_path
+            error "#{title_token.last[:value]} not in autoload module layout on line #{title_token.last[:line]}"
           end
         end
       end
