@@ -26,7 +26,8 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
   end
 
   check 'parameter_order' do
-    tokens.each_index do |token_idx|
+    (class_indexes + defined_type_indexes).each do |class_idx|
+      token_idx = class_idx[:start]
       if [:DEFINE, :CLASS].include? tokens[token_idx].first
         header_end_idx = tokens[token_idx..-1].index { |r| r.first == :LBRACE }
         lparen_idx = tokens[token_idx..(header_end_idx + token_idx)].index { |r| r.first == :LPAREN }
