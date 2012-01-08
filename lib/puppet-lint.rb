@@ -80,9 +80,8 @@ class PuppetLint
 
   def initialize
     @data = nil
-    @errors = 0
-    @warnings = 0
-    @path = ''
+    @statistics = {:error => 0, :warning => 0}
+    @fileinfo = {:path => ''}
   end
 
   def self.configuration
@@ -95,7 +94,9 @@ class PuppetLint
 
   def file=(path)
     if File.exist? path
-      @path = File.expand_path(path)
+      @fileinfo[:path] = path
+      @fileinfo[:fullpath] = File.expand_path(path)
+      @fileinfo[:filename] = File.basename(path)
       @data = File.read(path)
     end
   end
@@ -121,27 +122,25 @@ class PuppetLint
     puts format % message
   end
 
-  def report(kind, message)
-    #msg = message
-    if kind == :warnings
-      @warnings += 1
-      message.prepend('WARNING: ')
-    else
-      @errors += 1
-      message.prepend('ERROR: ')
-    end
-    if configuration.with_filename
-      message.prepend("#{@path} - ")
-    end
-    puts message
-  end
+  def report(problems)
+    problems.each do |message|
+      @statistics[message[:kind]] += 1
+      ## Add some default attributes.
+      message.merge!(@fileinfo) {|key, v1, v2| v1 }
+      message[:KIND] = message[:kind].to_s.upcase
 
+      if configuration.error_level == message[:kind] or configuration.error_level == :all
+        format_message message
+      end
+    end
+  end
+  
   def errors?
-    @errors != 0
+    @statistics[:error] != 0
   end
 
   def warnings?
-    @warnings != 0
+    @statistics[:warning] != 0
   end
 
   def checks
@@ -156,16 +155,7 @@ class PuppetLint
     end
 
     PuppetLint::CheckPlugin.repository.each do |plugin|
-      problems = plugin.new.run(@path, @data)
-      case configuration.error_level
-      when :warning
-        problems[:warnings].each { |warning| report :warnings, warning }
-      when :error
-        problems[:errors].each { |error| report :errors, error }
-      else
-        problems[:warnings].each { |warning| report :warnings, warning }
-        problems[:errors].each { |error| report :errors, error }
-      end
+      report plugin.new.run(@fileinfo[:path], @data)
     end
   end
 end
