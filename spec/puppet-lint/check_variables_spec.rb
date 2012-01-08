@@ -11,15 +11,13 @@ describe PuppetLint::Plugins::CheckVariables do
     describe 'a variable containing a dash' do
       let(:code) { "$foo-bar" }
 
-      its(:warnings) { should include "Variable contains a dash on line 1" }
-      its(:errors) { should be_empty }
+      its(:problems) { should have_problem :kind => :warning, :message => "variable contains a dash", :linenumber => 1 }
     end
 
     describe 'variable containing a dash' do
       let(:code) { '" $foo-bar"' }
 
-      its(:warnings) { should include "variable contains a dash on line 1" }
-      its(:errors) { should be_empty }
+      its(:problems) { should have_problem :kind => :warning, :message => "variable contains a dash", :linenumber => 1 }
     end
   end
 end

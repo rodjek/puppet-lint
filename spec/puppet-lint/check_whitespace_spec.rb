@@ -18,8 +18,7 @@ describe PuppetLint::Plugins::CheckWhitespace do
       }"
     }
 
-    its(:warnings) { should be_empty }
-    its(:errors) { should be_empty }
+    its(:problems) { should be_empty }
   end
 
   describe 'selectors in the middle of a resource' do
@@ -33,8 +32,7 @@ describe PuppetLint::Plugins::CheckWhitespace do
       }"
     }
 
-    its(:warnings) { should be_empty }
-    its(:errors) { should be_empty }
+    its(:problems) { should be_empty }
   end
 
   describe 'file resource with a source line > 80c' do
@@ -44,8 +42,7 @@ describe PuppetLint::Plugins::CheckWhitespace do
       }"
     }
 
-    its(:warnings) { should be_empty }
-    its(:errors) { should be_empty }
+    its(:problems) { should be_empty }
   end
 
   describe 'selector inside a resource' do
@@ -58,8 +55,7 @@ describe PuppetLint::Plugins::CheckWhitespace do
     group  => 'foo4',
     mode   => '0755'," }
 
-    its(:warnings) { should be_empty }
-    its(:errors) { should be_empty }
+    its(:problems) { should be_empty }
   end
 
   describe 'selector inside a hash inside a resource' do
@@ -75,8 +71,7 @@ describe PuppetLint::Plugins::CheckWhitespace do
     group  => 'foo4',
     mode   => '0755'," }
 
-    its(:warnings) { should be_empty }
-    its(:errors) { should be_empty }
+    its(:problems) { should be_empty }
   end
 
   describe 'issue #37' do
@@ -107,7 +102,6 @@ describe PuppetLint::Plugins::CheckWhitespace do
       }"
     }
 
-    its(:warnings) { should be_empty }
-    its(:errors) { should be_empty }
+    its(:problems) { should be_empty }
   end
 end

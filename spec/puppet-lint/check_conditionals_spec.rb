@@ -17,8 +17,7 @@ describe PuppetLint::Plugins::CheckConditionals do
       }"
     }
 
-    its(:warnings) { should include "selector inside resource block on line 3" }
-    its(:errors) { should be_empty }
+    its(:problems) { should only_have_problem :kind => :warning, :message => "selector inside resource block", :linenumber => 3 }
   end
 
   describe 'resource with a variable as a attr value' do
@@ -28,8 +27,7 @@ describe PuppetLint::Plugins::CheckConditionals do
       }"
     }
 
-    its(:warnings) { should be_empty }
-    its(:errors) { should be_empty }
+    its(:problems) { should be_empty }
   end
 
   describe 'case statement with a default case' do
@@ -40,8 +38,7 @@ describe PuppetLint::Plugins::CheckConditionals do
       }"
     }
 
-    its(:warnings) { should be_empty }
-    its(:errors) { should be_empty }
+    its(:problems) { should be_empty }
   end
 
   describe 'case statement without a default case' do
@@ -52,7 +49,6 @@ describe PuppetLint::Plugins::CheckConditionals do
       }"
     }
 
-    its(:warnings) { should include "case statement without a default case on line 2" }
-    its(:errors) { should be_empty }
+    its(:problems) { should only_have_problem :kind => :warning, :message => "case statement without a default case", :linenumber => 2 }
   end
 end

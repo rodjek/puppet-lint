@@ -10,29 +10,28 @@ describe PuppetLint::Plugins::CheckResources do
   describe '3 digit file mode' do
     let(:code) { "file { 'foo': mode => 777 }" }
 
-    its(:warnings) { should include "mode should be represented as a 4 digit octal value on line 1" }
-    its(:errors) { should be_empty }
+    its(:problems) {
+      should have_problem :kind => :warning, :message => "mode should be represented as a 4 digit octal value", :linenumber => 1
+      should_not have_problem :kind => :error
+    }
   end
 
   describe '4 digit file mode' do
     let(:code) { "file { 'foo': mode => '0777' }" }
 
-    its(:warnings) { should be_empty }
-    its(:errors) { should be_empty }
+    its(:problems) { should be_empty }
   end
 
   describe 'file mode as a variable' do
     let(:code) { "file { 'foo': mode => $file_mode }" }
 
-    its(:warnings) { should be_empty }
-    its(:errors) { should be_empty }
+    its(:problems) { should be_empty }
   end
 
   describe 'ensure as only attr in a single line resource' do
     let(:code) { "file { 'foo': ensure => present }" }
 
-    its(:warnings) { should be_empty }
-    its(:errors) { should be_empty }
+    its(:problems) { should be_empty }
   end
 
   describe 'ensure as only attr in a multi line resource' do
@@ -42,8 +41,7 @@ describe PuppetLint::Plugins::CheckResources do
       }"
     }
 
-    its(:warnings) { should be_empty }
-    its(:errors) { should be_empty }
+    its(:problems) { should be_empty }
   end
 
   describe 'ensure as second attr in a multi line resource' do
@@ -54,8 +52,10 @@ describe PuppetLint::Plugins::CheckResources do
       }"
     }
 
-    its(:warnings) { should include "ensure found on line 4 but it's not the first attribute" }
-    its(:errors) { should be_empty }
+    its(:problems) {
+      should have_problem :kind => :warning, :message => "ensure found on line but it's not the first attribute", :linenumber => 4
+      should_not have_problem :kind => :error
+    }
   end
 
   describe 'ensure as first attr in a multi line resource' do
@@ -66,22 +66,22 @@ describe PuppetLint::Plugins::CheckResources do
       }"
     }
 
-    its(:warnings) { should be_empty }
-    its(:errors) { should be_empty }
+    its(:problems) { should be_empty }
   end
 
   describe 'quoted resource title on single line resource' do
     let(:code) { "file { 'foo': }" }
 
-    its(:warnings) { should be_empty }
-    its(:errors) { should be_empty }
+    its(:problems) { should be_empty }
   end
 
   describe 'unquoted resource title on single line resource' do
     let(:code) { "file { foo: }" }
 
-    its(:warnings) { should include "unquoted resource title on line 1" }
-    its(:errors) { should be_empty }
+    its(:problems) {
+      should have_problem :kind => :warning, :message => "unquoted resource title", :linenumber => 1
+      should_not have_problem :kind => :error
+    }
   end
 
   describe 'quoted resource title on multi line resource' do
@@ -90,8 +90,7 @@ describe PuppetLint::Plugins::CheckResources do
       }"
     }
 
-    its(:warnings) { should be_empty }
-    its(:errors) { should be_empty }
+    its(:problems) { should be_empty }
   end
 
   describe 'unquoted resource title on multi line resource' do
@@ -100,8 +99,10 @@ describe PuppetLint::Plugins::CheckResources do
       }"
     }
 
-    its(:warnings) { should include "unquoted resource title on line 2" }
-    its(:errors) { should be_empty }
+    its(:problems) {
+      should have_problem :kind => :warning, :message => "unquoted resource title", :linenumber => 2
+      should_not have_problem :kind => :error
+    }
   end
 
   describe 'condensed resources with quoted titles' do
@@ -112,8 +113,7 @@ describe PuppetLint::Plugins::CheckResources do
       }"
     }
 
-    its(:warnings) { should be_empty }
-    its(:errors) { should be_empty }
+    its(:problems) { should be_empty }
   end
 
   describe 'condensed resources with an unquoted title' do
@@ -124,15 +124,16 @@ describe PuppetLint::Plugins::CheckResources do
       }"
     }
 
-    its(:warnings) { should include "unquoted resource title on line 4" }
-    its(:errors) { should be_empty }
+    its(:problems) {
+      should have_problem :kind => :warning, :message => "unquoted resource title", :linenumber => 4
+      should_not have_problem :kind => :error
+    }
   end
 
   describe 'single line resource with an array of titles (all quoted)' do
     let(:code) { "file { ['foo', 'bar']: }" }
 
-    its(:warnings) { should be_empty }
-    its(:errors) { should be_empty }
+    its(:problems) { should be_empty }
   end
 
   describe 'resource inside a case statement' do
@@ -146,8 +147,7 @@ describe PuppetLint::Plugins::CheckResources do
       }"
     }
 
-    its(:warnings) { should be_empty }
-    its(:errors) { should be_empty }
+    its(:problems) { should be_empty }
   end
 
   describe 'file resource creating a symlink with seperate target attr' do
@@ -158,8 +158,7 @@ describe PuppetLint::Plugins::CheckResources do
       }"
     }
 
-    its(:warnings) { should be_empty }
-    its(:errors) { should be_empty }
+    its(:problems) { should be_empty }
   end
 
   describe 'file resource creating a symlink with target specified in ensure' do
@@ -169,7 +168,9 @@ describe PuppetLint::Plugins::CheckResources do
       }"
     }
 
-    its(:warnings) { should include "symlink target specified in ensure attr on line 3" }
-    its(:errors) { should be_empty }
+    its(:problems) {
+      should have_problem :kind => :warning, :message => "symlink target specified in ensure attr", :linenumber => 3
+      should_not have_problem :kind => :error
+    }
   end
 end

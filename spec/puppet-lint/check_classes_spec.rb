@@ -10,22 +10,22 @@ describe PuppetLint::Plugins::CheckClasses do
   describe 'chain 2 resources left to right' do
     let(:code) { "Class[foo] -> Class[bar]" }
 
-    its(:warnings) { should be_empty }
-    its(:errors) { should be_empty }
+    its(:problems) { should be_empty }
   end
 
   describe 'chain 2 resources right to left' do
     let(:code) { "Class[foo] <- Class[bar]" }
 
-    its(:warnings) { should include "right-to-left (<-) relationship on line 1" }
-    its(:errors) { should be_empty }
+    its(:problems) {
+      should have_problem :kind => :warning, :message => "right-to-left (<-) relationship", :linenumber => 1
+      should_not have_problem :kind => :error
+    }
   end
 
   describe 'class on its own' do
     let(:code) { "class foo { }" }
 
-    its(:warnings) { should be_empty }
-    its(:errors) { should be_empty }
+    its(:problems) { should be_empty }
   end
 
   describe 'class inside a class' do
@@ -36,8 +36,10 @@ describe PuppetLint::Plugins::CheckClasses do
       }"
     }
 
-    its(:warnings) { should include "class defined inside a class on line 3" }
-    its(:errors) { should be_empty }
+    its(:problems) {
+      should have_problem :kind => :warning, :message => "class defined inside a class", :linenumber => 3
+      should_not have_problem :kind => :error
+    }
   end
 
   describe 'define inside a class' do
@@ -48,50 +50,55 @@ describe PuppetLint::Plugins::CheckClasses do
       }"
     }
 
-    its(:warnings) { should include "define defined inside a class on line 3" }
-    its(:errors) { should be_empty }
+  its(:problems) {
+      should have_problem :kind => :warning, :message => "define defined inside a class", :linenumber => 3
+      should_not have_problem :kind => :error
+    }
   end
 
   describe 'class inheriting from its namespace' do
     let(:code) { "class foo::bar inherits foo { }" }
 
-    its(:warnings) { should be_empty }
-    its(:errors) { should be_empty }
+    its(:problems) { should be_empty }
   end
 
   describe 'class inheriting from another namespace' do
     let(:code) { "class foo::bar inherits baz { }" }
 
-    its(:warnings) { should include "class inherits across namespaces on line 1" }
-    its(:errors) { should be_empty }
+    its(:problems) {
+      should have_problem :kind => :warning, :message => "class inherits across namespaces", :linenumber => 1
+      should_not have_problem :kind => :error
+    }
   end
 
   describe 'class with attrs in order' do
     let(:code) { "class foo($bar, $baz='gronk') { }" }
 
-    its(:warnings) { should be_empty }
-    its(:errors) { should be_empty }
+    its(:problems) { should be_empty }
   end
 
   describe 'class with attrs out of order' do
     let(:code) { "class foo($bar='baz', $gronk) { }" }
 
-    its(:warnings) { should include "optional parameter listed before required parameter on line 1" }
-    its(:errors) { should be_empty }
+    its(:problems) {
+      should have_problem :kind => :warning, :message => "optional parameter listed before required parameter", :linenumber => 1
+      should_not have_problem :kind => :error
+    }
   end
 
   describe 'define with attrs in order' do
     let(:code) { "define foo($bar, $baz='gronk') { }" }
 
-    its(:warnings) { should be_empty }
-    its(:errors) { should be_empty }
+    its(:problems) { should be_empty }
   end
 
   describe 'define with attrs out of order' do
     let(:code) { "define foo($bar='baz', $gronk) { }" }
 
-    its(:warnings) { should include "optional parameter listed before required parameter on line 1" }
-    its(:errors) { should be_empty }
+    its(:problems) {
+      should have_problem :kind => :warning, :message => "optional parameter listed before required parameter", :linenumber => 1
+      should_not have_problem :kind => :error
+    }
   end
 
   describe 'class with no variables declared accessing top scope' do
@@ -101,8 +108,10 @@ describe PuppetLint::Plugins::CheckClasses do
       }"
     }
 
-    its(:warnings) { should include "top-scope variable being used without an explicit namespace on line 3" }
-    its(:errors) { should be_empty}
+    its(:problems) {
+      should have_problem :kind => :warning, :message => "top-scope variable being used without an explicit namespace", :linenumber => 3
+      should_not have_problem :kind => :error
+    }
   end
 
   describe 'class with no variables declared accessing top scope explicitly' do
@@ -112,8 +121,7 @@ describe PuppetLint::Plugins::CheckClasses do
       }"
     }
 
-    its(:warnings) { should be_empty }
-    its(:errors) { should be_empty }
+    its(:problems) { should be_empty }
   end
 
   describe 'class with variables declared accessing local scope' do
@@ -124,8 +132,7 @@ describe PuppetLint::Plugins::CheckClasses do
       }"
     }
 
-    its(:warnings) { should be_empty }
-    its(:errors) { should be_empty }
+    its(:problems) { should be_empty }
   end
 
   describe 'class with parameters accessing local scope' do
@@ -135,8 +142,7 @@ describe PuppetLint::Plugins::CheckClasses do
       }"
     }
 
-    its(:warnings) { should be_empty }
-    its(:errors) { should be_empty }
+    its(:problems) { should be_empty }
   end
 
   describe 'defined type with no variables declared accessing top scope' do
@@ -146,8 +152,10 @@ describe PuppetLint::Plugins::CheckClasses do
       }"
     }
 
-    its(:warnings) { should include "top-scope variable being used without an explicit namespace on line 3" }
-    its(:errors) { should be_empty }
+    its(:problems) {
+      should have_problem :kind => :warning, :message => "top-scope variable being used without an explicit namespace", :linenumber => 3
+      should_not have_problem :kind => :error
+    }
   end
 
   describe 'defined type with no variables declared accessing top scope explicitly' do
@@ -157,8 +165,7 @@ describe PuppetLint::Plugins::CheckClasses do
       }"
     }
 
-    its(:warnings) { should be_empty }
-    its(:errors) { should be_empty }
+    its(:problems) { should be_empty }
   end
 
   describe '$name should be auto defined' do
@@ -171,8 +178,7 @@ describe PuppetLint::Plugins::CheckClasses do
       }"
     }
 
-    its(:warnings) { should be_empty }
-    its(:errors) { should be_empty }
+    its(:problems) { should be_empty }
   end
 
   describe 'instantiating a parametised class inside a class' do
@@ -184,8 +190,7 @@ describe PuppetLint::Plugins::CheckClasses do
       }"
     }
 
-    its(:warnings) { should be_empty }
-    its(:errors) { should be_empty }
+    its(:problems) { should be_empty }
   end
 
   describe 'instantiating a parametised class inside a define' do
@@ -197,8 +202,7 @@ describe PuppetLint::Plugins::CheckClasses do
       }"
     }
 
-    its(:warnings) { should be_empty }
-    its(:errors) { should be_empty }
+    its(:problems) { should be_empty }
   end
 
   describe 'class/define parameter set to another variable' do
@@ -207,8 +211,7 @@ describe PuppetLint::Plugins::CheckClasses do
       }"
     }
 
-    its(:warnings) { should be_empty }
-    its(:errors) { should be_empty }
+    its(:problems) { should be_empty }
   end
 
   describe 'class/define parameter set to another variable with incorrect order' do
@@ -217,39 +220,39 @@ describe PuppetLint::Plugins::CheckClasses do
       }"
     }
 
-    its(:warnings) { should include "optional parameter listed before required parameter on line 2" }
-    its(:errors) { should be_empty }
+    its(:problems) {
+      should have_problem :kind => :warning, :message => "optional parameter listed before required parameter", :linenumber => 2
+      should_not have_problem :kind => :error
+    }
   end
 
   describe 'foo::bar in foo/manifests/bar.pp' do
     let(:code) { "class foo::bar { }" }
     let(:path) { '/etc/puppet/modules/foo/manifests/bar.pp' }
 
-    its(:warnings) { should be_empty }
-    its(:errors) { should be_empty }
+    its(:problems) { should be_empty }
   end
 
   describe 'foo::bar::baz in foo/manifests/bar/baz.pp' do
     let(:code) { 'define foo::bar::baz() { }' }
     let(:path) { '/etc/puppet/modules/foo/manifests/bar/baz.pp' }
 
-    its(:warnings) { should be_empty }
-    its(:errors) { should be_empty }
+    its(:problems) { should be_empty }
   end
 
   describe 'foo in foo/manifests/init.pp' do
     let(:code) { 'class foo { }' }
     let(:path) { '/etc/puppet/modules/foo/manifests/init.pp' }
 
-    its(:warnings) { should be_empty }
-    its(:errors) { should be_empty }
+    its(:problems) { should be_empty }
   end
 
   describe 'foo::bar in foo/manifests/init.pp' do
     let(:code) { 'class foo::bar { }' }
     let(:path) { '/etc/puppet/modules/foo/manifests/init.pp' }
 
-    its(:warnings) { should be_empty }
-    its(:errors) { should include "foo::bar not in autoload module layout on line 1" }
+    its(:problems) {
+      should only_have_problem :kind => :error, :message => "foo::bar not in autoload module layout", :linenumber => 1
+    }
   end
 end
