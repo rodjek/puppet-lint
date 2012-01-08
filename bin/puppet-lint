@@ -29,13 +29,16 @@ opts = OptionParser.new do |opts|
     PuppetLint.configuration.with_filename = true
   end
 
-  opts.on("--error-level LEVEL", [:all, :warning, :error], "The level of error to return (warning, error, all).") do |el|
+  opts.on("--error-level LEVEL", [:all, :warning, :error], "The level of error to return.", "(warning, error, all)") do |el|
     PuppetLint.configuration.error_level = el
   end
 
   opts.on("--fail-on-warnings", "Return a non-zero exit status for warnings.") do
     PuppetLint.configuration.fail_on_warnings = true
   end
+
+  opts.separator ""
+  opts.separator "    Disable checks:"
 
   PuppetLint.configuration.checks.each do |check|
     opts.on("--no-#{check}-check", "Skip the #{check} check") do
