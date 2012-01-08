@@ -1,7 +1,7 @@
 class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
   check 'right_to_left_relationship' do
     tokens.select { |r| r.first == :OUT_EDGE }.each do |token|
-      warn "right-to-left (<-) relationship on line #{token.last[:line]}"
+      notify :warning, :message =>  "right-to-left (<-) relationship", :linenumber => token.last[:line]
     end
   end
 
@@ -17,7 +17,7 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
         end
 
         unless path.end_with? expected_path
-          error "#{title_token.last[:value]} not in autoload module layout on line #{title_token.last[:line]}"
+          notify :error, :message =>  "#{title_token.last[:value]} not in autoload module layout", :linenumber => title_token.last[:line]
         end
       end
     end
@@ -41,7 +41,7 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
               if next_token.first == :COMMA or next_token.first == :RPAREN
                 unless param_tokens[0..param_tokens_idx].rindex { |r| r.first == :EQUALS }.nil?
                   unless prev_token.nil? or prev_token.first == :EQUALS
-                    warn "optional parameter listed before required parameter on line #{this_token.last[:line]}"
+                    notify :warning, :message =>  "optional parameter listed before required parameter", :linenumber => this_token.last[:line]
                   end
                 end
               end
@@ -60,7 +60,7 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
         inherited_class = tokens[token_idx+3].last[:value]
 
         unless class_name =~ /^#{inherited_class}::/
-          warn "class inherits across namespaces on line #{tokens[token_idx].last[:line]}"
+          notify :warning, :message =>  "class inherits across namespaces", :linenumber => tokens[token_idx].last[:line]
         end
       end
     end
@@ -75,12 +75,12 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
 
         if token.first == :CLASS
           if next_token.first != :LBRACE
-            warn "class defined inside a class on line #{token.last[:line]}"
+            notify :warning, :message =>  "class defined inside a class", :linenumber => token.last[:line]
           end
         end
 
         if token.first == :DEFINE
-          warn "define defined inside a class on line #{token.last[:line]}"
+          notify :warning, :message =>  "define defined inside a class", :linenumber => token.last[:line]
         end
       end
     end
@@ -125,7 +125,7 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
         unless token.last[:value].include? '::'
           unless variables_in_scope.include? token.last[:value]
             unless token.last[:value] =~ /\d+/
-              warn "top-scope variable being used without an explicit namespace on line #{token.last[:line]}"
+              notify :warning, :message =>  "top-scope variable being used without an explicit namespace", :linenumber => token.last[:line]
             end
           end
         end
