@@ -18,24 +18,21 @@ end
 
 class PuppetLint::CheckPlugin
   include PuppetLint::Plugin
-  attr_reader :warnings, :errors, :checks
+  attr_reader :problems, :checks
 
   def initialize
-    @warnings = []
-    @errors = []
+    @problems = []
     @checks = []
+    @default_info = {:check => '', :linenumber => 0}
   end
 
   def register_check(check)
     @checks << check
   end
 
-  def warn(message)
-    @warnings << message
-  end
-
-  def error(message)
-    @errors << message
+  def notify(kind, message)
+    message[:kind] = kind
+    @problems << message.merge!(@default_info) {|key, v1, v2| v1 }
   end
 
   def run(path, data)
@@ -50,10 +47,11 @@ class PuppetLint::CheckPlugin
       method.start_with? 'lint_check_'
     }.each { |method|
       name = method[11..-1]
+      @default_info[:check] = name
       self.send(method) if PuppetLint.configuration.send("#{name}_enabled?")
     }
 
-    {:warnings => @warnings, :errors => @errors}
+    @problems
   end
 
   def filter_tokens
