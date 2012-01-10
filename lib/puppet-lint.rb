@@ -25,7 +25,7 @@ class PuppetLint
 
   attr_reader :code, :file
 
-  def initialize(options)
+  def initialize(options = {})
     @data = nil
     @errors = 0
     @warnings = 0
@@ -46,7 +46,6 @@ class PuppetLint
   end
 
   def report(kind, message)
-    #msg = message
     if kind == :warnings
       @warnings += 1
       message.prepend('WARNING: ')
