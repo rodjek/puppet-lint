@@ -8,7 +8,7 @@ class PuppetLint::Plugins::CheckConditionals < PuppetLint::CheckPlugin
           if resource_tokens[resource_token_idx + 1].first == :VARIABLE
             unless resource_tokens[resource_token_idx + 2].nil?
               if resource_tokens[resource_token_idx + 2].first == :QMARK
-                warn "selector inside resource block on line #{resource_tokens[resource_token_idx].last[:line]}"
+                notify :warning, :message =>  "selector inside resource block", :linenumber => resource_tokens[resource_token_idx].last[:line]
               end
             end
           end
@@ -49,7 +49,7 @@ class PuppetLint::Plugins::CheckConditionals < PuppetLint::CheckPlugin
       case_tokens = tokens[kase[:start]..kase[:end]]
 
       unless case_tokens.index { |r| r.first == :DEFAULT }
-        warn "case statement without a default case on line #{case_tokens.first.last[:line]}"
+        notify :warning, :message =>  "case statement without a default case", :linenumber => case_tokens.first.last[:line]
       end
     end
   end

@@ -5,7 +5,7 @@ class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
   check 'unquoted_resource_title' do
     title_tokens.each do |token|
       if token.first == :NAME
-        warn "unquoted resource title on line #{token.last[:line]}"
+        notify :warning, :message =>  "unquoted resource title", :linenumber => token.last[:line]
       end
     end
   end
@@ -17,7 +17,7 @@ class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
       unless ensure_attr_index.nil?
         if ensure_attr_index > 1
           ensure_attr_line_no = resource_tokens[ensure_attr_index].last[:line]
-          warn "ensure found on line #{ensure_attr_line_no} but it's not the first attribute"
+          notify :warning, :message =>  "ensure found on line but it's not the first attribute", :linenumber => ensure_attr_line_no
         end
       end
     end
@@ -33,7 +33,7 @@ class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
           if attr_token.first == :NAME and attr_token.last[:value] == 'mode'
             value_token = resource_tokens[resource_token_idx + 2]
             if value_token.first == :NAME
-              warn "unquoted file mode on line #{value_token.last[:line]}"
+              notify :warning, :message =>  "unquoted file mode", :linenumber => value_token.last[:line]
             end
           end
         end
@@ -51,7 +51,7 @@ class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
           if attr_token.first == :NAME and attr_token.last[:value] == 'mode'
             value_token = resource_tokens[resource_token_idx + 2]
             if value_token.last[:value] !~ /\d{4}/ and value_token.first != :VARIABLE
-              warn "mode should be represented as a 4 digit octal value on line #{value_token.last[:line]}"
+              notify :warning, :message =>  "mode should be represented as a 4 digit octal value", :linenumber => value_token.last[:line]
             end
           end
         end
@@ -69,7 +69,7 @@ class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
           if attr_token.first == :NAME and attr_token.last[:value] == 'ensure'
             value_token = resource_tokens[resource_token_idx + 2]
             if value_token.last[:value].start_with? '/'
-              warn "symlink target specified in ensure attr on line #{value_token.last[:line]}"
+              notify :warning, :message =>  "symlink target specified in ensure attr", :linenumber => value_token.last[:line]
             end
           end
         end

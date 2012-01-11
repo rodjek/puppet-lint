@@ -29,13 +29,32 @@ opts = OptionParser.new do |opts|
     PuppetLint.configuration.with_filename = true
   end
 
-  opts.on("--error-level LEVEL", [:all, :warning, :error], "The level of error to return (warning, error, all).") do |el|
+  opts.on("--error-level LEVEL", [:all, :warning, :error], "The level of error to return.", "(warning, error, all)") do |el|
     PuppetLint.configuration.error_level = el
   end
 
   opts.on("--fail-on-warnings", "Return a non-zero exit status for warnings.") do
     PuppetLint.configuration.fail_on_warnings = true
   end
+
+  opts.on("--log-format FORMAT",
+    "Change the log format.", "Overrides --with-filename.",
+    "The following placeholders can be used:",
+    "%{filename}   - Filename without path.",
+    "%{path}       - Path as provided.",
+    "%{fullpath}   - Full path.",
+    "%{linenumber} - Line number.",
+    "%{kind}       - The kind of message.",
+    "              - (warning, error)",
+    "%{KIND}       - Uppercase version of %{kind}",
+    "%{check}      - Name of the check.",
+    "%{message}    - The message."
+  ) do |format|
+    PuppetLint.configuration.log_format = format
+  end
+
+  opts.separator ""
+  opts.separator "    Disable checks:"
 
   PuppetLint.configuration.checks.each do |check|
     opts.on("--no-#{check}-check", "Skip the #{check} check") do

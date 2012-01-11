@@ -1,4 +1,5 @@
 class PuppetLint
+
   module Plugin
     module ClassMethods
       def repository
@@ -18,24 +19,38 @@ end
 
 class PuppetLint::CheckPlugin
   include PuppetLint::Plugin
-  attr_reader :warnings, :errors, :checks
+  attr_reader :problems, :checks
 
   def initialize
-    @warnings = []
-    @errors = []
+    @problems = []
     @checks = []
+    @default_info = {:check => 'unknown', :linenumber => 0}
   end
 
   def register_check(check)
     @checks << check
   end
 
-  def warn(message)
-    @warnings << message
-  end
-
-  def error(message)
-    @errors << message
+  #     notify(kind, message_hash)    #=> nil
+  #
+  # Adds the message to the problems array.
+  # The _kind_ gets added to the _message_hash_ by setting the key :_kind_.
+  # Typically, the _message_hash_ should contain following keys:
+  # <i>message</i>::     which contains a string value describing the problem
+  # <i>linenumber</i>::  which contains the line number on which the problem occurs.
+  # Besides the :_kind_ value that is being set, some other key/values are also
+  # added. Typically, this is
+  # <i>check</i>::      which contains the name of the check that is being executed.
+  # <i>linenumber</i>:: which defaults to 0 if the message does not already contain one.
+  #
+  #     notify :warning, :message => "Something happened", :linenumber => 4
+  #     => {:kind=>:warning, :message=>"Something happened", :linenumber=>4, :check=>'unknown'}
+  #
+  def notify(kind, message_hash)
+    message_hash[:kind] = kind
+    message_hash.merge!(@default_info) {|key, v1, v2| v1 }
+    @problems << message_hash
+    message_hash
   end
 
   def run(path, data)
@@ -50,10 +65,11 @@ class PuppetLint::CheckPlugin
       method.start_with? 'lint_check_'
     }.each { |method|
       name = method[11..-1]
+      @default_info[:check] = name
       self.send(method) if PuppetLint.configuration.send("#{name}_enabled?")
     }
 
-    {:warnings => @warnings, :errors => @errors}
+    @problems
   end
 
   def filter_tokens

@@ -8,7 +8,7 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
       line_no += 1
 
       # MUST NOT use literal tab characters
-      error "tab character found on line #{line_no}" if line.include? "\t"
+      notify :error, :message =>  "tab character found", :linenumber => line_no if line.include? "\t"
     end
   end
 
@@ -18,7 +18,7 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
       line_no += 1
 
       # MUST NOT contain trailing white space
-      error "trailing whitespace found on line #{line_no}" if line.end_with? " "
+      notify :error, :message =>  "trailing whitespace found", :linenumber => line_no if line.end_with? " "
     end
   end
 
@@ -29,7 +29,7 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
 
       # SHOULD NOT exceed an 80 character line width
       unless line =~ /puppet:\/\//
-        warn "line #{line_no} has more than 80 characters" if line.length > 80
+        notify :warning, :message =>  "line has more than 80 characters", :linenumber => line_no if line.length > 80
       end
     end
   end
@@ -42,7 +42,7 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
       # MUST use two-space soft tabs
       line.scan(/^ +/) do |prefix|
         unless prefix.length % 2 == 0
-          error "two-space soft tabs not used on line #{line_no}"
+          notify :error, :message =>  "two-space soft tabs not used", :linenumber => line_no
         end
       end
     end
@@ -67,7 +67,7 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
 
             # check for length first
             unless line_indent.length == selectors.last
-              warn "=> on line #{line_no} isn't properly aligned for selector"
+              notify :warning, :message =>  "=> on line isn't properly aligned for selector", :linenumber => line_no
             end
 
             # then for a new selector or selector finish
@@ -78,7 +78,7 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
             end
           else
             unless line_indent.length == resource_indent_length
-              warn "=> on line #{line_no} isn't properly aligned for resource"
+              notify :warning, :message =>  "=> on line isn't properly aligned for resource", :linenumber => line_no
             end
 
             if line.strip.end_with? "{"

@@ -20,7 +20,7 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
 
       if token.first == :STRING
         unless token.last[:value].include? "\t" or token.last[:value].include? "\n"
-          warn "double quoted string containing no variables on line #{token.last[:line]}"
+          notify :warning, :message =>  "double quoted string containing no variables", :linenumber => token.last[:line]
         end
       end
     end
@@ -33,7 +33,7 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
       if token.first == :DQPRE and token.last[:value] == ""
         if tokens[token_idx + 1].first == :VARIABLE
           if tokens[token_idx + 2].first == :DQPOST and tokens[token_idx + 2].last[:value] == ""
-            warn "string containing only a variable on line #{tokens[token_idx + 1].last[:line]}"
+            notify :warning, :message =>  "string containing only a variable", :linenumber => tokens[token_idx + 1].last[:line]
           end
         end
       end
@@ -50,7 +50,7 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
           if t.first == :VARIABLE
             line = data.split("\n")[t.last[:line] - 1]
             if line.is_a? String and line.include? "$#{t.last[:value]}"
-              warn "variable not enclosed in {} on line #{t.last[:line]}"
+              notify :warning, :message =>  "variable not enclosed in {}", :linenumber => t.last[:line]
             end
           end
         end
@@ -67,7 +67,7 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
         line_no = token.last[:line]
 
         if contents.include? '${'
-          error "single quoted string containing a variable found on line #{token.last[:line]}"
+          notify :error, :message =>  "single quoted string containing a variable found", :linenumber => token.last[:line]
         end
       end
     end
@@ -82,7 +82,7 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
         line_no = token.last[:line]
 
         if ['true', 'false'].include? contents
-          warn "quoted boolean value found on line #{token.last[:line]}"
+          notify :warning, :message =>  "quoted boolean value found", :linenumber => token.last[:line]
         end
       end
     end
