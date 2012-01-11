@@ -74,7 +74,7 @@ end
 class PuppetLint::NoCodeError < StandardError; end
 
 class PuppetLint
-  VERSION = '0.1.9'
+  VERSION = '0.1.10'
 
   attr_reader :code, :file
 
