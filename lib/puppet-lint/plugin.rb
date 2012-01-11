@@ -62,9 +62,9 @@ class PuppetLint::CheckPlugin
 
     test(path, data) if self.respond_to? :test
     self.public_methods.select { |method|
-      method.start_with? 'lint_check_'
+      method.to_s.start_with? 'lint_check_'
     }.each { |method|
-      name = method[11..-1]
+      name = method.to_s[11..-1]
       @default_info[:check] = name
       self.send(method) if PuppetLint.configuration.send("#{name}_enabled?")
     }
