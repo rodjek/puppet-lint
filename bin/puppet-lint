@@ -57,8 +57,15 @@ opts = OptionParser.new do |opts|
   opts.separator "    Disable checks:"
 
   PuppetLint.configuration.checks.each do |check|
-    opts.on("--no-#{check}-check", "Skip the #{check} check") do
-      PuppetLint.configuration.send("disable_#{check}")
+
+    if PuppetLint.configuration.send("#{check}_enabled?")
+      opts.on("--no-#{check}-check", "Skip the #{check} check") do
+        PuppetLint.configuration.send("disable_#{check}")
+      end
+    else
+      opts.on_tail("--yes-#{check}-check", "Do the #{check} check") do
+        PuppetLint.configuration.send("enable_#{check}")
+      end
     end
   end
 

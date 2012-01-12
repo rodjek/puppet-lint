@@ -151,8 +151,8 @@ class PuppetLint::CheckPlugin
     @manifest_lines ||= @data.split("\n")
   end
 
-  def self.check(name, &b)
-    PuppetLint.configuration.add_check name
+  def self.check(name, default_enabled = true, &b)
+    PuppetLint.configuration.add_check name, default_enabled
     define_method("lint_check_#{name}", b)
   end
 end
