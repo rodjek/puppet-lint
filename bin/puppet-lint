@@ -37,6 +37,10 @@ opts = OptionParser.new do |opts|
     PuppetLint.configuration.fail_on_warnings = true
   end
 
+  opts.on("--debug-checks", "List all checks and their status.") do
+    PuppetLint.configuration.list_checks = true
+  end
+
   opts.on("--log-format FORMAT",
     "Change the log format.", "Overrides --with-filename.",
     "The following placeholders can be used:",
@@ -74,6 +78,14 @@ end
 
 begin
   opts.parse!
+
+  if PuppetLint.configuration.list_checks
+      PuppetLint.configuration.checks.each do |check|
+      check_enabled = PuppetLint.configuration.send("#{check}_enabled?")
+      puts "puppet-lint: check[#{check}] => #{check_enabled}"
+    end
+  end
+
 rescue OptionParser::InvalidOption
   puts "puppet-lint: #{$!.message}"
   puts "puppet-lint: try 'puppet-lint --help' for more information"
