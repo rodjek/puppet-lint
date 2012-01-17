@@ -255,4 +255,18 @@ describe PuppetLint::Plugins::CheckClasses do
       should only_have_problem :kind => :error, :message => "foo::bar not in autoload module layout", :linenumber => 1
     }
   end
+
+  describe 'foo included in bar/manifests/init.pp' do
+    let(:code) { "
+      class bar {
+        class {'foo':
+          someparam => 'somevalue',
+        }
+      }
+      "
+    }
+    let(:path) { '/etc/puppet/modules/bar/manifests/init.pp' }
+    its(:problems) { should be_empty }
+
+  end
 end

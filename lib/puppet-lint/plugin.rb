@@ -103,8 +103,10 @@ class PuppetLint::CheckPlugin
           elsif @tokens[idx].first == :RBRACE
             lbrace_count -= 1
             if lbrace_count == 0
-              class_indexes << {:start => token_idx, :end => idx} if @tokens[token_idx].first == :CLASS
-              defined_type_indexes << {:start => token_idx, :end => idx} if @tokens[token_idx].first == :DEFINE
+              if @tokens[token_idx].first == :CLASS and @tokens[token_idx + 1].first != :LBRACE
+                @class_indexes << {:start => token_idx, :end => idx}
+              end
+              @defined_type_indexes << {:start => token_idx, :end => idx} if @tokens[token_idx].first == :DEFINE
               break
             end
           end
