@@ -6,7 +6,7 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
   end
 
   check 'autoloader_layout' do
-    unless path == ""
+    unless fullpath == ""
       (class_indexes + defined_type_indexes).each do |class_idx|
         title_token = tokens[class_idx[:start]+1]
         split_title = title_token.last[:value].split('::')
@@ -16,7 +16,7 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
           expected_path = "#{title_token.last[:value]}/manifests/init.pp"
         end
 
-        unless path.end_with? expected_path
+        unless fullpath.end_with? expected_path
           notify :error, :message =>  "#{title_token.last[:value]} not in autoload module layout", :linenumber => title_token.last[:line]
         end
       end
