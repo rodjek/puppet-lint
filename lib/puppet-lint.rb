@@ -155,7 +155,7 @@ class PuppetLint
     end
 
     PuppetLint::CheckPlugin.repository.each do |plugin|
-      report plugin.new.run(@fileinfo[:path], @data)
+      report plugin.new.run(@fileinfo, @data)
     end
   end
 end

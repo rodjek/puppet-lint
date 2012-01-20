@@ -3,7 +3,7 @@ require 'spec_helper'
 describe PuppetLint::Plugins::CheckClasses do
   subject do
     klass = described_class.new
-    klass.run(defined?(path).nil? ? '' : path, code)
+    klass.run(defined?(fullpath).nil? ? {:fullpath => ''} : {:fullpath => fullpath}, code)
     klass
   end
 
@@ -228,28 +228,28 @@ describe PuppetLint::Plugins::CheckClasses do
 
   describe 'foo::bar in foo/manifests/bar.pp' do
     let(:code) { "class foo::bar { }" }
-    let(:path) { '/etc/puppet/modules/foo/manifests/bar.pp' }
+    let(:fullpath) { '/etc/puppet/modules/foo/manifests/bar.pp' }
 
     its(:problems) { should be_empty }
   end
 
   describe 'foo::bar::baz in foo/manifests/bar/baz.pp' do
     let(:code) { 'define foo::bar::baz() { }' }
-    let(:path) { '/etc/puppet/modules/foo/manifests/bar/baz.pp' }
+    let(:fullpath) { '/etc/puppet/modules/foo/manifests/bar/baz.pp' }
 
     its(:problems) { should be_empty }
   end
 
   describe 'foo in foo/manifests/init.pp' do
     let(:code) { 'class foo { }' }
-    let(:path) { '/etc/puppet/modules/foo/manifests/init.pp' }
+    let(:fullpath) { '/etc/puppet/modules/foo/manifests/init.pp' }
 
     its(:problems) { should be_empty }
   end
 
   describe 'foo::bar in foo/manifests/init.pp' do
     let(:code) { 'class foo::bar { }' }
-    let(:path) { '/etc/puppet/modules/foo/manifests/init.pp' }
+    let(:fullpath) { '/etc/puppet/modules/foo/manifests/init.pp' }
 
     its(:problems) {
       should only_have_problem :kind => :error, :message => "foo::bar not in autoload module layout", :linenumber => 1
@@ -265,7 +265,7 @@ describe PuppetLint::Plugins::CheckClasses do
       }
       "
     }
-    let(:path) { '/etc/puppet/modules/bar/manifests/init.pp' }
+    let(:fullpath) { '/etc/puppet/modules/bar/manifests/init.pp' }
     its(:problems) { should be_empty }
 
   end
