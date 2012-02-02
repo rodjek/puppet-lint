@@ -11,7 +11,7 @@ describe PuppetLint::Plugins::CheckResources do
     let(:code) { "file { 'foo': mode => 777 }" }
 
     its(:problems) {
-      should have_problem :kind => :warning, :message => "mode should be represented as a 4 digit octal value", :linenumber => 1
+      should have_problem :kind => :warning, :message => "mode should be represented as a 4 digit octal value or symbolic file mode", :linenumber => 1
       should_not have_problem :kind => :error
     }
   end
@@ -22,8 +22,23 @@ describe PuppetLint::Plugins::CheckResources do
     its(:problems) { should be_empty }
   end
 
+  describe '4 digit unquoted file mode' do
+    let(:code) { "file { 'foo': mode => 0777 }" }
+
+    its(:problems) {
+      should have_problem :kind => :warning, :message => "unquoted file mode"
+      should_not have_problem :kind => :error
+    }
+  end
+
   describe 'file mode as a variable' do
     let(:code) { "file { 'foo': mode => $file_mode }" }
+
+    its(:problems) { should be_empty }
+  end
+
+  describe 'symbolic file mode' do
+    let(:code) { "file { 'foo': mode => 'u=rw,og=r' }" }
 
     its(:problems) { should be_empty }
   end
