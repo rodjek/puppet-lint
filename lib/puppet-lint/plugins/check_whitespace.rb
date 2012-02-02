@@ -28,7 +28,7 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
       line_no += 1
 
       # SHOULD NOT exceed an 80 character line width
-      unless line =~ /(puppet):\/\// or line.length <= 80
+      unless line =~ /(puppet):\/\// or line =~ /template\(.*\)/  or line.length <= 80
         if line =~ /^ +#/
           notify :error, :message =>  "commented line has more than 80 characters", :linenumber => line_no
         else
