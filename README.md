@@ -51,7 +51,7 @@ At the moment, the following tests have been implemented:
  * Symbolic links should be declared by using an ensure value of `link` and
    explicitly specifying a value for the `target` attribute.
  * File modes should be represented as a 4 digit string enclosed in single
-   quotes.
+   quotes or use symbolic file modes.
 
 ### Conditionals
 
