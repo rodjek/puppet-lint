@@ -77,7 +77,7 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
     tokens.each_index do |token_idx|
       token = tokens[token_idx]
 
-      if token.first == :SSTRING
+      if [:STRING, :SSTRING].include? token.first
         contents = token.last[:value]
         line_no = token.last[:line]
 

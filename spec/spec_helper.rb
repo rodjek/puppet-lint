@@ -82,19 +82,23 @@ RSpec::Matchers.define :only_have_problem do |filter|
 
   match do |actual|
     res = filter_array_of_hashes(actual, filter)
-    res.length == actual.length
+    actual.length > 0 && res.length == actual.length
   end
 
   failure_message_for_should do |problems|
-    left = problems - filter_problems(actual, filter)
-    message = "There were problems not matching filter."
-    message << "
+    if problems.length == 0
+      message = "There were no problems, expecting one to match the filter."
+    else
+      left = problems - filter_array_of_hashes(actual, filter)
+      message = "There were problems not matching filter."
+      message << "
     * filter = #{filter.inspect}
     * unmatched = [
     "
-    left.each { |prob| message << "    #{prob.inspect}," }
-    message << "
+      left.each { |prob| message << "    #{prob.inspect}," }
+      message << "
       ]"
+    end
     message
   end
 
