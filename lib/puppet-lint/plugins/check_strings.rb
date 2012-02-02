@@ -45,7 +45,8 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
       token = tokens[token_idx]
 
       if token.first == :DQPRE
-        end_of_string_idx = tokens[token_idx..-1].index { |r| r.first == :DQPOST }
+        end_of_string_offset = tokens[token_idx..-1].index { |r| r.first == :DQPOST }
+        end_of_string_idx = token_idx + end_of_string_offset
         tokens[token_idx..end_of_string_idx].each do |t|
           if t.first == :VARIABLE
             line = data.split("\n")[t.last[:line] - 1]
