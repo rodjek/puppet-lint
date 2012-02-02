@@ -45,6 +45,38 @@ describe PuppetLint::Plugins::CheckWhitespace do
     its(:problems) { should be_empty }
   end
 
+  describe 'templates with a path > 80c' do
+    let(:code) { "
+      file {
+        source  => template('module_name/deep/deeper/deepest/way_too_long/path/to/mytemplate.erb'),
+      }"
+    }
+
+    its(:problems) { should be_empty }
+  end
+
+  describe 'commented line > 80c' do
+    let(:code) { "
+      # for commented lines there is NO excuse what so over to go over the 80 char limit, unless its an example"
+    }
+
+    its(:problems) {
+      should_not have_problem :kind => :warning
+      should have_problem :kind => :error, :message => "commented line has more than 80 characters"
+    }
+  end
+
+  describe 'commented line > 80c with example' do
+    let(:code) { "
+      # file {
+      #   source  => 'puppet:///modules/certificates/etc/ssl/private/wildcard.example.com.crt',
+      # }"
+    }
+    its(:problems) {
+      should be_empty
+    }
+  end
+
   describe 'selector inside a resource' do
     let(:code) { "
     ensure => $ensure ? {
