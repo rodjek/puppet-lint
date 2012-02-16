@@ -80,13 +80,21 @@ if ARGV[0].nil?
 end
 
 begin
-  l = PuppetLint.new
-  l.file = ARGV[0]
-  l.run
-
-  if l.errors? or (l.warnings? and PuppetLint.configuration.fail_on_warnings)
-    exit 1
+  path = ARGV[0]
+  if File.directory?(path)
+    Dir.chdir(path)
+    path = Dir.glob('**/*.pp')
   end
+
+  path.each do |f|
+    l = PuppetLint.new
+    l.file = f
+    l.run
+    if l.errors? or (l.warnings? and PuppetLint.configuration.fail_on_warnings)
+      exit 1
+    end
+  end
+
 rescue PuppetLint::NoCodeError
   puts "puppet-lint: no file specified or specified file does not exist"
   puts "puppet-lint: try 'puppet-lint --help' for more information"
