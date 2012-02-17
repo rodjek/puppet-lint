@@ -230,11 +230,11 @@ Placeholder
 ### puppet-lint
 
 You can disable any of the checks when running the `puppet-lint` command by
-adding a `--disable-<check name>` flag to the command.  For example, if you
+adding a `--no-<check name>` flag to the command.  For example, if you
 wanted to skip the 80 character check, you would run
 
 ```
-puppet-lint --disable-80chars /path/to/my/manifest.pp
+puppet-lint --no-80chars-check /path/to/my/manifest.pp
 ```
 
 puppet-lint will also check for a `.puppet-lintrc` file in the current
@@ -243,7 +243,7 @@ wanted to always skip the hard tab character check, you could create
 `~./puppet-lintrc` containing
 
 ```
---disable-hard_tabs
+--no-hard_tabs-check
 ```
 
 ### Rake task
@@ -253,13 +253,13 @@ task.  Simply add the following line after the `require` statement in your
 `Rakefile`.
 
 ``` ruby
-PuppetLint.configuration.send("disable_<check name")
+PuppetLint.configuration.send("disable_<check_name>")
 ```
 
 So, to disable the 80 character check, you would add:
 
 ``` ruby
-PuppetLint.configuration.send("disable_80chars")
+PuppetLint.configuration.send("disable_80chars_check")
 ```
 
 ## Reporting bugs or incorrect results
