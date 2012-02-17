@@ -253,13 +253,13 @@ task.  Simply add the following line after the `require` statement in your
 `Rakefile`.
 
 ``` ruby
-PuppetLint.configuration.send("no_<check_name>")
+PuppetLint.configuration.send("disable_<check_name>")
 ```
 
 So, to disable the 80 character check, you would add:
 
 ``` ruby
-PuppetLint.configuration.send("no_80chars_check")
+PuppetLint.configuration.send("disable_80chars_check")
 ```
 
 ## Reporting bugs or incorrect results
