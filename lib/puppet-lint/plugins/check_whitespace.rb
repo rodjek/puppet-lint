@@ -35,14 +35,15 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
   end
 
   check '2sp_soft_tabs' do
+    tab_width = PuppetLint.configuration.soft_tab_width ? PuppetLint.configuration.soft_tab_width : 2 
     line_no = 0
     manifest_lines.each do |line|
       line_no += 1
 
-      # MUST use two-space soft tabs
+      # SHOULD use two-space soft tabs. Use --soft-tab-width to change
       line.scan(/^ +/) do |prefix|
-        unless prefix.length % 2 == 0
-          notify :error, :message =>  "two-space soft tabs not used", :linenumber => line_no
+        unless prefix.length % tab_width == 0
+          notify :error, :message =>  "#{tab_width}-space soft tabs not used", :linenumber => line_no
         end
       end
     end
