@@ -9,8 +9,15 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
     TOKENS.add_tokens("<single quotes string>" => :SSTRING)
     TOKENS.del_token(:SQUOTE)
 
-    TOKENS.add_token :SQUOTE, "'" do |lexer, value|
-      [TOKENS[:SSTRING], lexer.slurpstring(value,["'"],:ignore_invalid_escapes).first ]
+    if Puppet::PUPPETVERSION =~ /^0\.2/
+      TOKENS.add_token :SQUOTE, "'" do |lexer, value|
+        value = lexer.slurpstring(value)
+        [TOKENS[:SSTRING], value]
+      end
+    else
+      TOKENS.add_token :SQUOTE, "'" do |lexer, value|
+        [ TOKENS[:SSTRING], lexer.slurpstring(value,["'"],:ignore_invalid_escapes).first ]
+      end
     end
   end
 
