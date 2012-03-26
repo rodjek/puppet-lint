@@ -68,4 +68,24 @@ describe PuppetLint::Plugins::CheckStrings do
 
     its(:problems) { should only_have_problem :kind => :warning, :message => "quoted boolean value found", :linenumber => 1 }
   end
+
+  describe 'double quoted true' do
+    let(:code) { "class { 'foo': boolFlag => \"true\" }" }
+
+    its(:problems) {
+      should have_problem :kind => :warning, :message => "quoted boolean value found", :linenumber => 1
+
+      should have_problem :kind => :warning, :message => 'double quoted string containing no variables', :linenumber => '1'
+    }
+  end
+
+  describe 'double quoted false' do
+    let(:code) { "class { 'foo': boolFlag => \"false\" }" }
+
+    its(:problems) {
+      should have_problem :kind => :warning, :message => "quoted boolean value found", :linenumber => 1
+
+      should have_problem :kind => :warning, :message => 'double quoted string containing no variables', :linenumber => '1'
+    }
+  end
 end
