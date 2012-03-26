@@ -29,6 +29,10 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
         unless token.last[:value].include? "\t" or token.last[:value].include? "\n"
           notify :warning, :message =>  "double quoted string containing no variables", :linenumber => token.last[:line]
         end
+      elsif token.first == :DQTEXT
+        unless token.last[:value].include? "\\t" or token.last[:value].include? "\\n" or token.last[:value] =~ /[^\\]?\$\{?/
+          notify :warning, :message =>  "double quoted string containing no variables", :linenumber => token.last[:line]
+        end
       end
     end
   end
@@ -43,6 +47,9 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
             notify :warning, :message =>  "string containing only a variable", :linenumber => tokens[token_idx + 1].last[:line]
           end
         end
+      end
+      if token.first == :DQTEXT and token.last[:value] =~ /\A\$\{.+\}\Z/
+        notify :warning, :message =>  "string containing only a variable", :linenumber => token.last[:line]
       end
     end
   end
@@ -61,6 +68,8 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
             end
           end
         end
+      elsif token.first == :DQTEXT and token.last[:value] =~ /\$\w+/
+        notify :warning, :message =>  "variable not enclosed in {}", :linenumber => token.last[:line]
       end
     end
   end

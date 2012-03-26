@@ -86,7 +86,7 @@ RSpec::Matchers.define :only_have_problem do |filter|
   end
 
   failure_message_for_should do |problems|
-    left = problems - filter_problems(actual, filter)
+    left = problems - filter_array_of_hashes(actual, filter)
     message = "There were problems not matching filter."
     message << "
     * filter = #{filter.inspect}

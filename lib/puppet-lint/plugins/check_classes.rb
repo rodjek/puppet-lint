@@ -1,7 +1,9 @@
 class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
-  check 'right_to_left_relationship' do
-    tokens.select { |r| r.first == :OUT_EDGE }.each do |token|
-      notify :warning, :message =>  "right-to-left (<-) relationship", :linenumber => token.last[:line]
+  if Puppet::PUPPETVERSION !~ /^0\.2/
+    check 'right_to_left_relationship' do
+      tokens.select { |r| r.first == :OUT_EDGE }.each do |token|
+        notify :warning, :message =>  "right-to-left (<-) relationship", :linenumber => token.last[:line]
+      end
     end
   end
 
