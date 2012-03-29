@@ -1,0 +1,162 @@
+<!doctype html>
+<!-- The Time Machine GitHub pages theme was designed and developed by Jon Rohan, on Feb 7, 2012. -->
+<!-- Follow him for fun. http://twitter.com/jonrohan. Tail his code on http://github.com/jonrohan -->
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <link rel="stylesheet" href="stylesheets/stylesheet.css" media="screen"/>
+  <link rel="stylesheet" href="stylesheets/pygment_trac.css"/>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script type="text/javascript" src="javascripts/script.js"></script>
+
+  <title>Puppet-lint</title>
+  <meta name="description" content="Check that your Puppet manifest conform to the style guide">
+
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+</head>
+
+<body>
+
+  <div class="wrapper">
+    <header>
+      <h1 class="title">Puppet-lint</h1>
+    </header>
+    <div id="container">
+      <p class="tagline">Check that your Puppet manifest conform to the style guide</p>
+      <div id="main" role="main">
+        <div class="download-bar">
+        <div class="inner">
+          <a href="https://github.com/rodjek/puppet-lint/tarball/master" class="download-button tar"><span>Download</span></a>
+          <a href="https://github.com/rodjek/puppet-lint/zipball/master" class="download-button zip"><span>Download</span></a>
+          <a href="https://github.com/rodjek/puppet-lint" class="code">fork Puppet-lint on GitHub</a>
+        </div>
+        <span class="blc"></span><span class="trc"></span>
+        </div>
+        <article class="markdown-body">
+          <h2>Usage</h2>
+
+<pre><code>$ gem install puppet-lint
+$ puppet-lint path/to/your/manifest.pp
+</code></pre>
+
+<h2>Things it tests</h2>
+
+<h3>Spacing, Indentation &amp; Whitespace</h3>
+
+<ul>
+<li>Must use two-space soft tabs.</li>
+<li>Must not use literal tab characters.</li>
+<li>Must not contain trailing white space.</li>
+<li>Should not exceed an 80 character line width
+
+<ul>
+<li>An exception has been made for <code>source =&gt; 'puppet://...'</code> lines as
+splitting these over multiple lines decreases the readability of the
+manifests.</li>
+</ul>
+</li>
+<li>Should align arrows (<code>=&gt;</code>) within blocks of attributes.</li>
+</ul><h3>Quoting</h3>
+
+<ul>
+<li>All strings that do not contain variables should be enclosed in single
+quotes.
+
+<ul>
+<li>An exception has been made for double quoted strings containing \n or \t.</li>
+</ul>
+</li>
+<li>All strings that contain variables must be enclosed in double quotes.</li>
+<li>All variables should be enclosed in braces when interpolated in a string.</li>
+<li>Variables standing by themselves should not be quoted.</li>
+</ul><h3>Resources</h3>
+
+<ul>
+<li>All resource titles should be quoted.</li>
+<li>If a resource declaration includes an <code>ensure</code> attribute, it should be the
+first attribute specified.</li>
+<li>Symbolic links should be declared by using an ensure value of <code>link</code> and
+explicitly specifying a value for the <code>target</code> attribute.</li>
+<li>File modes should be represented as a 4 digit string enclosed in single
+quotes or use symbolic file modes.</li>
+</ul><h3>Conditionals</h3>
+
+<ul>
+<li>You should not intermingle conditionals inside resource declarations (i.e.
+selectors inside resources).</li>
+<li>Case statements should have a default case.</li>
+</ul><h3>Classes</h3>
+
+<ul>
+<li>Relationship declarations with the chaining syntax should only be used in
+the 'left to right' direction.</li>
+<li>Classes should not be defined inside a class.</li>
+<li>Defines should not be defined inside a class.</li>
+<li>Classes should not inherit between namespaces.</li>
+<li>Required parameters in class &amp; defined type definitions should be listed
+before optional parameters.</li>
+<li>When using top-scope variables, including facts, Puppet modules should
+explicitly specify the empty namespace.</li>
+</ul><h2>Reporting bugs or incorrect results</h2>
+
+<p>If you find a bug in puppet-lint or its results, please create an issue in the
+<a href="https://github.com/rodjek/puppet-lint/issues/">repo issues tracker</a>.  Bonus
+points will be awarded if you also include a patch that fixes the issue.</p>
+
+<h2>Thank You</h2>
+
+<p>Many thanks to the following people for contributing to puppet-lint</p>
+
+<ul>
+<li>James Turnbull (<a href="/jamtur01" class="user-mention">@jamtur01</a>)</li>
+<li>Jan Vansteenkiste (<a href="/vStone" class="user-mention">@vStone</a>)</li>
+<li>Julian Simpson (<a href="/simpsonjulian" class="user-mention">@simpsonjulian</a>)</li>
+<li>S. Zachariah Sprackett (<a href="/zsprackett" class="user-mention">@zsprackett</a>)</li>
+</ul><p>As well as the many people who have reported the issues they've had!</p>
+
+<h2>License</h2>
+
+<p>Copyright (c) 2011 Tim Sharpe</p>
+
+<p>Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:</p>
+
+<p>The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.</p>
+
+<p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+        </article>
+      </div>
+    </div>
+    <footer>
+      <div class="owner">
+      <p><a href="https://github.com/rodjek" class="avatar"><img src="https://secure.gravatar.com/avatar/920e60e81da4fb61eaeb95fa9d7c3b70?s=30&amp;d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-140.png" width="48" height="48"/></a> <a href="https://github.com/rodjek">rodjek</a> maintains <a href="https://github.com/rodjek/puppet-lint">Puppet-lint</a></p>
+      </div>
+      <div class="creds">
+        <small>This page generated using <a href="https://pages.github.com/">GitHub Pages</a><br/>theme by <a href="http://twitter.com/jonrohan/">Jon Rohan</a></small>
+      </div>
+    </footer>
+  </div>
+  <div class="current-section">
+    <a href="#top">Scroll to top</a>
+    <a href="https://github.com/rodjek/puppet-lint/tarball/master" class="tar">tar</a><a href="https://github.com/rodjek/puppet-lint/zipball/master" class="zip">zip</a><a href="" class="code">source code</a>
+    <p class="name"></p>
+  </div>
+
+  
+</body>
+</html>
