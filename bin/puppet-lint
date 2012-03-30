@@ -37,6 +37,10 @@ opts = OptionParser.new do |opts|
     PuppetLint.configuration.fail_on_warnings = true
   end
 
+  opts.on("--neverfail", "Don't fail, even for errors.") do
+    PuppetLint.configuration.neverfail = true
+  end
+
   opts.on("--log-format FORMAT",
     "Change the log format.", "Overrides --with-filename.",
     "The following placeholders can be used:",
@@ -87,10 +91,14 @@ begin
   end
 
   path.each do |f|
+    # Compiled SELinux policy files also use the .pp extension, and they make
+    # the Puppet lexer cry.
+    next unless `/usr/bin/file -ib #{f}` =~ /text/
     l = PuppetLint.new
     l.file = f
     l.run
-    if l.errors? or (l.warnings? and PuppetLint.configuration.fail_on_warnings)
+    if ((l.errors? and not PuppetLint.configuration.neverfail) or
+        (l.warnings? and PuppetLint.configuration.fail_on_warnings))
       exit 1
     end
   end
