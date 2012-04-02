@@ -66,6 +66,21 @@ opts = OptionParser.new do |opts|
     end
   end
 
+  opts.separator ""
+  opts.separator "    Selectively enable checks:"
+
+  PuppetLint.configuration.checks.each do |check|
+    opts.on("--only-#{check}-check", "Only do the #{check} check") do
+      PuppetLint.configuration.checks.each do |chk|
+        if chk == check
+          PuppetLint.configuration.send("enable_#{chk}")
+        else
+          PuppetLint.configuration.send("disable_#{chk}")
+        end
+      end
+    end
+  end
+
   opts.load(File.expand_path("~/.puppet-lintrc")) unless opts.load(".puppet-lintrc")
 end
 
