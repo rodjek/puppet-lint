@@ -88,6 +88,19 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
     end
   end
 
+  check 'valid_module_name' do
+    (class_indexes + defined_type_indexes).each do |idx|
+      token_idx = idx[:start]
+      title_token = tokens[token_idx+1]
+      split_title = title_token.last[:value].split('::')
+      split_title.each do |name|
+        if name !~ /^([A-Za-z0-9])*$/
+          notify :warning, :message =>  "#{name} identifier is not recommended", :linenumber => tokens[token_idx].last[:line]
+        end
+      end
+    end
+  end
+
   check 'variable_scope' do
     (class_indexes + defined_type_indexes).each do |idx|
       object_tokens = tokens[idx[:start]..idx[:end]]
