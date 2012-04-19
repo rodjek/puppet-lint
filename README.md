@@ -19,7 +19,10 @@ guide](http://docs.puppetlabs.com/guides/style_guide.html) as practical.
 
 You can test a single manifest file by running
 
-    puppet-lint <path to file>
+    puppet-lint <path or glob>
+
+e.g.
+    puppet-lint ./**/*.pp
 
 ### Rake task
 

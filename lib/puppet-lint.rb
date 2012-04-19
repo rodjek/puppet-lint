@@ -71,17 +71,14 @@ rescue
   end
 end
 
-class PuppetLint::NoCodeError < StandardError; end
-
 class PuppetLint
   VERSION = '0.1.12'
 
-  attr_reader :code, :file
+  attr_reader :path
 
-  def initialize
-    @data = nil
+  def initialize(path)
     @statistics = {:error => 0, :warning => 0}
-    @fileinfo = {:path => ''}
+    @path = path
   end
 
   def self.configuration
@@ -90,19 +87,6 @@ class PuppetLint
 
   def configuration
     self.class.configuration
-  end
-
-  def file=(path)
-    if File.exist? path
-      @fileinfo[:path] = path
-      @fileinfo[:fullpath] = File.expand_path(path)
-      @fileinfo[:filename] = File.basename(path)
-      @data = File.read(path)
-    end
-  end
-
-  def code=(value)
-    @data = value
   end
 
   def log_format
@@ -122,11 +106,11 @@ class PuppetLint
     puts format % message
   end
 
-  def report(problems)
+  def report(fileinfo, problems)
     problems.each do |message|
       @statistics[message[:kind]] += 1
       ## Add some default attributes.
-      message.merge!(@fileinfo) {|key, v1, v2| v1 }
+      message.merge!(fileinfo) {|key, v1, v2| v1 }
       message[:KIND] = message[:kind].to_s.upcase
 
       if configuration.error_level == message[:kind] or configuration.error_level == :all
@@ -134,7 +118,7 @@ class PuppetLint
       end
     end
   end
-  
+
   def errors?
     @statistics[:error] != 0
   end
@@ -150,12 +134,19 @@ class PuppetLint
   end
 
   def run
-    if @data.nil?
-      raise PuppetLint::NoCodeError
-    end
+    Dir.glob(path).each do |puppet_file|
+      puts "Evaluating #{puppet_file}"
 
-    PuppetLint::CheckPlugin.repository.each do |plugin|
-      report plugin.new.run(@fileinfo, @data)
+      # TODO: This meta-data extraction code is a perfect candidate for being
+      # moved into [PuppetLint::CheckPlugin].
+      data     = File.read(puppet_file)
+      fileinfo = { :path     => puppet_file,
+                   :fullpath => File.expand_path(puppet_file),
+                   :filename => File.basename(puppet_file) }
+
+      PuppetLint::CheckPlugin.repository.each do |plugin|
+        report(fileinfo, plugin.new.run(fileinfo, data))
+      end
     end
   end
 end
