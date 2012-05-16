@@ -8,7 +8,11 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
       line_no += 1
 
       # MUST NOT use literal tab characters
-      notify :error, :message =>  "tab character found", :linenumber => line_no if line.include? "\t"
+      if ( line =~ /^#/x )
+        commented_line = 1
+      else
+        notify :error, :message =>  "tab character found", :linenumber => line_no if line.include? "\t"
+      end
     end
   end
 
@@ -18,7 +22,11 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
       line_no += 1
 
       # MUST NOT contain trailing white space
-      notify :error, :message =>  "trailing whitespace found", :linenumber => line_no if line.end_with? " "
+      if ( line =~ /^#/x )
+        commented_line = 1
+      else
+        notify :error, :message =>  "trailing whitespace found", :linenumber => line_no if line.end_with? " "
+      end
     end
   end
 
@@ -28,8 +36,12 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
       line_no += 1
 
       # SHOULD NOT exceed an 80 character line width
-      unless line =~ /puppet:\/\//
-        notify :warning, :message =>  "line has more than 80 characters", :linenumber => line_no if line.length > 80
+      if ( line =~ /^#/x )
+        commented_line = 1
+      else
+        unless line =~ /puppet:\/\//
+          notify :warning, :message =>  "line has more than 80 characters", :linenumber => line_no if line.length > 80
+        end
       end
     end
   end
@@ -40,9 +52,13 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
       line_no += 1
 
       # MUST use two-space soft tabs
-      line.scan(/^ +/) do |prefix|
-        unless prefix.length % 2 == 0
-          notify :error, :message =>  "two-space soft tabs not used", :linenumber => line_no
+      if ( line =~ /^#/x )
+        commented_line = 1
+      else
+        line.scan(/^ +/) do |prefix|
+          unless prefix.length % 2 == 0
+            notify :error, :message =>  "two-space soft tabs not used", :linenumber => line_no
+          end
         end
       end
     end
@@ -57,46 +73,50 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
       line_no += 1
 
       # SHOULD align fat comma arrows (=>) within blocks of attributes
-      if line =~ /^( +.+? +)=>/
-        line_indent = $1
-        if in_resource
-          if selectors.count > 0
-            if selectors.last == 0
-              selectors[-1] = line_indent.length
-            end
+      if ( line =~ /^#/x )
+        commented_line = 1
+      else
+        if line =~ /^( +.+? +)=>/
+          line_indent = $1
+          if in_resource
+            if selectors.count > 0
+              if selectors.last == 0
+                selectors[-1] = line_indent.length
+              end
 
-            # check for length first
-            unless line_indent.length == selectors.last
-              notify :warning, :message =>  "=> on line isn't properly aligned for selector", :linenumber => line_no
-            end
+              # check for length first
+              unless line_indent.length == selectors.last
+                notify :warning, :message =>  "=> on line isn't properly aligned for selector", :linenumber => line_no
+              end
 
-            # then for a new selector or selector finish
-            if line.strip.end_with? "{"
-              selectors.push(0)
-            elsif line.strip =~ /\}[,;]?$/
-              selectors.pop
+              # then for a new selector or selector finish
+              if line.strip.end_with? "{"
+                selectors.push(0)
+              elsif line.strip =~ /\}[,;]?$/
+                selectors.pop
+              end
+            else
+              unless line_indent.length == resource_indent_length
+                notify :warning, :message =>  "=> on line isn't properly aligned for resource", :linenumber => line_no
+              end
+
+              if line.strip.end_with? "{"
+                selectors.push(0)
+              end
             end
           else
-            unless line_indent.length == resource_indent_length
-              notify :warning, :message =>  "=> on line isn't properly aligned for resource", :linenumber => line_no
-            end
-
+            resource_indent_length = line_indent.length
+            in_resource = true
             if line.strip.end_with? "{"
               selectors.push(0)
             end
           end
+        elsif line.strip =~ /\}[,;]?$/ and selectors.count > 0
+          selectors.pop
         else
-          resource_indent_length = line_indent.length
-          in_resource = true
-          if line.strip.end_with? "{"
-            selectors.push(0)
-          end
+          in_resource = false
+          resource_indent_length = 0
         end
-      elsif line.strip =~ /\}[,;]?$/ and selectors.count > 0
-        selectors.pop
-      else
-        in_resource = false
-        resource_indent_length = 0
       end
     end
   end

@@ -26,7 +26,7 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
       token = tokens[token_idx]
 
       if token.first == :STRING
-        unless token.last[:value].include? "\t" or token.last[:value].include? "\n"
+        unless token.last[:value].include? "\t" or token.last[:value].include? "\n" or token.first[:value].include? "#"
           notify :warning, :message =>  "double quoted string containing no variables", :linenumber => token.last[:line]
         end
       elsif token.first == :DQTEXT
