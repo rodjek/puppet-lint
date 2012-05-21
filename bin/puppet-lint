@@ -80,10 +80,13 @@ if ARGV[0].nil?
 end
 
 begin
-  path = ARGV[0]
-  if File.directory?(path)
-    Dir.chdir(path)
+  origpath = ARGV[0]
+  if File.directory?(origpath)
+    Dir.chdir(origpath)
     path = Dir.glob('**/*.pp')
+  else
+    path = Array.new
+    path.push origpath
   end
 
   path.each do |f|
