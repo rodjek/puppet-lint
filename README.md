@@ -269,6 +269,13 @@ So, to disable the 80 character check, you would add:
 PuppetLint.configuration.send("disable_80chars")
 ```
 
+The Rake task also supports ignoring certain paths
+from being linted:
+
+``` ruby
+PuppetLint.configuration.ignore_paths = ["vendor/**/*.pp"]
+```
+
 ## Reporting bugs or incorrect results
 
 If you find a bug in puppet-lint or its results, please create an issue in the

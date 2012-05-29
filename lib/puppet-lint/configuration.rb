@@ -53,5 +53,9 @@ class PuppetLint
         method[0..-10]
       }
     end
+
+    def self.ignore_paths
+      settings[:ignore_paths] ||= []
+    end
   end
 end
