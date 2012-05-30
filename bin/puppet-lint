@@ -85,13 +85,15 @@ begin
     Dir.chdir(path)
     path = Dir.glob('**/*.pp')
   else
-    path = [path]
+    path = ARGV
   end
 
   path.each do |f|
     l = PuppetLint.new
     l.file = f
     l.run
+    # NOTE(antarus): When checking multiple files, do we want to fail-on-error
+    # when we encounter an error, or check all files and fail at the end?
     if l.errors? or (l.warnings? and PuppetLint.configuration.fail_on_warnings)
       exit 1
     end
