@@ -88,16 +88,16 @@ begin
     path = ARGV
   end
 
+  errors = false
   path.each do |f|
     l = PuppetLint.new
     l.file = f
     l.run
-    # NOTE(antarus): When checking multiple files, do we want to fail-on-error
-    # when we encounter an error, or check all files and fail at the end?
     if l.errors? or (l.warnings? and PuppetLint.configuration.fail_on_warnings)
-      exit 1
+      errors = true
     end
   end
+  exit 1 if errors
 
 rescue PuppetLint::NoCodeError
   puts "puppet-lint: no file specified or specified file does not exist"
