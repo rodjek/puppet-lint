@@ -39,6 +39,16 @@ describe PuppetLint::Plugins::CheckStrings do
 
   end
 
+  describe 'variable not enclosed in {} after many tokens' do
+    let(:code) { ("'groovy'\n" * 20) + '" $gronk"' }
+
+    its(:problems) {
+      should only_have_problem :kind => :warning, :message => "variable not enclosed in {}", :linenumber => '21'
+    }
+
+  end
+
+
   describe 'double quoted string nested in a single quoted string' do
     let(:code) { "'grep \"status=sent\" /var/log/mail.log'" }
 
