@@ -84,6 +84,8 @@ begin
   if File.directory?(path)
     Dir.chdir(path)
     path = Dir.glob('**/*.pp')
+  else
+    path = [path]
   end
 
   path.each do |f|
