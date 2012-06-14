@@ -9,8 +9,15 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
     TOKENS.add_tokens("<single quotes string>" => :SSTRING)
     TOKENS.del_token(:SQUOTE)
 
-    TOKENS.add_token :SQUOTE, "'" do |lexer, value|
-      [TOKENS[:SSTRING], lexer.slurpstring(value,["'"],:ignore_invalid_escapes).first ]
+    if Puppet::PUPPETVERSION =~ /^0\.2/
+      TOKENS.add_token :SQUOTE, "'" do |lexer, value|
+        value = lexer.slurpstring(value)
+        [TOKENS[:SSTRING], value]
+      end
+    else
+      TOKENS.add_token :SQUOTE, "'" do |lexer, value|
+        [ TOKENS[:SSTRING], lexer.slurpstring(value,["'"],:ignore_invalid_escapes).first ]
+      end
     end
   end
 
@@ -20,6 +27,10 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
 
       if token.first == :STRING
         unless token.last[:value].include? "\t" or token.last[:value].include? "\n"
+          notify :warning, :message =>  "double quoted string containing no variables", :linenumber => token.last[:line]
+        end
+      elsif token.first == :DQTEXT
+        unless token.last[:value].include? "\\t" or token.last[:value].include? "\\n" or token.last[:value] =~ /[^\\]?\$\{?/
           notify :warning, :message =>  "double quoted string containing no variables", :linenumber => token.last[:line]
         end
       end
@@ -37,6 +48,9 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
           end
         end
       end
+      if token.first == :DQTEXT and token.last[:value] =~ /\A\$\{.+\}\Z/
+        notify :warning, :message =>  "string containing only a variable", :linenumber => token.last[:line]
+      end
     end
   end
 
@@ -45,7 +59,8 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
       token = tokens[token_idx]
 
       if token.first == :DQPRE
-        end_of_string_idx = tokens[token_idx..-1].index { |r| r.first == :DQPOST }
+        end_of_string_offset = tokens[token_idx..-1].index { |r| r.first == :DQPOST }
+        end_of_string_idx = token_idx + end_of_string_offset
         tokens[token_idx..end_of_string_idx].each do |t|
           if t.first == :VARIABLE
             line = data.split("\n")[t.last[:line] - 1]
@@ -54,6 +69,8 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
             end
           end
         end
+      elsif token.first == :DQTEXT and token.last[:value] =~ /\$\w+/
+        notify :warning, :message =>  "variable not enclosed in {}", :linenumber => token.last[:line]
       end
     end
   end
@@ -77,7 +94,7 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
     tokens.each_index do |token_idx|
       token = tokens[token_idx]
 
-      if token.first == :SSTRING
+      if [:STRING, :SSTRING, :DQTEXT].include? token.first
         contents = token.last[:value]
         line_no = token.last[:line]
 

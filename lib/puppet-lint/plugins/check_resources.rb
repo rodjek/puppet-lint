@@ -41,7 +41,7 @@ class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
     end
   end
 
-  check '4digit_file_mode' do
+  check 'file_mode' do
     resource_indexes.each do |resource|
       resource_tokens = tokens[resource[:start]..resource[:end]]
       resource_type_token = tokens[tokens[0..resource[:start]].rindex { |r| r.first == :LBRACE } - 1]
@@ -50,8 +50,8 @@ class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
           attr_token = resource_tokens[resource_token_idx]
           if attr_token.first == :NAME and attr_token.last[:value] == 'mode'
             value_token = resource_tokens[resource_token_idx + 2]
-            if value_token.last[:value] !~ /\d{4}/ and value_token.first != :VARIABLE
-              notify :warning, :message =>  "mode should be represented as a 4 digit octal value", :linenumber => value_token.last[:line]
+            if value_token.last[:value] !~ /\d{4}/ and value_token.first != :VARIABLE and value_token.last[:value] !~ /^([ugoa]*[-=+][-=+rstwxXugo]*)(,[ugoa]*[-=+][-=+rstwxXugo]*)*$/
+              notify :warning, :message =>  "mode should be represented as a 4 digit octal value or symbolic file mode", :linenumber => value_token.last[:line]
             end
           end
         end
