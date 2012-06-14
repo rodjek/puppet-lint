@@ -2,6 +2,9 @@ class PuppetLint
   class Configuration
     def self.add_check(check)
       define_method("#{check}_enabled?") do
+        if settings["#{check}_disabled"] == nil
+           settings["#{check}_disabled"] = settings["#{check}_default"]
+        end
         settings["#{check}_disabled"] == true ? false : true
       end
 
@@ -38,7 +41,8 @@ class PuppetLint
       end
     end
 
-    def add_check(check)
+    def add_check(check, default_enabled = true)
+      @settings["#{check}_default"] = default_enabled ? false : true
       self.class.add_check(check)
     end
 
