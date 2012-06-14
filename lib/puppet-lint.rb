@@ -74,7 +74,7 @@ end
 class PuppetLint::NoCodeError < StandardError; end
 
 class PuppetLint
-  VERSION = '0.1.11'
+  VERSION = '0.1.12'
 
   attr_reader :code, :file
 
@@ -155,7 +155,7 @@ class PuppetLint
     end
 
     PuppetLint::CheckPlugin.repository.each do |plugin|
-      report plugin.new.run(@fileinfo[:path], @data)
+      report plugin.new.run(@fileinfo, @data)
     end
   end
 end

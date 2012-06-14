@@ -1,12 +1,14 @@
 class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
-  check 'right_to_left_relationship' do
-    tokens.select { |r| r.first == :OUT_EDGE }.each do |token|
-      notify :warning, :message =>  "right-to-left (<-) relationship", :linenumber => token.last[:line]
+  if Puppet::PUPPETVERSION !~ /^0\.2/
+    check 'right_to_left_relationship' do
+      tokens.select { |r| r.first == :OUT_EDGE }.each do |token|
+        notify :warning, :message =>  "right-to-left (<-) relationship", :linenumber => token.last[:line]
+      end
     end
   end
 
   check 'autoloader_layout' do
-    unless path == ""
+    unless fullpath == ""
       (class_indexes + defined_type_indexes).each do |class_idx|
         title_token = tokens[class_idx[:start]+1]
         split_title = title_token.last[:value].split('::')
@@ -16,7 +18,7 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
           expected_path = "#{title_token.last[:value]}/manifests/init.pp"
         end
 
-        unless path.end_with? expected_path
+        unless fullpath.end_with? expected_path
           notify :error, :message =>  "#{title_token.last[:value]} not in autoload module layout", :linenumber => title_token.last[:line]
         end
       end
@@ -89,7 +91,7 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
   check 'variable_scope' do
     (class_indexes + defined_type_indexes).each do |idx|
       object_tokens = tokens[idx[:start]..idx[:end]]
-      variables_in_scope = ['name', 'title', 'module_name']
+      variables_in_scope = ['name', 'title', 'module_name', 'environment', 'clientcert', 'clientversion', 'servername', 'serverip', 'serverversion', 'caller_module_name']
       referenced_variables = []
       header_end_idx = object_tokens.index { |r| r.first == :LBRACE }
       lparen_idx = object_tokens[0..header_end_idx].index { |r| r.first == :LPAREN }

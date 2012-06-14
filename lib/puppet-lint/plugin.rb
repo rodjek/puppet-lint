@@ -53,14 +53,13 @@ class PuppetLint::CheckPlugin
     message_hash
   end
 
-  def run(path, data)
+  def run(fileinfo, data)
     lexer = Puppet::Parser::Lexer.new
     lexer.string = data
     @tokens = lexer.fullscan
-    @path = path
+    @fileinfo = fileinfo
     @data = data
 
-    test(path, data) if self.respond_to? :test
     self.public_methods.select { |method|
       method.to_s.start_with? 'lint_check_'
     }.each { |method|
@@ -120,7 +119,11 @@ class PuppetLint::CheckPlugin
   end
 
   def path
-    @path
+    @fileinfo[:path]
+  end
+
+  def fullpath
+    @fileinfo[:fullpath]
   end
 
   def data

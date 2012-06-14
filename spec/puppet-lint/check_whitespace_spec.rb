@@ -3,7 +3,7 @@ require 'spec_helper'
 describe PuppetLint::Plugins::CheckWhitespace do
   subject do
     klass = described_class.new
-    klass.run(defined?(path).nil? ? '' : path, code)
+    klass.run(defined?(fullpath).nil? ? {:fullpath => ''} : {:fullpath => fullpath}, code)
     klass
   end
 

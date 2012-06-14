@@ -3,7 +3,7 @@ require 'spec_helper'
 describe PuppetLint::Plugins::CheckStrings do
   subject do
     klass = described_class.new
-    klass.run(defined?(path).nil? ? '' : path, code)
+    klass.run(defined?(fullpath).nil? ? {:fullpath => ''} : {:fullpath => fullpath}, code)
     klass
   end
 
@@ -39,6 +39,16 @@ describe PuppetLint::Plugins::CheckStrings do
 
   end
 
+  describe 'variable not enclosed in {} after many tokens' do
+    let(:code) { ("'groovy'\n" * 20) + '" $gronk"' }
+
+    its(:problems) {
+      should only_have_problem :kind => :warning, :message => "variable not enclosed in {}", :linenumber => '21'
+    }
+
+  end
+
+
   describe 'double quoted string nested in a single quoted string' do
     let(:code) { "'grep \"status=sent\" /var/log/mail.log'" }
 
@@ -67,5 +77,25 @@ describe PuppetLint::Plugins::CheckStrings do
     let(:code) { "class { 'foo': boolFlag => 'true' }" }
 
     its(:problems) { should only_have_problem :kind => :warning, :message => "quoted boolean value found", :linenumber => 1 }
+  end
+
+  describe 'double quoted true' do
+    let(:code) { "class { 'foo': boolFlag => \"true\" }" }
+
+    its(:problems) {
+      should have_problem :kind => :warning, :message => "quoted boolean value found", :linenumber => 1
+
+      should have_problem :kind => :warning, :message => 'double quoted string containing no variables', :linenumber => '1'
+    }
+  end
+
+  describe 'double quoted false' do
+    let(:code) { "class { 'foo': boolFlag => \"false\" }" }
+
+    its(:problems) {
+      should have_problem :kind => :warning, :message => "quoted boolean value found", :linenumber => 1
+
+      should have_problem :kind => :warning, :message => 'double quoted string containing no variables', :linenumber => '1'
+    }
   end
 end
