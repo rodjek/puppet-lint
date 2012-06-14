@@ -77,6 +77,15 @@ describe PuppetLint::Plugins::CheckWhitespace do
     }
   end
 
+  describe 'commented line > 80c with an $Id$' do
+    let(:code) { "
+      # $Id: //some/really/long/path/of/directories/environment/modules/somemodule/manifests/init.pp#5 $"
+    }
+    its(:problems) {
+      should be_empty
+    }
+  end
+
   describe 'selector inside a resource' do
     let(:code) { "
     ensure => $ensure ? {
