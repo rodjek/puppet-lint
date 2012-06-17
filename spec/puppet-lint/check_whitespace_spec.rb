@@ -75,7 +75,7 @@ describe PuppetLint::Plugins::CheckWhitespace do
   end
 
 
-  describe 'issue #84' do
+  describe 'length of lines with UTF-8 characters' do
     let(:code) { "
       # ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
       # ┃          Configuration           ┃
