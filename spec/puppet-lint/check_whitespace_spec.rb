@@ -115,6 +115,18 @@ describe PuppetLint::Plugins::CheckWhitespace do
     its(:problems) { should be_empty }
   end
 
+
+  describe 'length of lines with UTF-8 characters' do
+    let(:code) { "
+      # ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+      # ┃          Configuration           ┃
+      # ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛"
+    }
+    its(:problems) { 
+      should be_empty
+    }
+  end
+
   describe 'issue #37' do
     let(:code) { "
       class { 'lvs::base':
