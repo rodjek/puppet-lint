@@ -10,6 +10,7 @@ Gem::Specification.new do |s|
   s.files = [
     'bin/puppet-lint',
     'lib/puppet-lint/configuration.rb',
+    'lib/puppet-lint/lexel.rb',
     'lib/puppet-lint/plugin.rb',
     'lib/puppet-lint/plugins/check_classes.rb',
     'lib/puppet-lint/plugins/check_conditionals.rb',
