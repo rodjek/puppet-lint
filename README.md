@@ -112,7 +112,7 @@ ERROR: mymodule::myclass not in autoload module layout on line X
 
 Puppet attempts to autoload only the required manifests for the resources and
 classes specified in your manifests.  In order to do this, the autoloader
-expects your manifests to be layed out on disk in a particular format.  For
+expects your manifests to be laid out on disk in a particular format.  For
 example, when you use `mymodule::myclass` in your manifests, Puppet will
 attempt to read `<modulepath>/mymodule/manifests/myclass.pp`.  The only
 exception to this is when you reference `mymodule` itself (without any
@@ -260,7 +260,7 @@ task.  Simply add the following line after the `require` statement in your
 `Rakefile`.
 
 ``` ruby
-PuppetLint.configuration.send("disable_<check name")
+PuppetLint.configuration.send("disable_<check name>")
 ```
 
 So, to disable the 80 character check, you would add:
