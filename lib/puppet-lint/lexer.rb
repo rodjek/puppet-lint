@@ -104,7 +104,7 @@ class PuppetLint
             end
             i += identifier.size
 
-          elsif var_name = chunk[/\A\$((::)?(\w+::)*\w+)/, 1]
+          elsif var_name = chunk[/\A\$((::)?([\w-]+::)*[\w-]+)/, 1]
             tokens << new_token(:VARIABLE, var_name, code[0..i])
             i += var_name.size + 1
           
