@@ -54,9 +54,8 @@ class PuppetLint::CheckPlugin
   end
 
   def run(fileinfo, data)
-    lexer = Puppet::Parser::Lexer.new
-    lexer.string = data
-    @tokens = lexer.fullscan
+    lexer = PuppetLint::Lexer.new
+    @tokens = lexer.tokenise(data)
     @fileinfo = fileinfo
     @data = data
 

@@ -1,26 +1,4 @@
 class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
-  class ::Puppet::Parser::Lexer
-    class TokenList
-      def del_token(token)
-        @tokens.delete(token)
-      end
-    end
-
-    TOKENS.add_tokens("<single quotes string>" => :SSTRING)
-    TOKENS.del_token(:SQUOTE)
-
-    if Puppet::PUPPETVERSION =~ /^0\.2/
-      TOKENS.add_token :SQUOTE, "'" do |lexer, value|
-        value = lexer.slurpstring(value)
-        [TOKENS[:SSTRING], value]
-      end
-    else
-      TOKENS.add_token :SQUOTE, "'" do |lexer, value|
-        [ TOKENS[:SSTRING], lexer.slurpstring(value,["'"],:ignore_invalid_escapes).first ]
-      end
-    end
-  end
-
   check 'double_quoted_strings' do
     tokens.each_index do |token_idx|
       token = tokens[token_idx]

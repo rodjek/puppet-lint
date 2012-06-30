@@ -161,7 +161,7 @@ class PuppetLint
       line_no = lines.count
       column = lines.last.length
 
-      PuppetParser::Token.new(type, value, line_no, column)
+      PuppetLint::Token.new(type, value, line_no, column)
     end
 
     def get_string_segment(string, terminators)
@@ -180,30 +180,30 @@ class PuppetLint
       until value.nil?
         if terminator == "\""
           if first
-            tokens << PuppetParser::Token.new(:STRING, value, line, column) 
+            tokens << PuppetLint::Token.new(:STRING, value, line, column) 
             first = false
           else
             line += value.count("\n")
             token_column = column + (ss.pos - value.size)
-            tokens << PuppetParser::Token.new(:DQPOST, value, line, token_column)
+            tokens << PuppetLint::Token.new(:DQPOST, value, line, token_column)
           end
         else
           if first
-            tokens << PuppetParser::Token.new(:DQPRE, value, line, column)
+            tokens << PuppetLint::Token.new(:DQPRE, value, line, column)
             first = false
           else
             line += value.count("\n")
             token_column = column + (ss.pos - value.size)
-            tokens << PuppetParser::Token.new(:DQMID, value, line, token_column)
+            tokens << PuppetLint::Token.new(:DQMID, value, line, token_column)
           end
           if ss.scan(/\{/).nil?
             var_name = ss.scan(/(::)?([\w-]+::)*[\w-]+/)
             token_column = column + (ss.pos - value.size)
-            tokens << PuppetParser::Token.new(:UNENC_VARIABLE, var_name, line, token_column)
+            tokens << PuppetLint::Token.new(:UNENC_VARIABLE, var_name, line, token_column)
           else
             var_name = ss.scan(/(::)?([\w-]+::)*[\w-]+/)
             token_column = column + (ss.pos - value.size)
-            tokens << PuppetParser::Token.new(:VARIABLE, var_name, line, token_column)
+            tokens << PuppetLint::Token.new(:VARIABLE, var_name, line, token_column)
             ss.scan(/\}/)
           end
         end
