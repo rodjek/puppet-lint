@@ -78,8 +78,6 @@ class PuppetLint
       code.chomp!
 
       i = 0
-      current_indent = 0
-      indent_stack = []
 
       while i < code.size
         chunk = code[i..-1]
@@ -159,7 +157,7 @@ class PuppetLint
     def new_token(type, value, chunk)
       lines = chunk.split("\n")
       line_no = lines.count
-      column = lines.last.length
+      column = lines.empty? ? 1 : lines.last.length
 
       PuppetLint::Token.new(type, value, line_no, column)
     end
