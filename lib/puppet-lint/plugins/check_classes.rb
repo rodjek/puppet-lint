@@ -94,19 +94,31 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
 
   check 'nested_classes_or_defines' do
     class_indexes.each do |class_idx|
-      class_tokens = tokens[class_idx[:start]..class_idx[:end]]
-      class_tokens[1..-1].each_index do |token_idx|
-        token = class_tokens[1..-1][token_idx]
-        next_token = class_tokens[1..-1][token_idx + 1]
+      # Skip the first token so that we don't pick up the first :CLASS
+      class_tokens = tokens[class_idx[:start]+1..class_idx[:end]].reject { |r|
+        r.type == :WHITESPACE
+      }
 
-        if token.first == :CLASS
-          if next_token.first != :LBRACE
-            notify :warning, :message =>  "class defined inside a class", :linenumber => token.last[:line]
+      class_tokens.each_index do |token_idx|
+        token = class_tokens[token_idx]
+        next_token = class_tokens[token_idx + 1]
+
+        if token.type == :CLASS
+          if next_token.type != :LBRACE
+            notify :warning, {
+              :message    => "class defined inside a class",
+              :linenumber => token.line,
+              :column     => token.column,
+            }
           end
         end
 
-        if token.first == :DEFINE
-          notify :warning, :message =>  "define defined inside a class", :linenumber => token.last[:line]
+        if token.type == :DEFINE
+          notify :warning, {
+            :message    => "define defined inside a class",
+            :linenumber => token.line,
+            :column     => token.column,
+          }
         end
       end
     end
