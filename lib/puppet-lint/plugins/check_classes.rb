@@ -110,6 +110,10 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
     end
   end
 
+  # Public: Test the manifest tokens for any classes or defined types that are
+  # defined inside another class.
+  #
+  # Returns nothing.
   check 'nested_classes_or_defines' do
     class_indexes.each do |class_idx|
       # Skip the first token so that we don't pick up the first :CLASS
