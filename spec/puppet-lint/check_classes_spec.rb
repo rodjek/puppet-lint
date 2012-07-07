@@ -3,7 +3,9 @@ require 'spec_helper'
 describe PuppetLint::Plugins::CheckClasses do
   subject do
     klass = described_class.new
-    klass.run(defined?(fullpath).nil? ? {:fullpath => ''} : {:fullpath => fullpath}, code)
+    fileinfo = {}
+    fileinfo[:fullpath] = defined?(fullpath).nil? ? '' : fullpath
+    klass.run(fileinfo, code)
     klass
   end
 
@@ -17,7 +19,12 @@ describe PuppetLint::Plugins::CheckClasses do
     let(:code) { "Class[foo] <- Class[bar]" }
 
     its(:problems) {
-      should have_problem :kind => :warning, :message => "right-to-left (<-) relationship", :linenumber => 1
+      should have_problem({
+        :kind       => :warning,
+        :message    => "right-to-left (<-) relationship",
+        :linenumber => 1,
+        :column     => 12,
+      })
       should_not have_problem :kind => :error
     }
   end
@@ -37,7 +44,12 @@ describe PuppetLint::Plugins::CheckClasses do
     }
 
     its(:problems) {
-      should have_problem :kind => :warning, :message => "class defined inside a class", :linenumber => 3
+      should have_problem({
+        :kind       => :warning,
+        :message    => "class defined inside a class",
+        :linenumber => 3,
+        :column     => 9,
+      })
       should_not have_problem :kind => :error
     }
   end
@@ -51,7 +63,12 @@ describe PuppetLint::Plugins::CheckClasses do
     }
 
   its(:problems) {
-      should have_problem :kind => :warning, :message => "define defined inside a class", :linenumber => 3
+      should have_problem({
+        :kind       => :warning,
+        :message    => "define defined inside a class",
+        :linenumber => 3,
+        :column     => 9,
+      })
       should_not have_problem :kind => :error
     }
   end
@@ -66,7 +83,12 @@ describe PuppetLint::Plugins::CheckClasses do
     let(:code) { "class foo::bar inherits baz { }" }
 
     its(:problems) {
-      should have_problem :kind => :warning, :message => "class inherits across namespaces", :linenumber => 1
+      should have_problem({
+        :kind       => :warning,
+        :message    => "class inherits across namespaces",
+        :linenumber => 1,
+        :column     => 25,
+      })
       should_not have_problem :kind => :error
     }
   end
@@ -81,7 +103,12 @@ describe PuppetLint::Plugins::CheckClasses do
     let(:code) { "class foo($bar='baz', $gronk) { }" }
 
     its(:problems) {
-      should have_problem :kind => :warning, :message => "optional parameter listed before required parameter", :linenumber => 1
+      should have_problem({
+        :kind       => :warning,
+        :message    => "optional parameter listed before required parameter",
+        :linenumber => 1,
+        :column     => 23,
+      })
       should_not have_problem :kind => :error
     }
   end
@@ -96,7 +123,12 @@ describe PuppetLint::Plugins::CheckClasses do
     let(:code) { "define foo($bar='baz', $gronk) { }" }
 
     its(:problems) {
-      should have_problem :kind => :warning, :message => "optional parameter listed before required parameter", :linenumber => 1
+      should have_problem({
+        :kind       => :warning,
+        :message    => "optional parameter listed before required parameter",
+        :linenumber => 1,
+        :column     => 24,
+      })
       should_not have_problem :kind => :error
     }
   end
@@ -109,7 +141,12 @@ describe PuppetLint::Plugins::CheckClasses do
     }
 
     its(:problems) {
-      should have_problem :kind => :warning, :message => "top-scope variable being used without an explicit namespace", :linenumber => 3
+      should have_problem({
+        :kind       => :warning,
+        :message    => "top-scope variable being used without an explicit namespace",
+        :linenumber => 3,
+        :column     => 16,
+      })
       should_not have_problem :kind => :error
     }
   end
@@ -153,7 +190,12 @@ describe PuppetLint::Plugins::CheckClasses do
     }
 
     its(:problems) {
-      should have_problem :kind => :warning, :message => "top-scope variable being used without an explicit namespace", :linenumber => 3
+      should have_problem({
+        :kind       => :warning,
+        :message    => "top-scope variable being used without an explicit namespace",
+        :linenumber => 3,
+        :column     => 16,
+      })
       should_not have_problem :kind => :error
     }
   end
@@ -221,7 +263,12 @@ describe PuppetLint::Plugins::CheckClasses do
     }
 
     its(:problems) {
-      should have_problem :kind => :warning, :message => "optional parameter listed before required parameter", :linenumber => 2
+      should have_problem({
+        :kind       => :warning,
+        :message    => "optional parameter listed before required parameter",
+        :linenumber => 2,
+        :column     => 32,
+      })
       should_not have_problem :kind => :error
     }
   end
@@ -252,7 +299,12 @@ describe PuppetLint::Plugins::CheckClasses do
     let(:fullpath) { '/etc/puppet/modules/foo/manifests/init.pp' }
 
     its(:problems) {
-      should only_have_problem :kind => :error, :message => "foo::bar not in autoload module layout", :linenumber => 1
+      should only_have_problem({
+        :kind       => :error,
+        :message    => "foo::bar not in autoload module layout",
+        :linenumber => 1,
+        :column     => 7,
+      })
     }
   end
 
@@ -267,6 +319,5 @@ describe PuppetLint::Plugins::CheckClasses do
     }
     let(:fullpath) { '/etc/puppet/modules/bar/manifests/init.pp' }
     its(:problems) { should be_empty }
-
   end
 end
