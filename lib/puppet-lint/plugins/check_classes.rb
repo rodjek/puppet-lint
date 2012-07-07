@@ -146,6 +146,13 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
     end
   end
 
+  # Public: Test the manifest tokens for any variables that are referenced in
+  # the manifest.  If the variables are not fully qualified or one of the
+  # variables automatically created in the scope, check that they have been
+  # defined in the local scope and record a warning for each variable that has
+  # not.
+  #
+  # Returns nothing.
   check 'variable_scope' do
     variables_in_scope = [
       'name',
