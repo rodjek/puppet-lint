@@ -13,6 +13,11 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
     end
   end
 
+  # Public: Test the manifest tokens for any classes or defined types that are
+  # not in an appropriately named file for the autoloader to detect and record
+  # an error of each instance found.
+  #
+  # Returns nothing.
   check 'autoloader_layout' do
     unless fullpath == ''
       (class_indexes + defined_type_indexes).each do |class_idx|
