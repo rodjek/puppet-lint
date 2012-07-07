@@ -160,7 +160,7 @@ class PuppetLint
 
     def new_token(type, value, chunk)
       lines = chunk.split("\n")
-      line_no = lines.count
+      line_no = lines.empty? ? 1 : lines.count
       column = lines.empty? ? 1 : lines.last.length
 
       PuppetLint::Token.new(type, value, line_no, column)
