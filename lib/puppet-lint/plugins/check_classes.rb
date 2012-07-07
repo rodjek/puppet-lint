@@ -42,6 +42,11 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
     end
   end
 
+  # Public: Test the manifest tokens for any parameterised classes or defined
+  # types that take parameters and record a warning if there are any optional
+  # parameters listed before required parameters.
+  #
+  # Returns nothing.
   check 'parameter_order' do
     (class_indexes + defined_type_indexes).each do |class_idx|
       token_idx = class_idx[:start]
