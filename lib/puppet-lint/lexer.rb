@@ -83,9 +83,18 @@ class PuppetLint
         chunk = code[i..-1]
 
         found = false
+
         KNOWN_TOKENS.each do |type, regex|
           if value = chunk[regex, 1]
-            tokens << new_token(type, value, code[0..i])
+            if type == :NAME
+              if KEYWORDS.include? value
+                tokens << new_token(value.upcase.to_sym, value, code[0..i])
+              else
+                tokens << new_token(type, value, code[0..i])
+              end
+            else
+              tokens << new_token(type, value, code[0..i])
+            end
             i += value.size
             found = true
             break
@@ -94,18 +103,13 @@ class PuppetLint
 
         unless found
           if identifier = chunk[/\A([a-z]\w*)/, 1]
-            if KEYWORDS.include? identifier
-              type = identifier.upcase.to_sym
-              tokens << new_token(type, identifier, code[0..i])
-            else
-              tokens << new_token(:IDENTIFIER, identifier, code[0..i])
-            end
+            tokens << new_token(:IDENTIFIER, identifier, code[0..i])
             i += identifier.size
 
           elsif var_name = chunk[/\A\$((::)?([\w-]+::)*[\w-]+)/, 1]
             tokens << new_token(:VARIABLE, var_name, code[0..i])
             i += var_name.size + 1
-          
+
           elsif chunk.match(/\A"/)
             str_contents = StringScanner.new(code[i+1..-1]).scan_until(/[^\\]"/m)
             _ = code[0..i].split("\n")
