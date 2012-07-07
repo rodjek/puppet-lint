@@ -1,4 +1,8 @@
 class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
+  # Public: Test the manifest tokens for any right-to-left (<-) chaining
+  # operators and record a warning for each instance found.
+  #
+  # Returns nothing.
   check 'right_to_left_relationship' do
     tokens.select { |r| r.type == :OUT_EDGE }.each do |token|
       notify :warning, {
