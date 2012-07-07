@@ -73,13 +73,20 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
 
   check 'inherits_across_namespaces' do
     class_indexes.each do |class_idx|
-      token_idx = class_idx[:start]
-      if tokens[token_idx+2].first == :INHERITS
-        class_name = tokens[token_idx+1].last[:value]
-        inherited_class = tokens[token_idx+3].last[:value]
+      class_tokens = tokens[class_idx[:start]..class_idx[:end]].reject { |r|
+        r.type == :WHITESPACE
+      }
+
+      if class_tokens[2].type == :INHERITS
+        class_name = class_tokens[1].value
+        inherited_class = class_tokens[3].value
 
         unless class_name =~ /^#{inherited_class}::/
-          notify :warning, :message =>  "class inherits across namespaces", :linenumber => tokens[token_idx].last[:line]
+          notify :warning, {
+            :message    => "class inherits across namespaces",
+            :linenumber => class_tokens[3].line,
+            :column     => class_tokens[3].column,
+          }
         end
       end
     end
