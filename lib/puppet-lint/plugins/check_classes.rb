@@ -36,22 +36,31 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
   check 'parameter_order' do
     (class_indexes + defined_type_indexes).each do |class_idx|
       token_idx = class_idx[:start]
-      header_end_idx = tokens[token_idx..-1].index { |r| r.first == :LBRACE }
-      lparen_idx = tokens[token_idx..(header_end_idx + token_idx)].index { |r| r.first == :LPAREN }
-      rparen_idx = tokens[token_idx..(header_end_idx + token_idx)].rindex { |r| r.first == :RPAREN }
+      header_end_idx = tokens[token_idx..-1].index { |r| r.type == :LBRACE }
+      header_tokens = tokens[token_idx..header_end_idx].reject { |r|
+        r.type == :WHITESPACE
+      }
+      lparen_idx = header_tokens.index { |r| r.type == :LPAREN }
+      rparen_idx = header_tokens.rindex { |r| r.type == :RPAREN }
 
       unless lparen_idx.nil? or rparen_idx.nil?
-        param_tokens = tokens[lparen_idx..rparen_idx]
+        param_tokens = header_tokens[lparen_idx..rparen_idx]
         param_tokens.each_index do |param_tokens_idx|
           this_token = param_tokens[param_tokens_idx]
           next_token = param_tokens[param_tokens_idx+1]
           prev_token = param_tokens[param_tokens_idx-1]
-          if this_token.first == :VARIABLE
+          if this_token.type == :VARIABLE
             unless next_token.nil?
-              if next_token.first == :COMMA or next_token.first == :RPAREN
-                unless param_tokens[0..param_tokens_idx].rindex { |r| r.first == :EQUALS }.nil?
-                  unless prev_token.nil? or prev_token.first == :EQUALS
-                    notify :warning, :message =>  "optional parameter listed before required parameter", :linenumber => this_token.last[:line]
+              if next_token.type == :COMMA or next_token.type == :RPAREN
+                prev_tokens = param_tokens[0..param_tokens_idx]
+                unless prev_tokens.rindex { |r| r.type == :EQUALS }.nil?
+                  unless prev_token.nil? or prev_token.type == :EQUALS
+                    msg = 'optional parameter listed before required parameter'
+                    notify :warning, {
+                      :message    => msg,
+                      :linenumber => this_token.line,
+                      :column     => this_token.column,
+                    }
                   end
                 end
               end
