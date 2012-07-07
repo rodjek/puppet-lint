@@ -73,41 +73,22 @@ class PuppetLint::CheckPlugin
   def filter_tokens
     @title_tokens = []
     @resource_indexes = []
-    @class_indexes = []
-    @defined_type_indexes = []
 
     @tokens.each_index do |token_idx|
-      if @tokens[token_idx].first == :COLON
+      if @tokens[token_idx].type == :COLON
         # gather a list of tokens that are resource titles
-        if @tokens[token_idx-1].first == :RBRACK
-          title_array_tokens = @tokens[@tokens.rindex { |r| r.first == :LBRACK }+1..token_idx-2]
-          @title_tokens += title_array_tokens.select { |token| [:STRING, :NAME].include? token.first }
+        if @tokens[token_idx-1].type == :RBRACK
+          title_array_tokens = @tokens[@tokens.rindex { |r| r.type == :LBRACK }+1..token_idx-2]
+          @title_tokens += title_array_tokens.select { |token| [:STRING, :NAME].include? token.type }
         else
-          if @tokens[token_idx + 1].first != :LBRACE
+          if @tokens[token_idx + 1].type != :LBRACE
             @title_tokens << @tokens[token_idx-1]
           end
         end
 
         # gather a list of start and end indexes for resource attribute blocks
-        if @tokens[token_idx+1].first != :LBRACE
-          @resource_indexes << {:start => token_idx+1, :end => @tokens[token_idx+1..-1].index { |r| [:SEMIC, :RBRACE].include? r.first }+token_idx}
-        end
-      elsif [:CLASS, :DEFINE].include? @tokens[token_idx].first
-        lbrace_count = 0
-        @tokens[token_idx+1..-1].each_index do |class_token_idx|
-          idx = class_token_idx + token_idx
-          if @tokens[idx].first == :LBRACE
-            lbrace_count += 1
-          elsif @tokens[idx].first == :RBRACE
-            lbrace_count -= 1
-            if lbrace_count == 0
-              if @tokens[token_idx].first == :CLASS and @tokens[token_idx + 1].first != :LBRACE
-                @class_indexes << {:start => token_idx, :end => idx}
-              end
-              @defined_type_indexes << {:start => token_idx, :end => idx} if @tokens[token_idx].first == :DEFINE
-              break
-            end
-          end
+        if @tokens[token_idx+1].type != :LBRACE
+          @resource_indexes << {:start => token_idx+1, :end => @tokens[token_idx+1..-1].index { |r| [:SEMIC, :RBRACE].include? r.type }+token_idx}
         end
       end
     end
@@ -139,14 +120,72 @@ class PuppetLint::CheckPlugin
     @resource_indexes
   end
 
+  # Internal: Calculate the positions of all class definitions within the
+  # tokenised manifest.
+  #
+  # Returns an Array of Hashes, each containing:
+  #   :start - An Integer position in the `tokens` Array pointing to the first
+  #            token of a class (type :CLASS).
+  #   :end   - An Integer position in the `tokens` Array pointing to the last
+  #            token of a class (type :RBRACE).
   def class_indexes
-    filter_tokens if @class_indexes.nil?
-    @class_indexes
+    @class_indexes ||= Proc.new do
+      result = []
+      tokens.each_index do |token_idx|
+        if tokens[token_idx].type == :CLASS
+          depth = 0
+          tokens[token_idx+1..-1].each_index do |class_token_idx|
+            idx = class_token_idx + token_idx + 1
+            if tokens[idx].type == :LBRACE
+              depth += 1
+            elsif tokens[idx].type == :RBRACE
+              depth -= 1
+              if depth == 0
+                if tokens[token_idx..-1].reject { |r|
+                  r.type == :WHITESPACE
+                }[1].type != :LBRACE
+                  result << {:start => token_idx, :end => idx}
+                end
+                break
+              end
+            end
+          end
+        end
+      end
+      result
+    end.call
   end
 
+  # Internal: Calculate the positions of all defined type definitions within
+  # the tokenised manifest.
+  #
+  # Returns an Array of Hashes, each containing:
+  #   :start - An Integer position in the `tokens` Array pointing to the first
+  #            token of a defined type (type :DEFINE).
+  #   :end   - An Integer position in the `tokens` Array pointing to the last
+  #            token of a defined type (type :RBRACE).
   def defined_type_indexes
-    filter_tokens if @defined_type_indexes.nil?
-    @defined_type_indexes
+    @defined_type_indexes ||= Proc.new do
+      result = []
+      tokens.each_index do |token_idx|
+        if tokens[token_idx].type == :DEFINE
+          depth = 0
+          tokens[token_idx+1..-1].each_index do |define_token_idx|
+            idx = define_token_idx + token_idx + 1
+            if tokens[idx].type == :LBRACE
+              depth += 1
+            elsif tokens[idx].type == :RBRACE
+              depth -= 1
+              if depth == 0
+                result << {:start => token_idx, :end => idx}
+                break
+              end
+            end
+          end
+        end
+      end
+      result
+    end.call
   end
 
   def manifest_lines
