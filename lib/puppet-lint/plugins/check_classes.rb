@@ -85,6 +85,10 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
     end
   end
 
+  # Public: Test the manifest tokens for any classes that inherit across
+  # namespaces and record a warning for each instance found.
+  #
+  # Returns nothing.
   check 'inherits_across_namespaces' do
     class_indexes.each do |class_idx|
       class_tokens = tokens[class_idx[:start]..class_idx[:end]].reject { |r|
