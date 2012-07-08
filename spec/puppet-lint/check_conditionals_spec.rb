@@ -3,7 +3,9 @@ require 'spec_helper'
 describe PuppetLint::Plugins::CheckConditionals do
   subject do
     klass = described_class.new
-    klass.run(defined?(fullpath).nil? ? {:fullpath => ''} : {:fullpath => fullpath}, code)
+    fileinfo = {}
+    fileinfo[:fullpath] = defined?(fullpath).nil? ? '' : fullpath
+    klass.run(fileinfo, code)
     klass
   end
 
@@ -17,7 +19,14 @@ describe PuppetLint::Plugins::CheckConditionals do
       }"
     }
 
-    its(:problems) { should only_have_problem :kind => :warning, :message => "selector inside resource block", :linenumber => 3 }
+    its(:problems) do
+      should only_have_problem({
+        :kind       => :warning,
+        :message    => 'selector inside resource block',
+        :linenumber => 3,
+        :column     => 16,
+      })
+    end
   end
 
   describe 'resource with a variable as a attr value' do
@@ -49,6 +58,13 @@ describe PuppetLint::Plugins::CheckConditionals do
       }"
     }
 
-    its(:problems) { should only_have_problem :kind => :warning, :message => "case statement without a default case", :linenumber => 2 }
+    its(:problems) do
+      should only_have_problem({
+        :kind       => :warning,
+        :message    => 'case statement without a default case',
+        :linenumber => 2,
+        :column     => 7,
+      })
+    end
   end
 end
