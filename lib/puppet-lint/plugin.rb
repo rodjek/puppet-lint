@@ -72,7 +72,6 @@ class PuppetLint::CheckPlugin
 
   def filter_tokens
     @title_tokens = []
-    @resource_indexes = []
 
     @tokens.each_index do |token_idx|
       if @tokens[token_idx].type == :COLON
@@ -84,11 +83,6 @@ class PuppetLint::CheckPlugin
           if @tokens[token_idx + 1].type != :LBRACE
             @title_tokens << @tokens[token_idx-1]
           end
-        end
-
-        # gather a list of start and end indexes for resource attribute blocks
-        if @tokens[token_idx+1].type != :LBRACE
-          @resource_indexes << {:start => token_idx+1, :end => @tokens[token_idx+1..-1].index { |r| [:SEMIC, :RBRACE].include? r.type }+token_idx}
         end
       end
     end
@@ -116,8 +110,21 @@ class PuppetLint::CheckPlugin
   end
 
   def resource_indexes
-    filter_tokens if @resource_indexes.nil?
-    @resource_indexes
+    @resource_indexes ||= Proc.new do
+      result = []
+      tokens.each_index do |token_idx|
+        if tokens[token_idx].type == :COLON
+          if tokens[token_idx + 1].type != :LBRACE
+            end_idx = tokens[(token_idx + 1)..-1].index { |r|
+              [:SEMIC, :RBRACE].include? r.type
+            } + token_idx
+
+            result << {:start => token_idx + 1, :end => end_idx}
+          end
+        end
+      end
+      result
+    end.call
   end
 
   # Internal: Calculate the positions of all class definitions within the
