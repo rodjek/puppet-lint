@@ -1,6 +1,3 @@
-# Resources
-# http://docs.puppetlabs.com/guides/style_guide.html#resources
-
 class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
   check 'unquoted_resource_title' do
     title_tokens.each do |token|
