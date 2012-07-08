@@ -21,13 +21,6 @@ class PuppetLint::Plugins::CheckConditionals < PuppetLint::CheckPlugin
     case_indexes = []
 
     tokens.each_index do |token_idx|
-      if tokens[token_idx].first == :COLON
-        # gather a list of start and end indexes for resource attribute blocks
-        if tokens[token_idx+1].first != :LBRACE
-          resource_indexes << {:start => token_idx+1, :end => tokens[token_idx+1..-1].index { |r| [:SEMIC, :RBRACE].include? r.first }+token_idx}
-        end
-      end
-
       if tokens[token_idx].first == :CASE
         lbrace_count = 0
         tokens[token_idx+1..-1].each_index do |case_token_idx|
