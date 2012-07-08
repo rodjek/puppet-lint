@@ -27,7 +27,6 @@ class PuppetLint
       [:CLASSREF, /\A(((::){0,1}[A-Z][-\w]*)+)/],
       [:NUMBER, /\A(?:0[xX][0-9A-Fa-f]+|0?\d+(?:\.\d+)?(?:[eE]-?\d+)?)\b/],
       [:NAME, /\A(((::)?[a-z0-9][-\w]*)(::[a-z0-9][-\w]*)*)/],
-      [:SSTRING, /\A('.*?')/],
       [:LBRACK, /\A(\[)/],
       [:RBRACK, /\A(\])/],
       [:LBRACE, /\A(\{)/],
@@ -109,6 +108,10 @@ class PuppetLint
           elsif var_name = chunk[/\A\$((::)?([\w-]+::)*[\w-]+)/, 1]
             tokens << new_token(:VARIABLE, var_name, code[0..i])
             i += var_name.size + 1
+
+          elsif sstring = chunk[/\A'(.*?)'/, 1]
+            tokens << new_token(:SSTRING, sstring, code[0..i])
+            i += sstring.size + 2
 
           elsif chunk.match(/\A"/)
             str_contents = StringScanner.new(code[i+1..-1]).scan_until(/[^\\]"/m)
