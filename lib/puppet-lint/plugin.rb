@@ -124,7 +124,10 @@ class PuppetLint::CheckPlugin
       result = []
       tokens.each_index do |token_idx|
         if tokens[token_idx].type == :COLON
-          if tokens[token_idx + 1].type != :LBRACE
+          next_tokens = tokens[(token_idx + 1)..-1].reject { |r|
+            formatting_tokens.include? r.type
+          }
+          if next_tokens.first.type != :LBRACE
             end_idx = tokens[(token_idx + 1)..-1].index { |r|
               [:SEMIC, :RBRACE].include? r.type
             } + token_idx
