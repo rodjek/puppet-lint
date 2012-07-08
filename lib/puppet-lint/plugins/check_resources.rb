@@ -12,12 +12,22 @@ class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
 
   check 'ensure_first_param' do
     resource_indexes.each do |resource|
-      resource_tokens = tokens[resource[:start]..resource[:end]]
-      ensure_attr_index = resource_tokens.index { |token| token.first == :NAME and token.last[:value] == 'ensure' }
+      resource_tokens = tokens[resource[:start]..resource[:end]].reject { |r|
+        formatting_tokens.include? r.type
+      }
+
+      ensure_attr_index = resource_tokens.index { |token|
+        token.type == :NAME and token.value == 'ensure'
+      }
+
       unless ensure_attr_index.nil?
         if ensure_attr_index > 1
-          ensure_attr_line_no = resource_tokens[ensure_attr_index].last[:line]
-          notify :warning, :message =>  "ensure found on line but it's not the first attribute", :linenumber => ensure_attr_line_no
+          ensure_token = resource_tokens[ensure_attr_index]
+          notify :warning, {
+            :message =>  "ensure found on line but it's not the first attribute",
+            :linenumber => ensure_token.line,
+            :column     => ensure_token.column,
+          }
         end
       end
     end
