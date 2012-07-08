@@ -27,6 +27,10 @@ class PuppetLint::Plugins::CheckConditionals < PuppetLint::CheckPlugin
     end
   end
 
+  # Public: Test the manifest tokens for any case statements that do not
+  # contain a "default" case and record a warning for each instance found.
+  #
+  # Returns nothing.
   check 'case_without_default' do
     case_indexes = []
 
