@@ -1,4 +1,8 @@
 class PuppetLint::Plugins::CheckConditionals < PuppetLint::CheckPlugin
+  # Public: Test the manifest tokens for any selectors embedded within resource
+  # declarations and record a warning for each instance found.
+  #
+  # Returns nothing.
   check 'selector_inside_resource' do
     resource_indexes.each do |resource|
       resource_tokens = tokens[resource[:start]..resource[:end]].reject { |r|
