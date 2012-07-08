@@ -8,11 +8,10 @@ describe PuppetLint::Plugins::CheckResources do
   end
 
   describe '3 digit file mode' do
-    let(:code) { "file { 'foo': mode => 777 }" }
+    let(:code) { "file { 'foo': mode => '777' }" }
 
     its(:problems) {
-      should have_problem :kind => :warning, :message => "mode should be represented as a 4 digit octal value or symbolic file mode", :linenumber => 1
-      should_not have_problem :kind => :error
+      should only_have_problem :kind => :warning, :message => "mode should be represented as a 4 digit octal value or symbolic mode", :linenumber => 1
     }
   end
 
@@ -26,8 +25,7 @@ describe PuppetLint::Plugins::CheckResources do
     let(:code) { "file { 'foo': mode => 0777 }" }
 
     its(:problems) {
-      should have_problem :kind => :warning, :message => "unquoted file mode"
-      should_not have_problem :kind => :error
+      should only_have_problem :kind => :warning, :message => "unquoted file mode"
     }
   end
 
@@ -68,8 +66,7 @@ describe PuppetLint::Plugins::CheckResources do
     }
 
     its(:problems) {
-      should have_problem :kind => :warning, :message => "ensure found on line but it's not the first attribute", :linenumber => 4
-      should_not have_problem :kind => :error
+      should only_have_problem :kind => :warning, :message => "ensure found on line but it's not the first attribute", :linenumber => 4
     }
   end
 
@@ -94,8 +91,7 @@ describe PuppetLint::Plugins::CheckResources do
     let(:code) { "file { foo: }" }
 
     its(:problems) {
-      should have_problem :kind => :warning, :message => "unquoted resource title", :linenumber => 1
-      should_not have_problem :kind => :error
+      should only_have_problem :kind => :warning, :message => "unquoted resource title", :linenumber => 1
     }
   end
 
@@ -115,8 +111,7 @@ describe PuppetLint::Plugins::CheckResources do
     }
 
     its(:problems) {
-      should have_problem :kind => :warning, :message => "unquoted resource title", :linenumber => 2
-      should_not have_problem :kind => :error
+      should only_have_problem :kind => :warning, :message => "unquoted resource title", :linenumber => 2
     }
   end
 
@@ -140,8 +135,7 @@ describe PuppetLint::Plugins::CheckResources do
     }
 
     its(:problems) {
-      should have_problem :kind => :warning, :message => "unquoted resource title", :linenumber => 4
-      should_not have_problem :kind => :error
+      should only_have_problem :kind => :warning, :message => "unquoted resource title", :linenumber => 4
     }
   end
 
@@ -162,7 +156,7 @@ describe PuppetLint::Plugins::CheckResources do
       }"
     }
 
-    its(:problems) { should be_empty }
+    its(:problems) { should == [] }
   end
 
   describe 'file resource creating a symlink with seperate target attr' do
@@ -184,8 +178,7 @@ describe PuppetLint::Plugins::CheckResources do
     }
 
     its(:problems) {
-      should have_problem :kind => :warning, :message => "symlink target specified in ensure attr", :linenumber => 3
-      should_not have_problem :kind => :error
+      should only_have_problem :kind => :warning, :message => "symlink target specified in ensure attr", :linenumber => 3
     }
   end
 end
