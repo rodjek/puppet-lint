@@ -109,6 +109,16 @@ class PuppetLint::CheckPlugin
     @title_tokens
   end
 
+  # Internal: Calculate the positions of all resource declarations within the
+  # tokenised manifest.  These positions only point to the content of the
+  # resource declaration, they do not include resource types or
+  # titles/namevars.
+  #
+  # Returns an Array of Hashes, each containing:
+  #   :start - An Integer position in the `tokens` Array pointing to the first
+  #            Token of a resource declaration parameters (type :LBRACE).
+  #   :end   - An Integer position in the `tokens` Array pointing to the last
+  #            Token of a resource declaration parameters (type :RBRACE).
   def resource_indexes
     @resource_indexes ||= Proc.new do
       result = []
