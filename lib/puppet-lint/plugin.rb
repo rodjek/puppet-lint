@@ -116,7 +116,7 @@ class PuppetLint::CheckPlugin
   #
   # Returns an Array of Hashes, each containing:
   #   :start - An Integer position in the `tokens` Array pointing to the first
-  #            Token of a resource declaration parameters (type :LBRACE).
+  #            Token of a resource declaration parameters (type :NAME).
   #   :end   - An Integer position in the `tokens` Array pointing to the last
   #            Token of a resource declaration parameters (type :RBRACE).
   def resource_indexes
