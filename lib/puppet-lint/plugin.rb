@@ -208,6 +208,16 @@ class PuppetLint::CheckPlugin
     end.call
   end
 
+  def formatting_tokens
+    [
+      :COMMENT,
+      :MLCOMMENT,
+      :INDENT,
+      :WHITESPACE,
+      :NEWLINE,
+    ]
+  end
+
   def manifest_lines
     @manifest_lines ||= @data.split("\n")
   end
