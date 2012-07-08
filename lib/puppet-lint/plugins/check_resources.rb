@@ -4,8 +4,8 @@
 class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
   check 'unquoted_resource_title' do
     title_tokens.each do |token|
-      if token.first == :NAME
-        notify :warning, :message =>  "unquoted resource title", :linenumber => token.last[:line]
+      if token.type == :NAME
+        notify :warning, :message =>  "unquoted resource title", :linenumber => token.line
       end
     end
   end
