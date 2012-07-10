@@ -52,7 +52,7 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
       token_idx = class_idx[:start]
       header_end_idx = tokens[token_idx..-1].index { |r| r.type == :LBRACE }
       header_tokens = tokens[token_idx..header_end_idx].reject { |r|
-        r.type == :WHITESPACE
+        formatting_tokens.include?(r.type)
       }
       lparen_idx = header_tokens.index { |r| r.type == :LPAREN }
       rparen_idx = header_tokens.rindex { |r| r.type == :RPAREN }
@@ -92,7 +92,7 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
   check 'inherits_across_namespaces' do
     class_indexes.each do |class_idx|
       class_tokens = tokens[class_idx[:start]..class_idx[:end]].reject { |r|
-        r.type == :WHITESPACE
+        formatting_tokens.include?(r.type)
       }
 
       if class_tokens[2].type == :INHERITS
@@ -118,7 +118,7 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
     class_indexes.each do |class_idx|
       # Skip the first token so that we don't pick up the first :CLASS
       class_tokens = tokens[class_idx[:start]+1..class_idx[:end]].reject { |r|
-        r.type == :WHITESPACE
+        formatting_tokens.include?(r.type)
       }
 
       class_tokens.each_index do |token_idx|
@@ -168,7 +168,7 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
     ]
     (class_indexes + defined_type_indexes).each do |idx|
       object_tokens = tokens[idx[:start]..idx[:end]]
-      object_tokens.reject! { |r| r.type == :WHITESPACE}
+      object_tokens.reject! { |r| formatting_tokens.include?(r.type) }
       referenced_variables = []
       header_end_idx = object_tokens.index { |r| r.type == :LBRACE }
       lparen_idx = object_tokens[0..header_end_idx].index { |r|
