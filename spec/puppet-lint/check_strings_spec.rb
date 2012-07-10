@@ -3,7 +3,9 @@ require 'spec_helper'
 describe PuppetLint::Plugins::CheckStrings do
   subject do
     klass = described_class.new
-    klass.run(defined?(fullpath).nil? ? {:fullpath => ''} : {:fullpath => fullpath}, code)
+    fileinfo = {}
+    fileinfo[:fullpath] = defined?(fullpath).nil? ? '' : fullpath
+    klass.run(fileinfo, code)
     klass
   end
 
@@ -17,8 +19,18 @@ describe PuppetLint::Plugins::CheckStrings do
     let(:code) { "\"aoeu\" '${foo}'" }
 
     its(:problems) {
-      should have_problem :kind => :warning, :message => 'double quoted string containing no variables', :linenumber => '1'
-      should have_problem :kind => :error, :message => 'single quoted string containing a variable found', :linenumber => '1'
+      should have_problem({
+        :kind       => :warning,
+        :message    => 'double quoted string containing no variables',
+        :linenumber => 1,
+        :column     => 1,
+      })
+      should have_problem({
+        :kind       => :error,
+        :message    => 'single quoted string containing a variable found',
+        :linenumber => 1,
+        :column     => 8,
+      })
     }
   end
 
@@ -26,7 +38,12 @@ describe PuppetLint::Plugins::CheckStrings do
     let(:code) { '"${foo}"' }
 
     its(:problems) {
-      should only_have_problem :kind => :warning, :message => "string containing only a variable", :linenumber => '1'
+      should only_have_problem({
+        :kind       => :warning,
+        :message    => 'string containing only a variable',
+        :linenumber => 1,
+        :column     => 3,
+      })
     }
   end
 
@@ -34,18 +51,26 @@ describe PuppetLint::Plugins::CheckStrings do
     let(:code) { '" $gronk"' }
 
     its(:problems) {
-      should only_have_problem :kind => :warning, :message => "variable not enclosed in {}", :linenumber => '1'
+      should only_have_problem({
+        :kind       => :warning,
+        :message    => 'variable not enclosed in {}',
+        :linenumber => 1,
+        :column     => 3,
+      })
     }
-
   end
 
   describe 'variable not enclosed in {} after many tokens' do
     let(:code) { ("'groovy'\n" * 20) + '" $gronk"' }
 
     its(:problems) {
-      should only_have_problem :kind => :warning, :message => "variable not enclosed in {}", :linenumber => '21'
+      should only_have_problem({
+        :kind       => :warning,
+        :message    => 'variable not enclosed in {}',
+        :linenumber => 21,
+        :column     => 3,
+      })
     }
-
   end
 
 
@@ -70,22 +95,45 @@ describe PuppetLint::Plugins::CheckStrings do
   describe 'quoted false' do
     let(:code) { "class { 'foo': boolFlag => 'false' }" }
 
-    its(:problems) { should only_have_problem :kind => :warning, :message => "quoted boolean value found", :linenumber => 1 }
+    its(:problems) {
+      should only_have_problem({
+        :kind       => :warning,
+        :message    => 'quoted boolean value found',
+        :linenumber => 1,
+        :column     => 28,
+      })
+    }
   end
 
   describe 'quoted true' do
     let(:code) { "class { 'foo': boolFlag => 'true' }" }
 
-    its(:problems) { should only_have_problem :kind => :warning, :message => "quoted boolean value found", :linenumber => 1 }
+    its(:problems) {
+      should only_have_problem({
+        :kind       => :warning,
+        :message    => 'quoted boolean value found',
+        :linenumber => 1,
+        :column     => 28,
+      })
+    }
   end
 
   describe 'double quoted true' do
     let(:code) { "class { 'foo': boolFlag => \"true\" }" }
 
     its(:problems) {
-      should have_problem :kind => :warning, :message => "quoted boolean value found", :linenumber => 1
-
-      should have_problem :kind => :warning, :message => 'double quoted string containing no variables', :linenumber => '1'
+      should have_problem({
+        :kind       => :warning,
+        :message    => 'quoted boolean value found',
+        :linenumber => 1,
+        :column     => 28,
+      })
+      should have_problem({
+        :kind       => :warning,
+        :message    => 'double quoted string containing no variables',
+        :linenumber => 1,
+        :column     => 28,
+      })
     }
   end
 
@@ -93,9 +141,18 @@ describe PuppetLint::Plugins::CheckStrings do
     let(:code) { "class { 'foo': boolFlag => \"false\" }" }
 
     its(:problems) {
-      should have_problem :kind => :warning, :message => "quoted boolean value found", :linenumber => 1
-
-      should have_problem :kind => :warning, :message => 'double quoted string containing no variables', :linenumber => '1'
+      should have_problem({
+        :kind       => :warning,
+        :message    => 'quoted boolean value found',
+        :linenumber => 1,
+        :column     => 28,
+      })
+      should have_problem({
+        :kind       => :warning,
+        :message    => 'double quoted string containing no variables',
+        :linenumber => 1,
+        :column     => 28,
+      })
     }
   end
 end
