@@ -58,17 +58,14 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
   end
 
   check 'quoted_booleans' do
-    tokens.each_index do |token_idx|
-      token = tokens[token_idx]
-
-      if [:STRING, :SSTRING, :DQTEXT].include? token.first
-        contents = token.last[:value]
-        line_no = token.last[:line]
-
-        if ['true', 'false'].include? contents
-          notify :warning, :message =>  "quoted boolean value found", :linenumber => token.last[:line]
-        end
-      end
+    tokens.select { |r|
+      [:STRING, :SSTRING].include?(r.type) && %w{true false}.include?(r.value)
+    }.each do |token|
+      notify :warning, {
+        :message    => 'quoted boolean value found',
+        :linenumber => token.line,
+        :column     => token.column,
+      }
     end
   end
 end
