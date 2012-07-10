@@ -6,7 +6,7 @@ class PuppetLint::Plugins::CheckConditionals < PuppetLint::CheckPlugin
   check 'selector_inside_resource' do
     resource_indexes.each do |resource|
       resource_tokens = tokens[resource[:start]..resource[:end]].reject { |r|
-        [:COMMENT, :MLCOMMENT, :WHITESPACE, :INDENT].include? r.type
+        formatting_tokens.include? r.type
       }
 
       resource_tokens.each_index do |resource_token_idx|
