@@ -70,24 +70,6 @@ class PuppetLint::CheckPlugin
     @problems
   end
 
-  def filter_tokens
-    @title_tokens = []
-
-    @tokens.each_index do |token_idx|
-      if @tokens[token_idx].type == :COLON
-        # gather a list of tokens that are resource titles
-        if @tokens[token_idx-1].type == :RBRACK
-          title_array_tokens = @tokens[@tokens.rindex { |r| r.type == :LBRACK }+1..token_idx-2]
-          @title_tokens += title_array_tokens.select { |token| [:STRING, :NAME].include? token.type }
-        else
-          if @tokens[token_idx + 1].type != :LBRACE
-            @title_tokens << @tokens[token_idx-1]
-          end
-        end
-      end
-    end
-  end
-
   def tokens
     @tokens
   end
@@ -105,8 +87,28 @@ class PuppetLint::CheckPlugin
   end
 
   def title_tokens
-    filter_tokens if @title_tokens.nil?
-    @title_tokens
+    @title_tokens ||= Proc.new do
+      result = []
+      tokens.each_index do |token_idx|
+        if tokens[token_idx].type == :COLON
+          # gather a list of tokens that are resource titles
+          if tokens[token_idx-1].type == :RBRACK
+            array_start_idx = tokens.rindex { |r|
+              r.type == :LBRACK
+            }
+            title_array_tokens = tokens[(array_start_idx + 1)..(token_idx - 2)]
+            result += title_array_tokens.select { |token|
+              [:STRING, :NAME].include? token.type
+            }
+          else
+            if tokens[token_idx + 1].type != :LBRACE
+              result << tokens[token_idx - 1]
+            end
+          end
+        end
+      end
+      result
+    end.call
   end
 
   # Internal: Calculate the positions of all resource declarations within the
