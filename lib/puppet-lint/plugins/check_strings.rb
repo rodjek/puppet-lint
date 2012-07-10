@@ -34,23 +34,14 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
   end
 
   check 'variables_not_enclosed' do
-    tokens.each_index do |token_idx|
-      token = tokens[token_idx]
-
-      if token.first == :DQPRE
-        end_of_string_offset = tokens[token_idx..-1].index { |r| r.first == :DQPOST }
-        end_of_string_idx = token_idx + end_of_string_offset
-        tokens[token_idx..end_of_string_idx].each do |t|
-          if t.first == :VARIABLE
-            line = data.split("\n")[t.last[:line] - 1]
-            if line.is_a? String and line.include? "$#{t.last[:value]}"
-              notify :warning, :message =>  "variable not enclosed in {}", :linenumber => t.last[:line]
-            end
-          end
-        end
-      elsif token.first == :DQTEXT and token.last[:value] =~ /\$\w+/
-        notify :warning, :message =>  "variable not enclosed in {}", :linenumber => token.last[:line]
-      end
+    tokens.select { |r|
+      r.type == :UNENC_VARIABLE
+    }.each do |token|
+      notify :warning, {
+        :message    => 'variable not enclosed in {}',
+        :linenumber => token.line,
+        :column     => token.column,
+      }
     end
   end
 
