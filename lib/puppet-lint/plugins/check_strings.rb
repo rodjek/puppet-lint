@@ -17,15 +17,18 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
     tokens.each_index do |token_idx|
       token = tokens[token_idx]
 
-      if token.first == :DQPRE and token.last[:value] == ""
-        if tokens[token_idx + 1].first == :VARIABLE
-          if tokens[token_idx + 2].first == :DQPOST and tokens[token_idx + 2].last[:value] == ""
-            notify :warning, :message =>  "string containing only a variable", :linenumber => tokens[token_idx + 1].last[:line]
+      if token.type == :DQPRE and token.value == ''
+        if [:VARIABLE, :UNENC_VARIABLE].include? tokens[token_idx + 1].type
+          if tokens[token_idx + 2].type == :DQPOST
+            if tokens[token_idx + 2].value == ''
+              notify :warning, {
+                :message    => 'string containing only a variable',
+                :linenumber => tokens[token_idx + 1].line,
+                :column     => tokens[token_idx + 1].column,
+              }
+            end
           end
         end
-      end
-      if token.first == :DQTEXT and token.last[:value] =~ /\A\$\{.+\}\Z/
-        notify :warning, :message =>  "string containing only a variable", :linenumber => token.last[:line]
       end
     end
   end
