@@ -1,17 +1,15 @@
 class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
   check 'double_quoted_strings' do
-    tokens.each_index do |token_idx|
-      token = tokens[token_idx]
-
-      if token.first == :STRING
-        unless token.last[:value].include? "\t" or token.last[:value].include? "\n"
-          notify :warning, :message =>  "double quoted string containing no variables", :linenumber => token.last[:line]
-        end
-      elsif token.first == :DQTEXT
-        unless token.last[:value].include? "\\t" or token.last[:value].include? "\\n" or token.last[:value] =~ /[^\\]?\$\{?/
-          notify :warning, :message =>  "double quoted string containing no variables", :linenumber => token.last[:line]
-        end
-      end
+    tokens.select { |r|
+      r.type == :STRING
+    }.reject { |r|
+      r.value.include?('\t') || r.value.include?('\n')
+    }.each do |token|
+      notify :warning, {
+        :message    => 'double quoted string containing no variables',
+        :linenumber => token.line,
+        :column     => token.column,
+      }
     end
   end
 
