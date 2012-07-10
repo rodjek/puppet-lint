@@ -46,17 +46,14 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
   end
 
   check 'single_quote_string_with_variables' do
-    tokens.each_index do |token_idx|
-      token = tokens[token_idx]
-
-      if token.first == :SSTRING
-        contents = token.last[:value]
-        line_no = token.last[:line]
-
-        if contents.include? '${'
-          notify :error, :message =>  "single quoted string containing a variable found", :linenumber => token.last[:line]
-        end
-      end
+    tokens.select { |r|
+      r.type == :SSTRING && r.value.include?('${')
+    }.each do |token|
+      notify :error, {
+        :message    => 'single quoted string containing a variable found',
+        :linenumber => token.line,
+        :column     => token.column,
+      }
     end
   end
 
