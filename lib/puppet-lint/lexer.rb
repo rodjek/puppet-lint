@@ -215,9 +215,11 @@ class PuppetLint
             end
           else
             var_name = ss.scan(/(::)?([\w-]+::)*[\w-]+/)
-            token_column = column + (ss.pos - var_name.size)
-            tokens << PuppetLint::Token.new(:VARIABLE, var_name, line, token_column)
-            ss.scan(/\}/)
+            unless var_name.nil?
+              token_column = column + (ss.pos - var_name.size)
+              tokens << PuppetLint::Token.new(:VARIABLE, var_name, line, token_column)
+              ss.scan(/\}/)
+            end
           end
         end
         value, terminator = get_string_segment(ss, '"$')
