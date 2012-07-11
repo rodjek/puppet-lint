@@ -18,13 +18,19 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
     end
   end
 
+  # Check the raw manifest string for lines ending with whitespace and record
+  # an error for each instance found.
+  #
+  # Returns nothing.
   check 'trailing_whitespace' do
-    line_no = 0
-    manifest_lines.each do |line|
-      line_no += 1
-
-      # MUST NOT contain trailing white space
-      notify :error, :message =>  "trailing whitespace found", :linenumber => line_no if line.end_with? " "
+    manifest_lines.each_with_index do |line, idx|
+      if line.end_with? ' '
+        notify :error, {
+          :message    => 'trailing whitespace found',
+          :linenumber => idx + 1,
+          :column     => line.rindex(' ') + 1,
+        }
+      end
     end
   end
 
