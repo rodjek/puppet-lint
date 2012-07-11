@@ -1,6 +1,3 @@
-# Spacing, Identation & Whitespace
-# http://docs.puppetlabs.com/guides/style_guide.html#spacing-indentation--whitespace
-
 class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
   # Check the raw manifest string for lines containing hard tab characters and
   # record an error for each instance found.
@@ -72,14 +69,15 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
     end
   end
 
+  # Check the raw manifest strings for any arrows (=>) in a grouping ({}) that
+  # are not aligned with other arrows in that grouping.
+  #
+  # Returns nothing.
   check 'arrow_alignment' do
-    line_no = 0
     in_resource = false
     selectors = []
     resource_indent_length = 0
-    manifest_lines.each do |line|
-      line_no += 1
-
+    manifest_lines.each_with_index do |line, idx|
       # SHOULD align fat comma arrows (=>) within blocks of attributes
       if line =~ /^( +.+? +)=>/
         line_indent = $1
@@ -91,28 +89,36 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
 
             # check for length first
             unless line_indent.length == selectors.last
-              notify :warning, :message =>  "=> on line isn't properly aligned for selector", :linenumber => line_no
+              notify :warning, {
+                :message    => '=> is not properly aligned for selector',
+                :linenumber => idx + 1,
+                :column     => line_indent.length,
+              }
             end
 
             # then for a new selector or selector finish
-            if line.strip.end_with? "{"
+            if line.strip.end_with? '{'
               selectors.push(0)
             elsif line.strip =~ /\}[,;]?$/
               selectors.pop
             end
           else
             unless line_indent.length == resource_indent_length
-              notify :warning, :message =>  "=> on line isn't properly aligned for resource", :linenumber => line_no
+              notify :warning, {
+                :message    => '=> is not properly aligned for resource',
+                :linenumber => idx + 1,
+                :column     => line_indent.length,
+              }
             end
 
-            if line.strip.end_with? "{"
+            if line.strip.end_with? '{'
               selectors.push(0)
             end
           end
         else
           resource_indent_length = line_indent.length
           in_resource = true
-          if line.strip.end_with? "{"
+          if line.strip.end_with? '{'
             selectors.push(0)
           end
         end
