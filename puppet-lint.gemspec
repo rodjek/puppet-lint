@@ -9,33 +9,10 @@ Gem::Specification.new do |s|
   s.description = 'Checks your Puppet manifests against the Puppetlabs
   style guide and alerts you to any discrepancies.'
 
-  s.executables = ['puppet-lint']
-  s.files = [
-    'bin/puppet-lint',
-    'lib/puppet-lint/configuration.rb',
-    'lib/puppet-lint/lexer.rb',
-    'lib/puppet-lint/plugin.rb',
-    'lib/puppet-lint/plugins/check_classes.rb',
-    'lib/puppet-lint/plugins/check_conditionals.rb',
-    'lib/puppet-lint/plugins/check_resources.rb',
-    'lib/puppet-lint/plugins/check_strings.rb',
-    'lib/puppet-lint/plugins/check_variables.rb',
-    'lib/puppet-lint/plugins/check_whitespace.rb',
-    'lib/puppet-lint/plugins.rb',
-    'lib/puppet-lint/tasks/puppet-lint.rb',
-    'lib/puppet-lint.rb',
-    'LICENSE',
-    'puppet-lint.gemspec',
-    'Rakefile',
-    'README.md',
-    'spec/puppet-lint/check_classes_spec.rb',
-    'spec/puppet-lint/check_conditionals_spec.rb',
-    'spec/puppet-lint/check_resources_spec.rb',
-    'spec/puppet-lint/check_strings_spec.rb',
-    'spec/puppet-lint/check_variables_spec.rb',
-    'spec/puppet-lint/check_whitespace_spec.rb',
-    'spec/spec_helper.rb',
-  ]
+  s.files = `git ls-files`.split("\n")
+  s.test_files = `git ls-files -- {test,spec,features}/*`.split("\n")
+  s.executables = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
+  s.require_paths = ["lib"]
 
   s.add_development_dependency 'rspec'
   s.add_development_dependency 'rdoc'
