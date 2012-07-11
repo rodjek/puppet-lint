@@ -54,17 +54,21 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
     end
   end
 
+  # Check the manifest tokens for any indentation not using 2 space soft tabs
+  # and record an error for each instance found.
+  #
+  # Returns nothing.
   check '2sp_soft_tabs' do
-    line_no = 0
-    manifest_lines.each do |line|
-      line_no += 1
-
-      # MUST use two-space soft tabs
-      line.scan(/^ +/) do |prefix|
-        unless prefix.length % 2 == 0
-          notify :error, :message =>  "two-space soft tabs not used", :linenumber => line_no
-        end
-      end
+    tokens.select { |r|
+      r.type == :INDENT
+    }.reject { |r|
+      r.value.length % 2 == 0
+    }.each do |token|
+      notify :error, {
+        :message    => 'two-space soft tabs not used',
+        :linenumber => token.line,
+        :column     => token.column,
+      }
     end
   end
 
