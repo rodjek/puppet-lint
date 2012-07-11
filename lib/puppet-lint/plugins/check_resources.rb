@@ -81,6 +81,11 @@ class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
     end
   end
 
+  # Public: Check the tokens of each File resource instance for a mode
+  # parameter and if found, record a warning if the value of that parameter is
+  # not a 4 digit octal value (0755) or a symbolic mode ('o=rwx,g+r').
+  #
+  # Returns nothing.
   check 'file_mode' do
     msg = 'mode should be represented as a 4 digit octal value or symbolic mode'
     sym_mode = /\A([ugoa]*[-=+][-=+rstwxXugo]*)(,[ugoa]*[-=+][-=+rstwxXugo]*)*\Z/
