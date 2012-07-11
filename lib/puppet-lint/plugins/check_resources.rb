@@ -1,4 +1,8 @@
 class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
+  # Public: Check the manifest tokens for any resource titles / namevars that
+  # are not quoted and record a warning for each instance found.
+  #
+  # Return nothing.
   check 'unquoted_resource_title' do
     title_tokens.each do |token|
       if token.type == :NAME
