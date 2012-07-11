@@ -75,6 +75,11 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
     end
   end
 
+  # Public: Check the manifest tokens for any double or single quoted strings
+  # containing only a boolean value and record a warning for each instance
+  # found.
+  #
+  # Returns nothing.
   check 'quoted_booleans' do
     tokens.select { |r|
       [:STRING, :SSTRING].include?(r.type) && %w{true false}.include?(r.value)
