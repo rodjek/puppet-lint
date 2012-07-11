@@ -15,6 +15,11 @@ class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
     end
   end
 
+  # Public: Check the tokens of each resource instance for an ensure parameter
+  # and if found, check that it is the first parameter listed.  If it is not
+  # the first parameter, record a warning.
+  #
+  # Returns nothing.
   check 'ensure_first_param' do
     resource_indexes.each do |resource|
       resource_tokens = tokens[resource[:start]..resource[:end]].reject { |r|
