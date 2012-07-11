@@ -214,6 +214,7 @@ class PuppetLint::CheckPlugin
     [
       :COMMENT,
       :MLCOMMENT,
+      :SLASH_COMENT,
       :INDENT,
       :WHITESPACE,
       :NEWLINE,
