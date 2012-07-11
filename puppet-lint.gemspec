@@ -1,6 +1,9 @@
+$:.push File.expand_path("../lib", __FILE__)
+require 'puppet-lint'
+
 Gem::Specification.new do |s|
   s.name = 'puppet-lint'
-  s.version = '0.1.12'
+  s.version = PuppetLint::VERSION
   s.homepage = 'https://github.com/rodjek/puppet-lint/'
   s.summary = 'Ensure your Puppet manifests conform with the Puppetlabs style guide'
   s.description = 'Checks your Puppet manifests against the Puppetlabs
