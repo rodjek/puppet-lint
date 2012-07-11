@@ -42,6 +42,11 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
     end
   end
 
+  # Public: Check the manifest tokens for any variables in a string that have
+  # not been enclosed by braces ({}) and record a warning for each instance
+  # found.
+  #
+  # Returns nothing.
   check 'variables_not_enclosed' do
     tokens.select { |r|
       r.type == :UNENC_VARIABLE
