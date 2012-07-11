@@ -137,7 +137,7 @@ class PuppetLint
             tokens << new_token(:MLCOMMENT, mlcomment, code[0..i])
             i += mlcomment_size
 
-          elsif indent = chunk[/\A\n(\s+)/m, 1]
+          elsif indent = chunk[/\A\n([ \t]+)/m, 1]
             tokens << new_token(:NEWLINE, '\n', code[0..i])
             tokens << new_token(:INDENT, indent, code[0..i+1])
             i += indent.size + 1
