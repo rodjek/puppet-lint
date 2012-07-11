@@ -2,13 +2,19 @@
 # http://docs.puppetlabs.com/guides/style_guide.html#spacing-indentation--whitespace
 
 class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
+  # Check the raw manifest string for lines containing hard tab characters and
+  # record an error for each instance found.
+  #
+  # Returns nothing.
   check 'hard_tabs' do
-    line_no = 0
-    manifest_lines.each do |line|
-      line_no += 1
-
-      # MUST NOT use literal tab characters
-      notify :error, :message =>  "tab character found", :linenumber => line_no if line.include? "\t"
+    manifest_lines.each_with_index do |line, idx|
+      if line.include? "\t"
+        notify :error, {
+          :message    => 'tab character found',
+          :linenumber => idx + 1,
+          :column     => line.index("\t") + 1,
+        }
+      end
     end
   end
 
