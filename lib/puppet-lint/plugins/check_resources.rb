@@ -2,7 +2,11 @@ class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
   check 'unquoted_resource_title' do
     title_tokens.each do |token|
       if token.type == :NAME
-        notify :warning, :message =>  "unquoted resource title", :linenumber => token.line
+        notify :warning, {
+          :message    => 'unquoted resource title',
+          :linenumber => token.line,
+          :column     => token.column,
+        }
       end
     end
   end
@@ -21,7 +25,7 @@ class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
         if ensure_attr_index > 1
           ensure_token = resource_tokens[ensure_attr_index]
           notify :warning, {
-            :message =>  "ensure found on line but it's not the first attribute",
+            :message    => "ensure found on line but it's not the first attribute",
             :linenumber => ensure_token.line,
             :column     => ensure_token.column,
           }
