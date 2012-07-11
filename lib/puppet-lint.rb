@@ -1,3 +1,4 @@
+require 'puppet-lint/version'
 require 'puppet-lint/lexer'
 require 'puppet-lint/configuration'
 require 'puppet-lint/plugin'
@@ -66,8 +67,6 @@ end
 class PuppetLint::NoCodeError < StandardError; end
 
 class PuppetLint
-  VERSION = '0.1.12'
-
   attr_reader :code, :file
 
   def initialize
