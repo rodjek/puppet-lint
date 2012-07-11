@@ -125,6 +125,11 @@ class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
     end
   end
 
+  # Public: Check the tokens of each File resource instance for an ensure
+  # parameter and record a warning if the value of that parameter looks like
+  # a symlink target (starts with a '/').
+  #
+  # Returns nothing.
   check 'ensure_not_symlink_target' do
     resource_indexes.each do |resource|
       resource_tokens = tokens[resource[:start]..resource[:end]].reject { |r|
