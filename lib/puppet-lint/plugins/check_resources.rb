@@ -43,6 +43,11 @@ class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
     end
   end
 
+  # Public: Check the tokens of each File resource instance for a mode
+  # parameter and if found, record a warning if the value of that parameter is
+  # not a quoted string.
+  #
+  # Returns nothing.
   check 'unquoted_file_mode' do
     resource_indexes.each do |resource|
       resource_tokens = tokens[resource[:start]..resource[:end]].reject { |r|
