@@ -1,4 +1,9 @@
 class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
+  # Public: Check the manifest tokens for any double quoted strings that don't
+  # contain any variables or common escape characters and record a warning for
+  # each instance found.
+  #
+  # Returns nothing.
   check 'double_quoted_strings' do
     tokens.select { |r|
       r.type == :STRING
