@@ -18,6 +18,10 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
     end
   end
 
+  # Public: Check the manifest tokens for double quoted strings that contain
+  # a single variable only and record a warning for each instance found.
+  #
+  # Returns nothing.
   check 'only_variable_string' do
     tokens.each_index do |token_idx|
       token = tokens[token_idx]
