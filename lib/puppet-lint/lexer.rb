@@ -209,8 +209,10 @@ class PuppetLint
           end
           if ss.scan(/\{/).nil?
             var_name = ss.scan(/(::)?([\w-]+::)*[\w-]+/)
-            token_column = column + (ss.pos - var_name.size)
-            tokens << PuppetLint::Token.new(:UNENC_VARIABLE, var_name, line, token_column)
+            unless var_name.nil?
+              token_column = column + (ss.pos - var_name.size)
+              tokens << PuppetLint::Token.new(:UNENC_VARIABLE, var_name, line, token_column)
+            end
           else
             var_name = ss.scan(/(::)?([\w-]+::)*[\w-]+/)
             token_column = column + (ss.pos - var_name.size)
