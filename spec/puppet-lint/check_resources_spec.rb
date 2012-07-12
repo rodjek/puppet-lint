@@ -181,4 +181,17 @@ describe PuppetLint::Plugins::CheckResources do
       should only_have_problem :kind => :warning, :message => "symlink target specified in ensure attr", :linenumber => 3
     }
   end
+
+  # This should really be a lexer test, but I haven't had time to write that
+  # test suite yet.
+  describe 'issue #116' do
+    let(:code) { "
+      $config_file_init = $::operatingsystem ? {
+        /(?i:Debian|Ubuntu|Mint)/ => '/etc/default/foo',
+        default                   => '/etc/sysconfig/foo',
+      }"
+    }
+
+    its(:problems) { should == [] }
+  end
 end
