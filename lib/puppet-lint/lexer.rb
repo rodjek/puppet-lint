@@ -65,7 +65,6 @@ class PuppetLint
       [:SEMIC, /\A(;)/],
       [:QMARK, /\A(\?)/],
       [:BACKSLASH, /\A(\\)/],
-      [:DIV, /\A(\/)/],
       [:TIMES, /\A(\*)/],
     ]
 
@@ -119,11 +118,6 @@ class PuppetLint
             interpolate_string(str_contents, _.count, _.last.length)
             i += str_contents.size + 1
 
-          elsif chunk.match(/\A\//)
-            str_content = StringScanner.new(code[i+1..-1]).scan_until(/[^\\]\//m)
-            tokens << new_token(:REGEX, str_content, code[0..i])
-            i += str_content.size + 1
-
           elsif comment = chunk[/\A(#.*)/, 1]
             comment_size = comment.size
             comment.sub!(/# ?/, '')
@@ -143,6 +137,11 @@ class PuppetLint
             tokens << new_token(:MLCOMMENT, mlcomment, code[0..i])
             i += mlcomment_size
 
+          elsif chunk.match(/\A\//)
+            str_content = StringScanner.new(code[i+1..-1]).scan_until(/[^\\]\//m)
+            tokens << new_token(:REGEX, str_content, code[0..i])
+            i += str_content.size + 1
+
           elsif indent = chunk[/\A\n([ \t]+)/m, 1]
             tokens << new_token(:NEWLINE, '\n', code[0..i])
             tokens << new_token(:INDENT, indent, code[0..i+1])
@@ -154,6 +153,10 @@ class PuppetLint
 
           elsif chunk.match(/\A\n/)
             tokens << new_token(:NEWLINE, '\n', code[0..i])
+            i += 1
+
+          elsif chunk.match(/\A\//)
+            tokens << new_token(:DIV, '/', code[0..i])
             i += 1
 
           else
