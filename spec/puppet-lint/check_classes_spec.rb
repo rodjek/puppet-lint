@@ -258,6 +258,36 @@ describe PuppetLint::Plugins::CheckClasses do
     }
   end
 
+  describe 'module named foo-bar' do
+    let(:code) { 'class foo-bar { }' }
+    let(:fullpath) { '/etc/puppet/modules/foo-bar/manifests/init.pp' }
+
+    its(:problems) {
+      should have_problem :kind => :warning, :message => "foo-bar identifier is not recommended", :linenumber => 1
+      should_not have_problem :kind => :error
+    }
+  end
+
+  describe 'define named foo-bar' do
+    let(:code) { 'define foo::foo-bar { }' }
+    let(:fullpath) { '/etc/puppet/modules/foo/manifests/foo-bar.pp' }
+
+    its(:problems) {
+      should have_problem :kind => :warning, :message => "foo-bar identifier is not recommended", :linenumber => 1
+      should_not have_problem :kind => :error
+    }
+  end
+
+  describe 'class named bar-foo' do
+    let(:code) { 'class foo::bar-foo { }' }
+    let(:fullpath) { '/etc/puppet/modules/foo/manifests/bar-foo.pp' }
+
+    its(:problems) {
+      should have_problem :kind => :warning, :message => "bar-foo identifier is not recommended", :linenumber => 1
+      should_not have_problem :kind => :error
+    }
+  end
+
   describe 'foo included in bar/manifests/init.pp' do
     let(:code) { "
       class bar {
