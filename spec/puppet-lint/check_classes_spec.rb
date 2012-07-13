@@ -320,4 +320,16 @@ describe PuppetLint::Plugins::CheckClasses do
     let(:fullpath) { '/etc/puppet/modules/bar/manifests/init.pp' }
     its(:problems) { should be_empty }
   end
+
+  describe 'issue-101' do
+    let(:code) { "
+      define b (
+        $foo,
+        $bar='',
+        $baz={}
+      ) { }
+    " }
+
+    its(:problems) { should == [] }
+  end
 end
