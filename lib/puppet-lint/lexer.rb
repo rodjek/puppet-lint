@@ -131,9 +131,12 @@ class PuppetLint
             i += slash_comment_size
 
           elsif mlcomment = chunk[/\A(\/\*.*?\*\/)/m, 1]
-            mlcomment_size = mlcomment_size
-            mlcomment.sub!(/^\/\* ?/, '')
-            mlcomment.sub!(/ ?\*\/$/, '')
+            mlcomment_size = mlcomment.size
+            mlcomment.sub!(/\A\/\* ?/, '')
+            mlcomment.sub!(/ ?\*\/\Z/, '')
+            mlcomment.gsub!(/^ ?\* ?/, '')
+            mlcomment.gsub!(/\n/, ' ')
+            mlcomment.strip!
             tokens << new_token(:MLCOMMENT, mlcomment, code[0..i])
             i += mlcomment_size
 
