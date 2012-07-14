@@ -141,7 +141,7 @@ class PuppetLint
             tokens << new_token(:MLCOMMENT, mlcomment, code[0..i])
             i += mlcomment_size
 
-          elsif chunk.match(/\A\//)
+          elsif chunk.match(/\A\/.*?\//)
             str_content = StringScanner.new(code[i+1..-1]).scan_until(/[^\\]\//m)
             tokens << new_token(:REGEX, str_content, code[0..i])
             i += str_content.size + 1
