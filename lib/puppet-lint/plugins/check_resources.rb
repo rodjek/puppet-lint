@@ -68,7 +68,7 @@ class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
           attr_token = resource_tokens[resource_token_idx]
           if attr_token.type == :NAME and attr_token.value == 'mode'
             value_token = resource_tokens[resource_token_idx + 2]
-            if value_token.type == :NAME
+            if [:NAME, :NUMBER].include? value_token.type
               notify :warning, {
                 :message    => 'unquoted file mode',
                 :linenumber => value_token.line,

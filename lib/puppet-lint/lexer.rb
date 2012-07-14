@@ -1,5 +1,6 @@
 require 'pp'
 require 'strscan'
+require 'puppet-lint/lexer/token'
 
 class PuppetLint
   class Lexer
@@ -25,7 +26,7 @@ class PuppetLint
 
     KNOWN_TOKENS = [
       [:CLASSREF, /\A(((::){0,1}[A-Z][-\w]*)+)/],
-      [:NUMBER, /\A(?:0[xX][0-9A-Fa-f]+|0?\d+(?:\.\d+)?(?:[eE]-?\d+)?)\b/],
+      [:NUMBER, /\A\b((?:0[xX][0-9A-Fa-f]+|0?\d+(?:\.\d+)?(?:[eE]-?\d+)?))\b/],
       [:NAME, /\A(((::)?[a-z0-9][-\w]*)(::[a-z0-9][-\w]*)*)/],
       [:LBRACK, /\A(\[)/],
       [:RBRACK, /\A(\])/],
@@ -108,9 +109,10 @@ class PuppetLint
             tokens << new_token(:VARIABLE, var_name, code[0..i])
             i += var_name.size + 1
 
-          elsif sstring = chunk[/\A'(.*?)'/, 1]
-            tokens << new_token(:SSTRING, sstring, code[0..i])
-            i += sstring.size + 2
+          elsif chunk.match(/\A'(.*?)'/)
+            str_content = StringScanner.new(code[i+1..-1]).scan_until(/[^\\]'/)
+            tokens << new_token(:SSTRING, str_content[0..-2], code[0..i])
+            i += str_content.size + 1
 
           elsif chunk.match(/\A"/)
             str_contents = StringScanner.new(code[i+1..-1]).scan_until(/[^\\]"/m)
@@ -131,13 +133,16 @@ class PuppetLint
             i += slash_comment_size
 
           elsif mlcomment = chunk[/\A(\/\*.*?\*\/)/m, 1]
-            mlcomment_size = mlcomment_size
-            mlcomment.sub!(/^\/\* ?/, '')
-            mlcomment.sub!(/ ?\*\/$/, '')
+            mlcomment_size = mlcomment.size
+            mlcomment.sub!(/\A\/\* ?/, '')
+            mlcomment.sub!(/ ?\*\/\Z/, '')
+            mlcomment.gsub!(/^ ?\* ?/, '')
+            mlcomment.gsub!(/\n/, ' ')
+            mlcomment.strip!
             tokens << new_token(:MLCOMMENT, mlcomment, code[0..i])
             i += mlcomment_size
 
-          elsif chunk.match(/\A\//)
+          elsif chunk.match(/\A\/.*?\//)
             str_content = StringScanner.new(code[i+1..-1]).scan_until(/[^\\]\//m)
             tokens << new_token(:REGEX, str_content, code[0..i])
             i += str_content.size + 1
@@ -175,7 +180,7 @@ class PuppetLint
       line_no = lines.empty? ? 1 : lines.count
       column = lines.empty? ? 1 : lines.last.length
 
-      PuppetLint::Token.new(type, value, line_no, column)
+      Token.new(type, value, line_no, column)
     end
 
     def get_string_segment(string, terminators)
@@ -194,54 +199,39 @@ class PuppetLint
       until value.nil?
         if terminator == "\""
           if first
-            tokens << PuppetLint::Token.new(:STRING, value, line, column) 
+            tokens << Token.new(:STRING, value, line, column)
             first = false
           else
             line += value.count("\n")
             token_column = column + (ss.pos - value.size)
-            tokens << PuppetLint::Token.new(:DQPOST, value, line, token_column)
+            tokens << Token.new(:DQPOST, value, line, token_column)
           end
         else
           if first
-            tokens << PuppetLint::Token.new(:DQPRE, value, line, column)
+            tokens << Token.new(:DQPRE, value, line, column)
             first = false
           else
             line += value.count("\n")
             token_column = column + (ss.pos - value.size)
-            tokens << PuppetLint::Token.new(:DQMID, value, line, token_column)
+            tokens << Token.new(:DQMID, value, line, token_column)
           end
           if ss.scan(/\{/).nil?
             var_name = ss.scan(/(::)?([\w-]+::)*[\w-]+/)
             unless var_name.nil?
               token_column = column + (ss.pos - var_name.size)
-              tokens << PuppetLint::Token.new(:UNENC_VARIABLE, var_name, line, token_column)
+              tokens << Token.new(:UNENC_VARIABLE, var_name, line, token_column)
             end
           else
             var_name = ss.scan(/(::)?([\w-]+::)*[\w-]+/)
             unless var_name.nil?
               token_column = column + (ss.pos - var_name.size)
-              tokens << PuppetLint::Token.new(:VARIABLE, var_name, line, token_column)
+              tokens << Token.new(:VARIABLE, var_name, line, token_column)
               ss.scan(/\}/)
             end
           end
         end
         value, terminator = get_string_segment(ss, '"$')
       end
-    end
-  end
-
-  class Token
-    attr_reader :type, :value, :line, :column
-
-    def initialize(type, value, line, column)
-      @value = value
-      @type = type
-      @line = line
-      @column = column
-    end
-
-    def inspect
-      "<Token #{@type.inspect} (#{@value}) @#{@line}:#{@column}>"
     end
   end
 end
