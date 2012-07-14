@@ -1,5 +1,6 @@
 require 'pp'
 require 'strscan'
+require 'puppet-lint/lexer/token'
 
 class PuppetLint
   class Lexer
@@ -179,7 +180,7 @@ class PuppetLint
       line_no = lines.empty? ? 1 : lines.count
       column = lines.empty? ? 1 : lines.last.length
 
-      PuppetLint::Token.new(type, value, line_no, column)
+      Token.new(type, value, line_no, column)
     end
 
     def get_string_segment(string, terminators)
@@ -198,54 +199,39 @@ class PuppetLint
       until value.nil?
         if terminator == "\""
           if first
-            tokens << PuppetLint::Token.new(:STRING, value, line, column) 
+            tokens << Token.new(:STRING, value, line, column)
             first = false
           else
             line += value.count("\n")
             token_column = column + (ss.pos - value.size)
-            tokens << PuppetLint::Token.new(:DQPOST, value, line, token_column)
+            tokens << Token.new(:DQPOST, value, line, token_column)
           end
         else
           if first
-            tokens << PuppetLint::Token.new(:DQPRE, value, line, column)
+            tokens << Token.new(:DQPRE, value, line, column)
             first = false
           else
             line += value.count("\n")
             token_column = column + (ss.pos - value.size)
-            tokens << PuppetLint::Token.new(:DQMID, value, line, token_column)
+            tokens << Token.new(:DQMID, value, line, token_column)
           end
           if ss.scan(/\{/).nil?
             var_name = ss.scan(/(::)?([\w-]+::)*[\w-]+/)
             unless var_name.nil?
               token_column = column + (ss.pos - var_name.size)
-              tokens << PuppetLint::Token.new(:UNENC_VARIABLE, var_name, line, token_column)
+              tokens << Token.new(:UNENC_VARIABLE, var_name, line, token_column)
             end
           else
             var_name = ss.scan(/(::)?([\w-]+::)*[\w-]+/)
             unless var_name.nil?
               token_column = column + (ss.pos - var_name.size)
-              tokens << PuppetLint::Token.new(:VARIABLE, var_name, line, token_column)
+              tokens << Token.new(:VARIABLE, var_name, line, token_column)
               ss.scan(/\}/)
             end
           end
         end
         value, terminator = get_string_segment(ss, '"$')
       end
-    end
-  end
-
-  class Token
-    attr_reader :type, :value, :line, :column
-
-    def initialize(type, value, line, column)
-      @value = value
-      @type = type
-      @line = line
-      @column = column
-    end
-
-    def inspect
-      "<Token #{@type.inspect} (#{@value}) @#{@line}:#{@column}>"
     end
   end
 end
