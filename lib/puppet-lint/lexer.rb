@@ -108,9 +108,10 @@ class PuppetLint
             tokens << new_token(:VARIABLE, var_name, code[0..i])
             i += var_name.size + 1
 
-          elsif sstring = chunk[/\A'(.*?)'/, 1]
-            tokens << new_token(:SSTRING, sstring, code[0..i])
-            i += sstring.size + 2
+          elsif chunk.match(/\A'(.*?)'/)
+            str_content = StringScanner.new(code[i+1..-1]).scan_until(/[^\\]'/)
+            tokens << new_token(:SSTRING, str_content[0..-2], code[0..i])
+            i += str_content.size + 1
 
           elsif chunk.match(/\A"/)
             str_contents = StringScanner.new(code[i+1..-1]).scan_until(/[^\\]"/m)
