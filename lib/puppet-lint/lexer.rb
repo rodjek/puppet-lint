@@ -25,7 +25,7 @@ class PuppetLint
 
     KNOWN_TOKENS = [
       [:CLASSREF, /\A(((::){0,1}[A-Z][-\w]*)+)/],
-      [:NUMBER, /\A(?:0[xX][0-9A-Fa-f]+|0?\d+(?:\.\d+)?(?:[eE]-?\d+)?)\b/],
+      [:NUMBER, /\A\b((?:0[xX][0-9A-Fa-f]+|0?\d+(?:\.\d+)?(?:[eE]-?\d+)?))\b/],
       [:NAME, /\A(((::)?[a-z0-9][-\w]*)(::[a-z0-9][-\w]*)*)/],
       [:LBRACK, /\A(\[)/],
       [:RBRACK, /\A(\])/],
