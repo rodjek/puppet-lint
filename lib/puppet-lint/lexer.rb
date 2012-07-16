@@ -110,12 +110,12 @@ class PuppetLint
             i += var_name.size + 1
 
           elsif chunk.match(/\A'(.*?)'/)
-            str_content = StringScanner.new(code[i+1..-1]).scan_until(/[^\\]'/)
+            str_content = StringScanner.new(code[i+1..-1]).scan_until(/(\A|[^\\])'/)
             tokens << new_token(:SSTRING, str_content[0..-2], code[0..i])
             i += str_content.size + 1
 
           elsif chunk.match(/\A"/)
-            str_contents = StringScanner.new(code[i+1..-1]).scan_until(/[^\\]"/m)
+            str_contents = StringScanner.new(code[i+1..-1]).scan_until(/(\A|[^\\])"/m)
             _ = code[0..i].split("\n")
             interpolate_string(str_contents, _.count, _.last.length)
             i += str_contents.size + 1
@@ -143,7 +143,7 @@ class PuppetLint
             i += mlcomment_size
 
           elsif chunk.match(/\A\/.*?\//)
-            str_content = StringScanner.new(code[i+1..-1]).scan_until(/[^\\]\//m)
+            str_content = StringScanner.new(code[i+1..-1]).scan_until(/(\A|[^\\])\//m)
             tokens << new_token(:REGEX, str_content, code[0..i])
             i += str_content.size + 1
 

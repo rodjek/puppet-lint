@@ -236,5 +236,11 @@ describe PuppetLint::Lexer do
       token.type.should == :SSTRING
       token.value.should == 'single quoted string with "\\\\"'
     end
+
+    it "should match an empty string" do
+      token = @lexer.tokenise("''").first
+      token.type.should == :SSTRING
+      token.value.should == ''
+    end
   end
 end
