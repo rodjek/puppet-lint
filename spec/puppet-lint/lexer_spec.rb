@@ -56,6 +56,168 @@ describe PuppetLint::Lexer do
   end
 
   context '#interpolate_string' do
+    it 'should handle a string with no variables' do
+      @lexer.interpolate_string('foo bar baz"',1, 1)
+      token = @lexer.tokens.first
+
+      @lexer.tokens.length.should == 1
+      token.type.should == :STRING
+      token.value.should == 'foo bar baz'
+      token.line.should == 1
+      token.column.should == 1
+    end
+
+    it 'should handle a string with a single variable and suffix' do
+      @lexer.interpolate_string('${foo}bar"', 1, 1)
+      tokens = @lexer.tokens
+
+      tokens.length.should == 3
+
+      tokens[0].type.should == :DQPRE
+      tokens[0].value.should == ''
+      tokens[0].line.should == 1
+      tokens[0].column.should == 1
+
+      tokens[1].type.should == :VARIABLE
+      tokens[1].value.should == 'foo'
+      tokens[1].line.should == 1
+      tokens[1].column.should == 3
+
+      tokens[2].type.should == :DQPOST
+      tokens[2].value.should == 'bar'
+      tokens[2].line.should == 1
+      tokens[2].column.should == 8
+    end
+
+    it 'should handle a string with a single variable and surrounding text' do
+      @lexer.interpolate_string('foo${bar}baz"', 1, 1)
+      tokens = @lexer.tokens
+
+      tokens.length.should == 3
+
+      tokens[0].type.should == :DQPRE
+      tokens[0].value.should == 'foo'
+      tokens[0].line.should == 1
+      tokens[0].column.should == 1
+
+      tokens[1].type.should == :VARIABLE
+      tokens[1].value.should == 'bar'
+      tokens[1].line.should == 1
+      tokens[1].column.should == 6
+
+      tokens[2].type.should == :DQPOST
+      tokens[2].value.should == 'baz'
+      tokens[2].line.should == 1
+      tokens[2].column.should == 11
+    end
+
+    it 'should handle a string with multiple variables and surrounding text' do
+      @lexer.interpolate_string('foo${bar}baz${gronk}meh"', 1, 1)
+      tokens = @lexer.tokens
+
+      tokens.length.should == 5
+
+      tokens[0].type.should == :DQPRE
+      tokens[0].value.should == 'foo'
+      tokens[0].line.should == 1
+      tokens[0].column.should == 1
+
+      tokens[1].type.should == :VARIABLE
+      tokens[1].value.should == 'bar'
+      tokens[1].line.should == 1
+      tokens[1].column.should == 6
+
+      tokens[2].type.should == :DQMID
+      tokens[2].value.should == 'baz'
+      tokens[2].line.should == 1
+      tokens[2].column.should == 11
+
+      tokens[3].type.should == :VARIABLE
+      tokens[3].value.should == 'gronk'
+      tokens[3].line.should == 1
+      tokens[3].column.should == 15
+
+      tokens[4].type.should == :DQPOST
+      tokens[4].value.should == 'meh'
+      tokens[4].line.should == 1
+      tokens[4].column.should == 22
+    end
+
+    it 'should handle a string with only a single variable' do
+      @lexer.interpolate_string('${bar}"', 1, 1)
+      tokens = @lexer.tokens
+
+      tokens.length.should == 3
+
+      tokens[0].type.should == :DQPRE
+      tokens[0].value.should == ''
+      tokens[0].line.should == 1
+      tokens[0].column.should == 1
+
+      tokens[1].type.should == :VARIABLE
+      tokens[1].value.should == 'bar'
+      tokens[1].line.should == 1
+      tokens[1].column.should == 3
+
+      tokens[2].type.should == :DQPOST
+      tokens[2].value.should == ''
+      tokens[2].line.should == 1
+      tokens[2].column.should == 8
+    end
+
+    it 'should handle a string with only many variables' do
+      @lexer.interpolate_string('${bar}${gronk}"', 1, 1)
+      tokens = @lexer.tokens
+
+      tokens.length.should == 5
+
+      tokens[0].type.should == :DQPRE
+      tokens[0].value.should == ''
+      tokens[0].line.should == 1
+      tokens[0].column.should == 1
+
+      tokens[1].type.should == :VARIABLE
+      tokens[1].value.should == 'bar'
+      tokens[1].line.should == 1
+      tokens[1].column.should == 3
+
+      tokens[2].type.should == :DQMID
+      tokens[2].value.should == ''
+      tokens[2].line.should == 1
+      tokens[2].column.should == 8
+
+      tokens[3].type.should == :VARIABLE
+      tokens[3].value.should == 'gronk'
+      tokens[3].line.should == 1
+      tokens[3].column.should == 9
+
+      tokens[4].type.should == :DQPOST
+      tokens[4].value.should == ''
+      tokens[4].line.should == 1
+      tokens[4].column.should == 16
+    end
+
+    it 'should handle a string with only an unenclosed variable' do
+      @lexer.interpolate_string('$foo"', 1, 1)
+      tokens = @lexer.tokens
+
+      tokens.length.should == 3
+
+      tokens[0].type.should == :DQPRE
+      tokens[0].value.should == ''
+      tokens[0].line.should == 1
+      tokens[0].column.should == 1
+
+      tokens[1].type.should == :UNENC_VARIABLE
+      tokens[1].value.should == 'foo'
+      tokens[1].line.should == 1
+      tokens[1].column.should == 2
+
+      tokens[2].type.should == :DQPOST
+      tokens[2].value.should == ''
+      tokens[2].line.should == 1
+      tokens[2].column.should == 6
+    end
   end
 
   [
