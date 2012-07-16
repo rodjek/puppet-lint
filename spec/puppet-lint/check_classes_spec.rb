@@ -58,6 +58,32 @@ describe PuppetLint::Plugins::CheckClasses do
     }
   end
 
+  describe 'include outside class' do
+    let(:code) { "
+      include 
+      class foo {
+      }"
+    }
+
+  its(:problems) {
+      should have_problem :kind => :warning, :message => "include outside class", :linenumber => 2
+      should_not have_problem :kind => :error
+    }
+  end
+
+  describe 'include outside node' do
+    let(:code) { "
+      include 
+      node foo {
+      }"
+    }
+
+  its(:problems) {
+      should have_problem :kind => :warning, :message => "include outside node", :linenumber => 2
+      should_not have_problem :kind => :error
+    }
+  end
+
   describe 'class inheriting from its namespace' do
     let(:code) { "class foo::bar inherits foo { }" }
 

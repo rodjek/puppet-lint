@@ -1,4 +1,5 @@
 class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
+
   if Puppet::PUPPETVERSION !~ /^0\.2/
     check 'right_to_left_relationship' do
       tokens.select { |r| r.first == :OUT_EDGE }.each do |token|
@@ -84,6 +85,26 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
         if token.first == :DEFINE
           notify :warning, :message =>  "define defined inside a class", :linenumber => token.last[:line]
         end
+      end
+    end
+  end
+
+  check 'top_level_include' do    
+    include_indexes.each do |inc_idx|
+      outside_class = false
+      outside_node = false
+      class_indexes.each do |class_idx|       
+        if inc_idx < class_idx[:start] or inc_idx > class_idx[:end] 
+          outside_class = true
+        end        
+      end
+      node_indexes.each do |node_idx|       
+        if inc_idx < node_idx[:start] or inc_idx > node_idx[:end] 
+          outside_node = true
+        end
+      end
+      if outside_class and outside_node 
+        notify :error, :message =>  "top level include detected", :linenumber => tokens[inc_idx].last[:line]
       end
     end
   end

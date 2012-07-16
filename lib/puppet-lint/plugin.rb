@@ -76,6 +76,8 @@ class PuppetLint::CheckPlugin
     @resource_indexes = []
     @class_indexes = []
     @defined_type_indexes = []
+    @include_indexes = []
+    @node_indexes = []
 
     @tokens.each_index do |token_idx|
       if @tokens[token_idx].first == :COLON
@@ -93,7 +95,9 @@ class PuppetLint::CheckPlugin
         if @tokens[token_idx+1].first != :LBRACE
           @resource_indexes << {:start => token_idx+1, :end => @tokens[token_idx+1..-1].index { |r| [:SEMIC, :RBRACE].include? r.first }+token_idx}
         end
-      elsif [:CLASS, :DEFINE].include? @tokens[token_idx].first
+      elsif @tokens[token_idx].first == :NAME and @tokens[token_idx].last[:value] == "include"
+        @include_indexes << token_idx
+      elsif [:CLASS, :DEFINE, :NODE].include? @tokens[token_idx].first
         lbrace_count = 0
         @tokens[token_idx+1..-1].each_index do |class_token_idx|
           idx = class_token_idx + token_idx
@@ -104,6 +108,8 @@ class PuppetLint::CheckPlugin
             if lbrace_count == 0
               if @tokens[token_idx].first == :CLASS and @tokens[token_idx + 1].first != :LBRACE
                 @class_indexes << {:start => token_idx, :end => idx}
+              elsif @tokens[token_idx].first == :NODE and @tokens[token_idx + 1].first != :LBRACE
+                @node_indexes << {:start => token_idx, :end => idx}
               end
               @defined_type_indexes << {:start => token_idx, :end => idx} if @tokens[token_idx].first == :DEFINE
               break
@@ -143,6 +149,16 @@ class PuppetLint::CheckPlugin
   def class_indexes
     filter_tokens if @class_indexes.nil?
     @class_indexes
+  end
+
+  def node_indexes
+    filter_tokens if @node_indexes.nil?
+    @node_indexes
+  end
+
+  def include_indexes
+    filter_tokens if @include_indexes.nil?
+    @include_indexes
   end
 
   def defined_type_indexes
