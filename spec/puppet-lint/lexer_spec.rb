@@ -5,6 +5,33 @@ describe PuppetLint::Lexer do
     @lexer = PuppetLint::Lexer.new
   end
 
+  context 'new_token' do
+    it 'should calculate the line number for an empty string' do
+      token = @lexer.new_token(:TEST, 'test', '')
+      token.line.should == 1
+    end
+
+    it 'should calculate the line number for a multi line string' do
+      token = @lexer.new_token(:TEST, 'test', "foo\nbar")
+      token.line.should == 2
+    end
+
+    it 'should calculate the column number for an empty string' do
+      token = @lexer.new_token(:TEST, 'test', '')
+      token.column.should == 1
+    end
+
+    it 'should calculate the column number for a single line string' do
+      token = @lexer.new_token(:TEST, 'test', 'this is a test')
+      token.column.should == 14
+    end
+
+    it 'should calculate the column number for a multi line string' do
+      token = @lexer.new_token(:TEST, 'test', "foo\nbar\nbaz\ngronk")
+      token.column.should == 5
+    end
+  end
+
   [
     'case',
     'class',
