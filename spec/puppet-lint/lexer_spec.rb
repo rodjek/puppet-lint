@@ -5,7 +5,7 @@ describe PuppetLint::Lexer do
     @lexer = PuppetLint::Lexer.new
   end
 
-  context 'new_token' do
+  context '#new_token' do
     it 'should calculate the line number for an empty string' do
       token = @lexer.new_token(:TEST, 'test', '')
       token.line.should == 1
@@ -30,6 +30,32 @@ describe PuppetLint::Lexer do
       token = @lexer.new_token(:TEST, 'test', "foo\nbar\nbaz\ngronk")
       token.column.should == 5
     end
+  end
+
+  context '#get_string_segment' do
+    it 'should get a segment with a single terminator' do
+      data = StringScanner.new('foo"bar')
+      value, terminator = @lexer.get_string_segment(data, '"')
+      value.should == 'foo'
+      terminator.should == '"'
+    end
+
+    it 'should get a segment with multiple terminators' do
+      data = StringScanner.new('foo"bar$baz')
+      value, terminator = @lexer.get_string_segment(data, "'$")
+      value.should == 'foo"bar'
+      terminator.should == '$'
+    end
+
+    it 'should not get a segment with an escaped terminator' do
+      data = StringScanner.new('foo"bar')
+      value, terminator = @lexer.get_string_segment(data, '$')
+      value.should be_nil
+      terminator.should be_nil
+    end
+  end
+
+  context '#interpolate_string' do
   end
 
   [
