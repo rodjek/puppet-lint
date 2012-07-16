@@ -50,15 +50,27 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
   check 'parameter_order' do
     (class_indexes + defined_type_indexes).each do |class_idx|
       token_idx = class_idx[:start]
-      header_end_idx = tokens[token_idx..-1].index { |r| r.type == :LBRACE }
-      header_tokens = tokens[token_idx..header_end_idx].reject { |r|
-        formatting_tokens.include?(r.type)
-      }
-      lparen_idx = header_tokens.index { |r| r.type == :LPAREN }
-      rparen_idx = header_tokens.rindex { |r| r.type == :RPAREN }
+      depth = 0
+      lparen_idx = nil
+      rparen_idx = nil
+      tokens[token_idx..-1].each_index do |t|
+        idx = token_idx + t
+        if tokens[idx].type == :LPAREN
+          depth += 1
+          lparen_idx = idx if depth == 1
+        elsif tokens[idx].type == :RPAREN
+          depth -= 1
+          if depth == 0
+            rparen_idx = idx
+            break
+          end
+        end
+      end
 
       unless lparen_idx.nil? or rparen_idx.nil?
-        param_tokens = header_tokens[lparen_idx..rparen_idx]
+        param_tokens = tokens[lparen_idx..rparen_idx].reject { |r|
+          formatting_tokens.include? r.type
+        }
         param_tokens.each_index do |param_tokens_idx|
           this_token = param_tokens[param_tokens_idx]
           next_token = param_tokens[param_tokens_idx+1]
@@ -169,14 +181,22 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
     (class_indexes + defined_type_indexes).each do |idx|
       object_tokens = tokens[idx[:start]..idx[:end]]
       object_tokens.reject! { |r| formatting_tokens.include?(r.type) }
+      depth = 0
+      lparen_idx = nil
+      rparen_idx = nil
+      object_tokens.each_index do |t|
+        if object_tokens[t].type == :LPAREN
+          depth += 1
+          lparen_idx = t if depth == 1
+        elsif object_tokens[t].type == :RPAREN
+          depth -= 1
+          if depth == 0
+            rparen_idx = t
+            break
+          end
+        end
+      end
       referenced_variables = []
-      header_end_idx = object_tokens.index { |r| r.type == :LBRACE }
-      lparen_idx = object_tokens[0..header_end_idx].index { |r|
-        r.type == :LPAREN
-      }
-      rparen_idx = object_tokens[0..header_end_idx].rindex { |r|
-        r.type == :RPAREN
-      }
 
       unless lparen_idx.nil? or rparen_idx.nil?
         param_tokens = object_tokens[lparen_idx..rparen_idx]
