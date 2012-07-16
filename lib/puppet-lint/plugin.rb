@@ -156,13 +156,18 @@ class PuppetLint::CheckPlugin
       tokens.each_index do |token_idx|
         if tokens[token_idx].type == :CLASS
           depth = 0
+          in_params = false
           tokens[token_idx+1..-1].each_index do |class_token_idx|
             idx = class_token_idx + token_idx + 1
-            if tokens[idx].type == :LBRACE
-              depth += 1
+            if tokens[idx].type == :LPAREN
+              in_params = true
+            elsif tokens[idx].type == :RPAREN
+              in_params = false
+            elsif tokens[idx].type == :LBRACE
+              depth += 1 unless in_params
             elsif tokens[idx].type == :RBRACE
-              depth -= 1
-              if depth == 0
+              depth -= 1 unless in_params
+              if depth == 0 && ! in_params
                 if tokens[token_idx..-1].reject { |r|
                   r.type == :WHITESPACE
                 }[1].type != :LBRACE
@@ -192,13 +197,18 @@ class PuppetLint::CheckPlugin
       tokens.each_index do |token_idx|
         if tokens[token_idx].type == :DEFINE
           depth = 0
+          in_params = false
           tokens[token_idx+1..-1].each_index do |define_token_idx|
             idx = define_token_idx + token_idx + 1
-            if tokens[idx].type == :LBRACE
-              depth += 1
+            if tokens[idx].type == :LPAREN
+              in_params = true
+            elsif tokens[idx].type == :RPAREN
+              in_params = false
+            elsif tokens[idx].type == :LBRACE
+              depth += 1 unless in_params
             elsif tokens[idx].type == :RBRACE
-              depth -= 1
-              if depth == 0
+              depth -= 1 unless in_params
+              if depth == 0 && ! in_params
                 result << {:start => token_idx, :end => idx}
                 break
               end
