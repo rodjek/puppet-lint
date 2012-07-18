@@ -25,6 +25,10 @@ opts = OptionParser.new do |opts|
     exit 0
   end
 
+  opts.on("--puppet-lintrc FILENAME", "Load rcfile from here.") do |filename|
+    PuppetLint.configuration.rc_file = filename
+  end
+
   opts.on("--with-filename", "Display the filename before the warning") do
     PuppetLint.configuration.with_filename = true
   end
@@ -67,11 +71,15 @@ end
 
 begin
   opts.parse!
+  opts.load(PuppetLint.configuration.rc_file)
+  opts.parse!
 rescue OptionParser::InvalidOption
   puts "puppet-lint: #{$!.message}"
   puts "puppet-lint: try 'puppet-lint --help' for more information"
   exit
 end
+
+PuppetLint.configuration.send("disable_80chars")
 
 if ARGV[0].nil?
   puts "puppet-lint: no file specified"
@@ -85,17 +93,19 @@ begin
     Dir.chdir(path)
     path = Dir.glob('**/*.pp')
   else
-    path = [path]
+    path = ARGV
   end
 
-  path.each do |f|
+  found_errors = false
+  path.uniq.each do |f|
     l = PuppetLint.new
     l.file = f
     l.run
     if l.errors? or (l.warnings? and PuppetLint.configuration.fail_on_warnings)
-      exit 1
+      found_errors = true
     end
   end
+  exit 1 if found_errors
 
 rescue PuppetLint::NoCodeError
   puts "puppet-lint: no file specified or specified file does not exist"
