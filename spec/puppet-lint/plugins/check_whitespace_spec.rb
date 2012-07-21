@@ -126,4 +126,15 @@ describe PuppetLint::Plugins::CheckWhitespace do
 
     its(:problems) { should be_empty }
   end
+
+  describe 'resource with unaligned => in commented line' do
+    let(:code) { "
+      file { 'foo':
+        ensure => directory,
+        # purge => true,
+      }"
+    }
+
+    its(:problems) { should be_empty }
+  end
 end
