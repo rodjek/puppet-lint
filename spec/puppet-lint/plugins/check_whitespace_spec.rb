@@ -117,4 +117,13 @@ describe PuppetLint::Plugins::CheckWhitespace do
 
     its(:problems) { should be_empty }
   end
+
+  describe 'multiple single line resources' do
+    let(:code) { "
+      file { 'foo': ensure => file }
+      package { 'bar': ensure => present }"
+    }
+
+    its(:problems) { should be_empty }
+  end
 end
