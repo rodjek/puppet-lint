@@ -69,64 +69,47 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
     end
   end
 
-  # Check the raw manifest strings for any arrows (=>) in a grouping ({}) that
-  # are not aligned with other arrows in that grouping.
+  # Check the manifest tokens for any arrows (=>) in a grouping ({}) that are
+  # not aligned with other arrows in that grouping.
   #
   # Returns nothing.
   check 'arrow_alignment' do
-    in_resource = false
-    selectors = []
-    resource_indent_length = 0
-    manifest_lines.each_with_index do |line, idx|
-      # SHOULD align fat comma arrows (=>) within blocks of attributes
-      if line =~ /^( +.+? +)=>/
-        line_indent = $1
-        if in_resource
-          if selectors.count > 0
-            if selectors.last == 0
-              selectors[-1] = line_indent.length
-            end
+    resource_indexes.each do |idx|
+      indent_depth = [nil]
+      resource_tokens = tokens[idx[:start]..idx[:end]]
+      resource_tokens.reject! do |token|
+        [:COMMENT, :SLASH_COMMENT, :MLCOMMENT].include? token.type
+      end
 
-            # check for length first
-            unless line_indent.length == selectors.last
-              notify :warning, {
-                :message    => '=> is not properly aligned for selector',
-                :linenumber => idx + 1,
-                :column     => line_indent.length,
-              }
-            end
+      # If this is a single line resource, skip it
+      next if resource_tokens.select { |r| r.type == :NEWLINE }.empty?
 
-            # then for a new selector or selector finish
-            if line.strip.end_with? '{'
-              selectors.push(0)
-            elsif line.strip =~ /\}[,;]?$/
-              selectors.pop
-            end
-          else
-            unless line_indent.length == resource_indent_length
-              notify :warning, {
-                :message    => '=> is not properly aligned for resource',
-                :linenumber => idx + 1,
-                :column     => line_indent.length,
-              }
-            end
-
-            if line.strip.end_with? '{'
-              selectors.push(0)
-            end
+      resource_tokens.each_with_index do |token, idx|
+        if token.type == :FARROW
+          line_start_idx = resource_tokens[0..idx].rindex { |r|
+            r.type == :NEWLINE
+          } + 1
+          indent_length = 0
+          resource_tokens[line_start_idx..idx].each do |line_token|
+            indent_length += line_token.value.length
           end
-        else
-          resource_indent_length = line_indent.length
-          in_resource = true
-          if line.strip.end_with? '{'
-            selectors.push(0)
+
+          if indent_depth.last.nil?
+            indent_depth[-1] = indent_length
           end
+
+          unless indent_depth.last == indent_length
+            notify :warning, {
+              :message    => '=> is not properly aligned',
+              :linenumber => token.line,
+              :column     => token.column,
+            }
+          end
+        elsif token.type == :LBRACE
+          indent_depth.push(nil)
+        elsif token.type == :RBRACE
+          indent_depth.pop
         end
-      elsif line.strip =~ /\}[,;]?$/ and selectors.count > 0
-        selectors.pop
-      else
-        in_resource = false
-        resource_indent_length = 0
       end
     end
   end
