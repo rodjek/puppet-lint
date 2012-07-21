@@ -129,12 +129,22 @@ class PuppetLint::CheckPlugin
           next_tokens = tokens[(token_idx + 1)..-1].reject { |r|
             formatting_tokens.include? r.type
           }
+          depth = 1
           if next_tokens.first.type != :LBRACE
-            end_idx = tokens[(token_idx + 1)..-1].index { |r|
-              [:SEMIC, :RBRACE].include? r.type
-            } + token_idx
-
-            result << {:start => token_idx + 1, :end => end_idx}
+            tokens[(token_idx + 1)..-1].each_index do |idx|
+              real_idx = token_idx + idx + 1
+              if tokens[real_idx].type == :LBRACE
+                depth += 1
+              elsif [:SEMIC, :RBRACE].include? tokens[real_idx].type
+                unless tokens[real_idx].type == :SEMIC && depth > 1
+                  depth -= 1
+                  if depth == 0
+                    result << {:start => token_idx + 1, :end => real_idx}
+                    break
+                  end
+                end
+              end
+            end
           end
         end
       end
