@@ -62,7 +62,9 @@ opts = OptionParser.new do |opts|
     end
   end
 
-  opts.load(File.expand_path("~/.puppet-lintrc")) unless opts.load(".puppet-lintrc")
+  opts.load('/etc/puppet-lint.rc')
+  opts.load(File.expand_path('~/.puppet-lint.rc'))
+  opts.load('.puppet-lint.rc')
 end
 
 begin
