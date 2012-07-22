@@ -142,7 +142,7 @@ class PuppetLint
             tokens << new_token(:MLCOMMENT, mlcomment, code[0..i])
             i += mlcomment_size
 
-          elsif chunk.match(/\A\/.*?\//)
+          elsif chunk.match(/\A\/.*?\//) && possible_regex?
             str_content = StringScanner.new(code[i+1..-1]).scan_until(/(\A|[^\\])\//m)
             tokens << new_token(:REGEX, str_content[0..-2], code[0..i])
             i += str_content.size + 1
@@ -173,6 +173,27 @@ class PuppetLint
       end
 
       tokens
+    end
+
+    def possible_regex?
+      prev_token = tokens.reject { |r|
+        [
+          :WHITESPACE,
+          :NEWLINE,
+          :COMMENT,
+          :MLCOMMENT,
+          :SLASH_COMMENT,
+          :INDENT,
+        ].include? r.type
+      }.last
+
+      return true if prev_token.nil?
+
+      if [:NODE, :LBRACE, :RBRACE, :MATCH, :NOMATCH, :COMMA].include? prev_token.type
+        true
+      else
+        false
+      end
     end
 
     def new_token(type, value, chunk)
