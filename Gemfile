@@ -6,3 +6,4 @@ gem 'rake'
 gem 'rspec'
 gem 'rdoc'
 gem 'puppet', puppetversion
+gem 'rcov'

@@ -6,6 +6,11 @@ task :default => :test
 
 RSpec::Core::RakeTask.new(:test)
 
+RSpec::Core::RakeTask.new(:cov) do |t|
+  t.rcov = true
+  t.rcov_opts = '--exclude "spec" --xrefs'
+end
+
 ### RDOC Tasks ###
 require 'rdoc'
 if (RDoc::VERSION.split('.') <=> ['2','4','2']) >= 0

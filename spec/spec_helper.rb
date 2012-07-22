@@ -1,3 +1,4 @@
+require 'rspec/autorun'
 require 'puppet-lint'
 
 #class PuppetLint::Warning < Exception; end

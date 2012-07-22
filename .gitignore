@@ -3,3 +3,4 @@
 .rbenv-version
 Gemfile.lock
 vendor/gems
+coverage/
