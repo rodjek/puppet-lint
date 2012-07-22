@@ -222,11 +222,18 @@ class PuppetLint
               tokens << Token.new(:UNENC_VARIABLE, var_name, line, token_column)
             end
           else
-            var_name = ss.scan(/(::)?([\w-]+::)*[\w-]+/)
-            unless var_name.nil?
-              token_column = column + (ss.pos - var_name.size)
-              tokens << Token.new(:VARIABLE, var_name, line, token_column)
-              ss.scan(/\}/)
+            contents = ss.scan_until(/\}/)[0..-2]
+            if contents.match(/\A(::)?([\w-]+::)*[\w-]+\Z/)
+              token_column = column + (ss.pos - contents.size - 1)
+              tokens << Token.new(:VARIABLE, contents, line, token_column)
+            else
+              lexer = PuppetLint::Lexer.new
+              lexer.tokenise(contents)
+              lexer.tokens.each do |token|
+                tok_col = column + token.column + (ss.pos - contents.size - 1)
+                tok_line = token.line + line - 1
+                tokens << Token.new(token.type, token.value, tok_line, tok_col)
+              end
             end
           end
         end
