@@ -82,10 +82,6 @@ class PuppetLint::CheckPlugin
     @fileinfo[:fullpath]
   end
 
-  def data
-    @data
-  end
-
   def title_tokens
     @title_tokens ||= Proc.new do
       result = []
