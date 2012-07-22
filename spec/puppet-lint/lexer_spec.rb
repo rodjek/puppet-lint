@@ -218,6 +218,242 @@ describe PuppetLint::Lexer do
       tokens[2].line.should == 1
       tokens[2].column.should == 6
     end
+
+    it 'should handle a string with a nested string inside it' do
+      @lexer.interpolate_string(%q{string with ${'a nested single quoted string'} inside it"}, 1, 1)
+      tokens = @lexer.tokens
+
+      tokens.length.should == 3
+
+      tokens[0].type.should == :DQPRE
+      tokens[0].value.should == 'string with '
+      tokens[0].line.should == 1
+      tokens[0].column.should == 1
+
+      tokens[1].type.should == :SSTRING
+      tokens[1].value.should == 'a nested single quoted string'
+      tokens[1].line.should == 1
+      tokens[1].column.should == 16
+
+      tokens[2].type.should == :DQPOST
+      tokens[2].value.should == ' inside it'
+      tokens[2].line.should == 1
+      tokens[2].column.should == 48
+    end
+
+    it 'should handle a string with nested math' do
+      @lexer.interpolate_string(%q{string with ${(3+5)/4} nested math"}, 1, 1)
+      tokens = @lexer.tokens
+
+      tokens.length.should == 9
+
+      tokens[0].type.should == :DQPRE
+      tokens[0].value.should == 'string with '
+      tokens[0].line.should == 1
+      tokens[0].column.should == 1
+
+      tokens[1].type.should == :LPAREN
+      tokens[1].line.should == 1
+      tokens[1].column.should == 16
+
+      tokens[2].type.should == :NUMBER
+      tokens[2].value.should == '3'
+      tokens[2].line.should == 1
+      tokens[2].column.should == 17
+
+      tokens[3].type.should == :PLUS
+      tokens[3].line.should == 1
+      tokens[3].column.should == 18
+
+      tokens[4].type.should == :NUMBER
+      tokens[4].value.should == '5'
+      tokens[4].line.should == 1
+      tokens[4].column.should == 19
+
+      tokens[5].type.should == :RPAREN
+      tokens[5].line.should == 1
+      tokens[5].column.should == 20
+
+      tokens[6].type.should == :DIV
+      tokens[6].line.should == 1
+      tokens[6].column.should == 21
+
+      tokens[7].type.should == :NUMBER
+      tokens[7].value.should == '4'
+      tokens[7].line.should == 1
+      tokens[7].column.should == 22
+
+      tokens[8].type.should == :DQPOST
+      tokens[8].value.should == ' nested math'
+      tokens[8].line.should == 1
+      tokens[8].column.should == 24
+    end
+
+    it 'should handle a string with a nested array' do
+      @lexer.interpolate_string(%q{string with ${['an array ', $v2]} in it"}, 1, 1)
+      tokens = @lexer.tokens
+
+      tokens.length.should == 8
+
+      tokens[0].type.should == :DQPRE
+      tokens[0].value.should == 'string with '
+      tokens[0].line.should == 1
+      tokens[0].column.should == 1
+
+      tokens[1].type.should == :LBRACK
+      tokens[1].line.should == 1
+      tokens[1].column.should == 16
+
+      tokens[2].type.should == :SSTRING
+      tokens[2].value.should == 'an array '
+      tokens[2].line.should == 1
+      tokens[2].column.should == 17
+
+      tokens[3].type.should == :COMMA
+      tokens[3].line.should == 1
+      tokens[3].column.should == 28
+
+      tokens[4].type.should == :WHITESPACE
+      tokens[4].value.should == ' '
+      tokens[4].line.should == 1
+      tokens[4].column.should == 29
+
+      tokens[5].type.should == :VARIABLE
+      tokens[5].value.should == 'v2'
+      tokens[5].line.should == 1
+      tokens[5].column.should == 30
+
+      tokens[6].type.should == :RBRACK
+      tokens[6].line.should == 1
+      tokens[6].column.should == 33
+
+      tokens[7].type.should == :DQPOST
+      tokens[7].value.should == ' in it'
+      tokens[7].line.should == 1
+      tokens[7].column.should == 35
+    end
+
+    it 'should handle a string of $s' do
+      @lexer.interpolate_string(%q{$$$$"}, 1, 1)
+      tokens = @lexer.tokens
+
+      tokens.length.should == 1
+
+      tokens[0].type.should == :STRING
+      tokens[0].value.should == '$$$$'
+      tokens[0].line.should == 1
+      tokens[0].column.should == 1
+    end
+
+    it 'should handle "$foo$bar"' do
+      @lexer.interpolate_string(%q{$foo$bar"}, 1, 1)
+      tokens = @lexer.tokens
+
+      tokens.length.should == 5
+
+      tokens[0].type.should == :DQPRE
+      tokens[0].value.should == ''
+      tokens[0].line.should == 1
+      tokens[0].column.should == 1
+
+      tokens[1].type.should == :UNENC_VARIABLE
+      tokens[1].value.should == 'foo'
+      tokens[1].line.should == 1
+      tokens[1].column.should == 2
+
+      tokens[2].type.should == :DQMID
+      tokens[2].value.should == ''
+      tokens[2].line.should == 1
+      tokens[2].column.should == 6
+
+      tokens[3].type.should == :UNENC_VARIABLE
+      tokens[3].value.should == 'bar'
+      tokens[3].line.should == 1
+      tokens[3].column.should == 6
+
+      tokens[4].type.should == :DQPOST
+      tokens[4].value.should == ''
+      tokens[4].line.should == 1
+      tokens[4].column.should == 10
+    end
+
+    it 'should handle "foo$bar$"' do
+      @lexer.interpolate_string(%q{foo$bar$"}, 1, 1)
+      tokens = @lexer.tokens
+
+      tokens.length.should == 3
+
+      tokens[0].type.should == :DQPRE
+      tokens[0].value.should == 'foo'
+      tokens[0].line.should == 1
+      tokens[0].column.should == 1
+
+      tokens[1].type.should == :UNENC_VARIABLE
+      tokens[1].value.should == 'bar'
+      tokens[1].line.should == 1
+      tokens[1].column.should == 5
+
+      tokens[2].type.should == :DQPOST
+      tokens[2].value.should == '$'
+      tokens[2].line.should == 1
+      tokens[2].column.should == 9
+    end
+
+    it 'should handle "foo$$bar"' do
+      @lexer.interpolate_string(%q{foo$$bar"}, 1, 1)
+      tokens = @lexer.tokens
+
+      tokens.length.should == 3
+
+      tokens[0].type.should == :DQPRE
+      tokens[0].value.should == 'foo$'
+      tokens[0].line.should == 1
+      tokens[0].column.should == 1
+
+      tokens[1].type.should == :UNENC_VARIABLE
+      tokens[1].value.should == 'bar'
+      tokens[1].line.should == 1
+      tokens[1].column.should == 6
+
+      tokens[2].type.should == :DQPOST
+      tokens[2].value.should == ''
+      tokens[2].line.should == 1
+      tokens[2].column.should == 10
+    end
+
+    it 'should handle an empty string' do
+      @lexer.interpolate_string(%q{"}, 1, 1)
+      tokens = @lexer.tokens
+
+      tokens.length.should == 1
+
+      tokens[0].type.should == :STRING
+      tokens[0].value.should == ''
+      tokens[0].line.should == 1
+      tokens[0].column.should == 1
+    end
+
+    it 'should handle "$foo::::bar"' do
+      @lexer.interpolate_string(%q{$foo::::bar"}, 1, 1)
+      tokens = @lexer.tokens
+
+      tokens.length.should == 3
+
+      tokens[0].type.should == :DQPRE
+      tokens[0].value.should == ''
+      tokens[0].line.should == 1
+      tokens[0].column.should == 1
+
+      tokens[1].type.should == :UNENC_VARIABLE
+      tokens[1].value.should == 'foo'
+      tokens[1].line.should == 1
+      tokens[1].column.should == 2
+
+      tokens[2].type.should == :DQPOST
+      tokens[2].value.should == '::::bar'
+      tokens[2].line.should == 1
+      tokens[2].column.should == 6
+    end
   end
 
   [
