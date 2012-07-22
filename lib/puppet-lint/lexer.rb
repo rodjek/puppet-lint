@@ -144,7 +144,7 @@ class PuppetLint
 
           elsif chunk.match(/\A\/.*?\//)
             str_content = StringScanner.new(code[i+1..-1]).scan_until(/(\A|[^\\])\//m)
-            tokens << new_token(:REGEX, str_content, code[0..i])
+            tokens << new_token(:REGEX, str_content[0..-2], code[0..i])
             i += str_content.size + 1
 
           elsif indent = chunk[/\A\n([ \t]+)/m, 1]
