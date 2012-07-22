@@ -3,6 +3,7 @@ require 'strscan'
 require 'puppet-lint/lexer/token'
 
 class PuppetLint
+  class LexerError < RuntimeError; end
   class Lexer
     KEYWORDS = [
       'class',
@@ -161,9 +162,7 @@ class PuppetLint
             i += 1
 
           else
-            value = chunk[0,1]
-            tokens << new_token(value, value, code[0..i])
-            i += 1
+            raise PuppetLint::LexerError, chunk
           end
         end
       end

@@ -5,6 +5,12 @@ describe PuppetLint::Lexer do
     @lexer = PuppetLint::Lexer.new
   end
 
+  context 'invalid code' do
+    it 'should bork' do
+      expect { @lexer.tokenise('%') }.to raise_error(PuppetLint::LexerError)
+    end
+  end
+
   context '#new_token' do
     it 'should calculate the line number for an empty string' do
       token = @lexer.new_token(:TEST, 'test', '')
