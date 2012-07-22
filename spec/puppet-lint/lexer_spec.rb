@@ -694,4 +694,28 @@ describe PuppetLint::Lexer do
       token.value.should == ''
     end
   end
+
+  context ':REGEX' do
+    it 'should match anything enclosed in //' do
+      token = @lexer.tokenise('/this is a regex/').first
+      token.type.should == :REGEX
+      token.value.should == 'this is a regex'
+    end
+
+    it 'should not match if there is \n in the regex' do
+      token = @lexer.tokenise("/this is \n a regex/").first
+      token.type.should_not == :REGEX
+    end
+
+    it 'should not consider \/ to be the end of the regex' do
+      token = @lexer.tokenise('/this is \/ a regex/').first
+      token.type.should == :REGEX
+      token.value.should == 'this is \\/ a regex'
+    end
+
+    it 'should not match chained division' do
+      tokens = @lexer.tokenise('$x = $a/$b/$c')
+      tokens.select { |r| r.type == :REGEX }.should == []
+    end
+  end
 end
