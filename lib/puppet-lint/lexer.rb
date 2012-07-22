@@ -101,11 +101,7 @@ class PuppetLint
         end
 
         unless found
-          if identifier = chunk[/\A([a-z]\w*)/, 1]
-            tokens << new_token(:IDENTIFIER, identifier, code[0..i])
-            i += identifier.size
-
-          elsif var_name = chunk[/\A\$((::)?([\w-]+::)*[\w-]+)/, 1]
+          if var_name = chunk[/\A\$((::)?([\w-]+::)*[\w-]+)/, 1]
             tokens << new_token(:VARIABLE, var_name, code[0..i])
             i += var_name.size + 1
 
