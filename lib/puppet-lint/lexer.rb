@@ -184,7 +184,7 @@ class PuppetLint
     end
 
     def get_string_segment(string, terminators)
-      str = string.scan_until(/([^\\]|^|[^\\])([\\]{2})*[#{terminators}]/)
+      str = string.scan_until(/([^\\]|^|[^\\])([\\]{2})*[#{terminators}]+/)
       begin
         [str[0..-2], str[-1,1]]
       rescue
