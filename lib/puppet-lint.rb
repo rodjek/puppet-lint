@@ -2,6 +2,7 @@ require 'puppet-lint/version'
 require 'puppet-lint/lexer'
 require 'puppet-lint/configuration'
 require 'puppet-lint/plugin'
+require 'puppet-lint/bin'
 
 unless String.respond_to?('prepend')
   class String
