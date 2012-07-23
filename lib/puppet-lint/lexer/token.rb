@@ -1,7 +1,19 @@
 class PuppetLint
   class Lexer
     class Token
-      attr_reader :type, :value, :line, :column
+      # Internal: Returns the Symbol type of the Token.
+      attr_reader :type
+
+      # Internal: Returns the String value of the Token.
+      attr_reader :value
+
+      # Internal: Returns the Integer line number of the manifest text where
+      # the Token can be found.
+      attr_reader :line
+
+      # Internal: Returns the Integer column number of the line of the manifest
+      # text where the Token can be found.
+      attr_reader :column
 
       # Internal: Initialise a new Token object.
       #
