@@ -14,4 +14,5 @@ describe PuppetLint::Lexer::Token do
   its(:value) { should == 'foo' }
   its(:line) { should == 1 }
   its(:column) { should == 2 }
+  its(:inspect) { should == "<Token :NAME (foo) @1:2>" }
 end
