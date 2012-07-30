@@ -86,8 +86,7 @@ class PuppetLint::Bin
     begin
       path = @args[0]
       if File.directory?(path)
-        Dir.chdir(path)
-        path = Dir.glob('**/*.pp')
+        path = Dir.glob("#{path}/**/*.pp")
       else
         path = [path]
       end
