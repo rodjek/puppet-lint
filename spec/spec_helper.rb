@@ -1,6 +1,10 @@
 require 'rspec/autorun'
 require 'puppet-lint'
 
+RSpec.configure do |c|
+  c.mock_framework = :rspec
+end
+
 #class PuppetLint::Warning < Exception; end
 #class PuppetLint::Error < Exception; end
 #PuppetLint::CheckPlugin.any_instance.stub(:warn) do |arg|
