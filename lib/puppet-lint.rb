@@ -153,9 +153,6 @@ class PuppetLint
 end
 
 # Default configuration options
-PuppetLint.configuration.fail_on_warnings = false
-PuppetLint.configuration.error_level = :all
-PuppetLint.configuration.with_filename = false
-PuppetLint.configuration.log_format = ''
+PuppetLint.configuration.defaults
 
 require 'puppet-lint/plugins'
