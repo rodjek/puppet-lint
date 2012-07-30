@@ -27,10 +27,6 @@ class PuppetLint::CheckPlugin
     @default_info = {:check => 'unknown', :linenumber => 0}
   end
 
-  def register_check(check)
-    @checks << check
-  end
-
   #     notify(kind, message_hash)    #=> nil
   #
   # Adds the message to the problems array.
@@ -72,10 +68,6 @@ class PuppetLint::CheckPlugin
 
   def tokens
     @tokens
-  end
-
-  def path
-    @fileinfo[:path]
   end
 
   def fullpath
