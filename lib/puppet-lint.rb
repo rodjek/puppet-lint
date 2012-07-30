@@ -126,7 +126,7 @@ class PuppetLint
       end
     end
   end
-  
+
   def errors?
     @statistics[:error] != 0
   end
