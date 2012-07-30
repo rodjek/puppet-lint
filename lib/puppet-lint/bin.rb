@@ -33,6 +33,10 @@ class PuppetLint::Bin
         PuppetLint.configuration.fail_on_warnings = true
       end
 
+      opts.on("--error-level LEVEL", [:all, :warning, :error], "The level of error to return.", "(warning, error, all)") do |el|
+        PuppetLint.configuration.error_level = el
+      end
+
       opts.on("--log-format FORMAT",
         "Change the log format.", "Overrides --with-filename.",
         "The following placeholders can be used:",
