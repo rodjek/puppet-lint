@@ -5,20 +5,7 @@ rvm:
 branches:
   only:
     - master
+    - dust_bunny
 notifications:
   email:
     - tim@github.com
-env:
-  - PUPPET_VERSION=2.6.13
-  - PUPPET_VERSION=2.7.9
-  - PUPPET_VERSION=0.25.4
-matrix:
-  exclude:
-    - rvm: 1.9.2
-      env: PUPPET_VERSION=2.6.13
-    - rvm: 1.9.3
-      env: PUPPET_VERSION=2.6.13
-    - rvm: 1.9.2
-      env: PUPPET_VERSION=0.25.4
-    - rvm: 1.9.3
-      env: PUPPET_VERSION=0.25.4
