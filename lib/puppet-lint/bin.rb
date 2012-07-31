@@ -92,7 +92,7 @@ class PuppetLint::Bin
       if File.directory?(path)
         path = Dir.glob("#{path}/**/*.pp")
       else
-        path = [path]
+        path = @args
       end
 
       path.each do |f|
