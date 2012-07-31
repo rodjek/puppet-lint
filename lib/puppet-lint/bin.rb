@@ -95,15 +95,16 @@ class PuppetLint::Bin
         path = @args
       end
 
+      return_val = 0
       path.each do |f|
         l = PuppetLint.new
         l.file = f
         l.run
         if l.errors? or (l.warnings? and PuppetLint.configuration.fail_on_warnings)
-          return 1
+          return_val = 1
         end
       end
-      return 0
+      return return_val
 
     rescue PuppetLint::NoCodeError
       puts "puppet-lint: no file specified or specified file does not exist"
