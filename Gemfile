@@ -6,4 +6,4 @@ gem 'rake'
 gem 'rspec'
 gem 'rdoc'
 gem 'puppet', puppetversion
-gem 'rcov'
+gem 'rcov', :platform => :ruby_18
