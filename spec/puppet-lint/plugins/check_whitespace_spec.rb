@@ -83,7 +83,7 @@ describe PuppetLint::Plugins::CheckWhitespace do
       # ┃          Configuration           ┃
       # ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛"
     }
-    its(:problems) { 
+    its(:problems) {
       should be_empty
     }
   end
@@ -221,5 +221,61 @@ describe PuppetLint::Plugins::CheckWhitespace do
     }
 
     its(:problems) { should be_empty }
+  end
+
+  describe 'hard tabs indents' do
+    let(:code) { "\tfoo => bar," }
+
+    its(:problems) {
+      should have_problem({
+        :kind       => :error,
+        :message    => 'tab character found',
+        :linenumber => 1,
+        :column     => 1,
+      })
+    }
+  end
+
+  describe 'line with trailing whitespace' do
+    let(:code) { "foo " }
+
+    its(:problems) {
+      should have_problem({
+        :kind       => :error,
+        :message    => 'trailing whitespace found',
+        :linenumber => 1,
+        :column     => 4,
+      })
+    }
+  end
+
+  describe '81 character line' do
+    let(:code) { 'a' * 81 }
+
+    its(:problems) {
+      should have_problem({
+        :kind       => :warning,
+        :message    => 'line has more than 80 characters',
+        :linenumber => 1,
+        :column     => 80,
+      })
+    }
+  end
+
+  describe 'line indented by 3 spaces' do
+    let(:code) { "
+      file { 'foo':
+         foo => bar,
+      }"
+    }
+
+    its(:problems) {
+      should have_problem({
+        :kind       => :error,
+        :message    => 'two-space soft tabs not used',
+        :linenumber => 3,
+        :column     => 1,
+      })
+    }
   end
 end
