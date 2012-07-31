@@ -68,7 +68,7 @@ end
 class PuppetLint::NoCodeError < StandardError; end
 
 class PuppetLint
-  attr_reader :code, :file
+  attr_reader :data
 
   def initialize
     @data = nil
