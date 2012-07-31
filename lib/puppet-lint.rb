@@ -135,12 +135,6 @@ class PuppetLint
     @statistics[:warning] != 0
   end
 
-  def checks
-    PuppetLint::CheckPlugin.repository.map do |plugin|
-      plugin.new.checks
-    end.flatten
-  end
-
   def run
     if @data.nil?
       raise PuppetLint::NoCodeError

@@ -19,11 +19,10 @@ end
 
 class PuppetLint::CheckPlugin
   include PuppetLint::Plugin
-  attr_reader :problems, :checks
+  attr_reader :problems
 
   def initialize
     @problems = []
-    @checks = []
     @default_info = {:check => 'unknown', :linenumber => 0}
   end
 
