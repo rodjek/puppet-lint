@@ -54,10 +54,6 @@ class PuppetLint
       }
     end
 
-    def self.ignore_paths
-      settings[:ignore_paths] ||= []
-    end
-
     def defaults
       settings.clear
       self.with_filename = false
