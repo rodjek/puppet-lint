@@ -8,7 +8,7 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
     tokens.select { |r|
       r.type == :STRING
     }.reject { |r|
-      r.value.include?('\t') || r.value.include?('\n')
+      r.value.include?("\t") || r.value.include?("\n")
     }.each do |token|
       notify :warning, {
         :message    => 'double quoted string containing no variables',

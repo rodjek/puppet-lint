@@ -87,7 +87,7 @@ describe PuppetLint::Plugins::CheckStrings do
   end
 
   describe 'double quoted string containing newline but no variables' do
-    let(:code) { '"foo\n"' }
+    let(:code) { %{"foo\n"} }
 
     its(:problems) { should be_empty }
   end

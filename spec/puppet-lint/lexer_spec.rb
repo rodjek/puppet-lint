@@ -73,6 +73,17 @@ describe PuppetLint::Lexer do
       token.column.should == 1
     end
 
+    it 'should handle a string with a newline' do
+      @lexer.interpolate_string(%{foo\nbar"}, 1, 1)
+      token = @lexer.tokens.first
+
+      @lexer.tokens.length.should == 1
+      token.type.should == :STRING
+      token.value.should == "foo\nbar"
+      token.line.should == 1
+      token.column.should == 1
+    end
+
     it 'should handle a string with a single variable and suffix' do
       @lexer.interpolate_string('${foo}bar"', 1, 1)
       tokens = @lexer.tokens
