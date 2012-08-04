@@ -50,7 +50,7 @@ class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
           attr_token = resource_tokens[resource_token_idx]
           if attr_token.first == :NAME and attr_token.last[:value] == 'mode'
             value_token = resource_tokens[resource_token_idx + 2]
-            if value_token.last[:value] !~ /\d{4}/ and value_token.first != :VARIABLE and value_token.last[:value] !~ /^([ugoa]*[-=+][-=+rstwxXugo]*)(,[ugoa]*[-=+][-=+rstwxXugo]*)*$/
+            if value_token.last[:value] !~ /^[0-7]{4}$/ and value_token.first != :VARIABLE and value_token.last[:value] !~ /^([ugoa]*[-=+][-=+rstwxXugo]*)(,[ugoa]*[-=+][-=+rstwxXugo]*)*$/
               notify :warning, :message =>  "mode should be represented as a 4 digit octal value or symbolic file mode", :linenumber => value_token.last[:line]
             end
           end
