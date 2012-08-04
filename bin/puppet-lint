@@ -53,6 +53,10 @@ opts = OptionParser.new do |opts|
     PuppetLint.configuration.log_format = format
   end
 
+  opts.on("--soft-tab-width WIDTH", Integer, "The number of spaces in a soft tab. Defaults to 2") do |stw|
+    PuppetLint.configuration.soft_tab_width = stw
+  end
+
   opts.separator ""
   opts.separator "    Disable checks:"
 
