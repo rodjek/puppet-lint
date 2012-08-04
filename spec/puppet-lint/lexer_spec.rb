@@ -573,7 +573,7 @@ describe PuppetLint::Lexer do
       token.value.should == '::One'
     end
   end
-  
+
   context ':NAME' do
     it 'should match lowercase alphanumeric terms' do
       token = @lexer.tokenise('one-two').first
