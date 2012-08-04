@@ -7,6 +7,8 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
   check 'double_quoted_strings' do
     tokens.select { |r|
       r.type == :STRING
+    }.each { |r|
+      r.value.gsub!(' '*r.column, "\n")
     }.reject { |r|
       r.value.include?("\t") || r.value.include?("\n")
     }.each do |token|
