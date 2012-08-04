@@ -43,6 +43,31 @@ class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
     end
   end
 
+  check 'duplicate_params' do
+    resource_indexes.each do |resource|
+      resource_tokens = tokens[resource[:start]..resource[:end]].reject { |r|
+        formatting_tokens.include? r.type
+      }
+
+      seen_params = []
+      resource_tokens.each_with_index do |token, idx|
+        if token.type == :FARROW
+          prev_token = resource_tokens[idx - 1]
+          next unless prev_token.type == :NAME
+          if seen_params.include? prev_token.value
+            notify :error, {
+              :message    => 'duplicate parameter found in resource',
+              :linenumber => prev_token.line,
+              :column     => prev_token.column,
+            }
+          else
+            seen_params << prev_token.value
+          end
+        end
+      end
+    end
+  end
+
   # Public: Check the tokens of each File resource instance for a mode
   # parameter and if found, record a warning if the value of that parameter is
   # not a quoted string.
