@@ -8,6 +8,8 @@ class PuppetLint
       desc 'Run puppet-lint'
 
       task :lint do
+        PuppetLint.configuration.with_filename = true
+
         RakeFileUtils.send(:verbose, true) do
           linter = PuppetLint.new
           matched_files = FileList['**/*.pp']
@@ -17,7 +19,6 @@ class PuppetLint
           end
 
           matched_files.to_a.each do |puppet_file|
-            puts "Evaluating #{puppet_file}"
             linter.file = puppet_file
             linter.run
           end
