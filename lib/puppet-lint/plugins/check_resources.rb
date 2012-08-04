@@ -135,7 +135,7 @@ class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
           if attr_token.type == :NAME and attr_token.value == 'mode'
             value_token = resource_tokens[resource_token_idx + 2]
 
-            break if value_token.value =~ /\d{4}/
+            break if value_token.value =~ /\A[0-7]{4}\Z/
             break if value_token.type == :VARIABLE
             break if value_token.value =~ sym_mode
 
