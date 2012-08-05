@@ -69,11 +69,15 @@ class PuppetLint::NoCodeError < StandardError; end
 
 class PuppetLint
   attr_reader :data
+  attr_reader :problems
+  attr_reader :statistics
 
   def initialize
     @data = nil
     @statistics = {:error => 0, :warning => 0}
     @fileinfo = {:path => ''}
+    @problems = []
+    @quiet = false
   end
 
   def self.configuration
@@ -85,16 +89,25 @@ class PuppetLint
   end
 
   def file=(path)
-    if File.exist? path
-      @fileinfo[:path] = path
-      @fileinfo[:fullpath] = File.expand_path(path)
-      @fileinfo[:filename] = File.basename(path)
+    @fileinfo[:path] = path
+    @fileinfo[:fullpath] = File.expand_path(path)
+    @fileinfo[:filename] = File.basename(path)
+    if File.exist? path and not @data
+      # do not override @data if self.code was called
       @data = File.read(path)
     end
   end
 
   def code=(value)
     @data = value
+  end
+
+  def quiet=(quiet)
+    @quiet = quiet
+  end
+
+  def quiet?
+    @quiet
   end
 
   def log_format
@@ -111,7 +124,7 @@ class PuppetLint
 
   def format_message(message)
     format = log_format
-    puts format % message
+    puts format % message unless quiet?
   end
 
   def report(problems)
@@ -141,8 +154,17 @@ class PuppetLint
     end
 
     PuppetLint::CheckPlugin.repository.each do |plugin|
-      report plugin.new.run(@fileinfo, @data)
+      @problems += plugin.new.run(@fileinfo, @data)
     end
+
+    report @problems
+  end
+
+  def run_virtual(path, content)
+    # convenience method to associate dynamic content with a path
+    self.code = content
+    self.file = path
+    run
   end
 end
 
