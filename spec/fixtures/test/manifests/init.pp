@@ -1,2 +1,3 @@
+# foo
 class test {
 }

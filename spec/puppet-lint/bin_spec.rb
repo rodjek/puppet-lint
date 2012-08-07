@@ -62,8 +62,8 @@ describe PuppetLint::Bin do
 
     its(:exitstatus) { should == 1 }
     its(:stdout) { should == [
-      'WARNING: optional parameter listed before required parameter on line 1',
-      'ERROR: test::foo not in autoload module layout on line 1',
+      'WARNING: optional parameter listed before required parameter on line 2',
+      'ERROR: test::foo not in autoload module layout on line 2',
     ].join("\n") }
   end
 
@@ -184,7 +184,7 @@ describe PuppetLint::Bin do
       ] }
 
       its(:exitstatus) { should == 1 }
-      its(:stdout) { should == '1' }
+      its(:stdout) { should == '2' }
     end
 
     context 'to print %{kind}' do
