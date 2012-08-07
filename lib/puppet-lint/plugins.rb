@@ -4,6 +4,7 @@ class PuppetLint
 end
 
 require 'puppet-lint/plugins/check_classes'
+require 'puppet-lint/plugins/check_comments'
 require 'puppet-lint/plugins/check_conditionals'
 require 'puppet-lint/plugins/check_strings'
 require 'puppet-lint/plugins/check_variables'
