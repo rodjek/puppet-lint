@@ -74,9 +74,9 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
   #
   # Returns nothing.
   check 'arrow_alignment' do
-    resource_indexes.each do |idx|
+    resource_indexes.each do |res_idx|
       indent_depth = [nil]
-      resource_tokens = tokens[idx[:start]..idx[:end]]
+      resource_tokens = tokens[res_idx[:start]..res_idx[:end]]
       resource_tokens.reject! do |token|
         [:COMMENT, :SLASH_COMMENT, :MLCOMMENT].include? token.type
       end
@@ -86,13 +86,7 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
 
       resource_tokens.each_with_index do |token, idx|
         if token.type == :FARROW
-          line_start_idx = resource_tokens[0..idx].rindex { |r|
-            r.type == :NEWLINE
-          } + 1
-          indent_length = 0
-          resource_tokens[line_start_idx..idx].each do |line_token|
-            indent_length += line_token.value.length
-          end
+          indent_length = token.column
 
           if indent_depth.last.nil?
             indent_depth[-1] = indent_length

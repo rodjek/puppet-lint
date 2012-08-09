@@ -278,4 +278,14 @@ describe PuppetLint::Plugins::CheckWhitespace do
       })
     }
   end
+
+  describe 'single line resource spread out on multiple lines' do
+    let(:code) {"
+      file {
+        'foo': ensure => present,
+      }"
+    }
+
+    its(:problems) { should == [] }
+  end
 end
