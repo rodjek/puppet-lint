@@ -1,29 +1,30 @@
 require 'pp'
 require 'strscan'
 require 'puppet-lint/lexer/token'
+require 'set'
 
 class PuppetLint
   class LexerError < RuntimeError; end
   class Lexer
-    KEYWORDS = [
-      'class',
-      'case',
-      'default',
-      'define',
-      'import',
-      'if',
-      'else',
-      'elsif',
-      'inherits',
-      'node',
-      'and',
-      'or',
-      'undef',
-      'true',
-      'false',
-      'in',
-      'unless',
-    ]
+    KEYWORDS = {
+      'class' => true,
+      'case' => true,
+      'default' => true,
+      'define' => true,
+      'import' => true,
+      'if' => true,
+      'else' => true,
+      'elsif' => true,
+      'inherits' => true,
+      'node' => true,
+      'and' => true,
+      'or' => true,
+      'undef' => true,
+      'true' => true,
+      'false' => true,
+      'in' => true,
+      'unless' => true,
+    }
 
     KNOWN_TOKENS = [
       [:CLASSREF, /\A(((::){0,1}[A-Z][-\w]*)+)/],
@@ -172,7 +173,7 @@ class PuppetLint
 
     def possible_regex?
       prev_token = tokens.reject { |r|
-        [
+        Set[
           :WHITESPACE,
           :NEWLINE,
           :COMMENT,
@@ -184,7 +185,7 @@ class PuppetLint
 
       return true if prev_token.nil?
 
-      if [:NODE, :LBRACE, :RBRACE, :MATCH, :NOMATCH, :COMMA].include? prev_token.type
+      if Set[:NODE, :LBRACE, :RBRACE, :MATCH, :NOMATCH, :COMMA].include? prev_token.type
         true
       else
         false
