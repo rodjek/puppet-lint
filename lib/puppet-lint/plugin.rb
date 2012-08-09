@@ -88,7 +88,10 @@ class PuppetLint::CheckPlugin
               [:STRING, :NAME].include? token.type
             }
           else
-            if tokens[token_idx + 1].type != :LBRACE
+            next_token = tokens[token_idx + 1..-1].reject { |r|
+              formatting_tokens.include? r.type
+            }.first
+            if next_token.type != :LBRACE
               result << tokens[token_idx - 1]
             end
           end
