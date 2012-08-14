@@ -15,6 +15,14 @@ class PuppetLint
       # text where the Token can be found.
       attr_reader :column
 
+      attr_accessor :next
+
+      attr_accessor :prev
+
+      attr_accessor :next_nf
+
+      attr_accessor :prev_nf
+
       # Internal: Initialise a new Token object.
       #
       # type   - An upper case Symbol describing the type of Token.
@@ -30,6 +38,10 @@ class PuppetLint
         @type = type
         @line = line
         @column = column
+        @next = nil
+        @prev = nil
+        @next_nf = nil
+        @prev_nf = nil
       end
 
       # Internal: Produce a human friendly description of the Token when

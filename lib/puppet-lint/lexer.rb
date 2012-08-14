@@ -71,6 +71,15 @@ class PuppetLint
       [:TIMES, /\A(\*)/],
     ]
 
+    FORMATTING_TOKENS = {
+      :WHITESPACE => true,
+      :NEWLINE => true,
+      :COMMENT => true,
+      :MLCOMMENT => true,
+      :SLASH_COMMENT => true,
+      :INDENT => true,
+    }
+
     def tokens
       @tokens ||= []
     end
@@ -173,14 +182,7 @@ class PuppetLint
 
     def possible_regex?
       prev_token = tokens.reject { |r|
-        Set[
-          :WHITESPACE,
-          :NEWLINE,
-          :COMMENT,
-          :MLCOMMENT,
-          :SLASH_COMMENT,
-          :INDENT,
-        ].include? r.type
+        FORMATTING_TOKENS.include? r.type
       }.last
 
       return true if prev_token.nil?
@@ -197,7 +199,22 @@ class PuppetLint
       line_no = lines.empty? ? 1 : lines.count
       column = lines.empty? ? 1 : lines.last.length
 
-      Token.new(type, value, line_no, column)
+      token = Token.new(type, value, line_no, column)
+      unless tokens.last.nil?
+        token.prev = tokens.last
+        tokens.last.next = token
+
+        unless FORMATTING_TOKENS.include?(token.type)
+          prev_nf_idx = tokens.rindex { |r| ! FORMATTING_TOKENS.include? r.type }
+          unless prev_nf_idx.nil?
+            prev_nf_token = tokens[prev_nf_idx]
+            prev_nf_token.next_nf = token
+            token.prev_nf = prev_nf_token
+          end
+        end
+      end
+
+      token
     end
 
     def get_string_segment(string, terminators)

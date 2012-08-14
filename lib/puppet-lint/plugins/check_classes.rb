@@ -204,19 +204,19 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
   # Returns nothing.
   check 'inherits_across_namespaces' do
     class_indexes.each do |class_idx|
-      class_tokens = tokens[class_idx[:start]..class_idx[:end]].reject { |r|
-        formatting_tokens.include?(r.type)
-      }
+      class_token = tokens[class_idx[:start]]
+      class_name_token = class_token.next_nf
+      inherits_token = class_name_token.next_nf
+      next if inherits_token.nil?
 
-      if class_tokens[2].type == :INHERITS
-        class_name = class_tokens[1].value
-        inherited_class = class_tokens[3].value
+      if inherits_token.type == :INHERITS
+        inherited_class_token = inherits_token.next_nf
 
-        unless class_name =~ /^#{inherited_class}::/
+        unless class_name_token.value =~ /^#{inherited_class_token.value}::/
           notify :warning, {
             :message    => "class inherits across namespaces",
-            :linenumber => class_tokens[3].line,
-            :column     => class_tokens[3].column,
+            :linenumber => inherited_class_token.line,
+            :column     => inherited_class_token.column,
           }
         end
       end
@@ -230,16 +230,11 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
   check 'nested_classes_or_defines' do
     class_indexes.each do |class_idx|
       # Skip the first token so that we don't pick up the first :CLASS
-      class_tokens = tokens[class_idx[:start]+1..class_idx[:end]].reject { |r|
-        formatting_tokens.include?(r.type)
-      }
+      class_tokens = tokens[class_idx[:start]+1..class_idx[:end]]
 
-      class_tokens.each_index do |token_idx|
-        token = class_tokens[token_idx]
-        next_token = class_tokens[token_idx + 1]
-
+      class_tokens.each do |token|
         if token.type == :CLASS
-          if next_token.type != :LBRACE
+          if token.next_nf.type != :LBRACE
             notify :warning, {
               :message    => "class defined inside a class",
               :linenumber => token.line,
