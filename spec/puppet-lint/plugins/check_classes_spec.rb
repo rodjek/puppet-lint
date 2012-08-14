@@ -119,6 +119,12 @@ describe PuppetLint::Plugins::CheckClasses do
     its(:problems) { should be_empty }
   end
 
+  describe 'define with parameter that calls a function' do
+    let(:code) { "define foo($bar=extlookup($name)) {}" }
+
+    its(:problems) { should == [] }
+  end
+
   describe 'define with attrs out of order' do
     let(:code) { "define foo($bar='baz', $gronk) { }" }
 

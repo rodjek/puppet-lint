@@ -68,26 +68,34 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
       end
 
       unless lparen_idx.nil? or rparen_idx.nil?
-        param_tokens = tokens[lparen_idx..rparen_idx].reject { |r|
+        param_tokens = tokens[lparen_idx+1..rparen_idx-1].reject { |r|
           formatting_tokens.include? r.type
         }
+
+        paren_stack = []
         param_tokens.each_index do |param_tokens_idx|
           this_token = param_tokens[param_tokens_idx]
           next_token = param_tokens[param_tokens_idx+1]
           prev_token = param_tokens[param_tokens_idx-1]
+
+          if this_token.type == :LPAREN
+            paren_stack.push(true)
+          elsif this_token.type == :RPAREN
+            paren_stack.pop
+          end
+          next unless paren_stack.empty?
+
           if this_token.type == :VARIABLE
-            unless next_token.nil?
-              if next_token.type == :COMMA or next_token.type == :RPAREN
-                prev_tokens = param_tokens[0..param_tokens_idx]
-                unless prev_tokens.rindex { |r| r.type == :EQUALS }.nil?
-                  unless prev_token.nil? or prev_token.type == :EQUALS
-                    msg = 'optional parameter listed before required parameter'
-                    notify :warning, {
-                      :message    => msg,
-                      :linenumber => this_token.line,
-                      :column     => this_token.column,
-                    }
-                  end
+            if next_token.nil? || next_token.type == :COMMA
+              prev_tokens = param_tokens[0..param_tokens_idx]
+              unless prev_tokens.rindex { |r| r.type == :EQUALS }.nil?
+                unless prev_token.nil? or prev_token.type == :EQUALS
+                  msg = 'optional parameter listed before required parameter'
+                  notify :warning, {
+                    :message    => msg,
+                    :linenumber => this_token.line,
+                    :column     => this_token.column,
+                  }
                 end
               end
             end
