@@ -93,21 +93,28 @@ describe PuppetLint::Plugins::CheckClasses do
     }
   end
 
-  describe 'class with attrs in order' do
+  describe 'parameterised class with a default value' do
     let(:code) { "class foo($bar, $baz='gronk') { }" }
 
-    its(:problems) { should be_empty }
+    its(:problems) {
+      should only_have_problem({
+        :kind => :warning,
+        :message => 'parameterised class parameter without a default value',
+        :linenumber => 1,
+        :column     => 11,
+      })
+    }
   end
 
-  describe 'class with attrs out of order' do
-    let(:code) { "class foo($bar='baz', $gronk) { }" }
+  describe 'parameterised class that inherits from a params class' do
+    let(:code) { "class foo($bar = $name) inherits foo::params { }" }
 
     its(:problems) {
       should have_problem({
         :kind       => :warning,
-        :message    => "optional parameter listed before required parameter",
+        :message    => "class inheriting from params class",
         :linenumber => 1,
-        :column     => 23,
+        :column     => 34,
       })
       should_not have_problem :kind => :error
     }
@@ -180,7 +187,7 @@ describe PuppetLint::Plugins::CheckClasses do
 
   describe 'class with parameters accessing local scope' do
     let(:code) { "
-      class foo($bar) {
+      class foo($bar='UNSET') {
         $baz = $bar
       }"
     }

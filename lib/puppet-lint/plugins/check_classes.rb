@@ -42,13 +42,81 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
     end
   end
 
+  check 'parameterised_classes' do
+    class_indexes.each do |class_idx|
+      token_idx = class_idx[:start]
+      depth = 0
+      lparen_idx = nil
+      rparen_idx = nil
+      tokens[token_idx..-1].each_index do |t|
+        idx = token_idx + t
+        if tokens[idx].type == :LPAREN
+          depth += 1
+          lparen_idx = idx if depth == 1
+        elsif tokens[idx].type == :RPAREN
+          depth -= 1
+          if depth == 0
+            rparen_idx = idx
+            break
+          end
+        end
+      end
+
+      class_tokens = tokens[class_idx[:start]..class_idx[:end]].reject { |r|
+        formatting_tokens.include? r.type
+      }
+      inherits_idx = class_tokens.index { |r| r.type == :INHERITS }
+      unless inherits_idx.nil?
+        inherited_class_token = class_tokens[inherits_idx + 1]
+        if inherited_class_token.value.end_with? '::params'
+          notify :warning, {
+            :message    => 'class inheriting from params class',
+            :linenumber => inherited_class_token.line,
+            :column     => inherited_class_token.column,
+          }
+        end
+      end
+
+      unless lparen_idx.nil? or rparen_idx.nil?
+        param_tokens = tokens[lparen_idx+1..rparen_idx-1].reject { |r|
+          formatting_tokens.include? r.type
+        }
+
+        paren_stack = []
+        param_tokens.each_index do |param_tokens_idx|
+          this_token = param_tokens[param_tokens_idx]
+          next_token = param_tokens[param_tokens_idx+1]
+          prev_token = param_tokens[param_tokens_idx-1]
+
+          if this_token.type == :LPAREN
+            paren_stack.push(true)
+          elsif this_token.type == :RPAREN
+            paren_stack.pop
+          end
+          next unless paren_stack.empty?
+
+          if this_token.type == :VARIABLE
+            if !next_token.nil? && next_token.type != :EQUALS
+              if !prev_token.nil? && prev_token.type != :EQUALS
+                notify :warning, {
+                  :message    => 'parameterised class parameter without a default value',
+                  :linenumber => this_token.line,
+                  :column     => this_token.column,
+                }
+              end
+            end
+          end
+        end
+      end
+    end end
+
   # Public: Test the manifest tokens for any parameterised classes or defined
   # types that take parameters and record a warning if there are any optional
   # parameters listed before required parameters.
   #
   # Returns nothing.
   check 'parameter_order' do
-    (class_indexes + defined_type_indexes).each do |class_idx|
+    defined_type_indexes.each do |class_idx|
       token_idx = class_idx[:start]
       depth = 0
       lparen_idx = nil
