@@ -9,8 +9,8 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
       r.type == :STRING
     }.each { |r|
       r.value.gsub!(' '*r.column, "\n")
-    }.reject { |r|
-      r.value.include?("\t") || r.value.include?("\n")
+    }.select { |r|
+      r.value[/(\t|\\t|\n|\\n)/].nil?
     }.each do |token|
       notify :warning, {
         :message    => 'double quoted string containing no variables',
