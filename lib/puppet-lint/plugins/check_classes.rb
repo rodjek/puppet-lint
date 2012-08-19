@@ -42,6 +42,31 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
     end
   end
 
+  # Public: Check the manifest tokens for any classes or defined types that
+  # have a dash in their name and record a warning for each instance found.
+  #
+  # Returns nothing.
+  check 'names_containing_dash' do
+    (class_indexes + defined_type_indexes).each do |class_idx|
+      class_tokens = tokens[class_idx[:start]..class_idx[:end]]
+      title_token = class_tokens[class_tokens.index { |r| r.type == :NAME }]
+
+      if title_token.value.include? '-'
+        if class_tokens.first.type == :CLASS
+          obj_type = 'class'
+        else
+          obj_type = 'defined type'
+        end
+
+        notify :warning, {
+          :message    => "#{obj_type} name containing a dash",
+          :linenumber => title_token.line,
+          :column     => title_token.column,
+        }
+      end
+    end
+  end
+
   check 'parameterised_classes' do
     class_indexes.each do |class_idx|
       token_idx = class_idx[:start]
