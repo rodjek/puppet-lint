@@ -1,11 +1,28 @@
 class PuppetLint::Plugins::CheckDocumentation < PuppetLint::CheckPlugin
+  def whitespace_tokens
+    @whitespace_tokens ||= {
+      :WHITESPACE => true,
+      :NEWLINE => true,
+      :INDENT => true,
+    }
+  end
+
+  def comment_tokens
+    @comment_tokens ||= {
+      :COMMENT => true,
+      :MLCOMMENT => true,
+      :SLASH_COMMENT => true,
+    }
+  end
+
   check 'documentation' do
     (class_indexes + defined_type_indexes).each do |item_idx|
-      prev_token = tokens[0..item_idx[:start] - 1].reject { |token|
-        {:WHITESPACE => true, :NEWLINE => true, :INDENT => true}.include? token.type
-      }.last
+      prev_token = tokens[item_idx[:start] - 1]
+      while whitespace_tokens.include? prev_token.type
+        prev_token = prev_token.prev_token
+      end
 
-      unless {:COMMENT => true, :MLCOMMENT => true, :SLASH_COMMENT => true}.include? prev_token.type
+      unless comment_tokens.include? prev_token.type
         first_token = tokens[item_idx[:start]]
         if first_token.type == :CLASS
           type = 'class'
