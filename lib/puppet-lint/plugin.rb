@@ -54,15 +54,24 @@ class PuppetLint::CheckPlugin
     @fileinfo = fileinfo
     @data = data
 
-    self.public_methods.select { |method|
-      method.to_s.start_with? 'lint_check_'
-    }.each { |method|
-      name = method.to_s[11..-1]
-      @default_info[:check] = name
-      self.send(method) if PuppetLint.configuration.send("#{name}_enabled?")
-    }
+    enabled_checks.each do |check|
+      @default_info[:check] = check
+      self.send("lint_check_#{check}")
+    end
 
     @problems
+  end
+
+  def enabled_checks
+    @enabled_checks ||= Proc.new do
+      self.public_methods.select { |method|
+        method.to_s.start_with? 'lint_check_'
+      }.map { |method|
+        method.to_s[11..-1]
+      }.select { |name|
+        PuppetLint.configuration.send("#{name}_enabled?")
+      }
+    end.call
   end
 
   def tokens
