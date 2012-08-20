@@ -5,7 +5,7 @@ class PuppetLint::Plugins::CheckVariables < PuppetLint::CheckPlugin
   # Returns nothing.
   check 'variable_contains_dash' do
     tokens.select { |r|
-      [:VARIABLE, :UNENC_VARIABLE].include? r.type
+      {:VARIABLE => true, :UNENC_VARIABLE => true}.include? r.type
     }.each do |token|
       if token.value.match(/-/)
         notify :warning, {

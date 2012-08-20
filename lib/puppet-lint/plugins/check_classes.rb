@@ -300,7 +300,7 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
           this_token = param_tokens[param_tokens_idx]
           next_token = param_tokens[param_tokens_idx+1]
           if this_token.type == :VARIABLE
-            if [:COMMA, :EQUALS, :RPAREN].include? next_token.type
+            if {:COMMA => true, :EQUALS => true, :RPAREN => true}.include? next_token.type
               variables_in_scope << this_token.value
             end
           end

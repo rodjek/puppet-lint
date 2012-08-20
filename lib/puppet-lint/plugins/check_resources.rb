@@ -49,7 +49,7 @@ class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
         formatting_tokens.include? r.type
       }
 
-      seen_params = []
+      seen_params = {}
       resource_tokens.each_with_index do |token, idx|
         if token.type == :FARROW
           prev_token = resource_tokens[idx - 1]
@@ -61,7 +61,7 @@ class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
               :column     => prev_token.column,
             }
           else
-            seen_params << prev_token.value
+            seen_params[prev_token.value] = true
           end
         end
       end
@@ -93,7 +93,7 @@ class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
           attr_token = resource_tokens[resource_token_idx]
           if attr_token.type == :NAME and attr_token.value == 'mode'
             value_token = resource_tokens[resource_token_idx + 2]
-            if [:NAME, :NUMBER].include? value_token.type
+            if {:NAME => true, :NUMBER => true}.include? value_token.type
               notify :warning, {
                 :message    => 'unquoted file mode',
                 :linenumber => value_token.line,

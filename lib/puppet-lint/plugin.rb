@@ -85,7 +85,7 @@ class PuppetLint::CheckPlugin
             }
             title_array_tokens = tokens[(array_start_idx + 1)..(token_idx - 2)]
             result += title_array_tokens.select { |token|
-              [:STRING, :NAME].include? token.type
+              {:STRING => true, :NAME => true}.include? token.type
             }
           else
             next_token = tokens[token_idx + 1..-1].reject { |r|
@@ -125,7 +125,7 @@ class PuppetLint::CheckPlugin
               real_idx = token_idx + idx + 1
               if tokens[real_idx].type == :LBRACE
                 depth += 1
-              elsif [:SEMIC, :RBRACE].include? tokens[real_idx].type
+              elsif {:SEMIC => true, :RBRACE => true}.include? tokens[real_idx].type
                 unless tokens[real_idx].type == :SEMIC && depth > 1
                   depth -= 1
                   if depth == 0

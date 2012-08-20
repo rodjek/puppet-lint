@@ -78,7 +78,7 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
       indent_depth = [nil]
       resource_tokens = tokens[res_idx[:start]..res_idx[:end]]
       resource_tokens.reject! do |token|
-        [:COMMENT, :SLASH_COMMENT, :MLCOMMENT].include? token.type
+        {:COMMENT => true, :SLASH_COMMENT => true, :MLCOMMENT => true}.include? token.type
       end
 
       # If this is a single line resource, skip it

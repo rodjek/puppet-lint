@@ -29,7 +29,7 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
       token = tokens[token_idx]
 
       if token.type == :DQPRE and token.value == ''
-        if [:VARIABLE, :UNENC_VARIABLE].include? tokens[token_idx + 1].type
+        if {:VARIABLE => true, :UNENC_VARIABLE => true}.include? tokens[token_idx + 1].type
           if tokens[token_idx + 2].type == :DQPOST
             if tokens[token_idx + 2].value == ''
               notify :warning, {
@@ -84,7 +84,7 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
   # Returns nothing.
   check 'quoted_booleans' do
     tokens.select { |r|
-      [:STRING, :SSTRING].include?(r.type) && %w{true false}.include?(r.value)
+      {:STRING => true, :SSTRING => true}.include?(r.type) && %w{true false}.include?(r.value)
     }.each do |token|
       notify :warning, {
         :message    => 'quoted boolean value found',

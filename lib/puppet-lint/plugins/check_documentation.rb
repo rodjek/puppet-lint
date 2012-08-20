@@ -2,10 +2,10 @@ class PuppetLint::Plugins::CheckDocumentation < PuppetLint::CheckPlugin
   check 'documentation' do
     (class_indexes + defined_type_indexes).each do |item_idx|
       prev_token = tokens[0..item_idx[:start] - 1].reject { |token|
-        [:WHITESPACE, :NEWLINE, :INDENT].include? token.type
+        {:WHITESPACE => true, :NEWLINE => true, :INDENT => true}.include? token.type
       }.last
 
-      unless [:COMMENT, :MLCOMMENT, :SLASH_COMMENT].include? prev_token.type
+      unless {:COMMENT => true, :MLCOMMENT => true, :SLASH_COMMENT => true}.include? prev_token.type
         first_token = tokens[item_idx[:start]]
         if first_token.type == :CLASS
           type = 'class'
