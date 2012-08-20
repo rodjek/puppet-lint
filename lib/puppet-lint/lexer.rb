@@ -26,6 +26,15 @@ class PuppetLint
       'unless' => true,
     }
 
+    REGEX_PREV_TOKENS = {
+      :NODE => true,
+      :LBRACE => true,
+      :RBRACE => true,
+      :MATCH => true,
+      :NOMATCH => true,
+      :COMMA => true,
+    }
+
     KNOWN_TOKENS = [
       [:CLASSREF, /\A(((::){0,1}[A-Z][-\w]*)+)/],
       [:NUMBER, /\A\b((?:0[xX][0-9A-Fa-f]+|0?\d+(?:\.\d+)?(?:[eE]-?\d+)?))\b/],
@@ -187,7 +196,7 @@ class PuppetLint
 
       return true if prev_token.nil?
 
-      if Set[:NODE, :LBRACE, :RBRACE, :MATCH, :NOMATCH, :COMMA].include? prev_token.type
+      if REGEX_PREV_TOKENS.include? prev_token.type
         true
       else
         false
