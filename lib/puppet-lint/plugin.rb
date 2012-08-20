@@ -224,16 +224,7 @@ class PuppetLint::CheckPlugin
   end
 
   def formatting_tokens
-    @formatting_tokens ||= Proc.new do
-      {
-        :COMMENT => true,
-        :MLCOMMENT => true,
-        :SLASH_COMMENT => true,
-        :INDENT => true,
-        :WHITESPACE => true,
-        :NEWLINE => true,
-      }
-    end.call
+    @formatting_tokens ||= PuppetLint::Lexer::FORMATTING_TOKENS
   end
 
   def manifest_lines
