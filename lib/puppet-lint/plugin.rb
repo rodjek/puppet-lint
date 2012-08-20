@@ -97,9 +97,7 @@ class PuppetLint::CheckPlugin
               {:STRING => true, :NAME => true}.include? token.type
             }
           else
-            next_token = tokens[token_idx + 1..-1].reject { |r|
-              formatting_tokens.include? r.type
-            }.first
+            next_token = tokens[token_idx].next_code_token
             if next_token.type != :LBRACE
               result << tokens[token_idx - 1]
             end
@@ -125,11 +123,9 @@ class PuppetLint::CheckPlugin
       result = []
       tokens.each_index do |token_idx|
         if tokens[token_idx].type == :COLON
-          next_tokens = tokens[(token_idx + 1)..-1].reject { |r|
-            formatting_tokens.include? r.type
-          }
+          next_token = tokens[token_idx].next_code_token
           depth = 1
-          if next_tokens.first.type != :LBRACE
+          if next_token.type != :LBRACE
             tokens[(token_idx + 1)..-1].each_index do |idx|
               real_idx = token_idx + idx + 1
               if tokens[real_idx].type == :LBRACE
@@ -177,9 +173,7 @@ class PuppetLint::CheckPlugin
             elsif tokens[idx].type == :RBRACE
               depth -= 1 unless in_params
               if depth == 0 && ! in_params
-                if tokens[token_idx..-1].reject { |r|
-                  r.type == :WHITESPACE
-                }[1].type != :LBRACE
+                if tokens[token_idx].next_code_token.type != :LBRACE
                   result << {:start => token_idx, :end => idx}
                 end
                 break
