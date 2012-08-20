@@ -5,19 +5,17 @@ class PuppetLint::Plugins::CheckConditionals < PuppetLint::CheckPlugin
   # Returns nothing.
   check 'selector_inside_resource' do
     resource_indexes.each do |resource|
-      resource_tokens = tokens[resource[:start]..resource[:end]].reject { |r|
-        formatting_tokens.include? r.type
-      }
+      resource_tokens = tokens[resource[:start]..resource[:end]]
 
-      resource_tokens.each_index do |resource_token_idx|
-        if resource_tokens[resource_token_idx].type == :FARROW
-          if resource_tokens[resource_token_idx + 1].type == :VARIABLE
-            unless resource_tokens[resource_token_idx + 2].nil?
-              if resource_tokens[resource_token_idx + 2].type == :QMARK
+      resource_tokens.each do |token|
+        if token.type == :FARROW
+          if token.next_code_token.type == :VARIABLE
+            unless token.next_code_token.next_code_token.nil?
+              if token.next_code_token.next_code_token.type == :QMARK
                 notify :warning, {
                   :message    => 'selector inside resource block',
-                  :linenumber => resource_tokens[resource_token_idx].line,
-                  :column     => resource_tokens[resource_token_idx].column,
+                  :linenumber => token.line,
+                  :column     => token.column,
                 }
               end
             end
