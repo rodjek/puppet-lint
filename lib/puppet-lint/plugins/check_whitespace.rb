@@ -67,7 +67,7 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
 
             # check for length first
             unless line_indent.length == selectors.last
-              notify :warning, :message =>  "=> on line isn't properly aligned for selector", :linenumber => line_no
+              notify :warning, :message =>  "indentation of '=>' isn't properly aligned for selector on line", :linenumber => line_no
             end
 
             # then for a new selector or selector finish
@@ -78,7 +78,7 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
             end
           else
             unless line_indent.length == resource_indent_length
-              notify :warning, :message =>  "=> on line isn't properly aligned for resource", :linenumber => line_no
+              notify :warning, :message =>  "indentation of '=>' isn't properly aligned for resource on line", :linenumber => line_no
             end
 
             if line.strip.end_with? "{"
