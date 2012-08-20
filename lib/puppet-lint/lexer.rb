@@ -204,9 +204,13 @@ class PuppetLint
     end
 
     def new_token(type, value, chunk)
-      lines = chunk.split("\n")
-      line_no = lines.empty? ? 1 : lines.count
-      column = lines.empty? ? 1 : lines.last.length
+      line_no = chunk.count("\n") + 1
+      if line_no == 1
+        column = chunk.length
+      else
+        column = chunk.length - chunk.rindex("\n") - 1
+      end
+      column += 1 if column == 0
 
       token = Token.new(type, value, line_no, column)
       unless tokens.last.nil?
