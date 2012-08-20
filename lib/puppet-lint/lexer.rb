@@ -210,15 +210,15 @@ class PuppetLint
 
       token = Token.new(type, value, line_no, column)
       unless tokens.last.nil?
-        token.prev = tokens.last
-        tokens.last.next = token
+        token.prev_token = tokens.last
+        tokens.last.next_token = token
 
         unless FORMATTING_TOKENS.include?(token.type)
           prev_nf_idx = tokens.rindex { |r| ! FORMATTING_TOKENS.include? r.type }
           unless prev_nf_idx.nil?
             prev_nf_token = tokens[prev_nf_idx]
-            prev_nf_token.next_nf = token
-            token.prev_nf = prev_nf_token
+            prev_nf_token.next_code_token = token
+            token.prev_code_token = prev_nf_token
           end
         end
       end

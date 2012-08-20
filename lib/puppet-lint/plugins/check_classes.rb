@@ -205,12 +205,12 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
   check 'inherits_across_namespaces' do
     class_indexes.each do |class_idx|
       class_token = tokens[class_idx[:start]]
-      class_name_token = class_token.next_nf
-      inherits_token = class_name_token.next_nf
+      class_name_token = class_token.next_code_token
+      inherits_token = class_name_token.next_code_token
       next if inherits_token.nil?
 
       if inherits_token.type == :INHERITS
-        inherited_class_token = inherits_token.next_nf
+        inherited_class_token = inherits_token.next_code_token
 
         unless class_name_token.value =~ /^#{inherited_class_token.value}::/
           notify :warning, {
@@ -234,7 +234,7 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
 
       class_tokens.each do |token|
         if token.type == :CLASS
-          if token.next_nf.type != :LBRACE
+          if token.next_code_token.type != :LBRACE
             notify :warning, {
               :message    => "class defined inside a class",
               :linenumber => token.line,

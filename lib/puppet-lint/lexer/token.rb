@@ -15,13 +15,19 @@ class PuppetLint
       # text where the Token can be found.
       attr_reader :column
 
-      attr_accessor :next
+      # Internal: Gets/sets the next token in the manifest.
+      attr_accessor :next_token
 
-      attr_accessor :prev
+      # Internal: Gets/sets the previous token in the manifest.
+      attr_accessor :prev_token
 
-      attr_accessor :next_nf
+      # Internal: Gets/sets the next code token (skips whitespace, comments,
+      # etc) in the manifest.
+      attr_accessor :next_code_token
 
-      attr_accessor :prev_nf
+      # Internal: Gets/sets the previous code tokne (skips whitespace,
+      # comments, etc) in the manifest.
+      attr_accessor :prev_code_token
 
       # Internal: Initialise a new Token object.
       #
@@ -38,10 +44,10 @@ class PuppetLint
         @type = type
         @line = line
         @column = column
-        @next = nil
-        @prev = nil
-        @next_nf = nil
-        @prev_nf = nil
+        @next_token = nil
+        @prev_token = nil
+        @next_code_token = nil
+        @prev_code_token = nil
       end
 
       # Internal: Produce a human friendly description of the Token when
