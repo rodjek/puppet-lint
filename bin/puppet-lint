@@ -15,7 +15,7 @@ HELP
 
 require 'optparse'
 require 'rubygems'
-require 'puppet-lint'
+require_relative '../lib/puppet-lint'
 
 opts = OptionParser.new do |opts|
   opts.banner = help

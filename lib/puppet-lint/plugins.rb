@@ -3,9 +3,9 @@ class PuppetLint
   end
 end
 
-require 'puppet-lint/plugins/check_classes'
-require 'puppet-lint/plugins/check_conditionals'
-require 'puppet-lint/plugins/check_strings'
-require 'puppet-lint/plugins/check_variables'
-require 'puppet-lint/plugins/check_whitespace'
-require 'puppet-lint/plugins/check_resources'
+require_relative 'plugins/check_classes'
+require_relative 'plugins/check_conditionals'
+require_relative 'plugins/check_strings'
+require_relative 'plugins/check_variables'
+require_relative 'plugins/check_whitespace'
+require_relative 'plugins/check_resources'

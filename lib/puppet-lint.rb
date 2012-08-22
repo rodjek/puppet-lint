@@ -7,8 +7,8 @@ rescue LoadError
   exit 1
 end
 
-require 'puppet-lint/configuration'
-require 'puppet-lint/plugin'
+require_relative 'puppet-lint/configuration'
+require_relative 'puppet-lint/plugin'
 
 unless String.respond_to?('prepend')
   class String
@@ -166,4 +166,4 @@ PuppetLint.configuration.error_level = :all
 PuppetLint.configuration.with_filename = false
 PuppetLint.configuration.log_format = ''
 
-require 'puppet-lint/plugins'
+require_relative 'puppet-lint/plugins'
