@@ -15,7 +15,7 @@ HELP
 
 require 'optparse'
 require 'rubygems'
-require 'puppet-lint'
+require_relative '../lib/puppet-lint'
 
 opts = OptionParser.new do |opts|
   opts.banner = help
@@ -35,6 +35,10 @@ opts = OptionParser.new do |opts|
 
   opts.on("--fail-on-warnings", "Return a non-zero exit status for warnings.") do
     PuppetLint.configuration.fail_on_warnings = true
+  end
+
+  opts.on("--neverfail", "Don't fail, even for errors.") do
+    PuppetLint.configuration.neverfail = true
   end
 
   opts.on("--log-format FORMAT",
@@ -59,6 +63,21 @@ opts = OptionParser.new do |opts|
   PuppetLint.configuration.checks.each do |check|
     opts.on("--no-#{check}-check", "Skip the #{check} check") do
       PuppetLint.configuration.send("disable_#{check}")
+    end
+  end
+
+  opts.separator ""
+  opts.separator "    Selectively enable checks:"
+
+  PuppetLint.configuration.checks.each do |check|
+    opts.on("--only-#{check}-check", "Only do the #{check} check") do
+      PuppetLint.configuration.checks.each do |chk|
+        if chk == check
+          PuppetLint.configuration.send("enable_#{chk}")
+        else
+          PuppetLint.configuration.send("disable_#{chk}")
+        end
+      end
     end
   end
 
@@ -89,10 +108,14 @@ begin
   end
 
   path.each do |f|
+    # Compiled SELinux policy files also use the .pp extension, and they make
+    # the Puppet lexer cry.
+    next unless `/usr/bin/file -ib #{f}` =~ /text/
     l = PuppetLint.new
     l.file = f
     l.run
-    if l.errors? or (l.warnings? and PuppetLint.configuration.fail_on_warnings)
+    if ((l.errors? and not PuppetLint.configuration.neverfail) or
+        (l.warnings? and PuppetLint.configuration.fail_on_warnings))
       exit 1
     end
   end
