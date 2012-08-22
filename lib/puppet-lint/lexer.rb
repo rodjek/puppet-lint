@@ -107,12 +107,12 @@ class PuppetLint
           if value = chunk[regex, 1]
             if type == :NAME
               if KEYWORDS.include? value
-                tokens << new_token(value.upcase.to_sym, value, code[0..i])
+                tokens << new_token(value.upcase.to_sym, value, :chunk => code[0..i])
               else
-                tokens << new_token(type, value, code[0..i])
+                tokens << new_token(type, value, :chunk => code[0..i])
               end
             else
-              tokens << new_token(type, value, code[0..i])
+              tokens << new_token(type, value, :chunk => code[0..i])
             end
             i += value.size
             found = true
@@ -122,12 +122,12 @@ class PuppetLint
 
         unless found
           if var_name = chunk[/\A\$((::)?([\w-]+::)*[\w-]+)/, 1]
-            tokens << new_token(:VARIABLE, var_name, code[0..i])
+            tokens << new_token(:VARIABLE, var_name, :chunk => code[0..i])
             i += var_name.size + 1
 
           elsif chunk.match(/\A'(.*?)'/m)
             str_content = StringScanner.new(code[i+1..-1]).scan_until(/(\A|[^\\])'/m)
-            tokens << new_token(:SSTRING, str_content[0..-2], code[0..i])
+            tokens << new_token(:SSTRING, str_content[0..-2], :chunk => code[0..i])
             i += str_content.size + 1
 
           elsif chunk.match(/\A"/)
@@ -139,13 +139,13 @@ class PuppetLint
           elsif comment = chunk[/\A(#.*)/, 1]
             comment_size = comment.size
             comment.sub!(/# ?/, '')
-            tokens << new_token(:COMMENT, comment, code[0..i])
+            tokens << new_token(:COMMENT, comment, :chunk => code[0..i])
             i += comment_size
 
           elsif slash_comment = chunk[/\A(\/\/.*)/, 1]
             slash_comment_size = slash_comment.size
             slash_comment.sub!(/\/\/ ?/, '')
-            tokens << new_token(:SLASH_COMMENT, slash_comment, code[0..i])
+            tokens << new_token(:SLASH_COMMENT, slash_comment, :chunk => code[0..i])
             i += slash_comment_size
 
           elsif mlcomment = chunk[/\A(\/\*.*?\*\/)/m, 1]
@@ -155,29 +155,29 @@ class PuppetLint
             mlcomment.gsub!(/^ ?\* ?/, '')
             mlcomment.gsub!(/\n/, ' ')
             mlcomment.strip!
-            tokens << new_token(:MLCOMMENT, mlcomment, code[0..i])
+            tokens << new_token(:MLCOMMENT, mlcomment, :chunk => code[0..i])
             i += mlcomment_size
 
           elsif chunk.match(/\A\/.*?\//) && possible_regex?
             str_content = StringScanner.new(code[i+1..-1]).scan_until(/(\A|[^\\])\//m)
-            tokens << new_token(:REGEX, str_content[0..-2], code[0..i])
+            tokens << new_token(:REGEX, str_content[0..-2], :chunk => code[0..i])
             i += str_content.size + 1
 
           elsif indent = chunk[/\A\n([ \t]+)/m, 1]
-            tokens << new_token(:NEWLINE, '\n', code[0..i])
-            tokens << new_token(:INDENT, indent, code[0..i+1])
+            tokens << new_token(:NEWLINE, '\n', :chunk => code[0..i])
+            tokens << new_token(:INDENT, indent, :chunk => code[0..i+1])
             i += indent.size + 1
 
           elsif whitespace = chunk[/\A([ \t]+)/, 1]
-            tokens << new_token(:WHITESPACE, whitespace, code[0..i])
+            tokens << new_token(:WHITESPACE, whitespace, :chunk => code[0..i])
             i += whitespace.size
 
           elsif chunk.match(/\A\n/)
-            tokens << new_token(:NEWLINE, '\n', code[0..i])
+            tokens << new_token(:NEWLINE, '\n', :chunk => code[0..i])
             i += 1
 
           elsif chunk.match(/\A\//)
-            tokens << new_token(:DIV, '/', code[0..i])
+            tokens << new_token(:DIV, '/', :chunk => code[0..i])
             i += 1
 
           else
@@ -203,14 +203,19 @@ class PuppetLint
       end
     end
 
-    def new_token(type, value, chunk)
-      line_no = chunk.count("\n") + 1
-      if line_no == 1
-        column = chunk.length
+    def new_token(type, value, opts = {})
+      if opts[:chunk]
+        line_no = opts[:chunk].count("\n") + 1
+        if line_no == 1
+          column = opts[:chunk].length
+        else
+          column = opts[:chunk].length - opts[:chunk].rindex("\n") - 1
+        end
+        column += 1 if column == 0
       else
-        column = chunk.length - chunk.rindex("\n") - 1
+        column = opts[:column]
+        line_no = opts[:line]
       end
-      column += 1 if column == 0
 
       token = Token.new(type, value, line_no, column)
       unless tokens.last.nil?
@@ -246,40 +251,40 @@ class PuppetLint
       until value.nil?
         if terminator == "\""
           if first
-            tokens << Token.new(:STRING, value, line, column)
+            tokens << new_token(:STRING, value, :line => line, :column => column)
             first = false
           else
             line += value.count("\n")
             token_column = column + (ss.pos - value.size)
-            tokens << Token.new(:DQPOST, value, line, token_column)
+            tokens << new_token(:DQPOST, value, :line => line, :column => token_column)
           end
         else
           if first
-            tokens << Token.new(:DQPRE, value, line, column)
+            tokens << new_token(:DQPRE, value, :line => line, :column => column)
             first = false
           else
             line += value.count("\n")
             token_column = column + (ss.pos - value.size)
-            tokens << Token.new(:DQMID, value, line, token_column)
+            tokens << new_token(:DQMID, value, :line => line, :column => token_column)
           end
           if ss.scan(/\{/).nil?
             var_name = ss.scan(/(::)?([\w-]+::)*[\w-]+/)
             unless var_name.nil?
               token_column = column + (ss.pos - var_name.size)
-              tokens << Token.new(:UNENC_VARIABLE, var_name, line, token_column)
+              tokens << new_token(:UNENC_VARIABLE, var_name, :line => line, :column => token_column)
             end
           else
             contents = ss.scan_until(/\}/)[0..-2]
             if contents.match(/\A(::)?([\w-]+::)*[\w-]+\Z/)
               token_column = column + (ss.pos - contents.size - 1)
-              tokens << Token.new(:VARIABLE, contents, line, token_column)
+              tokens << new_token(:VARIABLE, contents, :line => line, :column => token_column)
             else
               lexer = PuppetLint::Lexer.new
               lexer.tokenise(contents)
               lexer.tokens.each do |token|
                 tok_col = column + token.column + (ss.pos - contents.size - 1)
                 tok_line = token.line + line - 1
-                tokens << Token.new(token.type, token.value, tok_line, tok_col)
+                tokens << new_token(token.type, token.value, :line => tok_line, :column => tok_col)
               end
             end
           end
