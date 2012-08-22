@@ -138,6 +138,7 @@ class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
             break if value_token.value =~ /\A[0-7]{4}\Z/
             break if value_token.type == :VARIABLE
             break if value_token.value =~ sym_mode
+            break if value_token.type == :UNDEF
 
             notify :warning, {
               :message    => msg,

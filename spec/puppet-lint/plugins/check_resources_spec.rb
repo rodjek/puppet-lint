@@ -41,6 +41,20 @@ describe PuppetLint::Plugins::CheckResources do
     its(:problems) { should be_empty }
   end
 
+  describe 'file mode undef unquoted' do
+    let(:code) { "file { 'foo': mode => undef }" }
+
+    its(:problems) { should be_empty }
+  end
+
+  describe 'file mode undef quoted' do
+    let(:code) { "file { 'foo': mode => 'undef' }" }
+
+    its(:problems) {
+      should only_have_problem :kind => :warning, :message => "mode should be represented as a 4 digit octal value or symbolic mode", :linenumber => 1
+    }
+  end
+
   describe 'ensure as only attr in a single line resource' do
     let(:code) { "file { 'foo': ensure => present }" }
 
