@@ -1,25 +1,24 @@
 ---
 layout: default
-title: 2sp_soft_tabs
-sg: http://docs.puppetlabs.com/guides/style_guide.html#spacing-indentation--whitespace
+title: unquoted_resource_title
+sg: http://docs.puppetlabs.com/guides/style_guide.html#resource-names
 ---
 
-# 2 Space Soft Tabs
+# Unquoted Resource Titles
 
-In order to comply with the style guide, manifests must use 2 space characters
-when indenting ([style guide]({{ page.sg }})).
+All resource titles should be quoted ([style guide]({{ page.sg }})).
 
 #### What you have done
 {% highlight puppet %}
-file { '/tmp/foo':
-    ensure => present,
+service { apache:
+  ensure => running,
 }
 {% endhighlight %}
 
 #### What you should have done:
 {% highlight puppet %}
-file { '/tmp/foo':
-  ensure => present,
+service { 'apache':
+  ensure => running,
 }
 {% endhighlight %}
 

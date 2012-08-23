@@ -1,25 +1,28 @@
 ---
 layout: default
-title: 2sp_soft_tabs
-sg: http://docs.puppetlabs.com/guides/style_guide.html#spacing-indentation--whitespace
+title: ensure_not_symlink_target
+sg: http://docs.puppetlabs.com/guides/style_guide.html#symbolic-links
 ---
 
-# 2 Space Soft Tabs
+# Ensure Parameter Not A Symlink Target
 
-In order to comply with the style guide, manifests must use 2 space characters
-when indenting ([style guide]({{ page.sg }})).
+In the interest of clarity, symbolic links should be declared by using an
+ensure value of `ensure => link` and explicitly specifying a value for the
+`target` attribute.  Using a path to the target as the ensure value is not
+recommended ([style guide]({{ page.sg }})).
 
 #### What you have done
 {% highlight puppet %}
 file { '/tmp/foo':
-    ensure => present,
+  ensure => '/tmp/bar',
 }
 {% endhighlight %}
 
 #### What you should have done:
 {% highlight puppet %}
 file { '/tmp/foo':
-  ensure => present,
+  ensure => link,
+  target => '/tmp/bar',
 }
 {% endhighlight %}
 

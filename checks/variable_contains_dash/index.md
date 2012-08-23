@@ -1,26 +1,22 @@
 ---
 layout: default
-title: 2sp_soft_tabs
-sg: http://docs.puppetlabs.com/guides/style_guide.html#spacing-indentation--whitespace
+title: variable_contains_dash
+sg: http://docs.puppetlabs.com/guides/style_guide.html#variable-format
 ---
 
-# 2 Space Soft Tabs
+# Variable Format
 
-In order to comply with the style guide, manifests must use 2 space characters
-when indenting ([style guide]({{ page.sg }})).
+When defining variables you should only use letters, numbers and underscores.
+You should specifically not make use of dashes ([style guide]({{ page.sg }})).
 
 #### What you have done
 {% highlight puppet %}
-file { '/tmp/foo':
-    ensure => present,
-}
+$foo-bar
 {% endhighlight %}
 
 #### What you should have done:
 {% highlight puppet %}
-file { '/tmp/foo':
-  ensure => present,
-}
+$foo_bar
 {% endhighlight %}
 
 ## Disabling the check

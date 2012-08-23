@@ -1,27 +1,13 @@
 ---
 layout: default
-title: 2sp_soft_tabs
+title: trailing_whitespace
 sg: http://docs.puppetlabs.com/guides/style_guide.html#spacing-indentation--whitespace
 ---
 
-# 2 Space Soft Tabs
+# Trailing whitespace
 
-In order to comply with the style guide, manifests must use 2 space characters
-when indenting ([style guide]({{ page.sg }})).
-
-#### What you have done
-{% highlight puppet %}
-file { '/tmp/foo':
-    ensure => present,
-}
-{% endhighlight %}
-
-#### What you should have done:
-{% highlight puppet %}
-file { '/tmp/foo':
-  ensure => present,
-}
-{% endhighlight %}
+Your manifests must not contain any trailing whitespace on any line
+([style guide]({{ page.sg }})).
 
 ## Disabling the check
 

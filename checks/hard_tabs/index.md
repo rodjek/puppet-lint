@@ -1,7 +1,7 @@
 ---
 layout: default
 title: hard_tabs
-sg: http://docs.puppetlabs.com/guides/style_guide.html#
+sg: http://docs.puppetlabs.com/guides/style_guide.html#spacing-indentation--whitespace
 ---
 
 # Hard Tabs

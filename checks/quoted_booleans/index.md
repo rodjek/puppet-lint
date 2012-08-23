@@ -1,26 +1,27 @@
 ---
 layout: default
-title: 2sp_soft_tabs
-sg: http://docs.puppetlabs.com/guides/style_guide.html#spacing-indentation--whitespace
+title: quoted_booleans
 ---
 
-# 2 Space Soft Tabs
+# Quoted Booleans
 
-In order to comply with the style guide, manifests must use 2 space characters
-when indenting ([style guide]({{ page.sg }})).
+Boolean values (`true` and `false`) behave differently when quoted (`'true'`
+and `'false'`), which can lead to a fair bit of confusion.  As a general rule,
+you should never quote booleans.  This is not a style issue, rather a common
+mistake.
 
 #### What you have done
 {% highlight puppet %}
-file { '/tmp/foo':
-    ensure => present,
-}
+  file { '/tmp/foo':
+    purge => 'true',
+  }
 {% endhighlight %}
 
 #### What you should have done:
 {% highlight puppet %}
-file { '/tmp/foo':
-  ensure => present,
-}
+  file { '/tmp/foo':
+    purge => true,
+  }
 {% endhighlight %}
 
 ## Disabling the check
