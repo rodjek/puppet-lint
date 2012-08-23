@@ -1,26 +1,24 @@
 ---
 layout: default
-title: 2sp_soft_tabs
-sg: http://docs.puppetlabs.com/guides/style_guide.html#spacing-indentation--whitespace
+title: documentation
+sg: http://docs.puppetlabs.com/guides/style_guide.html#puppet-doc
 ---
 
-# 2 Space Soft Tabs
+# Documentation
 
-In order to comply with the style guide, manifests must use 2 space characters
-when indenting ([style guide]({{ page.sg }})).
+All Puppet classes and defines should be documented via comments directly above
+the start of the code ([style guide]({{ page.sg }})).
 
 #### What you have done
 {% highlight puppet %}
-file { '/tmp/foo':
-    ensure => present,
-}
+class ntp {}
 {% endhighlight %}
 
 #### What you should have done:
 {% highlight puppet %}
-file { '/tmp/foo':
-  ensure => present,
-}
+# Install and configure an NTP server
+# You should feel free to expand on this and document any parameters etc
+class ntp {}
 {% endhighlight %}
 
 ## Disabling the check

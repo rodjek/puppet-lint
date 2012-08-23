@@ -1,18 +1,20 @@
 ---
 layout: default
-title: 2sp_soft_tabs
-sg: http://docs.puppetlabs.com/guides/style_guide.html#spacing-indentation--whitespace
+title: ensure_first_param
+sg: http://docs.puppetlabs.com/guides/style_guide.html#attribute-ordering
 ---
 
-# 2 Space Soft Tabs
+# Attribute Ordering
 
-In order to comply with the style guide, manifests must use 2 space characters
-when indenting ([style guide]({{ page.sg }})).
+If a resource declaration includes an `ensure` parameter, it should be the
+first parameter specified ([style guide]({{ page.sg }})).
 
 #### What you have done
 {% highlight puppet %}
 file { '/tmp/foo':
-    ensure => present,
+  owner  => 'root',
+  group  => 'root',
+  ensure => present,
 }
 {% endhighlight %}
 
@@ -20,6 +22,8 @@ file { '/tmp/foo':
 {% highlight puppet %}
 file { '/tmp/foo':
   ensure => present,
+  owner  => 'root',
+  group  => 'root',
 }
 {% endhighlight %}
 

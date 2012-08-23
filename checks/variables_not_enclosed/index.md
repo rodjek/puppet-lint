@@ -1,26 +1,22 @@
 ---
 layout: default
-title: 2sp_soft_tabs
-sg: http://docs.puppetlabs.com/guides/style_guide.html#spacing-indentation--whitespace
+title: variables_not_enclosed
+sg: http://docs.puppetlabs.com/guides/style_guide.html#quoting
 ---
 
-# 2 Space Soft Tabs
+# Variables Not Enclosed
 
-In order to comply with the style guide, manifests must use 2 space characters
-when indenting ([style guide]({{ page.sg }})).
+All variables should be enclosed in in braces (`{}`) when being interpolated in
+a string ([style guide]({{ page.sg }})).
 
 #### What you have done
 {% highlight puppet %}
-file { '/tmp/foo':
-    ensure => present,
-}
+  $foo = "bar $baz"
 {% endhighlight %}
 
 #### What you should have done:
 {% highlight puppet %}
-file { '/tmp/foo':
-  ensure => present,
-}
+  $foo = "bar ${baz}"
 {% endhighlight %}
 
 ## Disabling the check

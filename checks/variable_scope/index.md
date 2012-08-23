@@ -1,26 +1,23 @@
 ---
 layout: default
-title: 2sp_soft_tabs
-sg: http://docs.puppetlabs.com/guides/style_guide.html#spacing-indentation--whitespace
+title: variable_scope
+sg: http://docs.puppetlabs.com/guides/style_guide.html#namespacing-variables
 ---
 
-# 2 Space Soft Tabs
+# Namespacing Variables
 
-In order to comply with the style guide, manifests must use 2 space characters
-when indenting ([style guide]({{ page.sg }})).
+When using top-scope variables, including facts, Puppet modules should
+explicitly specify the empty namespace to prevent accidental scoping issues.
+([style guide]({{ page.sg }})).
 
 #### What you have done
 {% highlight puppet %}
-file { '/tmp/foo':
-    ensure => present,
-}
+$operatingsystem
 {% endhighlight %}
 
 #### What you should have done:
 {% highlight puppet %}
-file { '/tmp/foo':
-  ensure => present,
-}
+$::operatingsystem
 {% endhighlight %}
 
 ## Disabling the check

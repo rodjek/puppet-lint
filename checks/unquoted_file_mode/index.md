@@ -1,25 +1,25 @@
 ---
 layout: default
-title: 2sp_soft_tabs
-sg: http://docs.puppetlabs.com/guides/style_guide.html#spacing-indentation--whitespace
+title: unquoted_file_mode
+sg: http://docs.puppetlabs.com/guides/style_guide.html#file-modes
 ---
 
-# 2 Space Soft Tabs
+# Unquoted File Modes
 
-In order to comply with the style guide, manifests must use 2 space characters
-when indenting ([style guide]({{ page.sg }})).
+File modes should be specified as single-quoted strings instead of
+bare word numbers ([style guide]({{ page.sg }})).
 
 #### What you have done
 {% highlight puppet %}
 file { '/tmp/foo':
-    ensure => present,
+  mode => 0666,
 }
 {% endhighlight %}
 
-#### What you should have done:
+#### What you should have done
 {% highlight puppet %}
 file { '/tmp/foo':
-  ensure => present,
+  mode => '0666',
 }
 {% endhighlight %}
 

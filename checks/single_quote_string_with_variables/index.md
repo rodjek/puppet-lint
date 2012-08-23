@@ -1,26 +1,21 @@
 ---
 layout: default
-title: 2sp_soft_tabs
-sg: http://docs.puppetlabs.com/guides/style_guide.html#spacing-indentation--whitespace
+title: single_quote_string_with_variables
 ---
 
-# 2 Space Soft Tabs
+# Single Quoted String Containing Variables
 
-In order to comply with the style guide, manifests must use 2 space characters
-when indenting ([style guide]({{ page.sg }})).
+Single quoted strings do not get interpolated, so you should not attempt to
+embed variables in one.  This is not a style issue, rather a common mistake.
 
 #### What you have done
 {% highlight puppet %}
-file { '/tmp/foo':
-    ensure => present,
-}
+  $foo = 'bar ${baz}'
 {% endhighlight %}
 
 #### What you should have done:
 {% highlight puppet %}
-file { '/tmp/foo':
-  ensure => present,
-}
+  $foo = "bar ${baz}"
 {% endhighlight %}
 
 ## Disabling the check
