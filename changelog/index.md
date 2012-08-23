@@ -4,6 +4,31 @@ layout: default
 
 # Changelog
 
+### 0.2.0
+
+ * Removed the dependency on Puppet and added a custom lexer for the Puppet
+   DSL.
+ * Added the ability to output the column number of problem.
+ * Cleaned up and documented the codebase.
+ * Added check for // comments.
+ * Added check for /\* \*/ comments.
+ * Added check for undocumented classes and defines.
+ * Improved test cases to ensure 100% code coverage.
+ * Added check for parameterised classes without default values.
+ * Fixed support for running puppet-lint under Ruby 1.9.x.
+ * Added duplicate parameter check.
+ * Changed puppet-lint script to allow passing multiple files on the command
+   line.
+ * Removed the "Evaluating #{file}" output from the Rake task.
+ * File modes of `undef` are now allowed.
+ * Added check for class/defined type names contain a dash.
+ * Fixed the arrow alignment check to ignore commented lines.
+ * Added support for reading command line options from /etc/puppet-lint.rc
+ * Reading from `~/.puppet-lintrc` and `./.puppet-lintrc` depreciated in favour
+   of `~/.puppet-lint.rc` and `./.puppet-lintrc`.
+ * Greatly improved reliability in general.
+ * [View Diff](https://github.com/rodjek/puppet-lint/compare/0.1.13...0.2.0)
+
 ### 0.1.13
 
  * Added support for symbolic file modes.
