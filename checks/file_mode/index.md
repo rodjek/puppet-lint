@@ -11,14 +11,14 @@ that they are octal values.  File modes can also be represented symbolically
 e.g. `u=rw,g=r` ([style guide]({{ page.sg }})).
 
 #### What you have done
-{% highlight puppet %}
+{% highlight text %}
 file { '/tmp/foo':
   mode => '666',
 }
 {% endhighlight %}
 
 #### What you should have done:
-{% highlight puppet %}
+{% highlight text %}
 file { '/tmp/foo':
   mode => '0666',
 }

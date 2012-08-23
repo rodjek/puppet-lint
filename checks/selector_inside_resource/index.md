@@ -11,7 +11,7 @@ conditionals for data assignment, you should separate conditional code from the
 resource declarations ([style guide]({{ page.sg }})).
 
 #### What you have done
-{% highlight puppet %}
+{% highlight text %}
 file { '/tmp/readme.txt':
   mode => $::operatingsystem ? {
     debian => '0777',
@@ -22,7 +22,7 @@ file { '/tmp/readme.txt':
 {% endhighlight %}
 
 #### What you should have done:
-{% highlight puppet %}
+{% highlight text %}
 $file_mode = $::operatingsystem ? {
   debian => '0007',
   redhat => '0776',

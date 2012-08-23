@@ -10,12 +10,12 @@ Relationship declarations with the chaining syntax should only be used in the
 “left to right” direction ([style guide]({{ page.sg }})).
 
 #### What you have done
-{% highlight puppet %}
+{% highlight text %}
 Service['httpd'] <- Package['httpd']
 {% endhighlight %}
 
 #### What you should have done:
-{% highlight puppet %}
+{% highlight text %}
 Package['httpd'] -> Service['httpd']
 {% endhighlight %}
 

@@ -13,7 +13,7 @@ the default case to be “do nothing,” include it as an explicit `default: {}`
 for clarity’s sake ([style guide]({{ page.sg }})).
 
 #### What you have done
-{% highlight puppet %}
+{% highlight text %}
 case $::operatingsystem {
   centos: {
     $version = '1.2.3'
@@ -25,7 +25,7 @@ case $::operatingsystem {
 {% endhighlight %}
 
 #### What you should have done:
-{% highlight puppet %}
+{% highlight text %}
 case $::operatingsystem {
   centos: {
     $version = '1.2.3'

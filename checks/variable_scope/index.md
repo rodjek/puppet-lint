@@ -11,12 +11,12 @@ explicitly specify the empty namespace to prevent accidental scoping issues.
 ([style guide]({{ page.sg }})).
 
 #### What you have done
-{% highlight puppet %}
+{% highlight text %}
 $operatingsystem
 {% endhighlight %}
 
 #### What you should have done:
-{% highlight puppet %}
+{% highlight text %}
 $::operatingsystem
 {% endhighlight %}
 

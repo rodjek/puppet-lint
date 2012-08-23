@@ -11,7 +11,7 @@ selectors, hashes, etc) should be aligned with the other arrows in that block
 ([style guide]({{ page.sg }})).
 
 #### What you have done
-{% highlight puppet %}
+{% highlight text %}
 file { '/tmp/foo':
     ensure => present,
     mode => '0444',
@@ -19,7 +19,7 @@ file { '/tmp/foo':
 {% endhighlight %}
 
 #### What you should have done:
-{% highlight puppet %}
+{% highlight text %}
 file { '/tmp/foo':
   ensure => present,
   mode   => '0444',

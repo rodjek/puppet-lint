@@ -12,14 +12,14 @@ explicitly specifying the parameter when declaring the class
 ([style guide]({{ page.sg }})).
 
 #### What you have done
-{% highlight puppet %}
+{% highlight text %}
 class ntp(
  $server,
 ) {}
 {% endhighlight %}
 
 #### What you should have done:
-{% highlight puppet %}
+{% highlight text %}
 class ntp(
   $server = 'UNSET'
 ) {
@@ -37,7 +37,7 @@ The following popular alternative method SHOULD NOT be used because it is not
 compatible with Puppet 2.6.2 and earlier.
 
 #### What you have done
-{% highlight puppet %}
+{% highlight text %}
 class ntp(
   $server = $ntp::params::server
 ) inherits ntp::params { }

@@ -10,12 +10,12 @@ release of Puppet you're running.  To ensure compatibility on all versions, you
 should avoid using dashes.
 
 #### What you have done
-{% highlight puppet %}
+{% highlight text %}
 class foo::bar-baz {}
 {% endhighlight %}
 
 #### What you should have done:
-{% highlight puppet %}
+{% highlight text %}
 class foo::bar_baz
 {% endhighlight %}
 

@@ -10,12 +10,12 @@ When defining variables you should only use letters, numbers and underscores.
 You should specifically not make use of dashes ([style guide]({{ page.sg }})).
 
 #### What you have done
-{% highlight puppet %}
+{% highlight text %}
 $foo-bar
 {% endhighlight %}
 
 #### What you should have done:
-{% highlight puppet %}
+{% highlight text %}
 $foo_bar
 {% endhighlight %}
 

@@ -10,7 +10,7 @@ Classes and defined resource types must not be defined within other classes
 ([style guide]({{ page.sg }})).
 
 #### What you have done
-{% highlight puppet %}
+{% highlight text %}
 class apache {
   class ssl { }
 }

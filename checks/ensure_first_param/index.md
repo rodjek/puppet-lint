@@ -10,7 +10,7 @@ If a resource declaration includes an `ensure` parameter, it should be the
 first parameter specified ([style guide]({{ page.sg }})).
 
 #### What you have done
-{% highlight puppet %}
+{% highlight text %}
 file { '/tmp/foo':
   owner  => 'root',
   group  => 'root',
@@ -19,7 +19,7 @@ file { '/tmp/foo':
 {% endhighlight %}
 
 #### What you should have done:
-{% highlight puppet %}
+{% highlight text %}
 file { '/tmp/foo':
   ensure => present,
   owner  => 'root',

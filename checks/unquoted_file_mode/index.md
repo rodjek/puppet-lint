@@ -10,14 +10,14 @@ File modes should be specified as single-quoted strings instead of
 bare word numbers ([style guide]({{ page.sg }})).
 
 #### What you have done
-{% highlight puppet %}
+{% highlight text %}
 file { '/tmp/foo':
   mode => 0666,
 }
 {% endhighlight %}
 
 #### What you should have done
-{% highlight puppet %}
+{% highlight text %}
 file { '/tmp/foo':
   mode => '0666',
 }

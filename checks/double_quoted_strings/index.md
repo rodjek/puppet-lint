@@ -10,12 +10,12 @@ All strings that do not contain variables or escape characters like `\n` or
 `\t` should be enclosed in single quotes ([style guide]({{ page.sg }})).
 
 #### What you have done
-{% highlight puppet %}
+{% highlight text %}
   $foo = "bar"
 {% endhighlight %}
 
 #### What you should have done:
-{% highlight puppet %}
+{% highlight text %}
   $foo = 'bar'
 {% endhighlight %}
 
