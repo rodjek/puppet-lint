@@ -11,14 +11,14 @@ strings should not contain just a single variable
 ([style guide]({{ page.sg }})).
 
 #### What you have done
-{% highlight puppet %}
+{% highlight text %}
   file { '/tmp/foo':
     owner => "${file_owner}",
   }
 {% endhighlight %}
 
 #### What you should have done:
-{% highlight puppet %}
+{% highlight text %}
   file { '/tmp/foo':
     owner => $file_owner,
   }

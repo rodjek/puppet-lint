@@ -12,14 +12,14 @@ ensure value of `ensure => link` and explicitly specifying a value for the
 recommended ([style guide]({{ page.sg }})).
 
 #### What you have done
-{% highlight puppet %}
+{% highlight text %}
 file { '/tmp/foo':
   ensure => '/tmp/bar',
 }
 {% endhighlight %}
 
 #### What you should have done:
-{% highlight puppet %}
+{% highlight text %}
 file { '/tmp/foo':
   ensure => link,
   target => '/tmp/bar',

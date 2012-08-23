@@ -9,14 +9,14 @@ sg: http://docs.puppetlabs.com/guides/style_guide.html#resource-names
 All resource titles should be quoted ([style guide]({{ page.sg }})).
 
 #### What you have done
-{% highlight puppet %}
+{% highlight text %}
 service { apache:
   ensure => running,
 }
 {% endhighlight %}
 
 #### What you should have done:
-{% highlight puppet %}
+{% highlight text %}
 service { 'apache':
   ensure => running,
 }

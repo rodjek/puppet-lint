@@ -12,7 +12,7 @@ way that doesn’t violate the concept of modularity, such as with include
 statements or relationship declarations ([style guide]({{ page.sg }})).
 
 #### What you have done
-{% highlight puppet %}
+{% highlight text %}
 class ssh inherits server { }
 
 class ssh::client inherits workstation { }
@@ -21,7 +21,7 @@ class wordpress inherits apache { }
 {% endhighlight %}
 
 #### What you should have done:
-{% highlight puppet %}
+{% highlight text %}
 class ssh { }
 
 class ssh::client inherits ssh { }

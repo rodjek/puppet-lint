@@ -9,7 +9,7 @@ You really shouldn't have duplicate parameters in a resource declaration, it is
 going to lead to strangness.
 
 #### What you have done
-{% highlight puppet %}
+{% highlight text %}
 file { '/tmp/foo':
   owner  => 'root',
   owner  => 'foo',
@@ -17,7 +17,7 @@ file { '/tmp/foo':
 {% endhighlight %}
 
 #### What you should have done:
-{% highlight puppet %}
+{% highlight text %}
 file { '/tmp/foo':
   owner  => 'root',
 }

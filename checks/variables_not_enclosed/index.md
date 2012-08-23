@@ -10,12 +10,12 @@ All variables should be enclosed in in braces (`{}`) when being interpolated in
 a string ([style guide]({{ page.sg }})).
 
 #### What you have done
-{% highlight puppet %}
+{% highlight text %}
   $foo = "bar $baz"
 {% endhighlight %}
 
 #### What you should have done:
-{% highlight puppet %}
+{% highlight text %}
   $foo = "bar ${baz}"
 {% endhighlight %}
 

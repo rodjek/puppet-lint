@@ -11,7 +11,7 @@ are required should be listed before optional parameters (i.e. parameters with
 defaults) ([style guide]({{ page.sg }})).
 
 #### What you have done
-{% highlight puppet %}
+{% highlight text %}
 class ntp (
   $options   = "iburst",
   $servers,
@@ -20,7 +20,7 @@ class ntp (
 {% endhighlight %}
 
 #### What you should have done:
-{% highlight puppet %}
+{% highlight text %}
 class ntp (
   $servers,
   $options   = "iburst",

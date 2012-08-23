@@ -10,12 +10,12 @@ All Puppet classes and defines should be documented via comments directly above
 the start of the code ([style guide]({{ page.sg }})).
 
 #### What you have done
-{% highlight puppet %}
+{% highlight text %}
 class ntp {}
 {% endhighlight %}
 
 #### What you should have done:
-{% highlight puppet %}
+{% highlight text %}
 # Install and configure an NTP server
 # You should feel free to expand on this and document any parameters etc
 class ntp {}

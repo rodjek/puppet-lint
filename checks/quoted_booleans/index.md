@@ -11,14 +11,14 @@ you should never quote booleans.  This is not a style issue, rather a common
 mistake.
 
 #### What you have done
-{% highlight puppet %}
+{% highlight text %}
   file { '/tmp/foo':
     purge => 'true',
   }
 {% endhighlight %}
 
 #### What you should have done:
-{% highlight puppet %}
+{% highlight text %}
   file { '/tmp/foo':
     purge => true,
   }

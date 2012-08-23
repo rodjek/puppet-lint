@@ -10,14 +10,14 @@ In order to comply with the style guide, manifests must use 2 space characters
 when indenting ([style guide]({{ page.sg }})).
 
 #### What you have done
-{% highlight puppet %}
+{% highlight text %}
 file { '/tmp/foo':
     ensure => present,
 }
 {% endhighlight %}
 
 #### What you should have done:
-{% highlight puppet %}
+{% highlight text %}
 file { '/tmp/foo':
   ensure => present,
 }
