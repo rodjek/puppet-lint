@@ -75,31 +75,25 @@ class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
   # Returns nothing.
   check 'unquoted_file_mode' do
     resource_indexes.each do |resource|
-      resource_tokens = tokens[resource[:start]..resource[:end]].reject { |r|
-        formatting_tokens.include? r.type
-      }
+      resource_tokens = tokens[resource[:start]..resource[:end]]
+      prev_tokens = tokens[0..resource[:start]]
 
-      stripped_tokens = tokens[0..resource[:start]].reject { |r|
-        formatting_tokens.include? r.type
-      }
-
-      res_type_idx = stripped_tokens.rindex { |r|
+      lbrace_idx = prev_tokens.rindex { |r|
         r.type == :LBRACE
-      } - 1
+      }
 
-      resource_type_token = stripped_tokens[res_type_idx]
+      resource_type_token = tokens[lbrace_idx].prev_code_token
       if resource_type_token.value == "file"
-        resource_tokens.each_index do |resource_token_idx|
-          attr_token = resource_tokens[resource_token_idx]
-          if attr_token.type == :NAME and attr_token.value == 'mode'
-            value_token = resource_tokens[resource_token_idx + 2]
-            if {:NAME => true, :NUMBER => true}.include? value_token.type
-              notify :warning, {
-                :message    => 'unquoted file mode',
-                :linenumber => value_token.line,
-                :column     => value_token.column,
-              }
-            end
+        resource_tokens.select { |resource_token|
+          resource_token.type == :NAME and resource_token.value == 'mode'
+        }.each do |resource_token|
+          value_token = resource_token.next_code_token.next_code_token
+          if {:NAME => true, :NUMBER => true}.include? value_token.type
+            notify :warning, {
+              :message    => 'unquoted file mode',
+              :linenumber => value_token.line,
+              :column     => value_token.column,
+            }
           end
         end
       end
