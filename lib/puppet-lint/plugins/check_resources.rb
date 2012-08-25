@@ -147,31 +147,25 @@ class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
   # Returns nothing.
   check 'ensure_not_symlink_target' do
     resource_indexes.each do |resource|
-      resource_tokens = tokens[resource[:start]..resource[:end]].reject { |r|
-        formatting_tokens.include? r.type
-      }
+      resource_tokens = tokens[resource[:start]..resource[:end]]
+      prev_tokens = tokens[0..resource[:start]]
 
-      stripped_tokens = tokens[0..resource[:start]].reject { |r|
-        formatting_tokens.include? r.type
-      }
-
-      res_type_idx = stripped_tokens.rindex { |r|
+      lbrace_idx = prev_tokens.rindex { |r|
         r.type == :LBRACE
-      } - 1
+      }
 
-      resource_type_token = stripped_tokens[res_type_idx]
+      resource_type_token = tokens[lbrace_idx].prev_code_token
       if resource_type_token.value == "file"
-        resource_tokens.each_index do |resource_token_idx|
-          attr_token = resource_tokens[resource_token_idx]
-          if attr_token.type == :NAME and attr_token.value == 'ensure'
-            value_token = resource_tokens[resource_token_idx + 2]
-            if value_token.value.start_with? '/'
-              notify :warning, {
-                :message    => 'symlink target specified in ensure attr',
-                :linenumber => value_token.line,
-                :column     => value_token.column,
-              }
-            end
+        resource_tokens.select { |resource_token|
+          resource_token.type == :NAME and resource_token.value == 'ensure'
+        }.each do |ensure_token|
+          value_token = ensure_token.next_code_token.next_code_token
+          if value_token.value.start_with? '/'
+            notify :warning, {
+              :message    => 'symlink target specified in ensure attr',
+              :linenumber => value_token.line,
+              :column     => value_token.column,
+            }
           end
         end
       end
