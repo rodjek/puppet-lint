@@ -110,36 +110,30 @@ class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
     sym_mode = /\A([ugoa]*[-=+][-=+rstwxXugo]*)(,[ugoa]*[-=+][-=+rstwxXugo]*)*\Z/
 
     resource_indexes.each do |resource|
-      resource_tokens = tokens[resource[:start]..resource[:end]].reject { |r|
-        formatting_tokens.include? r.type
-      }
+      resource_tokens = tokens[resource[:start]..resource[:end]]
+      prev_tokens = tokens[0..resource[:start]]
 
-      stripped_tokens = tokens[0..resource[:start]].reject { |r|
-        formatting_tokens.include? r.type
-      }
-
-      res_type_idx = stripped_tokens.rindex { |r|
+      lbrace_idx = prev_tokens.rindex { |r|
         r.type == :LBRACE
-      } - 1
+      }
 
-      resource_type_token = stripped_tokens[res_type_idx]
+      resource_type_token = tokens[lbrace_idx].prev_code_token
       if resource_type_token.value == "file"
-        resource_tokens.each_index do |resource_token_idx|
-          attr_token = resource_tokens[resource_token_idx]
-          if attr_token.type == :NAME and attr_token.value == 'mode'
-            value_token = resource_tokens[resource_token_idx + 2]
+        resource_tokens.select { |resource_token|
+          resource_token.type == :NAME and resource_token.value == 'mode'
+        }.each do |resource_token|
+          value_token = resource_token.next_code_token.next_code_token
 
-            break if value_token.value =~ /\A[0-7]{4}\Z/
-            break if value_token.type == :VARIABLE
-            break if value_token.value =~ sym_mode
-            break if value_token.type == :UNDEF
+          break if value_token.value =~ /\A[0-7]{4}\Z/
+          break if value_token.type == :VARIABLE
+          break if value_token.value =~ sym_mode
+          break if value_token.type == :UNDEF
 
-            notify :warning, {
-              :message    => msg,
-              :linenumber => value_token.line,
-              :column     => value_token.column,
-            }
-          end
+          notify :warning, {
+            :message    => msg,
+            :linenumber => value_token.line,
+            :column     => value_token.column,
+          }
         end
       end
     end
