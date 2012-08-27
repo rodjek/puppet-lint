@@ -38,20 +38,21 @@ class PuppetLint
       end
     end
 
-    def add_check(check)
+    def add_check(check, &b)
       self.class.add_check(check)
+      check_method[check] = b
     end
 
     def settings
       @settings ||= {}
     end
 
+    def check_method
+      @check_method ||= {}
+    end
+
     def checks
-      self.public_methods.select { |method|
-        method =~ /^.+_enabled\?$/
-      }.map { |method|
-        method[0..-10]
-      }
+      check_method.keys
     end
 
     def defaults

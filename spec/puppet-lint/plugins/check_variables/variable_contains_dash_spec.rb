@@ -1,14 +1,6 @@
 require 'spec_helper'
 
-describe PuppetLint::Plugins::CheckVariables do
-  subject do
-    klass = described_class.new
-    fileinfo = {}
-    fileinfo[:fullpath] = defined?(fullpath).nil? ? '' : fullpath
-    klass.run(fileinfo, code)
-    klass
-  end
-
+describe 'variable_contains_dash' do
   describe 'a variable containing a dash' do
     let(:code) { '$foo-bar' }
 

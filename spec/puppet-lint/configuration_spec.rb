@@ -4,7 +4,8 @@ describe PuppetLint::Configuration do
   subject { PuppetLint::Configuration.new }
 
   it 'should create check methods on the fly' do
-    subject.add_check('foo')
+    method = Proc.new { true }
+    subject.add_check('foo', &method)
 
     subject.should respond_to(:foo_enabled?)
     subject.should_not respond_to(:bar_enabled?)
@@ -21,6 +22,8 @@ describe PuppetLint::Configuration do
   end
 
   it 'should know what checks have been added' do
+    method = Proc.new { true }
+    subject.add_check('foo', &method)
     subject.checks.should include('foo')
   end
 

@@ -1,29 +1,14 @@
-class PuppetLint
-
-  module Plugin
-    module ClassMethods
-      def repository
-        @repository ||= []
-      end
-
-      def inherited(klass)
-        repository << klass
-      end
-    end
-
-    def self.included(klass)
-      klass.extend ClassMethods
-    end
-  end
-end
-
-class PuppetLint::CheckPlugin
-  include PuppetLint::Plugin
+class PuppetLint::Checks
   attr_reader :problems
 
   def initialize
     @problems = []
     @default_info = {:check => 'unknown', :linenumber => 0}
+
+    PuppetLint.configuration.checks.each do |check|
+      method = PuppetLint.configuration.check_method[check]
+      self.class.send(:define_method, "lint_check_#{check}", &method)
+    end
   end
 
   #     notify(kind, message_hash)    #=> nil
@@ -48,11 +33,15 @@ class PuppetLint::CheckPlugin
     message_hash
   end
 
-  def run(fileinfo, data)
+  def load_data(fileinfo, data)
     lexer = PuppetLint::Lexer.new
     @tokens = lexer.tokenise(data)
     @fileinfo = fileinfo
     @data = data
+  end
+
+  def run(fileinfo, data)
+    load_data(fileinfo, data)
 
     enabled_checks.each do |check|
       @default_info[:check] = check
@@ -230,10 +219,11 @@ class PuppetLint::CheckPlugin
   def manifest_lines
     @manifest_lines ||= @data.split("\n")
   end
+end
 
+class PuppetLint::CheckPlugin
   def self.check(name, &b)
-    PuppetLint.configuration.add_check name
-    define_method("lint_check_#{name}", b)
+    PuppetLint.configuration.add_check(name, &b)
   end
 end
 

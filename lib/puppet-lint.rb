@@ -140,9 +140,7 @@ class PuppetLint
       raise PuppetLint::NoCodeError
     end
 
-    PuppetLint::CheckPlugin.repository.each do |plugin|
-      report plugin.new.run(@fileinfo, @data)
-    end
+    report PuppetLint::Checks.new.run(@fileinfo, @data)
   end
 end
 

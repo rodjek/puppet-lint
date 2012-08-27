@@ -1,14 +1,6 @@
 require 'spec_helper'
 
-describe PuppetLint::Plugins::CheckDocumentation do
-  subject do
-    klass = described_class.new
-    fileinfo = {}
-    fileinfo[:fullpath] = defined?(fullpath).nil? ? '' : fullpath
-    klass.run(fileinfo, code)
-    klass
-  end
-
+describe 'documentation' do
   describe 'undocumented class' do
     let(:code) { "class test {}" }
 

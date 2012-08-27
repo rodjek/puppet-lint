@@ -1,8 +1,24 @@
 require 'rspec/autorun'
 require 'puppet-lint'
 
+module RSpec
+  module LintExampleGroup
+    def subject
+      klass = PuppetLint::Checks.new
+      fileinfo = {}
+      fileinfo[:fullpath] = self.respond_to?(:fullpath) ? fullpath : ''
+      klass.load_data(fileinfo, code)
+      klass.send("lint_check_#{self.class.top_level_description}")
+      klass
+    end
+  end
+end
+
 RSpec.configure do |c|
   c.mock_framework = :rspec
+  c.include RSpec::LintExampleGroup, :type => :lint, :example_group => {
+    :file_path => Regexp.compile(%w{spec puppet-lint plugins}.join('[\\\/]'))
+  }
 end
 
 #class PuppetLint::Warning < Exception; end
@@ -117,3 +133,4 @@ RSpec::Matchers.define :only_have_problem do |filter|
   end
 
 end
+

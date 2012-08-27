@@ -1,13 +1,6 @@
-# encoding: utf-8
 require 'spec_helper'
 
-describe PuppetLint::Plugins::CheckWhitespace do
-  subject do
-    klass = described_class.new
-    klass.run(defined?(fullpath).nil? ? {:fullpath => ''} : {:fullpath => fullpath}, code)
-    klass
-  end
-
+describe 'arrow_alignment' do
   describe 'selectors inside a resource' do
     let(:code) { "
       file { 'foo':
@@ -31,16 +24,6 @@ describe PuppetLint::Plugins::CheckWhitespace do
           absent  => undef,
         },
         owner  => 'tomcat6',
-      }"
-    }
-
-    its(:problems) { should be_empty }
-  end
-
-  describe 'file resource with a source line > 80c' do
-    let(:code) { "
-      file {
-        source  => 'puppet:///modules/certificates/etc/ssl/private/wildcard.example.com.crt',
       }"
     }
 
@@ -74,18 +57,6 @@ describe PuppetLint::Plugins::CheckWhitespace do
     mode   => '0755'," }
 
     its(:problems) { should be_empty }
-  end
-
-
-  describe 'length of lines with UTF-8 characters' do
-    let(:code) { "
-      # ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-      # ┃          Configuration           ┃
-      # ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛"
-    }
-    its(:problems) {
-      should be_empty
-    }
   end
 
   describe 'issue #37' do
@@ -221,62 +192,6 @@ describe PuppetLint::Plugins::CheckWhitespace do
     }
 
     its(:problems) { should be_empty }
-  end
-
-  describe 'hard tabs indents' do
-    let(:code) { "\tfoo => bar," }
-
-    its(:problems) {
-      should have_problem({
-        :kind       => :error,
-        :message    => 'tab character found',
-        :linenumber => 1,
-        :column     => 1,
-      })
-    }
-  end
-
-  describe 'line with trailing whitespace' do
-    let(:code) { "foo " }
-
-    its(:problems) {
-      should have_problem({
-        :kind       => :error,
-        :message    => 'trailing whitespace found',
-        :linenumber => 1,
-        :column     => 4,
-      })
-    }
-  end
-
-  describe '81 character line' do
-    let(:code) { 'a' * 81 }
-
-    its(:problems) {
-      should have_problem({
-        :kind       => :warning,
-        :message    => 'line has more than 80 characters',
-        :linenumber => 1,
-        :column     => 80,
-      })
-    }
-  end
-
-  describe 'line indented by 3 spaces' do
-    let(:code) { "
-      file { 'foo':
-         foo => bar,
-      }"
-    }
-
-    its(:problems) {
-      should have_problem({
-        :kind       => :error,
-        :message    => 'two-space soft tabs not used',
-        :linenumber => 3,
-        :column     => 1,
-      })
-    }
   end
 
   describe 'single line resource spread out on multiple lines' do
