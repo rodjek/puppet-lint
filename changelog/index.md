@@ -4,6 +4,19 @@ layout: default
 
 # Changelog
 
+### 0.2.1
+
+ * Optimised the unquoted\_file\_mode check.
+ * Optimised the file\_mode check.
+ * Optimised the ensure\_first\_param check.
+ * Optimised the ensure\_not\_symlink\_target check.
+ * Optimised the plugin structure to significantly improve performance.
+ * Fixed bug in the parameterised\_class check to correctly detect
+   non-parameterised classes.
+ * Fixed bug in the documentation check to handle undocumented classes
+   gracefully under Ruby 1.9.x.
+ * [View Diff](https://github.com/rodjek/puppet-lint/compare/0.2.0...0.2.1)
+
 ### 0.2.0
 
  * Removed the dependency on Puppet and added a custom lexer for the Puppet
