@@ -73,16 +73,20 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
       depth = 0
       lparen_idx = nil
       rparen_idx = nil
-      tokens[token_idx..-1].each_index do |t|
-        idx = token_idx + t
-        if tokens[idx].type == :LPAREN
-          depth += 1
-          lparen_idx = idx if depth == 1
-        elsif tokens[idx].type == :RPAREN
-          depth -= 1
-          if depth == 0
-            rparen_idx = idx
-            break
+      class_name_token = tokens[class_idx[:start]].next_code_token
+
+      if class_name_token.next_code_token.type == :LPAREN
+        tokens[token_idx..-1].each_index do |t|
+          idx = token_idx + t
+          if tokens[idx].type == :LPAREN
+            depth += 1
+            lparen_idx = idx if depth == 1
+          elsif tokens[idx].type == :RPAREN
+            depth -= 1
+            if depth == 0
+              rparen_idx = idx
+              break
+            end
           end
         end
       end

@@ -27,4 +27,17 @@ describe 'parameterised_classes' do
       should_not have_problem :kind => :error
     }
   end
+
+  describe 'class without parameters' do
+    let(:code) {"
+      class myclass {
+
+        if ( $::lsbdistcodename == 'squeeze' ) {
+          #TODO
+        }
+      }
+    "}
+
+    its(:problems) { should == [] }
+  end
 end
