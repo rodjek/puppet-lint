@@ -14,11 +14,11 @@ class PuppetLint::Plugins::CheckDocumentation < PuppetLint::CheckPlugin
 
     (class_indexes + defined_type_indexes).each do |item_idx|
       prev_token = tokens[item_idx[:start] - 1]
-      while whitespace_tokens.include? prev_token.type
+      while (!prev_token.nil?) && whitespace_tokens.include?(prev_token.type)
         prev_token = prev_token.prev_token
       end
 
-      unless comment_tokens.include? prev_token.type
+      unless (!prev_token.nil?) && comment_tokens.include?(prev_token.type)
         first_token = tokens[item_idx[:start]]
         if first_token.type == :CLASS
           type = 'class'
