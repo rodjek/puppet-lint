@@ -4,4 +4,4 @@ $:.unshift File.join(File.dirname(__FILE__), *%w[.. lib])
 
 require 'puppet-lint'
 
-PuppetLint::Bin.new(ARGV).run
+exit PuppetLint::Bin.new(ARGV).run
