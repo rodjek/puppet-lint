@@ -40,4 +40,10 @@ describe 'parameterised_classes' do
 
     its(:problems) { should == [] }
   end
+
+  describe 'parameterised class with a function value' do
+    let(:code) { "class foo($bar = baz($gronk)) { }" }
+
+    its(:problems) { should == [] }
+  end
 end
