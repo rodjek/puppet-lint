@@ -51,18 +51,30 @@ class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
       }
 
       seen_params = {}
+      level = 0
       resource_tokens.each_with_index do |token, idx|
+        case token.type
+        when :LBRACE
+          level += 1
+          next
+        when :RBRACE
+          seen_params[level] = {}
+          level -= 1
+          next
+        end
+        seen_params[level] ||= {}
+
         if token.type == :FARROW
           prev_token = resource_tokens[idx - 1]
           next unless prev_token.type == :NAME
-          if seen_params.include? prev_token.value
+          if seen_params[level].include? prev_token.value
             notify :error, {
               :message    => 'duplicate parameter found in resource',
               :linenumber => prev_token.line,
               :column     => prev_token.column,
             }
           else
-            seen_params[prev_token.value] = true
+            seen_params[level][prev_token.value] = true
           end
         end
       end
