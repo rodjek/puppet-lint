@@ -710,6 +710,12 @@ describe PuppetLint::Lexer do
       token.type.should == :SSTRING
       token.value.should == ''
     end
+
+    it "should match an empty string ending with \\\\" do
+      token = @lexer.tokenise("'foo\\\\'").first
+      token.type.should == :SSTRING
+      token.value.should == %{foo\\\\}
+    end
   end
 
   context ':REGEX' do
