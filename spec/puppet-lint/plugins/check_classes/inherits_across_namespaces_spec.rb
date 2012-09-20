@@ -7,6 +7,12 @@ describe 'inherits_across_namespaces' do
     its(:problems) { should be_empty }
   end
 
+  describe 'class inheriting from sister in same module namespace' do
+    let(:code) { "class foo::bar inherits foo::baz { }" }
+
+    its(:problems) { should be_empty }
+  end
+
   describe 'class inheriting from another module namespace' do
     let(:code) { "class foo::bar inherits baz { }" }
 
