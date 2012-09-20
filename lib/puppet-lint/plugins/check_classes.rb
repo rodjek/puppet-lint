@@ -221,7 +221,7 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
 
         unless class_name_token.value =~ /^#{inherited_class_token.value}::/
           notify :warning, {
-            :message    => "class inherits across namespaces",
+            :message    => "class inherits across module namespaces",
             :linenumber => inherited_class_token.line,
             :column     => inherited_class_token.column,
           }
