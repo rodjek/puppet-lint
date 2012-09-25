@@ -94,7 +94,7 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
 
           unless indent_depth.last == indent_length
             notify :warning, {
-              :message    => '=> is not properly aligned',
+              :message    => 'indentation of => is not properly aligned',
               :linenumber => token.line,
               :column     => token.column,
             }
