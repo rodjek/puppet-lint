@@ -218,10 +218,12 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
 
       if inherits_token.type == :INHERITS
         inherited_class_token = inherits_token.next_code_token
+        inherited_module_name = inherited_class_token.value.split('::').reject { |r| r.empty? }.first
+        class_module_name = class_name_token.value.split('::').reject { |r| r.empty? }.first
 
-        unless class_name_token.value =~ /^#{inherited_class_token.value}::/
+        unless class_module_name == inherited_module_name
           notify :warning, {
-            :message    => "class inherits across namespaces",
+            :message    => "class inherits across module namespaces",
             :linenumber => inherited_class_token.line,
             :column     => inherited_class_token.column,
           }
