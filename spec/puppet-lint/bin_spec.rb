@@ -103,6 +103,22 @@ describe PuppetLint::Bin do
     its(:stdout) { should match(/optional parameter/) }
   end
 
+  context 'when asked to provide context to problems' do
+    let(:args) { [
+      '--with-context',
+      'spec/fixtures/test/manifests/warning.pp',
+    ] }
+
+    its(:exitstatus) { should == 0 }
+    its(:stdout) { should == [
+      'WARNING: optional parameter listed before required parameter on line 2',
+      '',
+      "  define test::warning($foo='bar', $baz) { }",
+      '                                   ^',
+    ].join("\n")
+    }
+  end
+
   context 'when asked to fail on warnings' do
     let(:args) { [
       '--fail-on-warnings',

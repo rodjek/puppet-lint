@@ -114,7 +114,17 @@ class PuppetLint
     puts format % message
   end
 
-  def report(problems)
+  def print_context(message, linter)
+    # XXX: I don't really like the way this has been implemented (passing the
+    # linter object down through layers of functions.  Refactor me!
+    return if message[:check] == 'documentation'
+    line = linter.manifest_lines[message[:linenumber] - 1]
+    offset = line.index(/\S/)
+    puts "\n  #{line.strip}"
+    printf "%#{message[:column] + 2 - offset}s\n\n", '^'
+  end
+
+  def report(problems, linter)
     problems.each do |message|
       @statistics[message[:kind]] += 1
       ## Add some default attributes.
@@ -123,6 +133,7 @@ class PuppetLint
 
       if configuration.error_level == message[:kind] or configuration.error_level == :all
         format_message message
+        print_context(message, linter) if configuration.with_context
       end
     end
   end
@@ -140,7 +151,9 @@ class PuppetLint
       raise PuppetLint::NoCodeError
     end
 
-    report PuppetLint::Checks.new.run(@fileinfo, @data)
+    linter = PuppetLint::Checks.new
+    problems = linter.run(@fileinfo, @data)
+    report problems, linter
   end
 end
 

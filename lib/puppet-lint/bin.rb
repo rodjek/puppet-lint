@@ -25,6 +25,10 @@ class PuppetLint::Bin
         return 0
       end
 
+      opts.on('--with-context', '') do
+        PuppetLint.configuration.with_context = true
+      end
+
       opts.on("--with-filename", "Display the filename before the warning") do
         PuppetLint.configuration.with_filename = true
       end

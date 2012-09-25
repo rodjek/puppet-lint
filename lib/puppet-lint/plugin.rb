@@ -1,5 +1,6 @@
 class PuppetLint::Checks
   attr_reader :problems
+  attr_reader :manifest_lines
 
   def initialize
     @problems = []

@@ -48,6 +48,7 @@ describe PuppetLint::Configuration do
       'fail_on_warnings' => false,
       'error_level' => :all,
       'log_format' => '',
+      'with_context' => false,
     }
   end
 end
