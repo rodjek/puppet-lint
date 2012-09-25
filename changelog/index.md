@@ -4,6 +4,25 @@ layout: default
 
 # Changelog
 
+### 0.3.0
+
+ * Fixed bug in the puppet-lint executable that prevented it from returning a
+   non-zero exit code on error.
+ * Fixed bug in duplicate parameter check where nested resources and hashes
+   could trigger a false positive result.
+ * Fixed bug in the lexer where strings ending in `\\` would cause the program
+   to crash.
+ * Split the `parameterised_class` class check into two checks:
+   `class_inherits_from_params_class` and `class_parameter_defaults`.
+ * Fixed false positive result when inheriting from non-parent classes within
+   the same module namespace.
+ * Changed the language of the `arrow_alignment` check to make it more
+   understandable.
+ * Added the `--with-context` option to have `puppet-lint` print out the line
+   of the manifest with a marker pointing to the exact location of the detected
+   problem.
+ * [View Diff](https://github.com/rodjek/puppet-lint/compare/0.2.1...0.3.0)
+
 ### 0.2.1
 
  * Optimised the unquoted\_file\_mode check.
