@@ -25,7 +25,7 @@ class PuppetLint::Bin
         return 0
       end
 
-      opts.on('--with-context', '') do
+      opts.on('--with-context', 'Show where in the manifest the problem is') do
         PuppetLint.configuration.with_context = true
       end
 
