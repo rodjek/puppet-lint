@@ -4,6 +4,12 @@ layout: default
 
 # Changelog
 
+### 0.3.1
+
+ * Fixed bug in the `class_inherits_from_params_class` check where it would
+   throw an exception when checking a class with a comment directly above it.
+ * [View Diff](https://github.com/rodjek/puppet-lint/compare/0.3.0...0.3.1)
+
 ### 0.3.0
 
  * Fixed bug in the puppet-lint executable that prevented it from returning a
