@@ -2,14 +2,17 @@ require 'spec_helper'
 
 describe 'class_inherits_from_params_class' do
   describe 'parameterised class that inherits from a params class' do
-    let(:code) { "class foo($bar = $name) inherits foo::params { }" }
+    let(:code) { "
+      # commented
+      class foo($bar = $name) inherits foo::params { }"
+    }
 
     its(:problems) {
       should have_problem({
         :kind       => :warning,
         :message    => "class inheriting from params class",
-        :linenumber => 1,
-        :column     => 34,
+        :linenumber => 3,
+        :column     => 40,
       })
       should_not have_problem :kind => :error
     }
