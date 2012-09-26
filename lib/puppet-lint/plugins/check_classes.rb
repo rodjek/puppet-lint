@@ -72,7 +72,7 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
       class_tokens = tokens[class_idx[:start]..class_idx[:end]]
       inherits_idx = class_tokens.index { |r| r.type == :INHERITS }
       unless inherits_idx.nil?
-        inherited_class_token = tokens[inherits_idx].next_code_token
+        inherited_class_token = class_tokens[inherits_idx].next_code_token
         if inherited_class_token.value.end_with? '::params'
           notify :warning, {
             :message    => 'class inheriting from params class',
