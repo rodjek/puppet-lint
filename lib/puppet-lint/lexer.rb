@@ -131,7 +131,7 @@ class PuppetLint
             i += str_content.size + 1
 
           elsif chunk.match(/\A"/)
-            str_contents = StringScanner.new(code[i+1..-1]).scan_until(/(\A|\\\\|[^\\])"/m)
+            str_contents = StringScanner.new(code[i+1..-1]).scan_until(/(\A|[^\\])(\\\\)*"/m)
             _ = code[0..i].split("\n")
             interpolate_string(str_contents, _.count, _.last.length)
             i += str_contents.size + 1
