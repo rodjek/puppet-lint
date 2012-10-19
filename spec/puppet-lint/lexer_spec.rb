@@ -744,8 +744,9 @@ describe PuppetLint::Lexer do
 
   context ':STRING' do
     it 'should parse strings with \\\\\\' do
-      tokens = @lexer.tokenise("exec { \"/bin/echo \\\\\\\"${environment}\\\\\\\"\": }")
-      p tokens
+      expect {
+        @lexer.tokenise("exec { \"/bin/echo \\\\\\\"${environment}\\\\\\\"\": }")
+      }.to_not raise_error(PuppetLint::LexerError)
     end
   end
 end
