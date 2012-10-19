@@ -741,4 +741,11 @@ describe PuppetLint::Lexer do
       tokens.select { |r| r.type == :REGEX }.should == []
     end
   end
+
+  context ':STRING' do
+    it 'should parse strings with \\\\\\' do
+      tokens = @lexer.tokenise("exec { \"/bin/echo \\\\\\\"${environment}\\\\\\\"\": }")
+      p tokens
+    end
+  end
 end
