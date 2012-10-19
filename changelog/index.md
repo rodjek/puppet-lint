@@ -4,6 +4,20 @@ layout: default
 
 # Changelog
 
+### 0.3.2
+
+ * Fixed bug in the `String#%` monkeypatch that broke Facter under Ruby 1.8.
+ * Fixed bug in lexer that caused puppet-lint to crash when tokenising a string
+   containing multiple backslashes immediately followed by an escaped quote.
+ * Fixed bug in puppet-lint that caused it to crash when trying to read
+   configuration options from a file in the users home directory if the HOME
+   environment variable is not set.
+ * Provide a nice error message when passed a malformed manifest file instead
+   of a backtrace.
+ * Fixed bug in the `class_parameter_defaults` check that prevented it from
+   reporting all instances of the problem under certain circumstances.
+ * [View Diff](https://github.com/rodjek/puppet-lint/compare/0.3.1...0.3.2)
+
 ### 0.3.1
 
  * Fixed bug in the `class_inherits_from_params_class` check where it would
