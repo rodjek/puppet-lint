@@ -67,10 +67,14 @@ class PuppetLint::Bin
       end
 
       opts.load('/etc/puppet-lint.rc')
-      opts.load(File.expand_path('~/.puppet-lint.rc'))
-      if opts.load(File.expand_path('~/.puppet-lintrc'))
-        $stderr.puts 'Depreciated: Found ~/.puppet-lintrc instead of ~/.puppet-lint.rc'
+
+      if ENV['HOME']
+        opts.load(File.expand_path('~/.puppet-lint.rc'))
+        if opts.load(File.expand_path('~/.puppet-lintrc'))
+          $stderr.puts 'Depreciated: Found ~/.puppet-lintrc instead of ~/.puppet-lint.rc'
+        end
       end
+
       opts.load('.puppet-lint.rc')
       if opts.load('.puppet-lintrc')
         $stderr.puts 'Depreciated: Read .puppet-lintrc instead of .puppet-lint.rc'
