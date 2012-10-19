@@ -36,7 +36,16 @@ class PuppetLint::Checks
 
   def load_data(fileinfo, data)
     lexer = PuppetLint::Lexer.new
-    @tokens = lexer.tokenise(data)
+    begin
+      @tokens = lexer.tokenise(data)
+    rescue PuppetLint::LexerError => e
+      notify :error, {
+        :message => 'Syntax error (try running `puppet parser validate <file>`)',
+        :linenumber => e.line_no,
+        :column => e.column,
+      }
+      @tokens = []
+    end
     @fileinfo = fileinfo
     @data = data
   end

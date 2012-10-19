@@ -4,7 +4,20 @@ require 'puppet-lint/lexer/token'
 require 'set'
 
 class PuppetLint
-  class LexerError < RuntimeError; end
+  class LexerError < StandardError
+    attr_reader :line_no, :column
+    def initialize(code, offset)
+      chunk = code[0..offset]
+      @line_no = chunk.count("\n") + 1
+      if @line_no == 1
+        @column = chunk.length
+      else
+        @column = chunk.length - chunk.rindex("\n") - 1
+      end
+      @column = 1 if @column == 0
+    end
+  end
+
   class Lexer
     KEYWORDS = {
       'class' => true,
@@ -181,7 +194,7 @@ class PuppetLint
             i += 1
 
           else
-            raise PuppetLint::LexerError, chunk
+            raise PuppetLint::LexerError.new(code, i)
           end
         end
       end

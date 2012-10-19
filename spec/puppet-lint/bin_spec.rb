@@ -67,6 +67,13 @@ describe PuppetLint::Bin do
     ].join("\n") }
   end
 
+  context 'when passed a malformed file' do
+    let(:args) { 'spec/fixtures/test/manifests/malformed.pp' }
+
+    its(:exitstatus) { should == 1 }
+    its(:stdout) { should == 'ERROR: Syntax error (try running `puppet parser validate <file>`) on line 1' }
+  end
+
   context 'when limited to errors only' do
     let(:args) { [
       '--error-level', 'error',
