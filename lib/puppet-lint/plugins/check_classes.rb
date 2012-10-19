@@ -116,8 +116,8 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
         paren_stack = []
         param_tokens.each_index do |param_tokens_idx|
           this_token = param_tokens[param_tokens_idx]
-          next_token = param_tokens[param_tokens_idx+1]
-          prev_token = param_tokens[param_tokens_idx-1]
+          next_token = this_token.next_code_token
+          prev_token = this_token.prev_code_token
 
           if this_token.type == :LPAREN
             paren_stack.push(true)
