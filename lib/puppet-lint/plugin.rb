@@ -4,7 +4,7 @@ class PuppetLint::Checks
 
   def initialize
     @problems = []
-    @default_info = {:check => 'unknown', :linenumber => 0}
+    @default_info = {:check => 'unknown', :linenumber => 0, :column => 0}
 
     PuppetLint.configuration.checks.each do |check|
       method = PuppetLint.configuration.check_method[check]
