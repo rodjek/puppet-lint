@@ -41,6 +41,10 @@ class PuppetLint::Bin
         PuppetLint.configuration.error_level = el
       end
 
+      opts.on("-l", '--load FILE', 'Load a file containing custom puppet-lint checks.') do |f|
+        load f
+      end
+
       opts.on("--log-format FORMAT",
         "Change the log format.", "Overrides --with-filename.",
         "The following placeholders can be used:",
