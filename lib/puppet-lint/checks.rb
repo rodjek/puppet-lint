@@ -220,6 +220,10 @@ class PuppetLint::Checks
     end.call
   end
 
+  # Public: Retrieves a list of token types that are considered to be
+  # formatting tokens (ie whitespace, newlines, etc).
+  #
+  # Returns an Array of Symbols.
   def formatting_tokens
     @formatting_tokens ||= PuppetLint::Lexer::FORMATTING_TOKENS
   end
