@@ -14,26 +14,20 @@ class PuppetLint::Checks
     end
   end
 
-  #     notify(kind, message_hash)    #=> nil
+  # Public: Add a message to the problems array.
   #
-  # Adds the message to the problems array.
-  # The _kind_ gets added to the _message_hash_ by setting the key :_kind_.
-  # Typically, the _message_hash_ should contain following keys:
-  # <i>message</i>::     which contains a string value describing the problem
-  # <i>linenumber</i>::  which contains the line number on which the problem occurs.
-  # Besides the :_kind_ value that is being set, some other key/values are also
-  # added. Typically, this is
-  # <i>check</i>::      which contains the name of the check that is being executed.
-  # <i>linenumber</i>:: which defaults to 0 if the message does not already contain one.
+  # kind    - The kind of problem as a Symbol (:warning, :error).
+  # problem - A Hash containing the attributes of the problem.
+  #   :message    - The String message describing the problem.
+  #   :linenumber - The Integer line number of the location of the problem.
+  #   :check      - The String name of the check that the problem came from.
+  #   :column     - The Integer column number of the location of the problem.
   #
-  #     notify :warning, :message => "Something happened", :linenumber => 4
-  #     => {:kind=>:warning, :message=>"Something happened", :linenumber=>4, :check=>'unknown'}
-  #
-  def notify(kind, message_hash)
-    message_hash[:kind] = kind
-    message_hash.merge!(@default_info) {|key, v1, v2| v1 }
-    @problems << message_hash
-    message_hash
+  # Returns nothing.
+  def notify(kind, problem)
+    problem[:kind] = kind
+    problem.merge!(@default_info) {|key, v1, v2| v1 }
+    @problems << problem
   end
 
   def load_data(fileinfo, data)
