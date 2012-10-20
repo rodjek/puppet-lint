@@ -228,6 +228,9 @@ class PuppetLint::Checks
     @formatting_tokens ||= PuppetLint::Lexer::FORMATTING_TOKENS
   end
 
+  # Public: Access the lines of the manifest that is being checked.
+  #
+  # Returns an Array of Strings.
   def manifest_lines
     @manifest_lines ||= @data.split("\n")
   end
