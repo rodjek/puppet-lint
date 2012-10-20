@@ -1,6 +1,7 @@
 require 'puppet-lint/checkplugin'
 
 class PuppetLint::Checks
+  # Public: Get an Array of problem Hashes.
   attr_reader :problems
   attr_reader :tokens
 
