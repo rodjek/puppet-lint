@@ -1,3 +1,5 @@
+require 'puppet-lint/checkplugin'
+
 class PuppetLint::Checks
   attr_reader :problems
   attr_reader :manifest_lines
@@ -230,10 +232,3 @@ class PuppetLint::Checks
     @manifest_lines ||= @data.split("\n")
   end
 end
-
-class PuppetLint::CheckPlugin
-  def self.check(name, &b)
-    PuppetLint.configuration.add_check(name, &b)
-  end
-end
-
