@@ -35,6 +35,16 @@ class PuppetLint
       end
     end
 
+    # Public: Catch situations where options are being set for the first time
+    # and create the necessary methods to get & set the option in the future.
+    #
+    # args[0] - The value to set the option to.
+    #
+    # Returns nothing.
+    #
+    # Signature
+    #
+    #   <option>=(value)
     def method_missing(method, *args, &block)
       if method.to_s =~ /^(\w+)=$/
         option = $1
