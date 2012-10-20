@@ -44,6 +44,11 @@ class PuppetLint
     end
   end
 
+  # Internal: Retrieve the format string to be used when writing problems to
+  # STDOUT.  If the user has not specified a custom log format, build one for
+  # them.
+  #
+  # Returns a format String to be used with String#%.
   def log_format
     if configuration.log_format == ''
       ## recreate previous old log format as far as thats possible.
