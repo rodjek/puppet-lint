@@ -70,11 +70,30 @@ class PuppetLint
       self.class.add_option(option)
     end
 
+    # Public: Add an option to the PuppetLint::Configuration object from
+    # outside the class.
+    #
+    # option - The String name of the option.
+    #
+    # Returns nothing.
+    #
+    # Signature
+    #
+    #   <option>
+    #   <option>=(value)
     def self.add_option(option)
+      # Public: Set the value of the named option.
+      #
+      # value - The value to set the option to.
+      #
+      # Returns nothing.
       define_method("#{option}=") do |value|
         settings[option] = value
       end
 
+      # Public: Get the value of the named option.
+      #
+      # Returns the value of the option.
       define_method(option) do
         settings[option]
       end
