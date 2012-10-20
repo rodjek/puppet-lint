@@ -79,6 +79,9 @@ class PuppetLint::Checks
     @problems
   end
 
+  # Internal: Get a list of checks that have not been disabled.
+  #
+  # Returns an Array of String check names.
   def enabled_checks
     @enabled_checks ||= Proc.new do
       self.public_methods.select { |method|
