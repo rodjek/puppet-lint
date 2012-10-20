@@ -124,6 +124,9 @@ class PuppetLint
       @check_method ||= {}
     end
 
+    # Public: Get a list of all the defined checks.
+    #
+    # Returns an Array of String check names.
     def checks
       check_method.keys
     end
