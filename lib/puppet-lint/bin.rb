@@ -9,6 +9,9 @@ class PuppetLint::Bin
     @args = args
   end
 
+  # Public: Run puppet-lint as a command line tool.
+  #
+  # Returns an Integer exit code to be passed back to the shell.
   def run
     help = <<-EOHELP
     Puppet-lint
