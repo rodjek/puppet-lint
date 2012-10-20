@@ -105,7 +105,7 @@ class PuppetLint::Checks
     end.call
   end
 
-  # Internal: Calculate the positions of all resource declarations within the
+  # Public: Calculate the positions of all resource declarations within the
   # tokenised manifest.  These positions only point to the content of the
   # resource declaration, they do not include resource types or
   # titles/namevars.
@@ -144,7 +144,7 @@ class PuppetLint::Checks
     end.call
   end
 
-  # Internal: Calculate the positions of all class definitions within the
+  # Public: Calculate the positions of all class definitions within the
   # tokenised manifest.
   #
   # Returns an Array of Hashes, each containing:
@@ -183,7 +183,7 @@ class PuppetLint::Checks
     end.call
   end
 
-  # Internal: Calculate the positions of all defined type definitions within
+  # Public: Calculate the positions of all defined type definitions within
   # the tokenised manifest.
   #
   # Returns an Array of Hashes, each containing:
