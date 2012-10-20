@@ -62,6 +62,11 @@ class PuppetLint
     return configuration.log_format
   end
 
+  # Internal: Format a problem message and print it to STDOUT.
+  #
+  # message - A Hash containing all the information about a problem.
+  #
+  # Returns nothing.
   def format_message(message)
     format = log_format
     puts format % message
