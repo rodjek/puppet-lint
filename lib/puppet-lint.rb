@@ -10,6 +10,7 @@ class PuppetLint::NoCodeError < StandardError; end
 class PuppetLint
   attr_accessor :code
 
+  # Public: Initialise a new PuppetLint object.
   def initialize
     @code = nil
     @statistics = {:error => 0, :warning => 0}
