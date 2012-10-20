@@ -131,6 +131,10 @@ class PuppetLint
       check_method.keys
     end
 
+    # Public: Clear the PuppetLint::Configuration storage and set some sane
+    # default values.
+    #
+    # Returns nothing.
     def defaults
       settings.clear
       self.with_filename = false
