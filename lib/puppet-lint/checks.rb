@@ -2,6 +2,7 @@ require 'puppet-lint/checkplugin'
 
 class PuppetLint::Checks
   attr_reader :problems
+  attr_reader :tokens
 
   def initialize
     @problems = []
@@ -72,10 +73,6 @@ class PuppetLint::Checks
         PuppetLint.configuration.send("#{name}_enabled?")
       }
     end.call
-  end
-
-  def tokens
-    @tokens
   end
 
   def fullpath
