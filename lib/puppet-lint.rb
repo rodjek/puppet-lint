@@ -31,6 +31,10 @@ class PuppetLint
     self.class.configuration
   end
 
+  # Public: Set the path of the manifest file to be tested and read the
+  # contents of the file.
+  #
+  # Returns nothing.
   def file=(path)
     if File.exist? path
       @fileinfo[:path] = path
