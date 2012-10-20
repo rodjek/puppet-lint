@@ -1,6 +1,10 @@
 require 'optparse'
 
 class PuppetLint::Bin
+  # Public: Initialise a new PuppetLint::Bin.
+  #
+  # args - An Array of command line argument Strings to be passed to the option
+  #        parser.
   def initialize(args)
     @args = args
   end
