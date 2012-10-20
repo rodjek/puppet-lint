@@ -67,6 +67,14 @@ class PuppetLint
     printf "%#{message[:column] + 2 - offset}s\n\n", '^'
   end
 
+  # Internal: Print the reported problems with a manifest to stdout.
+  #
+  # problems - An Array of problem Hashes as returned by
+  #            PuppetLint::Checks#run.
+  # linter   - The PuppetLint::Checks object that was used to test the
+  #            manifest.
+  #
+  # Returns nothing.
   def report(problems, linter)
     problems.each do |message|
       @statistics[message[:kind]] += 1
