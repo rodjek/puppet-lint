@@ -81,6 +81,9 @@ class PuppetLint::Checks
     end.call
   end
 
+  # Public: Get the full expanded path to the file being checked.
+  #
+  # Returns a String path.
   def fullpath
     @fileinfo[:fullpath]
   end
