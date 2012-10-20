@@ -55,6 +55,17 @@ class PuppetLint
       end
     end
 
+    # Internal: Add options to the PuppetLint::Configuration object from inside
+    # the class.
+    #
+    # option - The String name of the option.
+    #
+    # Returns nothing.
+    #
+    # Signature
+    #
+    #   <option>
+    #   <option>=(value)
     def add_option(option)
       self.class.add_option(option)
     end
