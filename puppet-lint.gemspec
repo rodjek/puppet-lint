@@ -15,7 +15,6 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   s.add_development_dependency 'rspec'
-  s.add_development_dependency 'rdoc'
   s.add_development_dependency 'rcov'
 
   s.authors = ['Tim Sharpe']
