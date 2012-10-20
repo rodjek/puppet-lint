@@ -99,6 +99,12 @@ class PuppetLint
       end
     end
 
+    # Internal: Register a new check.
+    #
+    # check - The String name of the check
+    # b     - The Block containing the logic of the check
+    #
+    # Returns nothing.
     def add_check(check, &b)
       self.class.add_check(check)
       check_method[check] = b
