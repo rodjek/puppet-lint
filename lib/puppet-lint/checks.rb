@@ -4,6 +4,8 @@ class PuppetLint::Checks
   attr_reader :problems
   attr_reader :tokens
 
+  # Public: Initialise a new PuppetLint::Checks object and prepare the check
+  # methods.
   def initialize
     @problems = []
     @default_info = {:check => 'unknown', :linenumber => 0, :column => 0}
