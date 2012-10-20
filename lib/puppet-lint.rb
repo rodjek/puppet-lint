@@ -88,6 +88,9 @@ class PuppetLint
     @statistics[:error] != 0
   end
 
+  # Public: Determine if PuppetLint found any warnings in the manifest.
+  #
+  # Returns true if warnings were found, otherwise returns false.
   def warnings?
     @statistics[:warning] != 0
   end
