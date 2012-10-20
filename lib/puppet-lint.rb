@@ -63,11 +63,11 @@ class PuppetLint
   def report(problems, linter)
     problems.each do |message|
       @statistics[message[:kind]] += 1
-      ## Add some default attributes.
+
       message.merge!(@fileinfo) {|key, v1, v2| v1 }
       message[:KIND] = message[:kind].to_s.upcase
 
-      if configuration.error_level == message[:kind] or configuration.error_level == :all
+      if [message[:kind], :all].include? configuration.error_level
         format_message message
         print_context(message, linter) if configuration.with_context
       end
