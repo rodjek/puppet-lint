@@ -5,7 +5,17 @@ require 'set'
 
 class PuppetLint
   class LexerError < StandardError
-    attr_reader :line_no, :column
+    # Internal: Get the Integer line number of the location of the error.
+    attr_reader :line_no
+
+    # Internal: Get the Integer column number of the location of the error.
+    attr_reader :column
+
+    # Internal: Initialise a new PuppetLint::LexerError object.
+    #
+    # code   - The String manifest code being tokenised.
+    # offset - The Integer position in the code string that the tokeniser was
+    #          at when it encountered the error.
     def initialize(code, offset)
       chunk = code[0..offset]
       @line_no = chunk.count("\n") + 1
@@ -19,35 +29,43 @@ class PuppetLint
   end
 
   class Lexer
+    # Internal: A Hash whose keys are Strings representing reserved keywords in
+    # the Puppet DSL.
     KEYWORDS = {
-      'class' => true,
-      'case' => true,
-      'default' => true,
-      'define' => true,
-      'import' => true,
-      'if' => true,
-      'else' => true,
-      'elsif' => true,
+      'class'    => true,
+      'case'     => true,
+      'default'  => true,
+      'define'   => true,
+      'import'   => true,
+      'if'       => true,
+      'else'     => true,
+      'elsif'    => true,
       'inherits' => true,
-      'node' => true,
-      'and' => true,
-      'or' => true,
-      'undef' => true,
-      'true' => true,
-      'false' => true,
-      'in' => true,
-      'unless' => true,
+      'node'     => true,
+      'and'      => true,
+      'or'       => true,
+      'undef'    => true,
+      'true'     => true,
+      'false'    => true,
+      'in'       => true,
+      'unless'   => true,
     }
 
+    # Internal: A Hash whose keys are Symbols representing token types which
+    # a regular expression can follow.
     REGEX_PREV_TOKENS = {
-      :NODE => true,
-      :LBRACE => true,
-      :RBRACE => true,
-      :MATCH => true,
+      :NODE    => true,
+      :LBRACE  => true,
+      :RBRACE  => true,
+      :MATCH   => true,
       :NOMATCH => true,
-      :COMMA => true,
+      :COMMA   => true,
     }
 
+    # Internal: An Array of Arrays containing tokens that can be described by
+    # a single regular expression.  Each sub-Array contains 2 elements, the
+    # name of the token as a Symbol and a regular expression describing the
+    # value of the token.
     KNOWN_TOKENS = [
       [:CLASSREF, /\A(((::){0,1}[A-Z][-\w]*)+)/],
       [:NUMBER, /\A\b((?:0[xX][0-9A-Fa-f]+|0?\d+(?:\.\d+)?(?:[eE]-?\d+)?))\b/],
@@ -93,19 +111,32 @@ class PuppetLint
       [:TIMES, /\A(\*)/],
     ]
 
+    # Internal: A Hash whose keys are Symbols representing token types which
+    # are considered to be formatting tokens (i.e. tokens that don't contain
+    # code).
     FORMATTING_TOKENS = {
-      :WHITESPACE => true,
-      :NEWLINE => true,
-      :COMMENT => true,
-      :MLCOMMENT => true,
+      :WHITESPACE    => true,
+      :NEWLINE       => true,
+      :COMMENT       => true,
+      :MLCOMMENT     => true,
       :SLASH_COMMENT => true,
-      :INDENT => true,
+      :INDENT        => true,
     }
 
+    # Internal: Access the internal token storage.
+    #
+    # Returns an Array of PuppetLint::Lexer::Toxen objects.
     def tokens
       @tokens ||= []
     end
 
+    # Internal: Convert a Puppet manifest into tokens.
+    #
+    # code - The Puppet manifest to be tokenised as a String.
+    #
+    # Returns an Array of PuppetLint::Lexer::Token objects.
+    # Raises PuppetLint::LexerError if it encounters unexpected characters
+    # (usually the result of syntax errors).
     def tokenise(code)
       code.chomp!
 
@@ -202,6 +233,10 @@ class PuppetLint
       tokens
     end
 
+    # Internal: Given the tokens already processed, determine if the next token
+    # could be a regular expression.
+    #
+    # Returns true if the next token could be a regex, otherwise return false.
     def possible_regex?
       prev_token = tokens.reject { |r|
         FORMATTING_TOKENS.include? r.type
@@ -216,6 +251,19 @@ class PuppetLint
       end
     end
 
+    # Internal: Create a new PuppetLint::Lexer::Token object, calculate its
+    # line number and column and then add it to the Linked List of tokens.
+    #
+    # type  - The Symbol token type.
+    # value - The token value.
+    # opts  - A Hash of additional values required to determine line number and
+    #         column:
+    #   :chunk  - The String chunk of the manifest that has been tokenised so
+    #             far.
+    #   :line   - The Integer line number if calculated externally.
+    #   :column - The Integer column number if calculated externally.
+    #
+    # Returns the instantiated PuppetLint::Lexer::Token object.
     def new_token(type, value, opts = {})
       if opts[:chunk]
         line_no = opts[:chunk].count("\n") + 1
@@ -248,6 +296,15 @@ class PuppetLint
       token
     end
 
+    # Internal: Split a string on multiple terminators, excluding escaped
+    # terminators.
+    #
+    # string      - The String to be split.
+    # terminators - The String of terminators that the String should be split
+    #               on.
+    #
+    # Returns an Array consisting of two Strings, the String up to the first
+    # terminator and the terminator that was found.
     def get_string_segment(string, terminators)
       str = string.scan_until(/([^\\]|^|[^\\])([\\]{2})*[#{terminators}]+/)
       begin
@@ -257,6 +314,13 @@ class PuppetLint
       end
     end
 
+    # Internal: Tokenise the contents of a double quoted string.
+    #
+    # string - The String to be tokenised.
+    # line   - The Integer line number of the start of the passed string.
+    # column - The Integer column number of the start of the passed string.
+    #
+    # Returns nothing.
     def interpolate_string(string, line, column)
       ss = StringScanner.new(string)
       first = true
