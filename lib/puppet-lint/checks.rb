@@ -3,6 +3,8 @@ require 'puppet-lint/checkplugin'
 class PuppetLint::Checks
   # Public: Get an Array of problem Hashes.
   attr_reader :problems
+
+  # Public: Get an Array of PuppetLint::Lexer::Token objects.
   attr_reader :tokens
 
   # Public: Initialise a new PuppetLint::Checks object and prepare the check
