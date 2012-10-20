@@ -8,10 +8,10 @@ require 'puppet-lint/monkeypatches'
 class PuppetLint::NoCodeError < StandardError; end
 
 class PuppetLint
-  attr_reader :data
+  attr_accessor :code
 
   def initialize
-    @data = nil
+    @code = nil
     @statistics = {:error => 0, :warning => 0}
     @fileinfo = {:path => ''}
   end
@@ -29,12 +29,8 @@ class PuppetLint
       @fileinfo[:path] = path
       @fileinfo[:fullpath] = File.expand_path(path)
       @fileinfo[:filename] = File.basename(path)
-      @data = File.read(path)
+      @code = File.read(path)
     end
-  end
-
-  def code=(value)
-    @data = value
   end
 
   def log_format
@@ -87,12 +83,12 @@ class PuppetLint
   end
 
   def run
-    if @data.nil?
+    if @code.nil?
       raise PuppetLint::NoCodeError
     end
 
     linter = PuppetLint::Checks.new
-    problems = linter.run(@fileinfo, @data)
+    problems = linter.run(@fileinfo, @code)
     report problems, linter
   end
 end

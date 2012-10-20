@@ -5,7 +5,7 @@ describe PuppetLint do
 
   it 'should accept manifests as a string' do
     subject.code = "class foo { }"
-    subject.data.should_not be_nil
+    subject.code.should_not be_nil
   end
 
   it 'should have support for % with a hash' do
