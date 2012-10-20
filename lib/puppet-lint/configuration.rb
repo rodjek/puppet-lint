@@ -117,6 +117,9 @@ class PuppetLint
       @settings ||= {}
     end
 
+    # Internal: Access the internal storage for check method blocks.
+    #
+    # Returns a Hash containing all the check blocks.
     def check_method
       @check_method ||= {}
     end
