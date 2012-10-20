@@ -95,6 +95,11 @@ class PuppetLint
     @statistics[:warning] != 0
   end
 
+  # Public: Run the loaded manifest code through the lint checks and print the
+  # results of the checks to stdout.
+  #
+  # Returns nothing.
+  # Raises PuppetLint::NoCodeError if no manifest code has been loaded.
   def run
     if @code.nil?
       raise PuppetLint::NoCodeError
