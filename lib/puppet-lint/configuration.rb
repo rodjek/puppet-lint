@@ -110,6 +110,9 @@ class PuppetLint
       check_method[check] = b
     end
 
+    # Internal: Access the internal storage for settings.
+    #
+    # Returns a Hash containing all the settings.
     def settings
       @settings ||= {}
     end
