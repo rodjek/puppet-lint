@@ -32,6 +32,16 @@ class PuppetLint::Checks
     @problems << problem
   end
 
+  # Internal: Tokenise the manifest code and prepare it for checking.
+  #
+  # fileinfo - A Hash containing the following:
+  #   :fullpath - The expanded path to the file as a String.
+  #   :filename - The name of the file as a String.
+  #   :path     - The original path to the file as passed to puppet-lint as
+  #               a String.
+  # data     - The String manifest code to be checked.
+  #
+  # Returns nothing.
   def load_data(fileinfo, data)
     lexer = PuppetLint::Lexer.new
     begin
