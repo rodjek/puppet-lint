@@ -81,6 +81,9 @@ class PuppetLint
     end
   end
 
+  # Public: Determine if PuppetLint found any errors in the manifest.
+  #
+  # Returns true if errors were found, otherwise returns false.
   def errors?
     @statistics[:error] != 0
   end
