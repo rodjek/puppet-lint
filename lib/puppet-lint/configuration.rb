@@ -1,14 +1,35 @@
 class PuppetLint
   class Configuration
+    # Internal: Add helper methods for a new check to the
+    # PuppetLint::Configuration object.
+    #
+    # check - The String name of the check.
+    #
+    # Returns nothing.
+    #
+    # Signature
+    #
+    #   <check>_enabled?
+    #   disable_<check>
+    #   enable_<check>
     def self.add_check(check)
+      # Public: Determine if the named check is enabled.
+      #
+      # Returns true if the check is enabled, otherwise return false.
       define_method("#{check}_enabled?") do
         settings["#{check}_disabled"] == true ? false : true
       end
 
+      # Public: Disable the named check.
+      #
+      # Returns nothing.
       define_method("disable_#{check}") do
         settings["#{check}_disabled"] = true
       end
 
+      # Public: Enable the named check.
+      #
+      # Returns nothing.
       define_method("enable_#{check}") do
         settings["#{check}_disabled"] = false
       end
