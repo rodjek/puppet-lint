@@ -17,10 +17,16 @@ class PuppetLint
     @fileinfo = {:path => ''}
   end
 
+  # Public: Access PuppetLint's configuration from outside the class.
+  #
+  # Returns a PuppetLint::Configuration object.
   def self.configuration
     @configuration ||= PuppetLint::Configuration.new
   end
 
+  # Public: Access PuppetLint's configuration from inside the class.
+  #
+  # Returns a PuppetLint::Configuration object.
   def configuration
     self.class.configuration
   end
