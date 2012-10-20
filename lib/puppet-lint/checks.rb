@@ -88,6 +88,9 @@ class PuppetLint::Checks
     @fileinfo[:fullpath]
   end
 
+  # Public: Retrieve a list of tokens that represent resource titles.
+  #
+  # Returns an Array of PuppetLint::Lexer::Token objects.
   def title_tokens
     @title_tokens ||= Proc.new do
       result = []
