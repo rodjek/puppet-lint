@@ -57,6 +57,13 @@ class PuppetLint
     puts format % message
   end
 
+  # Internal: Print out the line of the manifest on which the problem was found
+  # as well as a marker pointing to the location on the line.
+  #
+  # message - A Hash containing all the information about a problem.
+  # linter  - The PuppetLint::Checks object that was used to test the manifest.
+  #
+  # Returns nothing.
   def print_context(message, linter)
     # XXX: I don't really like the way this has been implemented (passing the
     # linter object down through layers of functions.  Refactor me!
