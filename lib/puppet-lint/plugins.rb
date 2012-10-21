@@ -9,7 +9,7 @@ class PuppetLint
       gem_directories.select { |path|
         (path + 'puppet-lint/plugins').directory?
       }.each do |gem_path|
-        (gem_path + 'puppet-lint/plugins').each_child do |child|
+        (gem_path + 'puppet-lint/plugins').each_entry do |child|
           if child.file? && child.extname == '.rb'
             load child.to_path
           end
