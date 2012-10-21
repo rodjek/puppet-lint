@@ -34,8 +34,8 @@ class PuppetLint
             Pathname.new(spec.full_gem_path) + 'lib'
           end
         else
-          Gem.latest_load_paths.map do |path|
-            Pathname.new(path)
+          Gem.searcher.init_gemspecs.map do |spec|
+            Pathname.new(spec.full_gem_path) + 'lib'
           end
         end
       else
