@@ -4,14 +4,14 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
   #
   # Returns nothing.
   check 'hard_tabs' do
-    manifest_lines.each_with_index do |line, idx|
-      if line.include? "\t"
-        notify :error, {
-          :message    => 'tab character found',
-          :linenumber => idx + 1,
-          :column     => line.index("\t") + 1,
-        }
-      end
+    tokens.select { |r|
+      [:INDENT, :WHITESPACE].include?(r.type) && r.value.include?("\t")
+    }.each do |token|
+      notify :error, {
+        :message    => 'tab character found',
+        :linenumber => token.line,
+        :column     => token.column,
+      }
     end
   end
 
