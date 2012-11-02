@@ -110,6 +110,16 @@ class PuppetLint
       check_method[check] = b
     end
 
+    # Internal: Register a new check helper method.
+    #
+    # name - The String name of the method.
+    # b    - The Block containing the logic of the helper.
+    #
+    # Returns nothing.
+    def add_helper(name, &b)
+      helper_method[name] = b
+    end
+
     # Internal: Access the internal storage for settings.
     #
     # Returns a Hash containing all the settings.
@@ -129,6 +139,20 @@ class PuppetLint
     # Returns an Array of String check names.
     def checks
       check_method.keys
+    end
+
+    # Internal: Access the internal storage for helper method blocks.
+    #
+    # Returns a Hash containing all the helper blocks.
+    def helper_method
+      @helper_method ||= {}
+    end
+
+    # Public: Get a list of all the helper methods.
+    #
+    # Returns an Array of String method names.
+    def helpers
+      helper_method.keys
     end
 
     # Public: Clear the PuppetLint::Configuration storage and set some sane

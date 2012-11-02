@@ -17,6 +17,11 @@ class PuppetLint::Checks
       method = PuppetLint.configuration.check_method[check]
       self.class.send(:define_method, "lint_check_#{check}", &method)
     end
+
+    PuppetLint.configuration.helpers.each do |helper|
+      method = PuppetLint.configuration.helper_method[helper]
+      self.class.send(:define_method, helper, &method)
+    end
   end
 
   # Public: Add a message to the problems array.
