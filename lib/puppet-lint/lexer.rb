@@ -207,7 +207,7 @@ class PuppetLint
             tokens << new_token(:REGEX, str_content[0..-2], :chunk => code[0..i])
             i += str_content.size + 1
 
-          elsif indent = chunk[/\A\n([ \t]+)/m, 1]
+          elsif indent = chunk[/\A\r?\n([ \t]+)/m, 1]
             tokens << new_token(:NEWLINE, '\n', :chunk => code[0..i])
             tokens << new_token(:INDENT, indent, :chunk => code[0..i+1])
             i += indent.size + 1
@@ -216,7 +216,7 @@ class PuppetLint
             tokens << new_token(:WHITESPACE, whitespace, :chunk => code[0..i])
             i += whitespace.size
 
-          elsif chunk.match(/\A\n/)
+          elsif chunk.match(/\A\r?\n/)
             tokens << new_token(:NEWLINE, '\n', :chunk => code[0..i])
             i += 1
 
