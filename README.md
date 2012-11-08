@@ -55,6 +55,8 @@ At the moment, the following tests have been implemented:
 ### Resources
 
  * All resource titles should be quoted.
+   * An exception has been made for resource titles that consist of only
+     a variable standing by itself.
  * If a resource declaration includes an `ensure` attribute, it should be the
    first attribute specified.
  * Symbolic links should be declared by using an ensure value of `link` and
