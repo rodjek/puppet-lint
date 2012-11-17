@@ -242,7 +242,7 @@ puppet-lint --no-80chars-check /path/to/my/manifest.pp
 puppet-lint will also check for a `.puppet-lint.rc` file in the current
 directory and your home directory and read in flags from there, so if you
 wanted to always skip the hard tab character check, you could create
-`~./puppet-lint.rc` containing
+`~/.puppet-lint.rc` containing
 
 ```
 --no-hard_tabs-check
