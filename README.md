@@ -28,6 +28,47 @@ If you want to test your entire Puppet manifest directory, you can add
 
     rake lint
 
+### By code
+
+You can use puppet-lint from within Ruby code,
+such as a cross-platform (Linux, Windows, Mac OSX, etc.) git pre-commit hook.
+
+```ruby
+#!/usr/bin/env ruby
+require 'puppet-lint'
+
+rc = 0
+
+if `git rev-parse --quiet --verify HEAD`.empty?
+  # initial commit in empty tree
+  treeish = '4b825dc642cb6eb9a060e54bf8d69288fbee4904'
+else
+  treeish = 'HEAD'
+end
+
+# get list of staged files
+files = `git diff-index --diff-filter=AM --name-only --cached #{treeish}`.split(/\n/)
+
+files.each do |f|
+  # get file content from index, not from working directory
+  content = `git cat-file -p :0:#{f}`
+
+  # make sure file is puppet and not deleted in index
+  if /\.pp$/.match(f) and not content.empty?
+    linter = PuppetLint.new
+    linter.quiet = true # suppress normal output
+    linter.run_virtual(f, content)
+    if linter.errors?
+      rc = 1
+      puts "#{f}: #{linter.statistics[:error]} puppet-lint errors (fatal)"
+    end
+  end
+end
+
+# if we exit non-zero, git will abort the commit
+exit(rc)
+```
+
 ## Implemented tests
 
 At the moment, the following tests have been implemented:
