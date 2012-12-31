@@ -21,12 +21,14 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
   # Returns nothing.
   check 'trailing_whitespace' do
     manifest_lines.each_with_index do |line, idx|
-      if line.end_with? ' '
-        notify :error, {
-          :message    => 'trailing whitespace found',
-          :linenumber => idx + 1,
-          :column     => line.rindex(' ') + 1,
-        }
+      unless line =~ /^\s+$/
+        if line.end_with? ' '
+          notify :error, {
+            :message    => 'trailing whitespace found',
+            :linenumber => idx + 1,
+            :column     => line.rindex(' ') + 1,
+          }
+        end
       end
     end
   end
