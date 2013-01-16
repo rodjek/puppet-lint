@@ -1,6 +1,7 @@
 *.gem
 .bundle/
 .rbenv-version
+.ruby-version
 Gemfile.lock
 vendor/gems
 coverage/
