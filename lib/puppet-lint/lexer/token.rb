@@ -2,7 +2,7 @@ class PuppetLint
   class Lexer
     class Token
       # Internal: Returns the Symbol type of the Token.
-      attr_reader :type
+      attr_accessor :type
 
       # Internal: Returns the String value of the Token.
       attr_reader :value
@@ -56,6 +56,20 @@ class PuppetLint
       # Returns a String describing the Token.
       def inspect
         "<Token #{@type.inspect} (#{@value}) @#{@line}:#{@column}>"
+      end
+
+      # Internal: Produce a Puppet DSL representation of a Token.
+      #
+      # Returns a Puppet DSL String.
+      def to_manifest
+        case @type
+        when :STRING
+          "\"#{@value}\""
+        when :SSTRING
+          "'#{@value}'"
+        else
+          @value
+        end
       end
     end
   end

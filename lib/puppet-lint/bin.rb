@@ -77,6 +77,10 @@ class PuppetLint::Bin
         end
       end
 
+      opts.on('-f', '--fix', 'Attempt to automatically fix errors') do
+        PuppetLint.configuration.fix = true
+      end
+
       opts.load('/etc/puppet-lint.rc')
 
       if ENV['HOME']
@@ -121,6 +125,10 @@ class PuppetLint::Bin
         l.run
         if l.errors? or (l.warnings? and PuppetLint.configuration.fail_on_warnings)
           return_val = 1
+        end
+
+        if PuppetLint.configuration.fix
+          puts l.manifest
         end
       end
       return return_val

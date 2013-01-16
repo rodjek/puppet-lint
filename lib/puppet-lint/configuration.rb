@@ -166,6 +166,7 @@ class PuppetLint
       self.error_level = :all
       self.log_format = ''
       self.with_context = false
+      self.fix = false
     end
   end
 end

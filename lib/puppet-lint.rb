@@ -11,11 +11,14 @@ class PuppetLint
   # Public: Gets/Sets the String manifest code to be checked.
   attr_accessor :code
 
+  attr_reader :manifest
+
   # Public: Initialise a new PuppetLint object.
   def initialize
     @code = nil
     @statistics = {:error => 0, :warning => 0}
     @fileinfo = {:path => ''}
+    @manifest = ''
   end
 
   # Public: Access PuppetLint's configuration from outside the class.
@@ -137,6 +140,9 @@ class PuppetLint
 
     linter = PuppetLint::Checks.new
     problems = linter.run(@fileinfo, @code)
+
+    @manifest = linter.manifest if PuppetLint.configuration.fix
+
     report problems, linter
   end
 end

@@ -17,6 +17,10 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
         :linenumber => token.line,
         :column     => token.column,
       }
+
+      if PuppetLint.configuration.fix
+        token.type = :SSTRING
+      end
     end
   end
 
