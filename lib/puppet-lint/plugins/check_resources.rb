@@ -11,6 +11,10 @@ class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
           :linenumber => token.line,
           :column     => token.column,
         }
+
+        if PuppetLint.configuration.fix
+          token.type = :SSTRING
+        end
       end
     end
   end
@@ -107,6 +111,10 @@ class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
               :linenumber => value_token.line,
               :column     => value_token.column,
             }
+
+            if PuppetLint.configuration.fix
+              value_token.type = :SSTRING
+            end
           end
         end
       end
@@ -147,6 +155,11 @@ class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
             :linenumber => value_token.line,
             :column     => value_token.column,
           }
+
+          if PuppetLint.configuration.fix
+            value_token.value = "0#{value_token.value.to_s}"
+            value_token.type = :SSTRING
+          end
         end
       end
     end

@@ -5,7 +5,7 @@ class PuppetLint
       attr_accessor :type
 
       # Internal: Returns the String value of the Token.
-      attr_reader :value
+      attr_accessor :value
 
       # Internal: Returns the Integer line number of the manifest text where
       # the Token can be found.
@@ -67,6 +67,20 @@ class PuppetLint
           "\"#{@value}\""
         when :SSTRING
           "'#{@value}'"
+        when :DQPRE
+          "\"#{@value}"
+        when :DQPOST
+          "#{@value}\""
+        when :VARIABLE
+          if [:DQPRE, :DQMID].include? @prev_code_token.type
+            "${#{@value}}"
+          else
+            @value
+          end
+        when :UNENC_VARIABLE
+          "$#{@value}"
+        when :NEWLINE
+          "\n"
         else
           @value
         end

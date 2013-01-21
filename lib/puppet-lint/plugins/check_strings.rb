@@ -42,6 +42,24 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
                 :column     => tokens[token_idx + 1].column,
               }
             end
+
+            if PuppetLint.configuration.fix
+              prev_token = token.prev_token
+              prev_code_token = token.prev_code_token
+              next_token = token.next_token.next_token.next_token
+              next_code_token = token.next_token.next_token.next_code_token
+              var_token = token.next_token
+
+              tokens.delete_at(token_idx + 2)
+              tokens.delete_at(token_idx)
+
+              prev_token.next_token = var_token
+              prev_code_token.next_code_token = var_token
+              next_code_token.prev_code_token = var_token
+              next_token.prev_token = var_token
+              var_token.type == :VARIABLE
+              var_token.value = "$#{var_token.value}" unless var_token.value.start_with? '$'
+            end
           end
         end
       end
@@ -62,6 +80,10 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
         :linenumber => token.line,
         :column     => token.column,
       }
+
+      if PuppetLint.configuration.fix
+        token.type = :VARIABLE
+      end
     end
   end
 
@@ -95,6 +117,10 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
         :linenumber => token.line,
         :column     => token.column,
       }
+
+      if PuppetLint.configuration.fix
+        token.type = token.value.upcase.to_sym
+      end
     end
   end
 end
