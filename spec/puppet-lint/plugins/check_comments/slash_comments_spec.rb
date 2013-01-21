@@ -13,4 +13,18 @@ describe 'slash_comments' do
       })
     end
   end
+
+  describe 'slash comments w/fix' do
+    before do
+      PuppetLint.configuration.fix = true
+    end
+
+    after do
+      PuppetLint.configuration.fix = false
+    end
+
+    let(:code) { '// foo' }
+
+    its(:manifest) { should == '# foo' }
+  end
 end

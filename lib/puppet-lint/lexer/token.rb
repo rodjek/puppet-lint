@@ -81,6 +81,8 @@ class PuppetLint
           "$#{@value}"
         when :NEWLINE
           "\n"
+        when :COMMENT
+          "# #{@value}"
         else
           @value
         end

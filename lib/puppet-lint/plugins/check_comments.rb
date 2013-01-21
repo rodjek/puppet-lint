@@ -12,6 +12,10 @@ class PuppetLint::Plugins::CheckComments < PuppetLint::CheckPlugin
         :linenumber => token.line,
         :column     => token.column,
       }
+
+      if PuppetLint.configuration.fix
+        token.type = :COMMENT
+      end
     end
   end
 
