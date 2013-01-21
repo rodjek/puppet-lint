@@ -197,7 +197,6 @@ class PuppetLint
             mlcomment.sub!(/\A\/\* ?/, '')
             mlcomment.sub!(/ ?\*\/\Z/, '')
             mlcomment.gsub!(/^ ?\* ?/, '')
-            mlcomment.gsub!(/\n/, ' ')
             mlcomment.strip!
             tokens << new_token(:MLCOMMENT, mlcomment, :chunk => code[0..i])
             i += mlcomment_size
