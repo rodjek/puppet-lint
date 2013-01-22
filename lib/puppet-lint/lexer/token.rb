@@ -75,14 +75,20 @@ class PuppetLint
           if [:DQPRE, :DQMID].include? @prev_code_token.type
             "${#{@value}}"
           else
-            @value
+            "$#{@value}"
           end
         when :UNENC_VARIABLE
           "$#{@value}"
         when :NEWLINE
           "\n"
         when :COMMENT
-          "# #{@value}"
+          if @value.start_with?('#') || @value.empty?
+            "##{@value}"
+          else
+            "# #{@value}"
+          end
+        when :REGEX
+          "/#{@value}/"
         else
           @value
         end
