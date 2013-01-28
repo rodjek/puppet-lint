@@ -128,7 +128,9 @@ class PuppetLint::Bin
         end
 
         if PuppetLint.configuration.fix
-          puts l.manifest
+          File.open(f, 'w') do |fd|
+            fd.puts l.manifest
+          end
         end
       end
       return return_val
