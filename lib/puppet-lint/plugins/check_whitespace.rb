@@ -129,7 +129,14 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
         if token.type == :FARROW
           indent_length = token.column
           unless indent_depth[indent_depth_idx] == indent_length
-            notify :warning, {
+            if PuppetLint.configuration.fix
+              offset = indent_depth[indent_depth_idx] - indent_length
+              token.prev_token.value = token.prev_token.value + (' ' * offset)
+              notify_type = :fixed
+            else
+              notify_type = :warning
+            end
+            notify notify_type, {
               :message    => 'indentation of => is not properly aligned',
               :linenumber => token.line,
               :column     => token.column,
