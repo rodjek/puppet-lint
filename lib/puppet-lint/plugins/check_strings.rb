@@ -126,15 +126,18 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
     tokens.select { |r|
       {:STRING => true, :SSTRING => true}.include?(r.type) && %w{true false}.include?(r.value)
     }.each do |token|
-      notify :warning, {
+      if PuppetLint.configuration.fix
+        token.type = token.value.upcase.to_sym
+        notify_type = :fixed
+      else
+        notify_type = :warning
+      end
+
+      notify notify_type, {
         :message    => 'quoted boolean value found',
         :linenumber => token.line,
         :column     => token.column,
       }
-
-      if PuppetLint.configuration.fix
-        token.type = token.value.upcase.to_sym
-      end
     end
   end
 end
