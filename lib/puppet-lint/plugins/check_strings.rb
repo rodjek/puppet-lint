@@ -12,15 +12,18 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
     }.select { |r|
       r.value[/(\t|\\t|\n|\\n)/].nil?
     }.each do |token|
-      notify :warning, {
+      if PuppetLint.configuration.fix
+        token.type = :SSTRING
+        notify_type = :fixed
+      else
+        notify_type = :warning
+      end
+
+      notify notify_type, {
         :message    => 'double quoted string containing no variables',
         :linenumber => token.line,
         :column     => token.column,
       }
-
-      if PuppetLint.configuration.fix
-        token.type = :SSTRING
-      end
     end
   end
 

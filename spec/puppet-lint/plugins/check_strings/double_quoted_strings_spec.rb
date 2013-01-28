@@ -7,6 +7,23 @@ describe 'double_quoted_strings' do
     its(:problems) { should be_empty }
   end
 
+  describe 'double quoted string containing a variable inside single quotes w/fix' do
+    before do
+      PuppetLint.configuration.fix = true
+    end
+
+    after do
+      PuppetLint.configuration.fix = false
+    end
+
+    let(:code) { "exec { \"/usr/bin/wget -O - '${source}' | /usr/bin/apt-key add -\": }" }
+
+    its(:problems) { should be_empty }
+    its(:manifest) {
+      should == "exec { \"/usr/bin/wget -O - '${source}' | /usr/bin/apt-key add -\": }"
+    }
+  end
+
   describe 'multiple strings in a line' do
     let(:code) { "\"aoeu\" '${foo}'" }
 
@@ -18,6 +35,28 @@ describe 'double_quoted_strings' do
         :column     => 1,
       })
     }
+  end
+
+  describe 'multiple strings in a line w/fix' do
+    before do
+      PuppetLint.configuration.fix = true
+    end
+
+    after do
+      PuppetLint.configuration.fix = false
+    end
+
+    let(:code) { "\"aoeu\" '${foo}'" }
+
+    its(:problems) {
+      should have_problem({
+        :kind       => :fixed,
+        :message    => 'double quoted string containing no variables',
+        :linenumber => 1,
+        :column     => 1,
+      })
+    }
+    its(:manifest) { should == "'aoeu' '${foo}'" }
   end
 
   describe 'double quoted string nested in a single quoted string' do
