@@ -7,7 +7,14 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
     tokens.select { |r|
       [:INDENT, :WHITESPACE].include?(r.type) && r.value.include?("\t")
     }.each do |token|
-      notify :error, {
+      if PuppetLint.configuration.fix
+        token.value.gsub!("\t", '  ')
+        notify_type = :fixed
+      else
+        notify_type = :error
+      end
+
+      notify notify_type, {
         :message    => 'tab character found',
         :linenumber => token.line,
         :column     => token.column,
