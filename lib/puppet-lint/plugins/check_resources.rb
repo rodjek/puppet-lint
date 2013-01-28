@@ -150,16 +150,19 @@ class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
           break if value_token.value =~ sym_mode
           break if value_token.type == :UNDEF
 
-          notify :warning, {
+          notify_type = :warning
+
+          if PuppetLint.configuration.fix && value_token.value =~ /\A[0-7]{3}\Z/
+            value_token.value = "0#{value_token.value.to_s}"
+            value_token.type = :SSTRING
+            notify_type = :fixed
+          end
+
+          notify notify_type, {
             :message    => msg,
             :linenumber => value_token.line,
             :column     => value_token.column,
           }
-
-          if PuppetLint.configuration.fix
-            value_token.value = "0#{value_token.value.to_s}"
-            value_token.type = :SSTRING
-          end
         end
       end
     end
