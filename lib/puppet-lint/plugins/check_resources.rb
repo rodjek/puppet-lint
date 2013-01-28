@@ -109,15 +109,18 @@ class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
         }.each do |resource_token|
           value_token = resource_token.next_code_token.next_code_token
           if {:NAME => true, :NUMBER => true}.include? value_token.type
-            notify :warning, {
+            if PuppetLint.configuration.fix
+              value_token.type = :SSTRING
+              notify_type = :fixed
+            else
+              notify_type = :warning
+            end
+
+            notify notify_type, {
               :message    => 'unquoted file mode',
               :linenumber => value_token.line,
               :column     => value_token.column,
             }
-
-            if PuppetLint.configuration.fix
-              value_token.type = :SSTRING
-            end
           end
         end
       end
