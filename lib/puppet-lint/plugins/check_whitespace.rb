@@ -76,7 +76,8 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
   # Returns nothing.
   check 'arrow_alignment' do
     resource_indexes.each do |res_idx|
-      indent_depth = [nil]
+      indent_depth = [0]
+      indent_depth_idx = 0
       resource_tokens = tokens[res_idx[:start]..res_idx[:end]]
       resource_tokens.reject! do |token|
         {:COMMENT => true, :SLASH_COMMENT => true, :MLCOMMENT => true}.include? token.type
@@ -89,11 +90,23 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
         if token.type == :FARROW
           indent_length = token.column
 
-          if indent_depth.last.nil?
-            indent_depth[-1] = indent_length
+          if indent_depth[indent_depth_idx] < indent_length
+            indent_depth[indent_depth_idx] = indent_length
           end
 
-          unless indent_depth.last == indent_length
+        elsif token.type == :LBRACE
+          indent_depth_idx += 1
+          indent_depth << 0
+        elsif token.type == :RBRACE
+          indent_depth_idx -= 1
+        end
+      end
+
+      indent_depth_idx = 0
+      resource_tokens.each_with_index do |token, idx|
+        if token.type == :FARROW
+          indent_length = token.column
+          unless indent_depth[indent_depth_idx] == indent_length
             notify :warning, {
               :message    => 'indentation of => is not properly aligned',
               :linenumber => token.line,
@@ -101,9 +114,9 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
             }
           end
         elsif token.type == :LBRACE
-          indent_depth.push(nil)
+          indent_depth_idx += 1
         elsif token.type == :RBRACE
-          indent_depth.pop
+          indent_depth_idx -= 1
         end
       end
     end

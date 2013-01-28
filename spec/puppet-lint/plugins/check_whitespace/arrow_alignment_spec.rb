@@ -105,14 +105,26 @@ describe 'arrow_alignment' do
       should have_problem({
         :kind       => :warning,
         :message    => 'indentation of => is not properly aligned',
-        :linenumber => 5,
-        :column     => 15,
+        :linenumber => 3,
+        :column     => 13,
+      })
+      should have_problem({
+        :kind       => :warning,
+        :message    => 'indentation of => is not properly aligned',
+        :linenumber => 4,
+        :column     => 13,
       })
       should have_problem({
         :kind       => :warning,
         :message    => 'indentation of => is not properly aligned',
         :linenumber => 6,
         :column     => 14,
+      })
+      should have_problem({
+        :kind       => :warning,
+        :message    => 'indentation of => is not properly aligned',
+        :linenumber => 7,
+        :column     => 13,
       })
     end
   end
@@ -134,8 +146,8 @@ describe 'arrow_alignment' do
       should have_problem({
         :kind       => :warning,
         :message    => 'indentation of => is not properly aligned',
-        :linenumber => 4,
-        :column     => 14,
+        :linenumber => 3,
+        :column     => 13,
       })
       should have_problem({
         :kind       => :warning,
@@ -146,8 +158,8 @@ describe 'arrow_alignment' do
       should have_problem({
         :kind       => :warning,
         :message    => 'indentation of => is not properly aligned',
-        :linenumber => 8,
-        :column     => 14,
+        :linenumber => 9,
+        :column     => 13,
       })
     end
   end
