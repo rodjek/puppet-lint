@@ -32,7 +32,22 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
     }.select { |token|
       token.next_token.nil? || token.next_token.type == :NEWLINE
     }.each do |token|
-      notify :error, {
+      if PuppetLint.configuration.fix
+        notify_type = :fixed
+        prev_token = token.prev_token
+        next_token = token.next_token
+
+        tokens.delete(token)
+        prev_token.next_token = next_token
+
+        unless next_token.nil?
+          next_token.prev_token = prev_token
+        end
+      else
+        notify_type = :error
+      end
+
+      notify notify_type, {
         :message    => 'trailing whitespace found',
         :linenumber => token.line,
         :column     => token.column,
