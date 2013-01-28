@@ -6,15 +6,18 @@ class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
   check 'unquoted_resource_title' do
     title_tokens.each do |token|
       if token.type == :NAME
-        notify :warning, {
+        if PuppetLint.configuration.fix
+          token.type = :SSTRING
+          notify_type = :fixed
+        else
+          notify_type = :warning
+        end
+
+        notify notify_type, {
           :message    => 'unquoted resource title',
           :linenumber => token.line,
           :column     => token.column,
         }
-
-        if PuppetLint.configuration.fix
-          token.type = :SSTRING
-        end
       end
     end
   end
