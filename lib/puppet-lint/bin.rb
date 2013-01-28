@@ -52,6 +52,10 @@ class PuppetLint::Bin
         load f
       end
 
+      opts.on('-f', '--fix', 'Attempt to automatically fix errors') do
+        PuppetLint.configuration.fix = true
+      end
+
       opts.on("--log-format FORMAT",
         "Change the log format.", "Overrides --with-filename.",
         "The following placeholders can be used:",
@@ -75,10 +79,6 @@ class PuppetLint::Bin
         opts.on("--no-#{check}-check", "Skip the #{check} check") do
           PuppetLint.configuration.send("disable_#{check}")
         end
-      end
-
-      opts.on('-f', '--fix', 'Attempt to automatically fix errors') do
-        PuppetLint.configuration.fix = true
       end
 
       opts.load('/etc/puppet-lint.rc')
