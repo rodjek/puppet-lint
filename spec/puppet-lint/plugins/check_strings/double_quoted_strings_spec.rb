@@ -71,6 +71,12 @@ describe 'double_quoted_strings' do
     its(:problems) { should be_empty }
   end
 
+  describe 'double quoted string with single quoted string inside' do
+    let(:code) { "exec { \"sh -c 'foo'\": }" }
+
+    its(:problems) { should be_empty }
+  end
+
   describe 'double quoted string containing newline but no variables' do
     let(:code) { %{"foo\n"} }
 
@@ -91,7 +97,7 @@ describe 'double_quoted_strings' do
       }
     } }
 
-    its(:problems) { should == [] }
+    its(:problems) { should be_empty }
   end
 
   describe 'double quoted true' do
