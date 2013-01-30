@@ -24,6 +24,23 @@ describe 'double_quoted_strings' do
     }
   end
 
+  describe 'double quoted string containing a lone dollar w/fix' do
+    before do
+      PuppetLint.configuration.fix = true
+    end
+
+    after do
+      PuppetLint.configuration.fix = false
+    end
+
+    let(:code) {"\"sed -i 's/^;*[[:space:]]*${name}[[:space:]]*=.*$/${name} = ${value}/g' file\"" }
+
+    its(:problems) { should be_empty }
+    its(:manifest) {
+      should == "\"sed -i 's/^;*[[:space:]]*${name}[[:space:]]*=.*$/${name} = ${value}/g' file\""
+    }
+  end
+
   describe 'multiple strings in a line' do
     let(:code) { "\"aoeu\" '${foo}'" }
 
