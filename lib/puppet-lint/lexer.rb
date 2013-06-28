@@ -109,6 +109,7 @@ class PuppetLint
       [:QMARK, /\A(\?)/],
       [:BACKSLASH, /\A(\\)/],
       [:TIMES, /\A(\*)/],
+      [:MODULO, /\A(%)/],
     ]
 
     # Internal: A Hash whose keys are Symbols representing token types which
