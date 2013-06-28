@@ -52,7 +52,7 @@ how to resolve it.
  * ["top-scope variable being used without an explicit namespace"](/checks/variable_scope/)
  * ["variable contains a dash"](/checks/variable_contains_dash/)
  * ["optional parameter listed before required parameter"](/checks/parameter_order/)
- * ["class inheriting from params class"](/checks/class_parameter_defaults/)
+ * ["class inheriting from params class"](/checks/class_inherits_from_params_class/)
  * ["parameterised class parameter without a default value"](/checks/class_parameter_defaults/)
  * ["foo::bar-baz contains a dash"](/checks/names_containing_dash/)
 
