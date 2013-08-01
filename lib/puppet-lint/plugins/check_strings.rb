@@ -62,14 +62,14 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
   end
 
   # Public: Check the manifest tokens for any single quoted strings containing
-  # a enclosed variable and record an error for each instance found.
+  # an enclosed variable and record a warning for each instance found.
   #
   # Returns nothing.
   check 'single_quote_string_with_variables' do
     tokens.select { |r|
       r.type == :SSTRING && r.value.include?('${')
     }.each do |token|
-      notify :error, {
+      notify :warning, {
         :message    => 'single quoted string containing a variable found',
         :linenumber => token.line,
         :column     => token.column,

@@ -6,7 +6,7 @@ describe 'single_quote_string_with_variables' do
 
     its(:problems) {
       should have_problem({
-        :kind       => :error,
+        :kind       => :warning,
         :message    => 'single quoted string containing a variable found',
         :linenumber => 1,
         :column     => 8,
