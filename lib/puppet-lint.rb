@@ -85,7 +85,7 @@ class PuppetLint
     # linter object down through layers of functions.  Refactor me!
     return if message[:check] == 'documentation'
     line = linter.manifest_lines[message[:linenumber] - 1]
-    offset = line.index(/\S/)
+    offset = line.index(/\S/) || 1
     puts "\n  #{line.strip}"
     printf "%#{message[:column] + 2 - offset}s\n\n", '^'
   end
