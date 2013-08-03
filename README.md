@@ -7,7 +7,7 @@ Status](https://gemnasium.com/rodjek/puppet-lint.png)](http://gemnasium.com/rodj
 
 The goal of this project is to implement as many of the recommended Puppet
 style guidelines from the [Puppet Labs style
-guide](http://docs.puppetlabs.com/guides/style_guide.html) as practical.
+guide](http://docs.puppetlabs.com/guides/style_guide.html) as practical. It is not meant to validate syntax. Please use `puppet parser validate` for that.
 
 ## Installation
 
