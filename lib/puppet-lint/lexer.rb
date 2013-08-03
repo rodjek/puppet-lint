@@ -346,7 +346,10 @@ class PuppetLint
           end
           if ss.scan(/\{/).nil?
             var_name = ss.scan(/(::)?([\w-]+::)*[\w-]+/)
-            unless var_name.nil?
+            if var_name.nil?
+              token_column = column + ss.pos - 1
+              tokens << new_token(:DQMID, "$", :line => line, :column => token_column)
+            else
               token_column = column + (ss.pos - var_name.size)
               tokens << new_token(:UNENC_VARIABLE, var_name, :line => line, :column => token_column)
             end
