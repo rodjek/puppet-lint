@@ -11,12 +11,12 @@ describe 'unquoted_resource_title' do
     let(:code) { "file { foo: }" }
 
     its(:problems) {
-      should only_have_problem(
+      should only_have_problem({
         :kind       => :warning,
         :message    => "unquoted resource title",
         :linenumber => 1,
         :column     => 8,
-      )
+      })
     }
   end
 
@@ -32,12 +32,12 @@ describe 'unquoted_resource_title' do
     let(:code) { "file { foo: }" }
 
     its(:problems) {
-      should only_have_problem(
+      should only_have_problem({
         :kind       => :fixed,
         :message    => "unquoted resource title",
         :linenumber => 1,
         :column     => 8,
-      )
+      })
     }
 
     its(:manifest) { should == "file { 'foo': }" }
@@ -59,12 +59,12 @@ describe 'unquoted_resource_title' do
     }
 
     its(:problems) {
-      should only_have_problem(
+      should only_have_problem({
         :kind       => :warning,
         :message    => "unquoted resource title",
         :linenumber => 2,
         :column     => 14,
-      )
+      })
     }
   end
 
@@ -83,12 +83,12 @@ describe 'unquoted_resource_title' do
     }
 
     its(:problems) {
-      should only_have_problem(
+      should only_have_problem({
         :kind       => :fixed,
         :message    => "unquoted resource title",
         :linenumber => 2,
         :column     => 14,
-      )
+      })
     }
 
     its(:manifest) { should == "
@@ -117,12 +117,12 @@ describe 'unquoted_resource_title' do
     }
 
     its(:problems) {
-      should only_have_problem(
+      should only_have_problem({
         :kind       => :warning,
         :message    => "unquoted resource title",
         :linenumber => 4,
         :column     => 9,
-      )
+      })
     }
   end
 
@@ -143,12 +143,12 @@ describe 'unquoted_resource_title' do
     }
 
     its(:problems) {
-      should only_have_problem(
+      should only_have_problem({
         :kind       => :fixed,
         :message    => "unquoted resource title",
         :linenumber => 4,
         :column     => 9,
-      )
+      })
     }
 
     its(:manifest) { should == "
