@@ -4,7 +4,7 @@ title: 80chars
 sg: http://docs.puppetlabs.com/guides/style_guide.html#spacing-indentation--whitespace
 ---
 
-# Trailing whitespace
+# 80 character line limit
 
 Your manifests should not contain any lines longer than 80 characters
 ([style guide]({{ page.sg }})).
