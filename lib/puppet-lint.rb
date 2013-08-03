@@ -43,7 +43,8 @@ class PuppetLint
   def file=(path)
     if File.exist? path
       @fileinfo[:path] = path
-      @fileinfo[:fullpath] = File.expand_path(path)
+      ## expand path but use the current directory as reference.
+      @fileinfo[:fullpath] = File.expand_path(path, ENV['PWD'])
       @fileinfo[:filename] = File.basename(path)
       @code = File.read(path)
     end

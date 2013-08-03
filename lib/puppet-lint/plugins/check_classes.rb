@@ -26,9 +26,9 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
         split_title = title_token.value.split('::')
         mod = split_title.first
         if split_title.length > 1
-          expected_path = "#{mod}/manifests/#{split_title[1..-1].join('/')}.pp"
+          expected_path = "/#{mod}/manifests/#{split_title[1..-1].join('/')}.pp"
         else
-          expected_path = "#{title_token.value}/manifests/init.pp"
+          expected_path = "/#{title_token.value}/manifests/init.pp"
         end
 
         unless fullpath.end_with? expected_path
