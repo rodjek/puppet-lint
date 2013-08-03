@@ -1,3 +1,4 @@
+require 'set'
 require 'puppet-lint/version'
 require 'puppet-lint/lexer'
 require 'puppet-lint/configuration'

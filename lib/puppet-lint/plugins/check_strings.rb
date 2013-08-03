@@ -32,44 +32,54 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
   #
   # Returns nothing.
   check 'only_variable_string' do
+    variable_tokens = Set.new [:VARIABLE, :UNENC_VARIABLE]
+
     tokens.each_index do |token_idx|
       token = tokens[token_idx]
 
       if token.type == :DQPRE and token.value == ''
-        if {:VARIABLE => true, :UNENC_VARIABLE => true}.include? tokens[token_idx + 1].type
-          if tokens[token_idx + 2].type == :DQPOST
-            if tokens[token_idx + 2].value == ''
-              if PuppetLint.configuration.fix
-                prev_token = token.prev_token
-                prev_code_token = token.prev_code_token
-                next_token = token.next_token.next_token.next_token
-                next_code_token = token.next_token.next_token.next_code_token
-                var_token = token.next_token
+        var_token = token.next_token
+        if variable_tokens.include? var_token.type
+          eos_offset = 2
+          loop do
+            eos_token = tokens[token_idx + eos_offset]
+            case eos_token.type
+            when :LBRACK
+              eos_offset += 3
+            when :DQPOST
+              if eos_token.value == ''
+                if PuppetLint.configuration.fix
+                  prev_token = token.prev_token
+                  prev_code_token = token.prev_code_token
+                  next_token = eos_token.next_token
+                  next_code_token = eos_token.next_code_token
 
-                tokens.delete_at(token_idx + 2)
-                tokens.delete_at(token_idx)
+                  tokens.delete_at(token_idx + eos_offset)
+                  tokens.delete_at(token_idx)
 
-                prev_token.next_token = var_token unless prev_token.nil?
-                prev_code_token.next_code_token = var_token unless prev_code_token.nil?
-                next_code_token.prev_code_token = var_token unless next_code_token.nil?
-                next_token.prev_token = var_token unless next_token.nil?
-                var_token.type = :VARIABLE
-                var_token.next_token = next_token
-                var_token.next_code_token = next_code_token
-                var_token.prev_code_token = prev_code_token
-                var_token.prev_token = prev_token
-                notify_type = :fixed
-                notify_token = var_token
-              else
-                notify_type = :warning
-                notify_token = tokens[token_idx + 1]
+                  prev_token.next_token = var_token unless prev_token.nil?
+                  prev_code_token.next_code_token = var_token unless prev_code_token.nil?
+                  next_code_token.prev_code_token = var_token unless next_code_token.nil?
+                  next_token.prev_token = var_token unless next_token.nil?
+                  var_token.type = :VARIABLE
+                  var_token.next_token = next_token
+                  var_token.next_code_token = next_code_token
+                  var_token.prev_code_token = prev_code_token
+                  var_token.prev_token = prev_token
+                  notify_type = :fixed
+                else
+                  notify_type = :warning
+                end
+
+                notify notify_type, {
+                  :message    => 'string containing only a variable',
+                  :linenumber => var_token.line,
+                  :column     => var_token.column,
+                }
               end
-
-              notify notify_type, {
-                :message    => 'string containing only a variable',
-                :linenumber => notify_token.line,
-                :column     => notify_token.column,
-              }
+              break
+            else
+              break
             end
           end
         end
