@@ -351,17 +351,15 @@ class PuppetLint
             end
           else
             contents = ss.scan_until(/\}/)[0..-2]
-            if contents.match(/\A(::)?([\w-]+::)*[\w-]+\Z/)
-              token_column = column + (ss.pos - contents.size - 1)
-              tokens << new_token(:VARIABLE, contents, :line => line, :column => token_column)
-            else
-              lexer = PuppetLint::Lexer.new
-              lexer.tokenise(contents)
-              lexer.tokens.each do |token|
-                tok_col = column + token.column + (ss.pos - contents.size - 1)
-                tok_line = token.line + line - 1
-                tokens << new_token(token.type, token.value, :line => tok_line, :column => tok_col)
-              end
+            if contents.match(/\A(::)?([\w-]+::)*[\w-]+/)
+              contents = "$#{contents}"
+            end
+            lexer = PuppetLint::Lexer.new
+            lexer.tokenise(contents)
+            lexer.tokens.each do |token|
+              tok_col = column + token.column + (ss.pos - contents.size - 1)
+              tok_line = token.line + line - 1
+              tokens << new_token(token.type, token.value, :line => tok_line, :column => tok_col)
             end
           end
         end
