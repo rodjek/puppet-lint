@@ -48,6 +48,10 @@ class PuppetLint::Bin
         PuppetLint.configuration.error_level = el
       end
 
+      opts.on("--line-length LINE_LENGTH", 'The line length in characters to enforce.') do |line_length|
+        PuppetLint.configuration.line_length = line_length.to_i
+      end
+
       opts.on("-l", '--load FILE', 'Load a file containing custom puppet-lint checks.') do |f|
         load f
       end

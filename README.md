@@ -215,7 +215,7 @@ Placeholder
 
 Placeholder
 
-### 80chars
+### line_length
 
 Placeholder
 
@@ -236,7 +236,7 @@ adding a `--no-<check name>-check` flag to the command.  For example, if you
 wanted to skip the 80 character check, you would run
 
 ```
-puppet-lint --no-80chars-check /path/to/my/manifest.pp
+puppet-lint --no-line_length-check /path/to/my/manifest.pp
 ```
 
 puppet-lint will also check for a `.puppet-lint.rc` file in the current
@@ -268,7 +268,7 @@ PuppetLint.configuration.send("disable_<check name>")
 So, to disable the 80 character check, you would add:
 
 ``` ruby
-PuppetLint.configuration.send("disable_80chars")
+PuppetLint.configuration.send("disable_line_length")
 ```
 
 The Rake task also supports ignoring certain paths

@@ -164,6 +164,7 @@ class PuppetLint
       self.with_filename = false
       self.fail_on_warnings = false
       self.error_level = :all
+      self.line_length = 80
       self.log_format = ''
       self.with_context = false
     end
