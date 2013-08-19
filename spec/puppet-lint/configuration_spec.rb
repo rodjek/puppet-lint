@@ -46,6 +46,7 @@ describe PuppetLint::Configuration do
     subject.settings.should == {
       'with_filename' => false,
       'fail_on_warnings' => false,
+      'line_length' => 80,
       'error_level' => :all,
       'log_format' => '',
       'with_context' => false,

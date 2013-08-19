@@ -1,7 +1,7 @@
 # encoding: utf-8
 require 'spec_helper'
 
-describe '80chars' do
+describe 'line_length' do
   describe 'file resource with a source line > 80c' do
     let(:code) { "
       file {
