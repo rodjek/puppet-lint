@@ -33,19 +33,22 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
     end
   end
 
-  # Test the raw manifest string for lines containing more than 80 characters
+  # Test the raw manifest string for lines containing more than x number of characters
   # and record a warning for each instance found.  The only exception to this
   # rule is lines containing URLs which would hurt readability if split.
+  # Reads number of characters from PuppetLint.configuration.line_length.
+  # PuppetLint.configuration.line_length can be overridden with the --line-length option.
   #
   # Returns nothing.
-  check '80chars' do
+  check 'line_length' do
     manifest_lines.each_with_index do |line, idx|
+      line_length = PuppetLint.configuration.line_length
       unless line =~ /:\/\//
-        if line.scan(/./mu).size > 80
+        if line.scan(/./mu).size > line_length
           notify :warning, {
-            :message    => 'line has more than 80 characters',
+            :message    => 'line has more than %s characters' % line_length,
             :linenumber => idx + 1,
-            :column     => 80,
+            :column     => line_length,
           }
         end
       end
