@@ -135,6 +135,8 @@ class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
         resource_tokens.select { |resource_token|
           resource_token.type == :NAME and resource_token.value == 'mode'
         }.each do |resource_token|
+          break unless resource_token.next_code_token.type == :FARROW
+
           value_token = resource_token.next_code_token.next_code_token
 
           break if value_token.value =~ /\A[0-7]{4}\Z/
