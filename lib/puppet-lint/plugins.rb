@@ -51,5 +51,6 @@ require 'puppet-lint/plugins/check_strings'
 require 'puppet-lint/plugins/check_variables'
 require 'puppet-lint/plugins/check_whitespace'
 require 'puppet-lint/plugins/check_resources'
+require 'puppet-lint/plugins/check_nodes'
 
 PuppetLint::Plugins.load_from_gems
