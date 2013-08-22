@@ -40,4 +40,10 @@ describe 'file_mode' do
       should only_have_problem :kind => :warning, :message => "mode should be represented as a 4 digit octal value or symbolic mode", :linenumber => 1
     }
   end
+
+  describe 'mode as audit value' do
+    let(:code) { "file { '/etc/passwd': audit => [ owner, mode ], }" }
+
+    its(:problems) { should be_empty }
+  end
 end
