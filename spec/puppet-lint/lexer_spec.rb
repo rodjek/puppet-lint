@@ -747,7 +747,7 @@ describe PuppetLint::Lexer do
     it 'should parse strings with \\\\\\' do
       expect {
         @lexer.tokenise("exec { \"/bin/echo \\\\\\\"${environment}\\\\\\\"\": }")
-      }.to_not raise_error(PuppetLint::LexerError)
+      }.to_not raise_error
     end
   end
 end

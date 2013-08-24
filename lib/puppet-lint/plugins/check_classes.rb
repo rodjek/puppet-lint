@@ -127,7 +127,7 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
           next unless paren_stack.empty?
 
           if this_token.type == :VARIABLE
-            if !next_token.nil? && next_token.type != :EQUALS
+            if !next_token.nil? && !Set[:EQUALS, :DQPOST, :DQMID].include?(next_token.type)
               if !prev_token.nil? && prev_token.type != :EQUALS
                 notify :warning, {
                   :message    => 'parameterised class parameter without a default value',
