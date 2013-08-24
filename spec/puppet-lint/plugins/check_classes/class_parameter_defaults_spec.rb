@@ -57,4 +57,10 @@ describe 'class_parameter_defaults' do
 
     its(:problems) { should == [] }
   end
+
+  describe 'parameterised class with an interpolated string value' do
+    let(:code) { 'class blah($conf = "/mnt/confs/${some_file}") { }'}
+
+    its(:problems) { should be_empty }
+  end
 end
