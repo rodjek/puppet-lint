@@ -188,23 +188,25 @@ class PuppetLint::Checks
   def class_indexes
     @class_indexes ||= Proc.new do
       result = []
-      tokens.each_index do |token_idx|
-        if tokens[token_idx].type == :CLASS
-          depth = 0
+      tokens.each_with_index do |token, i|
+        if token.type == :CLASS
+          brace_depth = 0
+          paren_depth = 0
           in_params = false
-          tokens[token_idx+1..-1].each_index do |class_token_idx|
-            idx = class_token_idx + token_idx + 1
-            if tokens[idx].type == :LPAREN
-              in_params = true
-            elsif tokens[idx].type == :RPAREN
-              in_params = false
-            elsif tokens[idx].type == :LBRACE
-              depth += 1 unless in_params
-            elsif tokens[idx].type == :RBRACE
-              depth -= 1 unless in_params
-              if depth == 0 && ! in_params
-                if tokens[token_idx].next_code_token.type != :LBRACE
-                  result << {:start => token_idx, :end => idx}
+          tokens[i+1..-1].each_with_index do |class_token, j|
+            if class_token.type == :LPAREN
+              in_params = true if paren_depth == 1
+              paren_depth += 1
+            elsif class_token.type == :RPAREN
+              in_params = false if paren_depth == 0
+              paren_depth -= 1
+            elsif class_token.type == :LBRACE
+              brace_depth += 1
+            elsif class_token.type == :RBRACE
+              brace_depth -= 1
+              if brace_depth == 0 && ! in_params
+                if token.next_code_token.type != :LBRACE
+                  result << {:start => i, :end => i + j + 1}
                 end
                 break
               end
@@ -227,22 +229,24 @@ class PuppetLint::Checks
   def defined_type_indexes
     @defined_type_indexes ||= Proc.new do
       result = []
-      tokens.each_index do |token_idx|
-        if tokens[token_idx].type == :DEFINE
-          depth = 0
+      tokens.each_with_index do |token, i|
+        if token.type == :DEFINE
+          brace_depth = 0
+          paren_depth = 0
           in_params = false
-          tokens[token_idx+1..-1].each_index do |define_token_idx|
-            idx = define_token_idx + token_idx + 1
-            if tokens[idx].type == :LPAREN
-              in_params = true
-            elsif tokens[idx].type == :RPAREN
-              in_params = false
-            elsif tokens[idx].type == :LBRACE
-              depth += 1 unless in_params
-            elsif tokens[idx].type == :RBRACE
-              depth -= 1 unless in_params
-              if depth == 0 && ! in_params
-                result << {:start => token_idx, :end => idx}
+          tokens[i+1..-1].each_with_index do |define_token, j|
+            if define_token.type == :LPAREN
+              in_params = true if paren_depth == 0
+              paren_depth += 1
+            elsif define_token.type == :RPAREN
+              in_params = false if paren_depth == 1
+              paren_depth -= 1
+            elsif define_token.type == :LBRACE
+              brace_depth += 1
+            elsif define_token.type == :RBRACE
+              brace_depth -= 1
+              if brace_depth == 0 && !in_params
+                result << {:start => i, :end => i + j + 1}
                 break
               end
             end

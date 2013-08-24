@@ -283,20 +283,20 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
       'serverversion',
       'caller_module_name',
     ]
+
     (class_indexes + defined_type_indexes).each do |idx|
       object_tokens = tokens[idx[:start]..idx[:end]]
-      object_tokens.reject! { |r| formatting_tokens.include?(r.type) }
       depth = 0
       lparen_idx = nil
       rparen_idx = nil
-      object_tokens.each_index do |t|
-        if object_tokens[t].type == :LPAREN
+      object_tokens.each_with_index do |token, i|
+        if token.type == :LPAREN
           depth += 1
-          lparen_idx = t if depth == 1
-        elsif object_tokens[t].type == :RPAREN
+          lparen_idx = i if depth == 1
+        elsif token.type == :RPAREN
           depth -= 1
           if depth == 0
-            rparen_idx = t
+            rparen_idx = i
             break
           end
         end
@@ -305,26 +305,21 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
 
       unless lparen_idx.nil? or rparen_idx.nil?
         param_tokens = object_tokens[lparen_idx..rparen_idx]
-        param_tokens.each_index do |param_tokens_idx|
-          this_token = param_tokens[param_tokens_idx]
-          next_token = param_tokens[param_tokens_idx+1]
-          if this_token.type == :VARIABLE
-            if {:COMMA => true, :EQUALS => true, :RPAREN => true}.include? next_token.type
-              variables_in_scope << this_token.value
+        param_tokens.each do |token|
+          if token.type == :VARIABLE
+            if Set[:COMMA, :EQUALS, :RPAREN].include? token.next_code_token.type
+              variables_in_scope << token.value
             end
           end
         end
       end
 
-      object_tokens.each_index do |object_token_idx|
-        this_token = object_tokens[object_token_idx]
-        next_token = object_tokens[object_token_idx + 1]
-
-        if this_token.type == :VARIABLE
-          if next_token.type == :EQUALS
-            variables_in_scope << this_token.value
+      object_tokens.each do |token|
+        if token.type == :VARIABLE
+          if token.next_code_token.type == :EQUALS
+            variables_in_scope << token.value
           else
-            referenced_variables << this_token
+            referenced_variables << token
           end
         end
       end

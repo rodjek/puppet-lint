@@ -90,4 +90,16 @@ describe 'variable_scope' do
 
     its(:problems) { should be_empty }
   end
+
+  describe 'define with required parameter' do
+    let(:code) { "
+define tomcat::base (
+    $max_perm_gen,
+    $owner = hiera('app_user'),
+    $system_properties = {},
+) {  }"
+    }
+
+    its(:problems) { should be_empty }
+  end
 end
