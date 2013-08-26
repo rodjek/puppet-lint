@@ -145,7 +145,32 @@ class foo($gronk, $bar='baz') {
 
 ### inherits_across_namespaces
 
-Placeholder
+Inheritance may be used within a module, but must not be used across module
+namespaces. Cross-module dependencies should be satisfied in a more portable
+way that doesn’t violate the concept of modularity, such as with include
+statements or relationship declarations.
+
+Bad:
+
+```
+class ssh inherits server { }
+
+class ssh::client inherits workstation { }
+
+class wordpress inherits apache { }
+```
+
+Good:
+
+```
+class ssh { }
+
+class ssh::client inherits ssh { }
+
+class ssh::server inherits ssh { }
+
+class ssh::server::solaris inherits ssh::server { }
+```
 
 ### nested_classes_or_defines
 
