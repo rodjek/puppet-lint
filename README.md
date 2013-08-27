@@ -307,7 +307,23 @@ file { '/tmp/foo':
 
 ### unquoted_file_mode
 
-Placeholder
+File modes should be specified as single-quoted strings instead of bare word numbers.
+
+Bad:
+
+```
+file { '/tmp/foo':
+  mode => 0666,
+}
+```
+
+Good:
+
+```
+file { '/tmp/foo':
+  mode => '0666',
+}
+```
 
 ### 4digit_file_mode
 
