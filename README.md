@@ -532,7 +532,26 @@ file { '/tmp/foo':
 
 ### arrow_alignment
 
-Placeholder
+Arrows (=>) within blocks of attributes (like resource declarations, selectors,
+    hashes, etc) should be aligned with the other arrows in that block.
+
+Bad:
+
+```
+file { '/tmp/foo':
+    ensure => present,
+    mode => '0444',
+}
+```
+
+Good:
+
+```
+file { '/tmp/foo':
+  ensure => present,
+  mode   => '0444',
+}
+```
 
 ## Disabling checks
 
