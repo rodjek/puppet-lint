@@ -263,7 +263,23 @@ case $::operatingsystem {
 
 ### unquoted_resource_title
 
-Placeholder
+All resource titles should be quoted.
+
+Bad:
+
+```
+service { apache:
+  ensure => running,
+}
+```
+
+Good:
+
+```
+service { 'apache':
+  ensure => running,
+}
+```
 
 ### ensure_first_param
 
