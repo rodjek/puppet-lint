@@ -443,7 +443,25 @@ $foo = "bar ${baz}"
 
 ### quoted_booleans
 
-Placeholder
+Boolean values (true and false) behave differently when quoted ('true' and
+'false'), which can lead to a fair bit of confusion. As a general rule, you
+should never quote booleans. This is not a style issue, rather a common mistake.
+
+Bad:
+
+```
+file { '/tmp/foo':
+  purge => 'true',
+}
+```
+
+Good:
+
+```
+file { '/tmp/foo':
+  purge => true,
+}
+```
 
 ### variable_contains_dash
 
