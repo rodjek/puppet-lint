@@ -283,7 +283,27 @@ service { 'apache':
 
 ### ensure_first_param
 
-Placeholder
+If a resource declaration includes an ensure parameter, it should be the first parameter specified.
+
+Bad:
+
+```
+file { '/tmp/foo':
+  owner  => 'root',
+  group  => 'root',
+  ensure => present,
+}
+```
+
+Good:
+
+```
+file { '/tmp/foo':
+  ensure => present,
+  owner  => 'root',
+  group  => 'root',
+}
+```
 
 ### unquoted_file_mode
 
