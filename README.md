@@ -195,7 +195,35 @@ $::operatingsystem
 
 ### selector_inside_resource
 
-Placeholder
+You should not intermingle conditionals with resource declarations.
+When using conditionals for data assignment, you should separate conditional
+code from the resource declarations
+
+Bad:
+
+```
+file { '/tmp/readme.txt':
+  mode => $::operatingsystem ? {
+    debian => '0777',
+    redhat => '0776',
+    fedora => '0007',
+  }
+}
+```
+
+Good:
+
+```
+$file_mode = $::operatingsystem ? {
+  debian => '0007',
+  redhat => '0776',
+  fedora => '0007',
+}
+
+file { '/tmp/readme.txt':
+  mode => $file_mode,
+}
+```
 
 ### case_without_default
 
