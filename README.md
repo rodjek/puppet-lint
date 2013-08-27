@@ -227,7 +227,39 @@ file { '/tmp/readme.txt':
 
 ### case_without_default
 
-Placeholder
+Case statements should have default cases. Additionally, the default case should
+fail the catalog compilation when the resulting behavior cannot be predicted on
+the majority of platforms the module will be used on. If you want the default
+case to be “do nothing,” include it as an explicit default: {} for clarity’s sake.
+
+Bad:
+
+```
+case $::operatingsystem {
+  centos: {
+    $version = '1.2.3'
+  }
+  solaris: {
+    $version = '3.2.1'
+  }
+}
+```
+
+Good:
+
+```
+case $::operatingsystem {
+  centos: {
+    $version = '1.2.3'
+  }
+  solaris: {
+    $version = '3.2.1'
+  }
+  default: {
+    fail("Module ${module_name} is not supported on ${::operatingsystem}")
+  }
+}
+```
 
 ### unquoted_resource_title
 
