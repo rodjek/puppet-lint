@@ -465,7 +465,20 @@ file { '/tmp/foo':
 
 ### variable_contains_dash
 
-Placeholder
+When defining variables you should only use letters, numbers and underscores.
+You should specifically not make use of dashes.
+
+Bad:
+
+```
+$foo-bar
+```
+
+Good:
+
+```
+$foo_bar
+```
 
 ### hard_tabs
 
