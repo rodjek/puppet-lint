@@ -507,7 +507,7 @@ Your manifests must not contain any trailing whitespace on any line.
 
 ### 80chars
 
-Placeholder
+Your manifests should not contain any lines longer than 80 characters.
 
 ### 2sp_soft_tabs
 
