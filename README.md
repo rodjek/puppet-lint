@@ -178,7 +178,20 @@ Placeholder
 
 ### variable_scope
 
-Placeholder
+When using top-scope variables, including facts, Puppet modules should explicitly
+specify the empty namespace to prevent accidental scoping issues.
+
+Bad:
+
+```
+$operatingsystem
+```
+
+Good:
+
+```
+$::operatingsystem
+```
 
 ### selector_inside_resource
 
