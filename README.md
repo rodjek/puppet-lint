@@ -327,7 +327,25 @@ file { '/tmp/foo':
 
 ### 4digit_file_mode
 
-Placeholder
+File modes should be represented as 4 digits rather than 3, to explicitly show
+that they are octal values. File modes can also be represented symbolically
+e.g. u=rw,g=r.
+
+Bad:
+
+```
+file { '/tmp/foo':
+  mode => '666',
+}
+```
+
+Good:
+
+```
+file { '/tmp/foo':
+  mode => '0666',
+}
+```
 
 ### ensure_not_symlink_target
 
