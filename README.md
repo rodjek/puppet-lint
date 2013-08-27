@@ -372,7 +372,20 @@ file { '/tmp/foo':
 
 ### double_quoted_strings
 
-Placeholder
+All strings that do not contain variables or escape characters like \n or \t
+should be enclosed in single quotes.
+
+Bad:
+
+```
+$foo = "bar"
+```
+
+Good:
+
+```
+$foo = 'bar'
+```
 
 ### only_variable_string
 
