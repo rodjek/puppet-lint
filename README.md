@@ -503,7 +503,7 @@ file { '/tmp/foo':
 
 ### trailing_whitespace
 
-Placeholder
+Your manifests must not contain any trailing whitespace on any line.
 
 ### 80chars
 
