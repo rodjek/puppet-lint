@@ -426,7 +426,20 @@ $foo = "bar ${baz}"
 
 ### single_quote_string_with_variables
 
-Placeholder
+Single quoted strings do not get interpolated, so you should not attempt to embed
+variables in one. This is not a style issue, rather a common mistake.
+
+Bad:
+
+```
+$foo = 'bar ${baz}'
+```
+
+Good:
+
+```
+$foo = "bar ${baz}"
+```
 
 ### quoted_booleans
 
