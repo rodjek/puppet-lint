@@ -349,7 +349,26 @@ file { '/tmp/foo':
 
 ### ensure_not_symlink_target
 
-Placeholder
+In the interest of clarity, symbolic links should be declared by using an ensure
+value of ensure => link and explicitly specifying a value for the target attribute.
+Using a path to the target as the ensure value is not recommended.
+
+Bad:
+
+```
+file { '/tmp/foo':
+  ensure => '/tmp/bar',
+}
+```
+
+Good:
+
+```
+file { '/tmp/foo':
+  ensure => link,
+  target => '/tmp/bar',
+}
+```
 
 ### double_quoted_strings
 
