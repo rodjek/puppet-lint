@@ -410,7 +410,19 @@ file { '/tmp/foo':
 
 ### variables_not_enclosed
 
-Placeholder
+All variables should be enclosed in in braces ({}) when being interpolated in a string.
+
+Bad:
+
+```
+$foo = "bar $baz"
+```
+
+Good:
+
+```
+$foo = "bar ${baz}"
+```
 
 ### single_quote_string_with_variables
 
