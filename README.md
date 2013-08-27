@@ -511,7 +511,24 @@ Your manifests should not contain any lines longer than 80 characters.
 
 ### 2sp_soft_tabs
 
-Placeholder
+In order to comply with the style guide, manifests must use 2 space characters
+when indenting.
+
+Bad:
+
+```
+file { '/tmp/foo':
+    ensure => present,
+}
+```
+
+Good:
+
+```
+file { '/tmp/foo':
+  ensure => present,
+}
+```
 
 ### arrow_alignment
 
