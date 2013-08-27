@@ -482,7 +482,24 @@ $foo_bar
 
 ### hard_tabs
 
-Placeholder
+In order to comply with the style guide, manifests must not use hard tab
+characters (\t) in the whitespace.
+
+Bad:
+
+```
+file { '/tmp/foo':
+        ensure => present,
+}
+```
+
+Good:
+
+```
+file { '/tmp/foo':
+  ensure => present,
+}
+```
 
 ### trailing_whitespace
 
