@@ -389,7 +389,24 @@ $foo = 'bar'
 
 ### only_variable_string
 
-Placeholder
+Variables standing by themselves should not be quoted. To put it another way,
+strings should not contain just a single variable.
+
+Bad:
+
+```
+file { '/tmp/foo':
+  owner => "${file_owner}",
+}
+```
+
+Good:
+
+```
+file { '/tmp/foo':
+  owner => $file_owner,
+}
+```
 
 ### variables_not_enclosed
 
