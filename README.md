@@ -90,21 +90,7 @@ At the moment, the following tests have been implemented:
 WARNING: right-to-left (<-) relationship on line X
 ```
 
-While right to left relationships are perfectly valid, it's highly recommended
-that you don't use them as most people think and read from left to right and
-this can lead to confusion.
-
-Bad:
-
-```
-Service['httpd'] <- Package['httpd']
-```
-
-Good:
-
-```
-Package['httpd'] -> Service['httpd']
-```
+See: [11.3. Relationship Declarations](http://docs.puppetlabs.com/guides/style_guide.html#relationship-declarations)
 
 ### autoloader_layout
 
@@ -121,56 +107,19 @@ exception to this is when you reference `mymodule` itself (without any
 subclass/subtype) in which case it will read
 `<modulepath>/mymodule/manifests/init.pp`.
 
+See: [11.1. Separate Files](http://docs.puppetlabs.com/guides/style_guide.html#separate-files)
+
 ### parameter_order
 
 ```
 WARNING: optional parameter listed before required parameter on line X
 ```
 
-In parameterised class and defined type definitions, parameters that are
-required should be listed before optional parameters (those with default
-values).
-
-Bad:
-
-```
-class foo($bar='baz', $gronk) {
-```
-
-Good:
-
-```
-class foo($gronk, $bar='baz') {
-```
+See: [11.8. Display Order of Class Parameters](http://docs.puppetlabs.com/guides/style_guide.html#display-order-of-class-parameters)
 
 ### inherits_across_namespaces
 
-Inheritance may be used within a module, but must not be used across module
-namespaces. Cross-module dependencies should be satisfied in a more portable
-way that doesn’t violate the concept of modularity, such as with include
-statements or relationship declarations.
-
-Bad:
-
-```
-class ssh inherits server { }
-
-class ssh::client inherits workstation { }
-
-class wordpress inherits apache { }
-```
-
-Good:
-
-```
-class ssh { }
-
-class ssh::client inherits ssh { }
-
-class ssh::server inherits ssh { }
-
-class ssh::server::solaris inherits ssh::server { }
-```
+See: [11.5. Class Inheritance](http://docs.puppetlabs.com/guides/style_guide.html#class-inheritance)
 
 ### nested_classes_or_defines
 
@@ -178,251 +127,47 @@ Placeholder
 
 ### variable_scope
 
-When using top-scope variables, including facts, Puppet modules should explicitly
-specify the empty namespace to prevent accidental scoping issues.
-
-Bad:
-
-```
-$operatingsystem
-```
-
-Good:
-
-```
-$::operatingsystem
-```
+See: [11.6. Namespacing Variables](http://docs.puppetlabs.com/guides/style_guide.html#namespacing-variables)
 
 ### selector_inside_resource
 
-You should not intermingle conditionals with resource declarations.
-When using conditionals for data assignment, you should separate conditional
-code from the resource declarations
-
-Bad:
-
-```
-file { '/tmp/readme.txt':
-  mode => $::operatingsystem ? {
-    debian => '0777',
-    redhat => '0776',
-    fedora => '0007',
-  }
-}
-```
-
-Good:
-
-```
-$file_mode = $::operatingsystem ? {
-  debian => '0007',
-  redhat => '0776',
-  fedora => '0007',
-}
-
-file { '/tmp/readme.txt':
-  mode => $file_mode,
-}
-```
+See: [10.1. Keep Resource Declarations Simple](http://docs.puppetlabs.com/guides/style_guide.html#keep-resource-declarations-simple)
 
 ### case_without_default
 
-Case statements should have default cases. Additionally, the default case should
-fail the catalog compilation when the resulting behavior cannot be predicted on
-the majority of platforms the module will be used on. If you want the default
-case to be “do nothing,” include it as an explicit default: {} for clarity’s sake.
-
-Bad:
-
-```
-case $::operatingsystem {
-  centos: {
-    $version = '1.2.3'
-  }
-  solaris: {
-    $version = '3.2.1'
-  }
-}
-```
-
-Good:
-
-```
-case $::operatingsystem {
-  centos: {
-    $version = '1.2.3'
-  }
-  solaris: {
-    $version = '3.2.1'
-  }
-  default: {
-    fail("Module ${module_name} is not supported on ${::operatingsystem}")
-  }
-}
-```
+See: [10.2. Defaults for Case Statements and Selectors](http://docs.puppetlabs.com/guides/style_guide.html#defaults-for-case-statements-and-selectors)
 
 ### unquoted_resource_title
 
-All resource titles should be quoted.
-
-Bad:
-
-```
-service { apache:
-  ensure => running,
-}
-```
-
-Good:
-
-```
-service { 'apache':
-  ensure => running,
-}
-```
+See: [9.1. Resource Names](http://docs.puppetlabs.com/guides/style_guide.html#resource-names)
 
 ### ensure_first_param
 
-If a resource declaration includes an ensure parameter, it should be the first parameter specified.
-
-Bad:
-
-```
-file { '/tmp/foo':
-  owner  => 'root',
-  group  => 'root',
-  ensure => present,
-}
-```
-
-Good:
-
-```
-file { '/tmp/foo':
-  ensure => present,
-  owner  => 'root',
-  group  => 'root',
-}
-```
+See: [9.3. Attribute Ordering](http://docs.puppetlabs.com/guides/style_guide.html#attribute-ordering)
 
 ### unquoted_file_mode
 
-File modes should be specified as single-quoted strings instead of bare word numbers.
-
-Bad:
-
-```
-file { '/tmp/foo':
-  mode => 0666,
-}
-```
-
-Good:
-
-```
-file { '/tmp/foo':
-  mode => '0666',
-}
-```
+See: [9.6. File Modes](http://docs.puppetlabs.com/guides/style_guide.html#file-modes)
 
 ### 4digit_file_mode
 
-File modes should be represented as 4 digits rather than 3, to explicitly show
-that they are octal values. File modes can also be represented symbolically
-e.g. u=rw,g=r.
-
-Bad:
-
-```
-file { '/tmp/foo':
-  mode => '666',
-}
-```
-
-Good:
-
-```
-file { '/tmp/foo':
-  mode => '0666',
-}
-```
+See: [9.6. File Modes](http://docs.puppetlabs.com/guides/style_guide.html#file-modes)
 
 ### ensure_not_symlink_target
 
-In the interest of clarity, symbolic links should be declared by using an ensure
-value of ensure => link and explicitly specifying a value for the target attribute.
-Using a path to the target as the ensure value is not recommended.
-
-Bad:
-
-```
-file { '/tmp/foo':
-  ensure => '/tmp/bar',
-}
-```
-
-Good:
-
-```
-file { '/tmp/foo':
-  ensure => link,
-  target => '/tmp/bar',
-}
-```
+See: [9.5. Symbolic Links](http://docs.puppetlabs.com/guides/style_guide.html#symbolic-links)
 
 ### double_quoted_strings
 
-All strings that do not contain variables or escape characters like \n or \t
-should be enclosed in single quotes.
-
-Bad:
-
-```
-$foo = "bar"
-```
-
-Good:
-
-```
-$foo = 'bar'
-```
+See: [8. Quoting](http://docs.puppetlabs.com/guides/style_guide.html#quoting)
 
 ### only_variable_string
 
-Variables standing by themselves should not be quoted. To put it another way,
-strings should not contain just a single variable.
-
-Bad:
-
-```
-file { '/tmp/foo':
-  owner => "${file_owner}",
-}
-```
-
-Good:
-
-```
-file { '/tmp/foo':
-  owner => $file_owner,
-}
-```
+See: [8. Quoting](http://docs.puppetlabs.com/guides/style_guide.html#quoting)
 
 ### variables_not_enclosed
 
-All variables should be enclosed in in braces ({}) when being interpolated in a string.
-
-Bad:
-
-```
-$foo = "bar $baz"
-```
-
-Good:
-
-```
-$foo = "bar ${baz}"
-```
+See: [8. Quoting](http://docs.puppetlabs.com/guides/style_guide.html#quoting)
 
 ### single_quote_string_with_variables
 
@@ -462,96 +207,30 @@ file { '/tmp/foo':
   purge => true,
 }
 ```
-
+ 
 ### variable_contains_dash
 
-When defining variables you should only use letters, numbers and underscores.
-You should specifically not make use of dashes.
-
-Bad:
-
-```
-$foo-bar
-```
-
-Good:
-
-```
-$foo_bar
-```
+See: [11.7. Variable format](http://docs.puppetlabs.com/guides/style_guide.html#variable-format)
 
 ### hard_tabs
 
-In order to comply with the style guide, manifests must not use hard tab
-characters (\t) in the whitespace.
-
-Bad:
-
-```
-file { '/tmp/foo':
-        ensure => present,
-}
-```
-
-Good:
-
-```
-file { '/tmp/foo':
-  ensure => present,
-}
-```
+See: [6. Spacing, Indentation, & Whitespace](http://docs.puppetlabs.com/guides/style_guide.html#spacing-indentation--whitespace)
 
 ### trailing_whitespace
 
-Your manifests must not contain any trailing whitespace on any line.
+See: [6. Spacing, Indentation, & Whitespace](http://docs.puppetlabs.com/guides/style_guide.html#spacing-indentation--whitespace)
 
 ### 80chars
 
-Your manifests should not contain any lines longer than 80 characters.
+See: [6. Spacing, Indentation, & Whitespace](http://docs.puppetlabs.com/guides/style_guide.html#spacing-indentation--whitespace)
 
 ### 2sp_soft_tabs
 
-In order to comply with the style guide, manifests must use 2 space characters
-when indenting.
-
-Bad:
-
-```
-file { '/tmp/foo':
-    ensure => present,
-}
-```
-
-Good:
-
-```
-file { '/tmp/foo':
-  ensure => present,
-}
-```
+See: [6. Spacing, Indentation, & Whitespace](http://docs.puppetlabs.com/guides/style_guide.html#spacing-indentation--whitespace)
 
 ### arrow_alignment
 
-Arrows (=>) within blocks of attributes (like resource declarations, selectors,
-    hashes, etc) should be aligned with the other arrows in that block.
-
-Bad:
-
-```
-file { '/tmp/foo':
-    ensure => present,
-    mode => '0444',
-}
-```
-
-Good:
-
-```
-file { '/tmp/foo':
-  ensure => present,
-  mode   => '0444',
-}
-```
+See: [6. Spacing, Indentation, & Whitespace](http://docs.puppetlabs.com/guides/style_guide.html#spacing-indentation--whitespace)
 
 ## Disabling checks
 
