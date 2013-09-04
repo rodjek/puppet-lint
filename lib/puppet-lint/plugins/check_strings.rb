@@ -93,4 +93,23 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
       }
     end
   end
+
+  # Public: Check the manifest tokens for any puppet:// URL strings where the
+  # path section doesn't start with modules/ and record a warning for each
+  # instance found.
+  #
+  # Returns nothing.
+  check 'puppet_url_without_modules' do
+    tokens.select { |token|
+      token.type == :SSTRING && token.value.start_with?('puppet://')
+    }.reject { |token|
+      token.value[/puppet:\/\/.*?\/(.+)/, 1].start_with?('modules/')
+    }.each do |token|
+      notify :warning, {
+        :message    => 'puppet:// URL without modules/ found',
+        :linenumber => token.line,
+        :column     => token.column,
+      }
+    end
+  end
 end
