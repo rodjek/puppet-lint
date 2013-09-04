@@ -10,7 +10,7 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
     }.each { |r|
       r.value.gsub!(' '*r.column, "\n")
     }.select { |r|
-      r.value[/(\t|\\t|\n|\\n)/].nil?
+      r.value[/(\t|\\t|\n|\\n|')/].nil?
     }.each do |token|
       if PuppetLint.configuration.fix
         token.type = :SSTRING
