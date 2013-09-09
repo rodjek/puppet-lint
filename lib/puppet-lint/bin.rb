@@ -59,6 +59,7 @@ class PuppetLint::Bin
         "%{path}       - Path as provided.",
         "%{fullpath}   - Full path.",
         "%{linenumber} - Line number.",
+        "%{column}     - Columnn.",
         "%{kind}       - The kind of message.",
         "              - (warning, error)",
         "%{KIND}       - Uppercase version of %{kind}",
