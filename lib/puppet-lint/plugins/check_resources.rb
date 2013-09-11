@@ -6,7 +6,14 @@ class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
   check 'unquoted_resource_title' do
     title_tokens.each do |token|
       if token.type == :NAME
-        notify :warning, {
+        if PuppetLint.configuration.fix
+          token.type = :SSTRING
+          notify_type = :fixed
+        else
+          notify_type = :warning
+        end
+
+        notify notify_type, {
           :message    => 'unquoted resource title',
           :linenumber => token.line,
           :column     => token.column,
@@ -102,7 +109,14 @@ class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
         }.each do |resource_token|
           value_token = resource_token.next_code_token.next_code_token
           if {:NAME => true, :NUMBER => true}.include? value_token.type
-            notify :warning, {
+            if PuppetLint.configuration.fix
+              value_token.type = :SSTRING
+              notify_type = :fixed
+            else
+              notify_type = :warning
+            end
+
+            notify notify_type, {
               :message    => 'unquoted file mode',
               :linenumber => value_token.line,
               :column     => value_token.column,
@@ -144,7 +158,15 @@ class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
           break if value_token.value =~ sym_mode
           break if value_token.type == :UNDEF
 
-          notify :warning, {
+          notify_type = :warning
+
+          if PuppetLint.configuration.fix && value_token.value =~ /\A[0-7]{3}\Z/
+            value_token.value = "0#{value_token.value.to_s}"
+            value_token.type = :SSTRING
+            notify_type = :fixed
+          end
+
+          notify notify_type, {
             :message    => msg,
             :linenumber => value_token.line,
             :column     => value_token.column,

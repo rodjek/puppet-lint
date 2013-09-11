@@ -197,8 +197,7 @@ class PuppetLint
             mlcomment_size = mlcomment.size
             mlcomment.sub!(/\A\/\* ?/, '')
             mlcomment.sub!(/ ?\*\/\Z/, '')
-            mlcomment.gsub!(/^ ?\* ?/, '')
-            mlcomment.gsub!(/\n/, ' ')
+            mlcomment.gsub!(/ *\* ?/, '')
             mlcomment.strip!
             tokens << new_token(:MLCOMMENT, mlcomment, :chunk => code[0..i])
             i += mlcomment_size
@@ -347,23 +346,24 @@ class PuppetLint
           end
           if ss.scan(/\{/).nil?
             var_name = ss.scan(/(::)?([\w-]+::)*[\w-]+/)
-            unless var_name.nil?
+            if var_name.nil?
+              token_column = column + ss.pos - 1
+              tokens << new_token(:DQMID, "$", :line => line, :column => token_column)
+            else
               token_column = column + (ss.pos - var_name.size)
               tokens << new_token(:UNENC_VARIABLE, var_name, :line => line, :column => token_column)
             end
           else
             contents = ss.scan_until(/\}/)[0..-2]
-            if contents.match(/\A(::)?([\w-]+::)*[\w-]+\Z/)
-              token_column = column + (ss.pos - contents.size - 1)
-              tokens << new_token(:VARIABLE, contents, :line => line, :column => token_column)
-            else
-              lexer = PuppetLint::Lexer.new
-              lexer.tokenise(contents)
-              lexer.tokens.each do |token|
-                tok_col = column + token.column + (ss.pos - contents.size - 1)
-                tok_line = token.line + line - 1
-                tokens << new_token(token.type, token.value, :line => tok_line, :column => tok_col)
-              end
+            if contents.match(/\A(::)?([\w-]+::)*[\w-]+/)
+              contents = "$#{contents}"
+            end
+            lexer = PuppetLint::Lexer.new
+            lexer.tokenise(contents)
+            lexer.tokens.each do |token|
+              tok_col = column + token.column + (ss.pos - contents.size - 1)
+              tok_line = token.line + line - 1
+              tokens << new_token(token.type, token.value, :line => tok_line, :column => tok_col)
             end
           end
         end

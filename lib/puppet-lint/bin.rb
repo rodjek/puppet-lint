@@ -52,6 +52,10 @@ class PuppetLint::Bin
         load f
       end
 
+      opts.on('-f', '--fix', 'Attempt to automatically fix errors') do
+        PuppetLint.configuration.fix = true
+      end
+
       opts.on("--log-format FORMAT",
         "Change the log format.", "Overrides --with-filename.",
         "The following placeholders can be used:",
@@ -121,6 +125,12 @@ class PuppetLint::Bin
         l.run
         if l.errors? or (l.warnings? and PuppetLint.configuration.fail_on_warnings)
           return_val = 1
+        end
+
+        if PuppetLint.configuration.fix
+          File.open(f, 'w') do |fd|
+            fd.puts l.manifest
+          end
         end
       end
       return return_val

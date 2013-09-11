@@ -2,10 +2,10 @@ class PuppetLint
   class Lexer
     class Token
       # Internal: Returns the Symbol type of the Token.
-      attr_reader :type
+      attr_accessor :type
 
       # Internal: Returns the String value of the Token.
-      attr_reader :value
+      attr_accessor :value
 
       # Internal: Returns the Integer line number of the manifest text where
       # the Token can be found.
@@ -56,6 +56,42 @@ class PuppetLint
       # Returns a String describing the Token.
       def inspect
         "<Token #{@type.inspect} (#{@value}) @#{@line}:#{@column}>"
+      end
+
+      # Internal: Produce a Puppet DSL representation of a Token.
+      #
+      # Returns a Puppet DSL String.
+      def to_manifest
+        case @type
+        when :STRING
+          "\"#{@value}\""
+        when :SSTRING
+          "'#{@value}'"
+        when :DQPRE
+          "\"#{@value}"
+        when :DQPOST
+          "#{@value}\""
+        when :VARIABLE
+          if !@prev_code_token.nil? && [:DQPRE, :DQMID].include?(@prev_code_token.type)
+            "${#{@value}}"
+          else
+            "$#{@value}"
+          end
+        when :UNENC_VARIABLE
+          "$#{@value}"
+        when :NEWLINE
+          "\n"
+        when :COMMENT
+          if @value.start_with?('#') || @value.empty?
+            "##{@value}"
+          else
+            "# #{@value}"
+          end
+        when :REGEX
+          "/#{@value}/"
+        else
+          @value
+        end
       end
     end
   end

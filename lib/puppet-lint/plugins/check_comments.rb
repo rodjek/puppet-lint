@@ -7,7 +7,14 @@ class PuppetLint::Plugins::CheckComments < PuppetLint::CheckPlugin
     tokens.select { |token|
       token.type == :SLASH_COMMENT
     }.each do |token|
-      notify :warning, {
+      if PuppetLint.configuration.fix
+        token.type = :COMMENT
+        notify_type = :fixed
+      else
+        notify_type = :warning
+      end
+
+      notify notify_type, {
         :message    => '// comment found',
         :linenumber => token.line,
         :column     => token.column,

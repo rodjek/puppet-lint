@@ -11,8 +11,36 @@ describe 'unquoted_resource_title' do
     let(:code) { "file { foo: }" }
 
     its(:problems) {
-      should only_have_problem :kind => :warning, :message => "unquoted resource title", :linenumber => 1
+      should only_have_problem({
+        :kind       => :warning,
+        :message    => "unquoted resource title",
+        :linenumber => 1,
+        :column     => 8,
+      })
     }
+  end
+
+  describe 'unquoted resource title on single line resource w/fix' do
+    before do
+      PuppetLint.configuration.fix = true
+    end
+
+    after do
+      PuppetLint.configuration.fix = false
+    end
+
+    let(:code) { "file { foo: }" }
+
+    its(:problems) {
+      should only_have_problem({
+        :kind       => :fixed,
+        :message    => "unquoted resource title",
+        :linenumber => 1,
+        :column     => 8,
+      })
+    }
+
+    its(:manifest) { should == "file { 'foo': }" }
   end
 
   describe 'quoted resource title on multi line resource' do
@@ -31,7 +59,41 @@ describe 'unquoted_resource_title' do
     }
 
     its(:problems) {
-      should only_have_problem :kind => :warning, :message => "unquoted resource title", :linenumber => 2
+      should only_have_problem({
+        :kind       => :warning,
+        :message    => "unquoted resource title",
+        :linenumber => 2,
+        :column     => 14,
+      })
+    }
+  end
+
+  describe 'unquoted resource title on multi line resource w/fix' do
+    before do
+      PuppetLint.configuration.fix = true
+    end
+
+    after do
+      PuppetLint.configuration.fix = false
+    end
+
+    let(:code) { "
+      file { foo:
+      }"
+    }
+
+    its(:problems) {
+      should only_have_problem({
+        :kind       => :fixed,
+        :message    => "unquoted resource title",
+        :linenumber => 2,
+        :column     => 14,
+      })
+    }
+
+    its(:manifest) { should == "
+      file { 'foo':
+      }"
     }
   end
 
@@ -55,7 +117,45 @@ describe 'unquoted_resource_title' do
     }
 
     its(:problems) {
-      should only_have_problem :kind => :warning, :message => "unquoted resource title", :linenumber => 4
+      should only_have_problem({
+        :kind       => :warning,
+        :message    => "unquoted resource title",
+        :linenumber => 4,
+        :column     => 9,
+      })
+    }
+  end
+
+  describe 'condensed resources with an unquoted title w/fix' do
+    before do
+      PuppetLint.configuration.fix = true
+    end
+
+    after do
+      PuppetLint.configuration.fix = false
+    end
+
+    let(:code) { "
+      file {
+        'foo': ;
+        bar: ;
+      }"
+    }
+
+    its(:problems) {
+      should only_have_problem({
+        :kind       => :fixed,
+        :message    => "unquoted resource title",
+        :linenumber => 4,
+        :column     => 9,
+      })
+    }
+
+    its(:manifest) { should == "
+      file {
+        'foo': ;
+        'bar': ;
+      }"
     }
   end
 

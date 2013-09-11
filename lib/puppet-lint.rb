@@ -1,3 +1,4 @@
+require 'set'
 require 'puppet-lint/version'
 require 'puppet-lint/lexer'
 require 'puppet-lint/configuration'
@@ -11,11 +12,14 @@ class PuppetLint
   # Public: Gets/Sets the String manifest code to be checked.
   attr_accessor :code
 
+  attr_reader :manifest
+
   # Public: Initialise a new PuppetLint object.
   def initialize
     @code = nil
-    @statistics = {:error => 0, :warning => 0}
+    @statistics = {:error => 0, :warning => 0, :fixed => 0}
     @fileinfo = {:path => ''}
+    @manifest = ''
   end
 
   # Public: Access PuppetLint's configuration from outside the class.
@@ -84,6 +88,7 @@ class PuppetLint
     # XXX: I don't really like the way this has been implemented (passing the
     # linter object down through layers of functions.  Refactor me!
     return if message[:check] == 'documentation'
+    return if message[:kind] == :fixed
     line = linter.manifest_lines[message[:linenumber] - 1]
     offset = line.index(/\S/) || 1
     puts "\n  #{line.strip}"
@@ -105,7 +110,7 @@ class PuppetLint
       message.merge!(@fileinfo) {|key, v1, v2| v1 }
       message[:KIND] = message[:kind].to_s.upcase
 
-      if [message[:kind], :all].include? configuration.error_level
+      if message[:kind] == :fixed || [message[:kind], :all].include?(configuration.error_level)
         format_message message
         print_context(message, linter) if configuration.with_context
       end
@@ -138,6 +143,9 @@ class PuppetLint
 
     linter = PuppetLint::Checks.new
     problems = linter.run(@fileinfo, @code)
+
+    @manifest = linter.manifest if PuppetLint.configuration.fix
+
     report problems, linter
   end
 end

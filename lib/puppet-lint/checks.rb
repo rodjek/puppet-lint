@@ -271,4 +271,8 @@ class PuppetLint::Checks
   def manifest_lines
     @manifest_lines ||= @data.split("\n")
   end
+
+  def manifest
+    tokens.map { |t| t.to_manifest }.join('')
+  end
 end

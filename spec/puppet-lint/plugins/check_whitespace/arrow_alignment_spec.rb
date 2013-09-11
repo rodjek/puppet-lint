@@ -105,8 +105,14 @@ describe 'arrow_alignment' do
       should have_problem({
         :kind       => :warning,
         :message    => 'indentation of => is not properly aligned',
-        :linenumber => 5,
-        :column     => 15,
+        :linenumber => 3,
+        :column     => 13,
+      })
+      should have_problem({
+        :kind       => :warning,
+        :message    => 'indentation of => is not properly aligned',
+        :linenumber => 4,
+        :column     => 13,
       })
       should have_problem({
         :kind       => :warning,
@@ -114,7 +120,70 @@ describe 'arrow_alignment' do
         :linenumber => 6,
         :column     => 14,
       })
+      should have_problem({
+        :kind       => :warning,
+        :message    => 'indentation of => is not properly aligned',
+        :linenumber => 7,
+        :column     => 13,
+      })
     end
+  end
+
+  describe 'single resource with a misaligned => w/fix' do
+    before do
+      PuppetLint.configuration.fix = true
+    end
+
+    after do
+      PuppetLint.configuration.fix = false
+    end
+
+    let(:code) { "
+      file { '/tmp/foo':
+        foo => 1,
+        bar => 2,
+        gronk => 3,
+        baz  => 4,
+        meh => 5,
+      }"
+    }
+
+    its(:problems) do
+      should have_problem({
+        :kind       => :fixed,
+        :message    => 'indentation of => is not properly aligned',
+        :linenumber => 3,
+        :column     => 13,
+      })
+      should have_problem({
+        :kind       => :fixed,
+        :message    => 'indentation of => is not properly aligned',
+        :linenumber => 4,
+        :column     => 13,
+      })
+      should have_problem({
+        :kind       => :fixed,
+        :message    => 'indentation of => is not properly aligned',
+        :linenumber => 6,
+        :column     => 14,
+      })
+      should have_problem({
+        :kind       => :fixed,
+        :message    => 'indentation of => is not properly aligned',
+        :linenumber => 7,
+        :column     => 13,
+      })
+    end
+
+    its(:manifest) { should == "
+      file { '/tmp/foo':
+        foo   => 1,
+        bar   => 2,
+        gronk => 3,
+        baz   => 4,
+        meh   => 5,
+      }"
+    }
   end
 
   describe 'complex resource with a misaligned =>' do
@@ -134,8 +203,8 @@ describe 'arrow_alignment' do
       should have_problem({
         :kind       => :warning,
         :message    => 'indentation of => is not properly aligned',
-        :linenumber => 4,
-        :column     => 14,
+        :linenumber => 3,
+        :column     => 13,
       })
       should have_problem({
         :kind       => :warning,
@@ -146,10 +215,65 @@ describe 'arrow_alignment' do
       should have_problem({
         :kind       => :warning,
         :message    => 'indentation of => is not properly aligned',
-        :linenumber => 8,
-        :column     => 14,
+        :linenumber => 9,
+        :column     => 13,
       })
     end
+  end
+
+  describe 'complex resource with a misaligned => w/fix' do
+    before do
+      PuppetLint.configuration.fix = true
+    end
+
+    after do
+      PuppetLint.configuration.fix = false
+    end
+
+    let(:code) { "
+      file { '/tmp/foo':
+        foo => 1,
+        bar  => $baz ? {
+          gronk => 2,
+          meh => 3,
+        },
+        meep => 4,
+        bah => 5,
+      }"
+    }
+
+    its(:problems) do
+      should have_problem({
+        :kind       => :fixed,
+        :message    => 'indentation of => is not properly aligned',
+        :linenumber => 3,
+        :column     => 13,
+      })
+      should have_problem({
+        :kind       => :fixed,
+        :message    => 'indentation of => is not properly aligned',
+        :linenumber => 6,
+        :column     => 15,
+      })
+      should have_problem({
+        :kind       => :fixed,
+        :message    => 'indentation of => is not properly aligned',
+        :linenumber => 9,
+        :column     => 13,
+      })
+    end
+
+    its(:manifest) { should == "
+      file { '/tmp/foo':
+        foo  => 1,
+        bar  => $baz ? {
+          gronk => 2,
+          meh   => 3,
+        },
+        meep => 4,
+        bah  => 5,
+      }"
+    }
   end
 
   describe 'multi-resource with a misaligned =>' do
@@ -172,6 +296,47 @@ describe 'arrow_alignment' do
         :column     => 15,
       })
     end
+  end
+
+  describe 'multi-resource with a misaligned => w/fix' do
+    before do
+      PuppetLint.configuration.fix = true
+    end
+
+    after do
+      PuppetLint.configuration.fix = false
+    end
+
+    let(:code) { "
+      file {
+        '/tmp/foo': ;
+        '/tmp/bar':
+          foo => 'bar';
+        '/tmp/baz':
+          gronk => 'bah',
+          meh => 'no'
+      }"
+    }
+
+    its(:problems) do
+      should only_have_problem({
+        :kind       => :fixed,
+        :message    => 'indentation of => is not properly aligned',
+        :linenumber => 8,
+        :column     => 15,
+      })
+    end
+
+    its(:manifest) { should == "
+      file {
+        '/tmp/foo': ;
+        '/tmp/bar':
+          foo => 'bar';
+        '/tmp/baz':
+          gronk => 'bah',
+          meh   => 'no'
+      }"
+    }
   end
 
   describe 'multiple single line resources' do
