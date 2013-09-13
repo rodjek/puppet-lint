@@ -139,8 +139,6 @@ class PuppetLint
     # Raises PuppetLint::LexerError if it encounters unexpected characters
     # (usually the result of syntax errors).
     def tokenise(code)
-      code.chomp!
-
       i = 0
 
       while i < code.size
