@@ -18,11 +18,11 @@ class PuppetLint
     #          at when it encountered the error.
     def initialize(code, offset)
       chunk = code[0..offset]
-      @line_no = chunk.count("\n") + 1
+      @line_no = chunk.scan(/(\r\n|\r|\n)/).size + 1
       if @line_no == 1
         @column = chunk.length
       else
-        @column = chunk.length - chunk.rindex("\n") - 1
+        @column = chunk.length - chunk.rindex(/(\r\n|\r|\n)/) - 1
       end
       @column = 1 if @column == 0
     end
@@ -205,18 +205,20 @@ class PuppetLint
             tokens << new_token(:REGEX, str_content[0..-2], :chunk => code[0..i])
             i += str_content.size + 1
 
-          elsif indent = chunk[/\A\r?\n([ \t]+)/m, 1]
-            tokens << new_token(:NEWLINE, '\n', :chunk => code[0..i])
-            tokens << new_token(:INDENT, indent, :chunk => code[0..i+1])
-            i += indent.size + 1
+          elsif eolindent = chunk[/\A((\r\n|\r|\n)[ \t]+)/m, 1]
+            eol = eolindent[/\A([\r\n]+)/m, 1]
+            indent = eolindent[/\A[\r\n]+([ \t]+)/m, 1]
+            tokens << new_token(:NEWLINE, eol, :chunk => code[0..i])
+            tokens << new_token(:INDENT, indent, :chunk => code[0..i+eol.size])
+            i += indent.size + eol.size
 
           elsif whitespace = chunk[/\A([ \t]+)/, 1]
             tokens << new_token(:WHITESPACE, whitespace, :chunk => code[0..i])
             i += whitespace.size
 
-          elsif chunk.match(/\A\r?\n/)
-            tokens << new_token(:NEWLINE, '\n', :chunk => code[0..i])
-            i += 1
+          elsif eol = chunk[/\A(\r\n|\r|\n)/, 1]
+            tokens << new_token(:NEWLINE, eol, :chunk => code[0..i])
+            i += eol.size
 
           elsif chunk.match(/\A\//)
             tokens << new_token(:DIV, '/', :chunk => code[0..i])
@@ -264,11 +266,11 @@ class PuppetLint
     # Returns the instantiated PuppetLint::Lexer::Token object.
     def new_token(type, value, opts = {})
       if opts[:chunk]
-        line_no = opts[:chunk].count("\n") + 1
+        line_no = opts[:chunk].scan(/(\r\n|\r|\n)/).size + 1
         if line_no == 1
           column = opts[:chunk].length
         else
-          column = opts[:chunk].length - opts[:chunk].rindex("\n") - 1
+          column = opts[:chunk].length - opts[:chunk].rindex(/(\r\n|\r|\n)/) - 1
         end
         column += 1 if column == 0
       else
@@ -329,7 +331,7 @@ class PuppetLint
             tokens << new_token(:STRING, value, :line => line, :column => column)
             first = false
           else
-            line += value.count("\n")
+            line += value.scan(/(\r\n|\r|\n)/).size
             token_column = column + (ss.pos - value.size)
             tokens << new_token(:DQPOST, value, :line => line, :column => token_column)
           end
@@ -338,7 +340,7 @@ class PuppetLint
             tokens << new_token(:DQPRE, value, :line => line, :column => column)
             first = false
           else
-            line += value.count("\n")
+            line += value.scan(/(\r\n|\r|\n)/).size
             token_column = column + (ss.pos - value.size)
             tokens << new_token(:DQMID, value, :line => line, :column => token_column)
           end
