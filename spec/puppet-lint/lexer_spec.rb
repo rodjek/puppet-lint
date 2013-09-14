@@ -541,6 +541,9 @@ describe PuppetLint::Lexer do
     [:OUT_EDGE, '<-'],
     [:IN_EDGE_SUB, '~>'],
     [:OUT_EDGE_SUB, '<~'],
+    [:NEWLINE, "\r"],
+    [:NEWLINE, "\n"],
+    [:NEWLINE, "\r\n"],
   ].each do |name, string|
     it "should have a token named '#{name.to_s}'" do
       token = @lexer.tokenise(string).first
