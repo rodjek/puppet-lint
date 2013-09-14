@@ -106,7 +106,11 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
       end
 
       # If this is a single line resource, skip it
-      next if resource_tokens.select { |r| r.type == :NEWLINE }.empty?
+      first_arrow = resource_tokens.index { |r| r.type == :FARROW }
+      last_arrow = resource_tokens.rindex { |r| r.type == :FARROW }
+      next if first_arrow.nil?
+      next if last_arrow.nil?
+      next unless resource_tokens[first_arrow..last_arrow].any? { |r| r.type == :NEWLINE }
 
       resource_tokens.each_with_index do |token, idx|
         if token.type == :FARROW
