@@ -368,4 +368,14 @@ describe 'arrow_alignment' do
 
     its(:problems) { should == [] }
   end
+
+  describe 'multiline resource with a single line of params' do
+    let(:code) { "
+      mymodule::do_thing { 'some thing':
+        whatever => { foo => 'bar', one => 'two' },
+      }"
+    }
+
+    its(:problems) { should be_empty }
+  end
 end
