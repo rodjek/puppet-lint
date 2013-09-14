@@ -28,13 +28,13 @@ class PuppetLint
     def self.gem_directories
       if has_rubygems?
         if Gem::Specification.respond_to? :latest_specs
-          Gem::Specification.latest_specs.map do |spec|
-            Pathname.new(spec.full_gem_path) + 'lib'
-          end
+          specs = Gem::Specification.latest_specs
         else
-          Gem.searcher.init_gemspecs.map do |spec|
-            Pathname.new(spec.full_gem_path) + 'lib'
-          end
+          specs = Gem.searcher.init_gemspecs
+        end
+
+        specs.reject { |spec| spec.name == 'puppet-lint' }.map do |spec|
+          Pathname.new(spec.full_gem_path) + 'lib'
         end
       else
         []
