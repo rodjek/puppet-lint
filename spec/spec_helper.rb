@@ -8,7 +8,8 @@ module RSpec
       fileinfo = {}
       fileinfo[:fullpath] = self.respond_to?(:fullpath) ? fullpath : ''
       klass.load_data(fileinfo, code)
-      klass.send("lint_check_#{self.class.top_level_description}")
+      check_name = self.class.top_level_description.to_sym
+      klass.problems = PuppetLint.configuration.check_object[check_name].new.run
       klass
     end
   end

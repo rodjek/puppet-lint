@@ -1,9 +1,7 @@
-class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
-  # Public: Check the manifest tokens for any resource titles / namevars that
-  # are not quoted and record a warning for each instance found.
-  #
-  # Return nothing.
-  check 'unquoted_resource_title' do
+# Public: Check the manifest tokens for any resource titles / namevars that
+# are not quoted and record a warning for each instance found.
+PuppetLint.new_check(:unquoted_resource_title) do
+  def check
     title_tokens.each do |token|
       if token.type == :NAME
         if PuppetLint.configuration.fix
@@ -21,13 +19,13 @@ class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
       end
     end
   end
+end
 
-  # Public: Check the tokens of each resource instance for an ensure parameter
-  # and if found, check that it is the first parameter listed.  If it is not
-  # the first parameter, record a warning.
-  #
-  # Returns nothing.
-  check 'ensure_first_param' do
+# Public: Check the tokens of each resource instance for an ensure parameter
+# and if found, check that it is the first parameter listed.  If it is not
+# the first parameter, record a warning.
+PuppetLint.new_check(:ensure_first_param) do
+  def check
     resource_indexes.each do |resource|
       resource_tokens = tokens[resource[:start]..resource[:end]]
 
@@ -50,8 +48,10 @@ class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
       end
     end
   end
+end
 
-  check 'duplicate_params' do
+PuppetLint.new_check(:duplicate_params) do
+  def check
     resource_indexes.each do |resource|
       resource_tokens = tokens[resource[:start]..resource[:end]].reject { |r|
         formatting_tokens.include? r.type
@@ -87,13 +87,13 @@ class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
       end
     end
   end
+end
 
-  # Public: Check the tokens of each File resource instance for a mode
-  # parameter and if found, record a warning if the value of that parameter is
-  # not a quoted string.
-  #
-  # Returns nothing.
-  check 'unquoted_file_mode' do
+# Public: Check the tokens of each File resource instance for a mode
+# parameter and if found, record a warning if the value of that parameter is
+# not a quoted string.
+PuppetLint.new_check(:unquoted_file_mode) do
+  def check
     resource_indexes.each do |resource|
       resource_tokens = tokens[resource[:start]..resource[:end]]
       prev_tokens = tokens[0..resource[:start]]
@@ -126,13 +126,13 @@ class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
       end
     end
   end
+end
 
-  # Public: Check the tokens of each File resource instance for a mode
-  # parameter and if found, record a warning if the value of that parameter is
-  # not a 4 digit octal value (0755) or a symbolic mode ('o=rwx,g+r').
-  #
-  # Returns nothing.
-  check 'file_mode' do
+# Public: Check the tokens of each File resource instance for a mode
+# parameter and if found, record a warning if the value of that parameter is
+# not a 4 digit octal value (0755) or a symbolic mode ('o=rwx,g+r').
+PuppetLint.new_check(:file_mode) do
+  def check
     msg = 'mode should be represented as a 4 digit octal value or symbolic mode'
     sym_mode = /\A([ugoa]*[-=+][-=+rstwxXugo]*)(,[ugoa]*[-=+][-=+rstwxXugo]*)*\Z/
 
@@ -175,13 +175,13 @@ class PuppetLint::Plugins::CheckResources < PuppetLint::CheckPlugin
       end
     end
   end
+end
 
-  # Public: Check the tokens of each File resource instance for an ensure
-  # parameter and record a warning if the value of that parameter looks like
-  # a symlink target (starts with a '/').
-  #
-  # Returns nothing.
-  check 'ensure_not_symlink_target' do
+# Public: Check the tokens of each File resource instance for an ensure
+# parameter and record a warning if the value of that parameter looks like
+# a symlink target (starts with a '/').
+PuppetLint.new_check(:ensure_not_symlink_target) do
+  def check
     resource_indexes.each do |resource|
       resource_tokens = tokens[resource[:start]..resource[:end]]
       prev_tokens = tokens[0..resource[:start]]

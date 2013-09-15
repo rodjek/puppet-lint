@@ -1,9 +1,7 @@
-class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
-  # Check the raw manifest string for lines containing hard tab characters and
-  # record an error for each instance found.
-  #
-  # Returns nothing.
-  check 'hard_tabs' do
+# Check the raw manifest string for lines containing hard tab characters and
+# record an error for each instance found.
+PuppetLint.new_check(:hard_tabs) do
+  def check
     tokens.select { |r|
       [:INDENT, :WHITESPACE].include?(r.type) && r.value.include?("\t")
     }.each do |token|
@@ -21,12 +19,12 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
       }
     end
   end
+end
 
-  # Check the manifest tokens for lines ending with whitespace and record an
-  # error for each instance found.
-  #
-  # Returns nothing.
-  check 'trailing_whitespace' do
+# Check the manifest tokens for lines ending with whitespace and record an
+# error for each instance found.
+PuppetLint.new_check(:trailing_whitespace) do
+  def check
     tokens.select { |token|
       token.type == :WHITESPACE
     }.select { |token|
@@ -54,13 +52,13 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
       }
     end
   end
+end
 
-  # Test the raw manifest string for lines containing more than 80 characters
-  # and record a warning for each instance found.  The only exception to this
-  # rule is lines containing URLs which would hurt readability if split.
-  #
-  # Returns nothing.
-  check '80chars' do
+# Test the raw manifest string for lines containing more than 80 characters
+# and record a warning for each instance found.  The only exception to this
+# rule is lines containing URLs which would hurt readability if split.
+PuppetLint.new_check(:'80chars') do
+  def check
     manifest_lines.each_with_index do |line, idx|
       unless line =~ /:\/\//
         if line.scan(/./mu).size > 80
@@ -73,12 +71,12 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
       end
     end
   end
+end
 
-  # Check the manifest tokens for any indentation not using 2 space soft tabs
-  # and record an error for each instance found.
-  #
-  # Returns nothing.
-  check '2sp_soft_tabs' do
+# Check the manifest tokens for any indentation not using 2 space soft tabs
+# and record an error for each instance found.
+PuppetLint.new_check(:'2sp_soft_tabs') do
+  def check
     tokens.select { |r|
       r.type == :INDENT
     }.reject { |r|
@@ -91,12 +89,12 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
       }
     end
   end
+end
 
-  # Check the manifest tokens for any arrows (=>) in a grouping ({}) that are
-  # not aligned with other arrows in that grouping.
-  #
-  # Returns nothing.
-  check 'arrow_alignment' do
+# Check the manifest tokens for any arrows (=>) in a grouping ({}) that are
+# not aligned with other arrows in that grouping.
+PuppetLint.new_check(:arrow_alignment) do
+  def check
     resource_indexes.each do |res_idx|
       indent_depth = [0]
       indent_depth_idx = 0

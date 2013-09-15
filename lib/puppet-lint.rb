@@ -2,6 +2,7 @@ require 'set'
 require 'puppet-lint/version'
 require 'puppet-lint/lexer'
 require 'puppet-lint/configuration'
+require 'puppet-lint/data'
 require 'puppet-lint/checks'
 require 'puppet-lint/bin'
 require 'puppet-lint/monkeypatches'
@@ -81,15 +82,12 @@ class PuppetLint
   # as well as a marker pointing to the location on the line.
   #
   # message - A Hash containing all the information about a problem.
-  # linter  - The PuppetLint::Checks object that was used to test the manifest.
   #
   # Returns nothing.
-  def print_context(message, linter)
-    # XXX: I don't really like the way this has been implemented (passing the
-    # linter object down through layers of functions.  Refactor me!
+  def print_context(message)
     return if message[:check] == 'documentation'
     return if message[:kind] == :fixed
-    line = linter.manifest_lines[message[:linenumber] - 1]
+    line = PuppetLint::Data.manifest_lines[message[:linenumber] - 1]
     offset = line.index(/\S/) || 1
     puts "\n  #{line.strip}"
     printf "%#{message[:column] + 2 - offset}s\n\n", '^'
@@ -99,11 +97,9 @@ class PuppetLint
   #
   # problems - An Array of problem Hashes as returned by
   #            PuppetLint::Checks#run.
-  # linter   - The PuppetLint::Checks object that was used to test the
-  #            manifest.
   #
   # Returns nothing.
-  def report(problems, linter)
+  def report(problems)
     problems.each do |message|
       @statistics[message[:kind]] += 1
 
@@ -112,7 +108,7 @@ class PuppetLint
 
       if message[:kind] == :fixed || [message[:kind], :all].include?(configuration.error_level)
         format_message message
-        print_context(message, linter) if configuration.with_context
+        print_context(message) if configuration.with_context
       end
     end
   end
@@ -146,7 +142,15 @@ class PuppetLint
 
     @manifest = linter.manifest if PuppetLint.configuration.fix
 
-    report problems, linter
+    report problems
+  end
+
+  def self.new_check(name, &block)
+    class_name = name.to_s.split('_').map(&:capitalize).join
+    klass = PuppetLint.const_set("Check#{class_name}", Class.new(PuppetLint::CheckPlugin))
+    klass.const_set('NAME', name)
+    klass.class_exec(&block)
+    PuppetLint.configuration.add_check(name, klass)
   end
 end
 

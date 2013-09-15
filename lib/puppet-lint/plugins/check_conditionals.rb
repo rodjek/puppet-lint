@@ -1,9 +1,7 @@
-class PuppetLint::Plugins::CheckConditionals < PuppetLint::CheckPlugin
-  # Public: Test the manifest tokens for any selectors embedded within resource
-  # declarations and record a warning for each instance found.
-  #
-  # Returns nothing.
-  check 'selector_inside_resource' do
+# Public: Test the manifest tokens for any selectors embedded within resource
+# declarations and record a warning for each instance found.
+PuppetLint.new_check(:selector_inside_resource) do
+  def check
     resource_indexes.each do |resource|
       resource_tokens = tokens[resource[:start]..resource[:end]]
 
@@ -24,12 +22,12 @@ class PuppetLint::Plugins::CheckConditionals < PuppetLint::CheckPlugin
       end
     end
   end
+end
 
-  # Public: Test the manifest tokens for any case statements that do not
-  # contain a "default" case and record a warning for each instance found.
-  #
-  # Returns nothing.
-  check 'case_without_default' do
+# Public: Test the manifest tokens for any case statements that do not
+# contain a "default" case and record a warning for each instance found.
+PuppetLint.new_check(:case_without_default) do
+  def check
     case_indexes = []
 
     tokens.each_index do |token_idx|

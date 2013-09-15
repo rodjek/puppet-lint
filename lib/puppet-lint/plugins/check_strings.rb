@@ -1,10 +1,8 @@
-class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
-  # Public: Check the manifest tokens for any double quoted strings that don't
-  # contain any variables or common escape characters and record a warning for
-  # each instance found.
-  #
-  # Returns nothing.
-  check 'double_quoted_strings' do
+# Public: Check the manifest tokens for any double quoted strings that don't
+# contain any variables or common escape characters and record a warning for
+# each instance found.
+PuppetLint.new_check(:double_quoted_strings) do
+  def check
     tokens.select { |r|
       r.type == :STRING
     }.each { |r|
@@ -26,12 +24,12 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
       }
     end
   end
+end
 
-  # Public: Check the manifest tokens for double quoted strings that contain
-  # a single variable only and record a warning for each instance found.
-  #
-  # Returns nothing.
-  check 'only_variable_string' do
+# Public: Check the manifest tokens for double quoted strings that contain
+# a single variable only and record a warning for each instance found.
+PuppetLint.new_check(:only_variable_string) do
+  def check
     variable_tokens = Set.new [:VARIABLE, :UNENC_VARIABLE]
 
     tokens.each_index do |token_idx|
@@ -86,13 +84,13 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
       end
     end
   end
+end
 
-  # Public: Check the manifest tokens for any variables in a string that have
-  # not been enclosed by braces ({}) and record a warning for each instance
-  # found.
-  #
-  # Returns nothing.
-  check 'variables_not_enclosed' do
+# Public: Check the manifest tokens for any variables in a string that have
+# not been enclosed by braces ({}) and record a warning for each instance
+# found.
+PuppetLint.new_check(:variables_not_enclosed) do
+  def check
     tokens.select { |r|
       r.type == :UNENC_VARIABLE
     }.each do |token|
@@ -110,12 +108,12 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
       }
     end
   end
+end
 
-  # Public: Check the manifest tokens for any single quoted strings containing
-  # a enclosed variable and record an error for each instance found.
-  #
-  # Returns nothing.
-  check 'single_quote_string_with_variables' do
+# Public: Check the manifest tokens for any single quoted strings containing
+# a enclosed variable and record an error for each instance found.
+PuppetLint.new_check(:single_quote_string_with_variables) do
+  def check
     tokens.select { |r|
       r.type == :SSTRING && r.value.include?('${')
     }.each do |token|
@@ -126,13 +124,13 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
       }
     end
   end
+end
 
-  # Public: Check the manifest tokens for any double or single quoted strings
-  # containing only a boolean value and record a warning for each instance
-  # found.
-  #
-  # Returns nothing.
-  check 'quoted_booleans' do
+# Public: Check the manifest tokens for any double or single quoted strings
+# containing only a boolean value and record a warning for each instance
+# found.
+PuppetLint.new_check(:quoted_booleans) do
+  def check
     tokens.select { |r|
       {:STRING => true, :SSTRING => true}.include?(r.type) && %w{true false}.include?(r.value)
     }.each do |token|
@@ -150,13 +148,13 @@ class PuppetLint::Plugins::CheckStrings < PuppetLint::CheckPlugin
       }
     end
   end
+end
 
-  # Public: Check the manifest tokens for any puppet:// URL strings where the
-  # path section doesn't start with modules/ and record a warning for each
-  # instance found.
-  #
-  # Returns nothing.
-  check 'puppet_url_without_modules' do
+# Public: Check the manifest tokens for any puppet:// URL strings where the
+# path section doesn't start with modules/ and record a warning for each
+# instance found.
+PuppetLint.new_check(:puppet_url_without_modules) do
+  def check
     tokens.select { |token|
       token.type == :SSTRING && token.value.start_with?('puppet://')
     }.reject { |token|
