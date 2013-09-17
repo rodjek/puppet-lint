@@ -154,21 +154,23 @@ PuppetLint.new_check(:file_mode) do
           break if value_token.value =~ sym_mode
           break if value_token.type == :UNDEF
 
-          notify_type = :warning
-
-          if PuppetLint.configuration.fix && value_token.value =~ /\A[0-7]{3}\Z/
-            value_token.value = "0#{value_token.value.to_s}"
-            value_token.type = :SSTRING
-            notify_type = :fixed
-          end
-
-          notify notify_type, {
+          notify :warning, {
             :message    => msg,
             :linenumber => value_token.line,
             :column     => value_token.column,
+            :token      => value_token,
           }
         end
       end
+    end
+  end
+
+  def fix(problem)
+    if problem[:token].value =~ /\A[0-7]{3}\Z/
+      problem[:token].type = :SSTRING
+      problem[:token].value = "0#{problem[:token].value.to_s}"
+    else
+      raise PuppetLint::NoFix
     end
   end
 end
