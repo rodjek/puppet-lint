@@ -4,20 +4,18 @@ PuppetLint.new_check(:unquoted_resource_title) do
   def check
     title_tokens.each do |token|
       if token.type == :NAME
-        if PuppetLint.configuration.fix
-          token.type = :SSTRING
-          notify_type = :fixed
-        else
-          notify_type = :warning
-        end
-
-        notify notify_type, {
+        notify :warning, {
           :message    => 'unquoted resource title',
           :linenumber => token.line,
           :column     => token.column,
+          :token      => token,
         }
       end
     end
+  end
+
+  def fix(problem)
+    problem[:token].type = :SSTRING
   end
 end
 
