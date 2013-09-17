@@ -63,6 +63,16 @@ class PuppetLint::CheckPlugin
     }
   end
 
+  # Public: Report a problem with the manifest being checked.
+  #
+  # kind    - The Symbol problem type (:warning or :error).
+  # problem - A Hash containing the attributes of the problem
+  #   :message    - The String message describing the problem.
+  #   :linenumber - The Integer line number of the location of the problem.
+  #   :column     - The Integer column number of the location of the problem.
+  #   :check      - The Symbol name of the check that detected the problem.
+  #
+  # Returns nothing.
   def notify(kind, problem)
     problem[:kind] = kind
     problem.merge!(default_info) { |key, v1, v2| v1 }
