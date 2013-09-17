@@ -10,19 +10,16 @@ PuppetLint.new_check(:double_quoted_strings) do
     }.select { |r|
       r.value[/(\t|\\t|\n|\\n)/].nil?
     }.each do |token|
-      if PuppetLint.configuration.fix
-        token.type = :SSTRING
-        notify_type = :fixed
-      else
-        notify_type = :warning
-      end
-
-      notify notify_type, {
+      notify :warning, {
         :message    => 'double quoted string containing no variables',
         :linenumber => token.line,
         :column     => token.column,
       }
     end
+  end
+
+  def fix(problem)
+    problem[:token].type = :SSTRING
   end
 end
 
