@@ -107,22 +107,20 @@ PuppetLint.new_check(:unquoted_file_mode) do
         }.each do |resource_token|
           value_token = resource_token.next_code_token.next_code_token
           if {:NAME => true, :NUMBER => true}.include? value_token.type
-            if PuppetLint.configuration.fix
-              value_token.type = :SSTRING
-              notify_type = :fixed
-            else
-              notify_type = :warning
-            end
-
-            notify notify_type, {
+            notify :warning, {
               :message    => 'unquoted file mode',
               :linenumber => value_token.line,
               :column     => value_token.column,
+              :token      => value_token,
             }
           end
         end
       end
     end
+  end
+
+  def fix(problem)
+    problem[:token].type = :SSTRING
   end
 end
 
