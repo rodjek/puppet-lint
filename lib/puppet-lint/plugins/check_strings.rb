@@ -14,6 +14,7 @@ PuppetLint.new_check(:double_quoted_strings) do
         :message    => 'double quoted string containing no variables',
         :linenumber => token.line,
         :column     => token.column,
+        :token      => token,
       }
     end
   end
