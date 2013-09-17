@@ -6,6 +6,18 @@ class PuppetLint::CheckPlugin
   def run
     check
 
+    if PuppetLint.configuration.fix && self.respond_to?(:fix)
+      @problems.each do |problem|
+        begin
+          fix(problem)
+        rescue PuppetLint::NoFix
+          # do nothing
+        else
+          problem[:kind] = :fixed
+        end
+      end
+    end
+
     @problems
   end
 

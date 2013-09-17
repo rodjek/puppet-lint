@@ -8,6 +8,7 @@ require 'puppet-lint/bin'
 require 'puppet-lint/monkeypatches'
 
 class PuppetLint::NoCodeError < StandardError; end
+class PuppetLint::NoFix < StandardError; end
 
 class PuppetLint
   # Public: Gets/Sets the String manifest code to be checked.
