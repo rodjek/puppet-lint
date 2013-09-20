@@ -123,17 +123,12 @@ PuppetLint.new_check(:arrow_alignment) do
         if token.type == :FARROW
           indent_length = token.column
           unless indent_depth[indent_depth_idx] == indent_length
-            if PuppetLint.configuration.fix
-              offset = indent_depth[indent_depth_idx] - indent_length
-              token.prev_token.value = token.prev_token.value + (' ' * offset)
-              notify_type = :fixed
-            else
-              notify_type = :warning
-            end
-            notify notify_type, {
-              :message    => 'indentation of => is not properly aligned',
-              :linenumber => token.line,
-              :column     => token.column,
+            notify :warning, {
+              :message      => 'indentation of => is not properly aligned',
+              :linenumber   => token.line,
+              :column       => token.column,
+              :token        => token,
+              :indent_depth => indent_depth[indent_depth_idx],
             }
           end
         elsif token.type == :LBRACE
@@ -143,5 +138,10 @@ PuppetLint.new_check(:arrow_alignment) do
         end
       end
     end
+  end
+
+  def fix(problem)
+    offset = problem[:indent_depth] - problem[:token].column
+    problem[:token].prev_token.value = problem[:token].prev_token.value + (' ' * offset)
   end
 end
