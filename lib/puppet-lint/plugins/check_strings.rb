@@ -91,19 +91,17 @@ PuppetLint.new_check(:variables_not_enclosed) do
     tokens.select { |r|
       r.type == :UNENC_VARIABLE
     }.each do |token|
-      if PuppetLint.configuration.fix
-        token.type = :VARIABLE
-        notify_type = :fixed
-      else
-        notify_type = :warning
-      end
-
-      notify notify_type, {
+      notify :warning, {
         :message    => 'variable not enclosed in {}',
         :linenumber => token.line,
         :column     => token.column,
+        :token      => token,
       }
     end
+  end
+
+  def fix(problem)
+    problem[:token].type = :VARIABLE
   end
 end
 
