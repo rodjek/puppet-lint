@@ -127,21 +127,24 @@ end
 PuppetLint.new_check(:quoted_booleans) do
   def check
     tokens.select { |r|
-      {:STRING => true, :SSTRING => true}.include?(r.type) && %w{true false}.include?(r.value)
+      string_token_types.include?(r.type) && %w{true false}.include?(r.value)
     }.each do |token|
-      if PuppetLint.configuration.fix
-        token.type = token.value.upcase.to_sym
-        notify_type = :fixed
-      else
-        notify_type = :warning
-      end
-
-      notify notify_type, {
+      notify :warning, {
         :message    => 'quoted boolean value found',
         :linenumber => token.line,
         :column     => token.column,
+        :token      => token,
       }
     end
+  end
+
+  def fix(problem)
+    problem[:token].type = problem[:token].value.upcase.to_sym
+  end
+
+  private
+  def string_token_types
+    Set[:STRING, :SSTRING]
   end
 end
 
