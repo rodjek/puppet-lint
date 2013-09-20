@@ -5,19 +5,17 @@ PuppetLint.new_check(:hard_tabs) do
     tokens.select { |r|
       [:INDENT, :WHITESPACE].include?(r.type) && r.value.include?("\t")
     }.each do |token|
-      if PuppetLint.configuration.fix
-        token.value.gsub!("\t", '  ')
-        notify_type = :fixed
-      else
-        notify_type = :error
-      end
-
-      notify notify_type, {
+      notify :error, {
         :message    => 'tab character found',
         :linenumber => token.line,
         :column     => token.column,
+        :token      => token,
       }
     end
+  end
+
+  def fix(problem)
+    problem[:token].value.gsub!("\t", '  ')
   end
 end
 
