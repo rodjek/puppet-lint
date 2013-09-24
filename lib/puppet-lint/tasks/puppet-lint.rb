@@ -21,6 +21,7 @@ class PuppetLint
           matched_files.to_a.each do |puppet_file|
             linter.file = puppet_file
             linter.run
+            linter.print_problems
           end
           fail if linter.errors? || (
             linter.warnings? && PuppetLint.configuration.fail_on_warnings

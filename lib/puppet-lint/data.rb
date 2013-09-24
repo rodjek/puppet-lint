@@ -8,7 +8,7 @@ class PuppetLint::Data
 
     # Internal: Get/Set the full expanded path to the manifest file being
     # checked.
-    attr_accessor :fullpath
+    attr_reader :path, :fullpath, :filename
 
     # Internal: Get/Set the raw manifest data, split by \n.
     attr_accessor :manifest_lines
@@ -19,6 +19,17 @@ class PuppetLint::Data
       @resource_indexes = nil
       @class_indexes = nil
       @defined_type_indexes = nil
+    end
+
+    def path=(val)
+      @path = val
+      if val.nil?
+        @fullpath = nil
+        @filename = nil
+      else
+        @fullpath = File.expand_path(val, ENV['PWD'])
+        @filename = File.basename(val)
+      end
     end
 
     # Internal: Retrieve a list of tokens that represent resource titels

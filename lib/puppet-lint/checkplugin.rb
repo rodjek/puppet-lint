@@ -47,6 +47,14 @@ class PuppetLint::CheckPlugin
     PuppetLint::Data.fullpath
   end
 
+  def path
+    PuppetLint::Data.path
+  end
+
+  def filename
+    PuppetLint::Data.filename
+  end
+
   def formatting_tokens
     PuppetLint::Data.formatting_tokens
   end
@@ -60,6 +68,9 @@ class PuppetLint::CheckPlugin
       :check      => self.class.const_get('NAME'),
       :linenumber => 0,
       :column     => 0,
+      :fullpath   => fullpath,
+      :path       => path,
+      :filename   => filename,
     }
   end
 

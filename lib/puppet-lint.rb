@@ -16,13 +16,35 @@ class PuppetLint
 
   attr_reader :manifest
 
+  # Public: Returns an Array of Hashes describing the problems found in the
+  # manifest.
+  #
+  # Each Hash will contain *at least*:
+  #   :check      - The Symbol name of the check that generated the problem.
+  #   :kind       - The Symbol kind of the problem (:error, :warning, or
+  #                 :fixed).
+  #   :linenumber - The Integer line number of the location of the problem in
+  #                 the manifest.
+  #   :column     - The Integer column number of the location of the problem in
+  #                 the manifest.
+  #   :message    - The String message describing the problem that was found.
   attr_reader :problems
+
+  # Public: Gets/Sets the String path to the manifest to be checked.
+  attr_accessor :path
+
+  # Public: Returns a Hash of linter statistics
+  #
+  #   :error   - An Integer count of errors found in the manifest.
+  #   :warning - An Integer count of warnings found in the manifest.
+  #   :fixed   - An Integer count of problems found in the manifest that were
+  #              automatically fixed.
+  attr_reader :statistics
 
   # Public: Initialise a new PuppetLint object.
   def initialize
     @code = nil
     @statistics = {:error => 0, :warning => 0, :fixed => 0}
-    @fileinfo = {:path => ''}
     @manifest = ''
   end
 
@@ -46,10 +68,7 @@ class PuppetLint
   # Returns nothing.
   def file=(path)
     if File.exist? path
-      @fileinfo[:path] = path
-      ## expand path but use the current directory as reference.
-      @fileinfo[:fullpath] = File.expand_path(path, ENV['PWD'])
-      @fileinfo[:filename] = File.basename(path)
+      @path = path
       @code = File.read(path)
     end
   end
@@ -104,9 +123,6 @@ class PuppetLint
   # Returns nothing.
   def report(problems)
     problems.each do |message|
-      @statistics[message[:kind]] += 1
-
-      message.merge!(@fileinfo) {|key, v1, v2| v1 }
       message[:KIND] = message[:kind].to_s.upcase
 
       if message[:kind] == :fixed || [message[:kind], :all].include?(configuration.error_level)
@@ -141,10 +157,16 @@ class PuppetLint
     end
 
     linter = PuppetLint::Checks.new
-    @problems = linter.run(@fileinfo, @code)
+    @problems = linter.run(@path, @code)
+    @problems.each { |problem| @statistics[problem[:kind]] += 1 }
 
     @manifest = linter.manifest if PuppetLint.configuration.fix
+  end
 
+  # Public: Print any problems that were found out to stdout.
+  #
+  # Returns nothing.
+  def print_problems
     report @problems
   end
 

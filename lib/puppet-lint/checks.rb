@@ -11,18 +11,14 @@ class PuppetLint::Checks
 
   # Internal: Tokenise the manifest code and prepare it for checking.
   #
-  # fileinfo - A Hash containing the following:
-  #   :fullpath - The expanded path to the file as a String.
-  #   :filename - The name of the file as a String.
-  #   :path     - The original path to the file as passed to puppet-lint as
-  #               a String.
-  # data     - The String manifest code to be checked.
+  # path    - The path to the file as passed to puppet-lint as a String.
+  # content - The String manifest code to be checked.
   #
   # Returns nothing.
-  def load_data(fileinfo, data)
+  def load_data(path, content)
     lexer = PuppetLint::Lexer.new
     begin
-      PuppetLint::Data.tokens = lexer.tokenise(data)
+      PuppetLint::Data.tokens = lexer.tokenise(content)
     rescue PuppetLint::LexerError => e
       problems << {
         :kind       => :error,
@@ -33,10 +29,8 @@ class PuppetLint::Checks
       }
       PuppetLint::Data.tokens = []
     end
-    PuppetLint::Data.fullpath = fileinfo[:fullpath]
-    PuppetLint::Data.manifest_lines = data.split("\n")
-    @fileinfo = fileinfo
-    @data = data
+    PuppetLint::Data.path = path
+    PuppetLint::Data.manifest_lines = content.split("\n")
   end
 
   # Internal: Run the lint checks over the manifest code.
