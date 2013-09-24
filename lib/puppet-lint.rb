@@ -16,6 +16,8 @@ class PuppetLint
 
   attr_reader :manifest
 
+  attr_reader :problems
+
   # Public: Initialise a new PuppetLint object.
   def initialize
     @code = nil
@@ -139,11 +141,11 @@ class PuppetLint
     end
 
     linter = PuppetLint::Checks.new
-    problems = linter.run(@fileinfo, @code)
+    @problems = linter.run(@fileinfo, @code)
 
     @manifest = linter.manifest if PuppetLint.configuration.fix
 
-    report problems
+    report @problems
   end
 
   def self.new_check(name, &block)
