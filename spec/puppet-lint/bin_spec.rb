@@ -85,7 +85,7 @@ describe PuppetLint::Bin do
     its(:stdout) { should match(/^ERROR/) }
   end
 
-  context 'when limited to errors only' do
+  context 'when limited to warnings only' do
     let(:args) { [
       '--error-level', 'warning',
       'spec/fixtures/test/manifests/warning.pp',
