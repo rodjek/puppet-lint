@@ -1,22 +1,81 @@
 class PuppetLint::CheckPlugin
-  # Public: Define a new lint check.
-  #
-  # name - The String name of the check.
-  # b    - The Block implementation of the check.
-  #
-  # Returns nothing.
-  def self.check(name, &b)
-    PuppetLint.configuration.add_check(name, &b)
+  def initialize
+    @problems = []
   end
 
-  # Public: Define a new check helper method.
+  def run
+    check
+
+    if PuppetLint.configuration.fix && self.respond_to?(:fix)
+      @problems.each do |problem|
+        begin
+          fix(problem)
+        rescue PuppetLint::NoFix
+          # do nothing
+        else
+          problem[:kind] = :fixed
+        end
+      end
+    end
+
+    @problems
+  end
+
+  private
+
+  def tokens
+    PuppetLint::Data.tokens
+  end
+
+  def title_tokens
+    PuppetLint::Data.title_tokens
+  end
+
+  def resource_indexes
+    PuppetLint::Data.resource_indexes
+  end
+
+  def class_indexes
+    PuppetLint::Data.class_indexes
+  end
+
+  def defined_type_indexes
+    PuppetLint::Data.defined_type_indexes
+  end
+
+  def fullpath
+    PuppetLint::Data.fullpath
+  end
+
+  def formatting_tokens
+    PuppetLint::Data.formatting_tokens
+  end
+
+  def manifest_lines
+    PuppetLint::Data.manifest_lines
+  end
+
+  def default_info
+    @default_info ||= {
+      :check      => self.class.const_get('NAME'),
+      :linenumber => 0,
+      :column     => 0,
+    }
+  end
+
+  # Public: Report a problem with the manifest being checked.
   #
-  # name - The String name of the helper.
-  # b    - The Block implementation of the helper.
+  # kind    - The Symbol problem type (:warning or :error).
+  # problem - A Hash containing the attributes of the problem
+  #   :message    - The String message describing the problem.
+  #   :linenumber - The Integer line number of the location of the problem.
+  #   :column     - The Integer column number of the location of the problem.
+  #   :check      - The Symbol name of the check that detected the problem.
   #
   # Returns nothing.
-  def self.helper(name, &b)
-    PuppetLint.configuration.add_helper(name, &b)
+  def notify(kind, problem)
+    problem[:kind] = kind
+    problem.merge!(default_info) { |key, v1, v2| v1 }
+    @problems << problem
   end
 end
-

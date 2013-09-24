@@ -1,5 +1,5 @@
-class PuppetLint::Plugins::CheckDocumentation < PuppetLint::CheckPlugin
-  check 'documentation' do
+PuppetLint.new_check(:documentation) do
+  def check
     comment_tokens = {
       :COMMENT => true,
       :MLCOMMENT => true,

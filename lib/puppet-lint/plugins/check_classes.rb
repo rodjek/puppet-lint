@@ -1,9 +1,7 @@
-class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
-  # Public: Test the manifest tokens for any right-to-left (<-) chaining
-  # operators and record a warning for each instance found.
-  #
-  # Returns nothing.
-  check 'right_to_left_relationship' do
+# Public: Test the manifest tokens for any right-to-left (<-) chaining
+# operators and record a warning for each instance found.
+PuppetLint.new_check(:right_to_left_relationship) do
+  def check
     tokens.select { |r| r.type == :OUT_EDGE }.each do |token|
       notify :warning, {
         :message    =>  'right-to-left (<-) relationship',
@@ -12,13 +10,13 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
       }
     end
   end
+end
 
-  # Public: Test the manifest tokens for any classes or defined types that are
-  # not in an appropriately named file for the autoloader to detect and record
-  # an error of each instance found.
-  #
-  # Returns nothing.
-  check 'autoloader_layout' do
+# Public: Test the manifest tokens for any classes or defined types that are
+# not in an appropriately named file for the autoloader to detect and record
+# an error of each instance found.
+PuppetLint.new_check(:autoloader_layout) do
+  def check
     unless fullpath == ''
       (class_indexes + defined_type_indexes).each do |class_idx|
         class_tokens = tokens[class_idx[:start]..class_idx[:end]]
@@ -41,12 +39,12 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
       end
     end
   end
+end
 
-  # Public: Check the manifest tokens for any classes or defined types that
-  # have a dash in their name and record a warning for each instance found.
-  #
-  # Returns nothing.
-  check 'names_containing_dash' do
+# Public: Check the manifest tokens for any classes or defined types that
+# have a dash in their name and record a warning for each instance found.
+PuppetLint.new_check(:names_containing_dash) do
+  def check
     (class_indexes + defined_type_indexes).each do |class_idx|
       class_tokens = tokens[class_idx[:start]..class_idx[:end]]
       title_token = class_tokens[class_tokens.index { |r| r.type == :NAME }]
@@ -66,8 +64,10 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
       end
     end
   end
+end
 
-  check 'class_inherits_from_params_class' do
+PuppetLint.new_check(:class_inherits_from_params_class) do
+  def check
     class_indexes.each do |class_idx|
       class_tokens = tokens[class_idx[:start]..class_idx[:end]]
       inherits_idx = class_tokens.index { |r| r.type == :INHERITS }
@@ -83,13 +83,13 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
       end
     end
   end
+end
 
-  # Public: Test the manifest tokens for any parameterised classes or defined
-  # types that take parameters and record a warning if there are any optional
-  # parameters listed before required parameters.
-  #
-  # Returns nothing.
-  check 'parameter_order' do
+# Public: Test the manifest tokens for any parameterised classes or defined
+# types that take parameters and record a warning if there are any optional
+# parameters listed before required parameters.
+PuppetLint.new_check(:parameter_order) do
+  def check
     defined_type_indexes.each do |class_idx|
       token_idx = class_idx[:start]
       depth = 0
@@ -146,12 +146,12 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
       end
     end
   end
+end
 
-  # Public: Test the manifest tokens for any classes that inherit across
-  # namespaces and record a warning for each instance found.
-  #
-  # Returns nothing.
-  check 'inherits_across_namespaces' do
+# Public: Test the manifest tokens for any classes that inherit across
+# namespaces and record a warning for each instance found.
+PuppetLint.new_check(:inherits_across_namespaces) do
+  def check
     class_indexes.each do |class_idx|
       class_token = tokens[class_idx[:start]]
       class_name_token = class_token.next_code_token
@@ -173,12 +173,12 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
       end
     end
   end
+end
 
-  # Public: Test the manifest tokens for any classes or defined types that are
-  # defined inside another class.
-  #
-  # Returns nothing.
-  check 'nested_classes_or_defines' do
+# Public: Test the manifest tokens for any classes or defined types that are
+# defined inside another class.
+PuppetLint.new_check(:nested_classes_or_defines) do
+  def check
     class_indexes.each do |class_idx|
       # Skip the first token so that we don't pick up the first :CLASS
       class_tokens = tokens[class_idx[:start]+1..class_idx[:end]]
@@ -204,15 +204,15 @@ class PuppetLint::Plugins::CheckClasses < PuppetLint::CheckPlugin
       end
     end
   end
+end
 
-  # Public: Test the manifest tokens for any variables that are referenced in
-  # the manifest.  If the variables are not fully qualified or one of the
-  # variables automatically created in the scope, check that they have been
-  # defined in the local scope and record a warning for each variable that has
-  # not.
-  #
-  # Returns nothing.
-  check 'variable_scope' do
+# Public: Test the manifest tokens for any variables that are referenced in
+# the manifest.  If the variables are not fully qualified or one of the
+# variables automatically created in the scope, check that they have been
+# defined in the local scope and record a warning for each variable that has
+# not.
+PuppetLint.new_check(:variable_scope) do
+  def check
     variables_in_scope = [
       'name',
       'title',

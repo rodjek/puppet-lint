@@ -128,7 +128,7 @@ class PuppetLint::Bin
           return_val = 1
         end
 
-        if PuppetLint.configuration.fix && !l.errors.any? { |e| e[:check] == :syntax }
+        if PuppetLint.configuration.fix && !l.problems.any? { |e| e[:check] == :syntax }
           File.open(f, 'w') do |fd|
             fd.puts l.manifest
           end
