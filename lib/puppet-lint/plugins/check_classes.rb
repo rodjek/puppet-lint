@@ -17,7 +17,7 @@ end
 # an error of each instance found.
 PuppetLint.new_check(:autoloader_layout) do
   def check
-    unless fillpath.nil? || fullpath == ''
+    unless fullpath.nil? || fullpath == ''
       (class_indexes + defined_type_indexes).each do |class_idx|
         class_tokens = tokens[class_idx[:start]..class_idx[:end]]
         title_token = class_tokens[class_tokens.index { |r| r.type == :NAME }]
