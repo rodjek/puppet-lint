@@ -96,6 +96,18 @@ describe PuppetLint::Bin do
     its(:stdout) { should match(/^WARNING/) }
   end
 
+  context 'when specifying a specific check to run' do
+    let(:args) { [
+      '--only-check', 'parameter_order',
+      'spec/fixtures/test/manifests/warning.pp',
+      'spec/fixtures/test/manifests/fail.pp',
+    ] }
+
+    its(:exitstatus) { should == 0 }
+    its(:stdout) { should_not match(/ERROR/) }
+    its(:stdout) { should match(/WARNING/) }
+  end
+
   context 'when asked to display filenames ' do
     let(:args) { ['--with-filename', 'spec/fixtures/test/manifests/fail.pp'] }
 
