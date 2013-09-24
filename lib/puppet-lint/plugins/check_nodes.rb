@@ -10,8 +10,13 @@ PuppetLint.new_check(:unquoted_node_name) do
           :message    => 'unquoted node name found',
           :linenumber => value_token.line,
           :column     => value_token.column,
+          :token      => value_token,
         }
       end
     end
+  end
+
+  def fix(problem)
+    problem[:token].type = :SSTRING
   end
 end
