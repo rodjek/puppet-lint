@@ -1,66 +1,56 @@
-class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
-  # Check the raw manifest string for lines containing hard tab characters and
-  # record an error for each instance found.
-  #
-  # Returns nothing.
-  check 'hard_tabs' do
+# Check the raw manifest string for lines containing hard tab characters and
+# record an error for each instance found.
+PuppetLint.new_check(:hard_tabs) do
+  def check
     tokens.select { |r|
       [:INDENT, :WHITESPACE].include?(r.type) && r.value.include?("\t")
     }.each do |token|
-      if PuppetLint.configuration.fix
-        token.value.gsub!("\t", '  ')
-        notify_type = :fixed
-      else
-        notify_type = :error
-      end
-
-      notify notify_type, {
+      notify :error, {
         :message    => 'tab character found',
         :linenumber => token.line,
         :column     => token.column,
+        :token      => token,
       }
     end
   end
 
-  # Check the manifest tokens for lines ending with whitespace and record an
-  # error for each instance found.
-  #
-  # Returns nothing.
-  check 'trailing_whitespace' do
+  def fix(problem)
+    problem[:token].value.gsub!("\t", '  ')
+  end
+end
+
+# Check the manifest tokens for lines ending with whitespace and record an
+# error for each instance found.
+PuppetLint.new_check(:trailing_whitespace) do
+  def check
     tokens.select { |token|
       token.type == :WHITESPACE
     }.select { |token|
       token.next_token.nil? || token.next_token.type == :NEWLINE
     }.each do |token|
-      if PuppetLint.configuration.fix
-        notify_type = :fixed
-        prev_token = token.prev_token
-        next_token = token.next_token
-
-        tokens.delete(token)
-        prev_token.next_token = next_token
-
-        unless next_token.nil?
-          next_token.prev_token = prev_token
-        end
-      else
-        notify_type = :error
-      end
-
-      notify notify_type, {
+      notify :error, {
         :message    => 'trailing whitespace found',
         :linenumber => token.line,
         :column     => token.column,
+        :token      => token,
       }
     end
   end
 
-  # Test the raw manifest string for lines containing more than 80 characters
-  # and record a warning for each instance found.  The only exception to this
-  # rule is lines containing URLs which would hurt readability if split.
-  #
-  # Returns nothing.
-  check '80chars' do
+  def fix(problem)
+    prev_token = problem[:token].prev_token
+    next_token = problem[:token].next_token
+    prev_token.next_token = next_token
+    next_token.prev_token = prev_token unless next_token.nil?
+    tokens.delete(problem[:token])
+  end
+end
+
+# Test the raw manifest string for lines containing more than 80 characters
+# and record a warning for each instance found.  The only exception to this
+# rule is lines containing URLs which would hurt readability if split.
+PuppetLint.new_check(:'80chars') do
+  def check
     manifest_lines.each_with_index do |line, idx|
       unless line =~ /:\/\//
         if line.scan(/./mu).size > 80
@@ -73,12 +63,12 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
       end
     end
   end
+end
 
-  # Check the manifest tokens for any indentation not using 2 space soft tabs
-  # and record an error for each instance found.
-  #
-  # Returns nothing.
-  check '2sp_soft_tabs' do
+# Check the manifest tokens for any indentation not using 2 space soft tabs
+# and record an error for each instance found.
+PuppetLint.new_check(:'2sp_soft_tabs') do
+  def check
     tokens.select { |r|
       r.type == :INDENT
     }.reject { |r|
@@ -91,12 +81,12 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
       }
     end
   end
+end
 
-  # Check the manifest tokens for any arrows (=>) in a grouping ({}) that are
-  # not aligned with other arrows in that grouping.
-  #
-  # Returns nothing.
-  check 'arrow_alignment' do
+# Check the manifest tokens for any arrows (=>) in a grouping ({}) that are
+# not aligned with other arrows in that grouping.
+PuppetLint.new_check(:arrow_alignment) do
+  def check
     resource_indexes.each do |res_idx|
       indent_depth = [0]
       indent_depth_idx = 0
@@ -133,17 +123,12 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
         if token.type == :FARROW
           indent_length = token.column
           unless indent_depth[indent_depth_idx] == indent_length
-            if PuppetLint.configuration.fix
-              offset = indent_depth[indent_depth_idx] - indent_length
-              token.prev_token.value = token.prev_token.value + (' ' * offset)
-              notify_type = :fixed
-            else
-              notify_type = :warning
-            end
-            notify notify_type, {
-              :message    => 'indentation of => is not properly aligned',
-              :linenumber => token.line,
-              :column     => token.column,
+            notify :warning, {
+              :message      => 'indentation of => is not properly aligned',
+              :linenumber   => token.line,
+              :column       => token.column,
+              :token        => token,
+              :indent_depth => indent_depth[indent_depth_idx],
             }
           end
         elsif token.type == :LBRACE
@@ -153,5 +138,10 @@ class PuppetLint::Plugins::CheckWhitespace < PuppetLint::CheckPlugin
         end
       end
     end
+  end
+
+  def fix(problem)
+    offset = problem[:indent_depth] - problem[:token].column
+    problem[:token].prev_token.value = problem[:token].prev_token.value + (' ' * offset)
   end
 end

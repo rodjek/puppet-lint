@@ -1,8 +1,6 @@
-class PuppetLint::Plugins::CheckNodes < PuppetLint::CheckPlugin
-  # Check the manifest for unquoted node names and warn if found.
-  #
-  # Returns nothing.
-  check 'unquoted_node_name' do
+# Public: Check the manifest for unquoted node names and warn if found.
+PuppetLint.new_check(:unquoted_node_name) do
+  def check
     tokens.select { |r|
       r.type == :NODE && r.next_code_token.type == :NAME
     }.each do |token|
@@ -12,8 +10,13 @@ class PuppetLint::Plugins::CheckNodes < PuppetLint::CheckPlugin
           :message    => 'unquoted node name found',
           :linenumber => value_token.line,
           :column     => value_token.column,
+          :token      => value_token,
         }
       end
     end
+  end
+
+  def fix(problem)
+    problem[:token].type = :SSTRING
   end
 end
