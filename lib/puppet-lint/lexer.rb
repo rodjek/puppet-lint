@@ -107,6 +107,7 @@ class PuppetLint
     end
 
     def tokenise(code)
+      code.gsub! /\r\n?/, "\n"
       code.chomp!
 
       i = 0
