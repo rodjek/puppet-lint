@@ -88,10 +88,28 @@ describe 'double_quoted_strings' do
     its(:problems) { should be_empty }
   end
 
-  describe 'double quoted string containing newline but no variables' do
-    let(:code) { %{"foo\n"} }
+  describe 'double quoted stings containing supported escape patterns' do
+    let(:code) {%{
+      $string1 = "this string contins \n newline"
+      $string2 = "this string contains \ttab"
+      $string3 = "this string contains \${escaped} var"
+      $string4 = "this string contains \\"escaped \\" double quotes"
+      $string5 = "this string contains \\'escaped \\' single quotes"
+      $string6 = "this string contains \r line return"
+      }}
+    its (:problems) { should == [] }
+  end
 
-    its(:problems) { should be_empty }
+  describe 'double quoted string with random escape should be rejected' do
+    let(:code) {%{ $ztring = "this string contains \l random esape" } }
+    its (:problems) {
+      should have_problem({
+        :kind       => :warning,
+        :message    => 'double quoted string containing no variables',
+        :linenumber => 1,
+        :column     => 12,
+      })
+    }
   end
 
   describe 'double quoted string with backslash for continuation' do
