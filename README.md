@@ -175,6 +175,22 @@ Placeholder
 
 Placeholder
 
+### user_instead_of_owner
+
+Checks if the 'user' field is set on a file resource (should be 'owner')
+
+Bad:
+
+```
+file { 'foo': user => :root }
+```
+
+Good:
+
+```
+file { 'foo': owner => :root }
+```
+
 ### 4digit_file_mode
 
 Placeholder
