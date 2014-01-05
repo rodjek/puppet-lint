@@ -533,6 +533,7 @@ describe PuppetLint::Lexer do
     [:DIV, '/'],
     [:TIMES, '*'],
     [:MODULO, '%'],
+    [:PIPE, '|'],
     [:LSHIFT, '<<'],
     [:RSHIFT, '>>'],
     [:MATCH, '=~'],
