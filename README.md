@@ -90,21 +90,7 @@ At the moment, the following tests have been implemented:
 WARNING: right-to-left (<-) relationship on line X
 ```
 
-While right to left relationships are perfectly valid, it's highly recommended
-that you don't use them as most people think and read from left to right and
-this can lead to confusion.
-
-Bad:
-
-```
-Service['httpd'] <- Package['httpd']
-```
-
-Good:
-
-```
-Package['httpd'] -> Service['httpd']
-```
+See: [11.3. Relationship Declarations](http://docs.puppetlabs.com/guides/style_guide.html#relationship-declarations)
 
 ### autoloader_layout
 
@@ -121,31 +107,19 @@ exception to this is when you reference `mymodule` itself (without any
 subclass/subtype) in which case it will read
 `<modulepath>/mymodule/manifests/init.pp`.
 
+See: [11.1. Separate Files](http://docs.puppetlabs.com/guides/style_guide.html#separate-files)
+
 ### parameter_order
 
 ```
 WARNING: optional parameter listed before required parameter on line X
 ```
 
-In parameterised class and defined type definitions, parameters that are
-required should be listed before optional parameters (those with default
-values).
-
-Bad:
-
-```
-class foo($bar='baz', $gronk) {
-```
-
-Good:
-
-```
-class foo($gronk, $bar='baz') {
-```
+See: [11.8. Display Order of Class Parameters](http://docs.puppetlabs.com/guides/style_guide.html#display-order-of-class-parameters)
 
 ### inherits_across_namespaces
 
-Placeholder
+See: [11.5. Class Inheritance](http://docs.puppetlabs.com/guides/style_guide.html#class-inheritance)
 
 ### nested_classes_or_defines
 
@@ -153,79 +127,110 @@ Placeholder
 
 ### variable_scope
 
-Placeholder
+See: [11.6. Namespacing Variables](http://docs.puppetlabs.com/guides/style_guide.html#namespacing-variables)
 
 ### selector_inside_resource
 
-Placeholder
+See: [10.1. Keep Resource Declarations Simple](http://docs.puppetlabs.com/guides/style_guide.html#keep-resource-declarations-simple)
 
 ### case_without_default
 
-Placeholder
+See: [10.2. Defaults for Case Statements and Selectors](http://docs.puppetlabs.com/guides/style_guide.html#defaults-for-case-statements-and-selectors)
 
 ### unquoted_resource_title
 
-Placeholder
+See: [9.1. Resource Names](http://docs.puppetlabs.com/guides/style_guide.html#resource-names)
 
 ### ensure_first_param
 
-Placeholder
+See: [9.3. Attribute Ordering](http://docs.puppetlabs.com/guides/style_guide.html#attribute-ordering)
 
 ### unquoted_file_mode
 
-Placeholder
+See: [9.6. File Modes](http://docs.puppetlabs.com/guides/style_guide.html#file-modes)
 
 ### 4digit_file_mode
 
-Placeholder
+See: [9.6. File Modes](http://docs.puppetlabs.com/guides/style_guide.html#file-modes)
 
 ### ensure_not_symlink_target
 
-Placeholder
+See: [9.5. Symbolic Links](http://docs.puppetlabs.com/guides/style_guide.html#symbolic-links)
 
 ### double_quoted_strings
 
-Placeholder
+See: [8. Quoting](http://docs.puppetlabs.com/guides/style_guide.html#quoting)
 
 ### only_variable_string
 
-Placeholder
+See: [8. Quoting](http://docs.puppetlabs.com/guides/style_guide.html#quoting)
 
 ### variables_not_enclosed
 
-Placeholder
+See: [8. Quoting](http://docs.puppetlabs.com/guides/style_guide.html#quoting)
 
 ### single_quote_string_with_variables
 
-Placeholder
+Single quoted strings do not get interpolated, so you should not attempt to embed
+variables in one. This is not a style issue, rather a common mistake.
+
+Bad:
+
+```
+$foo = 'bar ${baz}'
+```
+
+Good:
+
+```
+$foo = "bar ${baz}"
+```
 
 ### quoted_booleans
 
-Placeholder
+Boolean values (true and false) behave differently when quoted ('true' and
+'false'), which can lead to a fair bit of confusion. As a general rule, you
+should never quote booleans. This is not a style issue, rather a common mistake.
 
+Bad:
+
+```
+file { '/tmp/foo':
+  purge => 'true',
+}
+```
+
+Good:
+
+```
+file { '/tmp/foo':
+  purge => true,
+}
+```
+ 
 ### variable_contains_dash
 
-Placeholder
+See: [11.7. Variable format](http://docs.puppetlabs.com/guides/style_guide.html#variable-format)
 
 ### hard_tabs
 
-Placeholder
+See: [6. Spacing, Indentation, & Whitespace](http://docs.puppetlabs.com/guides/style_guide.html#spacing-indentation--whitespace)
 
 ### trailing_whitespace
 
-Placeholder
+See: [6. Spacing, Indentation, & Whitespace](http://docs.puppetlabs.com/guides/style_guide.html#spacing-indentation--whitespace)
 
 ### 80chars
 
-Placeholder
+See: [6. Spacing, Indentation, & Whitespace](http://docs.puppetlabs.com/guides/style_guide.html#spacing-indentation--whitespace)
 
 ### 2sp_soft_tabs
 
-Placeholder
+See: [6. Spacing, Indentation, & Whitespace](http://docs.puppetlabs.com/guides/style_guide.html#spacing-indentation--whitespace)
 
 ### arrow_alignment
 
-Placeholder
+See: [6. Spacing, Indentation, & Whitespace](http://docs.puppetlabs.com/guides/style_guide.html#spacing-indentation--whitespace)
 
 ## Disabling checks
 
