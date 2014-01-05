@@ -51,7 +51,7 @@ describe PuppetLint::Bin do
     let(:args) { '--version' }
 
     its(:exitstatus) { should == 0 }
-    its(:stdout) { should == "Puppet-lint #{PuppetLint::VERSION}" }
+    its(:stdout) { should == "puppet-lint #{PuppetLint::VERSION}" }
   end
 
   context 'when passed multiple files' do
