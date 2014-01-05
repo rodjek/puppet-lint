@@ -7,7 +7,7 @@ describe PuppetLint::Lexer do
 
   context 'invalid code' do
     it 'should bork' do
-      expect { @lexer.tokenise('|') }.to raise_error(PuppetLint::LexerError)
+      expect { @lexer.tokenise('^') }.to raise_error(PuppetLint::LexerError)
     end
   end
 
@@ -533,6 +533,7 @@ describe PuppetLint::Lexer do
     [:DIV, '/'],
     [:TIMES, '*'],
     [:MODULO, '%'],
+    [:PIPE, '|'],
     [:LSHIFT, '<<'],
     [:RSHIFT, '>>'],
     [:MATCH, '=~'],
