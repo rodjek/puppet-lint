@@ -1,7 +1,9 @@
 require 'spec_helper'
 
 describe 'duplicate_params' do
-  describe 'resource with duplicate parameters' do
+  let(:msg) { 'duplicate parameter found in resource' }
+
+  context 'resource with duplicate parameters' do
     let(:code) { "
       file { '/tmp/foo':
         ensure => present,
@@ -11,17 +13,17 @@ describe 'duplicate_params' do
       }"
     }
 
-    its(:problems) {
-      should only_have_problem({
-        :kind       => :error,
-        :message    => 'duplicate parameter found in resource',
-        :linenumber => 6,
-        :column     => 9,
-      })
-    }
+    it 'should only detect a single problem' do
+      expect(problems).to have(1).problem
+    end
+
+    it 'should create an error' do
+      expect(problems).to contain_error(msg).on_line(6).in_column(9)
+    end
   end
-  describe 'bug #145: resource with a hash and no duplicate parameters' do
-    let (:code) { "
+
+  context 'bug #145: resource with a hash and no duplicate parameters' do
+    let(:code) { "
       class {'fooname':
         hashes => [
           { foo => 'bar01',},
@@ -29,13 +31,14 @@ describe 'duplicate_params' do
         ],
       }"
     }
-    its (:problems) {
-      should be_empty
-    }
+
+    it 'should not detect any errors' do
+      expect(problems).to have(0).problems
+    end
   end
 
-  describe 'bug #145: resource with a hash and duplicate parameters in subhash' do
-    let (:code) { "
+  context 'bug #145: resource with a hash and duplicate parameters in subhash' do
+    let(:code) { "
       class {'fooname':
         hashes => [
           { foo => 'bar01',
@@ -43,18 +46,18 @@ describe 'duplicate_params' do
         ],
       }"
     }
-    its (:problems) {
-      should only_have_problem({
-        :kind       => :error,
-        :message    => 'duplicate parameter found in resource',
-        :linenumber => 5,
-        :column     => 13,
-      })
-    }
+
+    it 'should only detect a single error' do
+      expect(problems).to have(1).problem
+    end
+
+    it 'should create an error' do
+      expect(problems).to contain_error(msg).on_line(5).in_column(13)
+    end
   end
 
-  describe 'bug #145: resource with a hash and duplicate parameters in parent type' do
-    let (:code) { "
+  context 'bug #145: resource with a hash and duplicate parameters in parent type' do
+    let(:code) { "
       class {'fooname':
         hashes    => [
           { foo     => 'bar01', },
@@ -64,25 +67,26 @@ describe 'duplicate_params' do
         hashes    => 'dupe',
       }"
     }
-    its (:problems) {
-      should only_have_problem({
-        :kind       => :error,
-        :message    => 'duplicate parameter found in resource',
-        :linenumber => 8,
-        :column     => 9,
-      })
-    }
+
+    it 'should only detect a single problem' do
+      expect(problems).to have(1).problem
+    end
+
+    it 'should create an error' do
+      expect(problems).to contain_error(msg).on_line(8).in_column(9)
+    end
   end
+
   describe 'bug #145: more hash tests and no duplicate parameters' do
-    let (:code) { "
+    let(:code) { "
       class test {
         $foo = { param => 'value', }
         $bar = { param => 'bar', }
       }"
     }
-    its (:problems) {
-      should be_empty
-    }
 
+    it 'should not detect any problems' do
+      expect(problems).to have(0).problems
+    end
   end
 end

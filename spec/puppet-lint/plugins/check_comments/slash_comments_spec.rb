@@ -1,20 +1,23 @@
 require 'spec_helper'
 
 describe 'slash_comments' do
-  describe 'slash comments' do
-    let(:code) { "// foo" }
+  let(:msg) { '// comment found' }
 
-    its(:problems) do
-      should only_have_problem({
-        :kind       => :warning,
-        :message    => '// comment found',
-        :linenumber => 1,
-        :column     => 1,
-      })
+  context 'with fix disabled' do
+    context 'slash comments' do
+      let(:code) { "// foo" }
+
+      it 'should only detect a single problem' do
+        expect(problems).to have(1).problem
+      end
+
+      it 'should create a warning' do
+        expect(problems).to contain_warning(msg).on_line(1).in_column(1)
+      end
     end
   end
 
-  describe 'slash comments w/fix' do
+  context 'with fix enabled' do
     before do
       PuppetLint.configuration.fix = true
     end
@@ -23,16 +26,20 @@ describe 'slash_comments' do
       PuppetLint.configuration.fix = false
     end
 
-    let(:code) { '// foo' }
+    context 'slash comments' do
+      let(:code) { '// foo' }
 
-    its(:problems) do
-      should only_have_problem({
-        :kind       => :fixed,
-        :message    => '// comment found',
-        :linenumber => 1,
-        :column     => 1,
-      })
+      it 'should only detect a single problem' do
+        expect(problems).to have(1).problem
+      end
+
+      it 'should fix the manifest' do
+        expect(problems).to contain_fixed(msg).on_line(1).in_column(1)
+      end
+
+      it 'should replace the double slash with a hash' do
+        expect(manifest).to eq("# foo")
+      end
     end
-    its(:manifest) { should == '# foo' }
   end
 end

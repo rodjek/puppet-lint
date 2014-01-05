@@ -1,7 +1,9 @@
 require 'spec_helper'
 
 describe 'case_without_default' do
-  describe 'case statement with a default case' do
+  let(:msg) { 'case statement without a default case' }
+
+  context 'case statement with a default case' do
     let(:code) { "
       case $foo {
         bar: { }
@@ -9,10 +11,12 @@ describe 'case_without_default' do
       }"
     }
 
-    its(:problems) { should be_empty }
+    it 'should not detect any problems' do
+      expect(problems).to have(0).problems
+    end
   end
 
-  describe 'case statement without a default case' do
+  context 'case statement without a default case' do
     let(:code) { "
       case $foo {
         bar: { }
@@ -20,17 +24,16 @@ describe 'case_without_default' do
       }"
     }
 
-    its(:problems) do
-      should only_have_problem({
-        :kind       => :warning,
-        :message    => 'case statement without a default case',
-        :linenumber => 2,
-        :column     => 7,
-      })
+    it 'should only detect a single problem' do
+      expect(problems).to have(1).problem
+    end
+
+    it 'should create a warning' do
+      expect(problems).to contain_warning(msg).on_line(2).in_column(7)
     end
   end
 
-  describe 'issue-117' do
+  context 'issue-117' do
     let(:code) { "
       $mem = inline_template('<%
         mem,unit = scope.lookupvar(\'::memorysize\').split
@@ -46,6 +49,8 @@ describe 'case_without_default' do
         %><%= mem.to_i %>')
     "}
 
-    its(:problems) { should == [] }
+    it 'should not detect any problems' do
+      expect(problems).to have(0).problems
+    end
   end
 end

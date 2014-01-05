@@ -1,24 +1,24 @@
 require 'spec_helper'
 
 describe 'class_inherits_from_params_class' do
-  describe 'parameterised class that inherits from a params class' do
+  let(:msg) { 'class inheriting from params class' }
+
+  context 'parameterised class that inherits from a params class' do
     let(:code) { "
       # commented
       class foo($bar = $name) inherits foo::params { }"
     }
 
-    its(:problems) {
-      should have_problem({
-        :kind       => :warning,
-        :message    => "class inheriting from params class",
-        :linenumber => 3,
-        :column     => 40,
-      })
-      should_not have_problem :kind => :error
-    }
+    it 'should only detect a single problem' do
+      expect(problems).to have(1).problem
+    end
+
+    it 'should create a warning' do
+      expect(problems).to contain_warning(msg).on_line(3).in_column(40)
+    end
   end
 
-  describe 'class without parameters' do
+  context 'class without parameters' do
     let(:code) {"
       class myclass {
 
@@ -28,6 +28,8 @@ describe 'class_inherits_from_params_class' do
       }
     "}
 
-    its(:problems) { should == [] }
+    it 'should not detect any problems' do
+      expect(problems).to have(0).problems
+    end
   end
 end

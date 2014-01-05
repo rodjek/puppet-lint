@@ -1,20 +1,23 @@
 require 'spec_helper'
 
 describe 'trailing_whitespace' do
-  describe 'line with trailing whitespace' do
-    let(:code) { "foo " }
+  let(:msg) { 'trailing whitespace found' }
 
-    its(:problems) {
-      should have_problem({
-        :kind       => :error,
-        :message    => 'trailing whitespace found',
-        :linenumber => 1,
-        :column     => 4,
-      })
-    }
+  context 'with fix disabled' do
+    context 'line with trailing whitespace' do
+      let(:code) { "foo " }
+
+      it 'should only detect a single problem' do
+        expect(problems).to have(1).problem
+      end
+
+      it 'should create an error' do
+        expect(problems).to contain_error(msg).on_line(1).in_column(4)
+      end
+    end
   end
 
-  describe 'single line with trailing whitespace w/fix' do
+  context 'with fix enabled' do
     before do
       PuppetLint.configuration.fix = true
     end
@@ -23,38 +26,36 @@ describe 'trailing_whitespace' do
       PuppetLint.configuration.fix = false
     end
 
-    let(:code) { "foo " }
+    context 'single line with trailing whitespace' do
+      let(:code) { "foo " }
 
-    its(:problems) {
-      should have_problem({
-        :kind       => :fixed,
-        :message    => 'trailing whitespace found',
-        :linenumber => 1,
-        :column     => 4,
-      })
-    }
-    its(:manifest) { should == 'foo' }
-  end
+      it 'should only detect a single problem' do
+        expect(problems).to have(1).problem
+      end
 
-  describe 'multiple lines with trailing whitespace w/fix' do
-    before do
-      PuppetLint.configuration.fix = true
+      it 'should fix the manifest' do
+        expect(problems).to contain_fixed(msg).on_line(1).in_column(4)
+      end
+
+      it 'should remove the trailing whitespace' do
+        expect(manifest).to eq('foo')
+      end
     end
 
-    after do
-      PuppetLint.configuration.fix = false
+    context 'multiple lines with trailing whitespace' do
+      let(:code) { "foo    \nbar" }
+
+      it 'should only detect a single problem' do
+        expect(problems).to have(1).problem
+      end
+
+      it 'should fix the manifest' do
+        expect(problems).to contain_fixed(msg).on_line(1).in_column(4)
+      end
+
+      it 'should remove the trailing whitespace' do
+        expect(manifest).to eq("foo\nbar")
+      end
     end
-
-    let(:code) { "foo    \nbar" }
-
-    its(:problems) {
-      should have_problem({
-        :kind       => :fixed,
-        :message    => 'trailing whitespace found',
-        :linenumber => 1,
-        :column     => 4,
-      })
-    }
-    its(:manifest) { should == "foo\nbar" }
   end
 end

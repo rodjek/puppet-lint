@@ -266,7 +266,7 @@ describe PuppetLint::Bin do
           with('/etc/puppet-lint.rc').and_return(false)
 
         msg = 'Depreciated: Found ~/.puppet-lintrc instead of ~/.puppet-lint.rc'
-        subject.stderr.should == msg
+        expect(subject.stderr).to eq(msg)
       end
 
       it 'should have .puppet-lintrc as depreciated' do
@@ -282,7 +282,7 @@ describe PuppetLint::Bin do
           with('/etc/puppet-lint.rc').and_return(false)
 
         msg = 'Depreciated: Read .puppet-lintrc instead of .puppet-lint.rc'
-        subject.stderr.should == msg
+        expect(subject.stderr).to eq(msg)
       end
     end
   end

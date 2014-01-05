@@ -1,25 +1,29 @@
 require 'spec_helper'
 
 describe 'variable_contains_dash' do
-  describe 'a variable containing a dash' do
+  let(:msg) { 'variable contains a dash' }
+
+  context 'a variable containing a dash' do
     let(:code) { '$foo-bar' }
 
-    its(:problems) { should have_problem({
-      :kind       => :warning,
-      :message    => 'variable contains a dash',
-      :linenumber => 1,
-      :column     => 1,
-    }) }
+    it 'should only detect a single problem' do
+      expect(problems).to have(1).problem
+    end
+
+    it 'should create a warning' do
+      expect(problems).to contain_warning(msg).on_line(1).in_column(1)
+    end
   end
 
-  describe 'variable containing a dash' do
+  context 'variable containing a dash' do
     let(:code) { '" $foo-bar"' }
 
-    its(:problems) { should have_problem({
-      :kind       => :warning,
-      :message    => 'variable contains a dash',
-      :linenumber => 1,
-      :column     => 3,
-    }) }
+    it 'should only detect a single problem' do
+      expect(problems).to have(1).problem
+    end
+
+    it 'should create a warning' do
+      expect(problems).to contain_warning(msg).on_line(1).in_column(3)
+    end
   end
 end

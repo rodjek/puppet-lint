@@ -1,20 +1,35 @@
 require 'spec_helper'
 
 describe 'variables_not_enclosed' do
-  describe 'variable not enclosed in {}' do
-    let(:code) { '" $gronk"' }
+  let(:msg) { 'variable not enclosed in {}' }
 
-    its(:problems) {
-      should only_have_problem({
-        :kind       => :warning,
-        :message    => 'variable not enclosed in {}',
-        :linenumber => 1,
-        :column     => 3,
-      })
-    }
+  context 'with fix disabled' do
+    context 'variable not enclosed in {}' do
+      let(:code) { '" $gronk"' }
+
+      it 'should only detect a single problem' do
+        expect(problems).to have(1).problem
+      end
+
+      it 'should create a warning' do
+        expect(problems).to contain_warning(msg).on_line(1).in_column(3)
+      end
+    end
+
+    context 'variable not enclosed in {} after many tokens' do
+      let(:code) { ("'groovy'\n" * 20) + '" $gronk"' }
+
+      it 'should only detect a single problem' do
+        expect(problems).to have(1).problem
+      end
+
+      it 'should create a warning' do
+        expect(problems).to contain_warning(msg).on_line(21).in_column(3)
+      end
+    end
   end
 
-  describe 'variable not enclosed in {} w/fix' do
+  context 'with fix enabled' do
     before do
       PuppetLint.configuration.fix = true
     end
@@ -23,51 +38,36 @@ describe 'variables_not_enclosed' do
       PuppetLint.configuration.fix = false
     end
 
-    let(:code) { '" $gronk"' }
+    context 'variable not enclosed in {}' do
+      let(:code) { '" $gronk"' }
 
-    its(:problems) {
-      should only_have_problem({
-        :kind       => :fixed,
-        :message    => 'variable not enclosed in {}',
-        :linenumber => 1,
-        :column     => 3,
-      })
-    }
-    its(:manifest) { should == '" ${gronk}"' }
-  end
+      it 'should only detect a single problem' do
+        expect(problems).to have(1).problem
+      end
 
-  describe 'variable not enclosed in {} after many tokens' do
-    let(:code) { ("'groovy'\n" * 20) + '" $gronk"' }
+      it 'should fix the manifest' do
+        expect(problems).to contain_fixed(msg).on_line(1).in_column(3)
+      end
 
-    its(:problems) {
-      should only_have_problem({
-        :kind       => :warning,
-        :message    => 'variable not enclosed in {}',
-        :linenumber => 21,
-        :column     => 3,
-      })
-    }
-  end
-
-  describe 'variable not enclosed in {} after many tokens w/fix' do
-    before do
-      PuppetLint.configuration.fix = true
+      it 'should enclose the variable in braces' do
+        expect(manifest).to eq('" ${gronk}"')
+      end
     end
 
-    after do
-      PuppetLint.configuration.fix = false
+    context 'variable not enclosed in {} after many tokens' do
+      let(:code) { ("'groovy'\n" * 20) + '" $gronk"' }
+
+      it 'should only detect a single problem' do
+        expect(problems).to have(1).problem
+      end
+
+      it 'should fix the manifest' do
+        expect(problems).to contain_fixed(msg).on_line(21).in_column(3)
+      end
+
+      it 'should enclose the variable in braces' do
+        expect(manifest).to eq(("'groovy'\n" * 20) + '" ${gronk}"')
+      end
     end
-
-    let(:code) { ("'groovy'\n" * 20) + '" $gronk"' }
-
-    its(:problems) {
-      should only_have_problem({
-        :kind       => :fixed,
-        :message    => 'variable not enclosed in {}',
-        :linenumber => 21,
-        :column     => 3,
-      })
-    }
-    its(:manifest) { should == ("'groovy'\n" * 20) + '" ${gronk}"' }
   end
 end

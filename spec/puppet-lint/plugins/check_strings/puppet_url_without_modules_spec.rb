@@ -1,22 +1,25 @@
 require 'spec_helper'
 
 describe 'puppet_url_without_modules' do
-  describe 'puppet:// url with modules' do
+  let(:msg) { 'puppet:// URL without modules/ found' }
+
+  context 'puppet:// url with modules' do
     let(:code) { "'puppet:///modules/foo'" }
 
-    its(:problems) { should be_empty }
+    it 'should not detect any problems' do
+      expect(problems).to have(0).problems
+    end
   end
 
-  describe 'puppet:// url without modules' do
+  context 'puppet:// url without modules' do
     let(:code) { "'puppet:///foo'" }
 
-    its(:problems) do
-      should only_have_problem({
-        :kind       => :warning,
-        :message    => 'puppet:// URL without modules/ found',
-        :linenumber => 1,
-        :column     => 1,
-      })
+    it 'should only detect a single problem' do
+      expect(problems).to have(1).problem
+    end
+
+    it 'should create a warning' do
+      expect(problems).to contain_warning(msg).on_line(1).in_column(1)
     end
   end
 end

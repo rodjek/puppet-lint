@@ -1,13 +1,18 @@
 require 'spec_helper'
 
 describe 'nested_classes_or_defines' do
-  describe 'class on its own' do
+  let(:class_msg) { 'class defined inside a class' }
+  let(:define_msg) { 'defined type defined inside a class' }
+
+  context 'class on its own' do
     let(:code) { "class foo { }" }
 
-    its(:problems) { should be_empty }
+    it 'should not detect any problems' do
+      expect(problems).to have(0).problems
+    end
   end
 
-  describe 'class inside a class' do
+  context 'class inside a class' do
     let(:code) { "
       class foo {
         class bar {
@@ -15,18 +20,16 @@ describe 'nested_classes_or_defines' do
       }"
     }
 
-    its(:problems) {
-      should have_problem({
-        :kind       => :warning,
-        :message    => "class defined inside a class",
-        :linenumber => 3,
-        :column     => 9,
-      })
-      should_not have_problem :kind => :error
-    }
+    it 'should only detect a single problem' do
+      expect(problems).to have(1).problem
+    end
+
+    it 'should create a warning' do
+      expect(problems).to contain_warning(class_msg).on_line(3).in_column(9)
+    end
   end
 
-  describe 'instantiating a parametised class inside a class' do
+  context 'instantiating a parametised class inside a class' do
     let(:code) { "
       class bar {
         class { 'foo':
@@ -35,10 +38,12 @@ describe 'nested_classes_or_defines' do
       }"
     }
 
-    its(:problems) { should be_empty }
+    it 'should not detect any problems' do
+      expect(problems).to have(0).problems
+    end
   end
 
-  describe 'instantiating a parametised class inside a define' do
+  context 'instantiating a parametised class inside a define' do
     let(:code) { "
       define bar() {
         class { 'foo':
@@ -47,10 +52,12 @@ describe 'nested_classes_or_defines' do
       }"
     }
 
-    its(:problems) { should be_empty }
+    it 'should not detect any problems' do
+      expect(problems).to have(0).problems
+    end
   end
 
-  describe 'define inside a class' do
+  context 'define inside a class' do
     let(:code) { "
       class foo {
         define bar() {
@@ -58,14 +65,12 @@ describe 'nested_classes_or_defines' do
       }"
     }
 
-  its(:problems) {
-      should have_problem({
-        :kind       => :warning,
-        :message    => "define defined inside a class",
-        :linenumber => 3,
-        :column     => 9,
-      })
-      should_not have_problem :kind => :error
-    }
+    it 'should only detect a single problem' do
+      expect(problems).to have(1).problems
+    end
+
+    it 'should create a warning' do
+      expect(problems).to contain_warning(define_msg).on_line(3).in_column(9)
+    end
   end
 end
