@@ -28,7 +28,7 @@ class PuppetLint::Bin
       opts.banner = help
 
       opts.on("--version", "Display current version.") do
-        puts "Puppet-lint " + PuppetLint::VERSION
+        puts "puppet-lint " + PuppetLint::VERSION
         return 0
       end
 
