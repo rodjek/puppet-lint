@@ -90,6 +90,33 @@ describe 'double_quoted_strings' do
         expect(problems).to contain_warning(msg).on_line(1).in_column(28)
       end
     end
+
+    context 'double quoted stings containing supported escape patterns' do
+      let(:code) {%{
+        $string1 = "this string contins \n newline"
+        $string2 = "this string contains \ttab"
+        $string3 = "this string contains \${escaped} var"
+        $string4 = "this string contains \\"escaped \\" double quotes"
+        $string5 = "this string contains \\'escaped \\' single quotes"
+        $string6 = "this string contains \r line return"
+        }}
+
+      it 'should not detect any problems' do
+        expect(problems).to have(0).problems
+      end
+    end
+
+    context 'double quoted string with random escape should be rejected' do
+      let(:code) {%{ $ztring = "this string contains \l random esape" } }
+
+      it 'should only detect a single problem' do
+        expect(problems).to have(1).problem
+      end
+
+      it 'should create a warning' do
+        expect(problems).to contain_warning(msg).on_line(1).in_column(12)
+      end
+    end
   end
 
   context 'with fix enabled' do
