@@ -97,9 +97,8 @@ module RSpec
 
     def subject
       klass = PuppetLint::Checks.new
-      fileinfo = {}
-      fileinfo[:fullpath] = self.respond_to?(:fullpath) ? fullpath : ''
-      klass.load_data(fileinfo, code)
+      filepath = self.respond_to?(:path) ? path : ''
+      klass.load_data(filepath, code)
       check_name = self.class.top_level_description.to_sym
       klass.problems = PuppetLint.configuration.check_object[check_name].new.run
       klass

@@ -131,6 +131,7 @@ class PuppetLint::Bin
         l = PuppetLint.new
         l.file = f
         l.run
+        l.print_problems
         if l.errors? or (l.warnings? and PuppetLint.configuration.fail_on_warnings)
           return_val = 1
         end

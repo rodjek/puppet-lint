@@ -6,7 +6,7 @@ describe 'names_containing_dash' do
 
   context 'module named foo-bar' do
     let(:code) { 'class foo-bar { }' }
-    let(:fullpath) { '/etc/puppet/modules/foo-bar/manifests/init.pp' }
+    let(:path) { 'foo-bar/manifests/init.pp' }
 
     it 'should only detect a single problem' do
       expect(problems).to have(1).problem
@@ -19,7 +19,7 @@ describe 'names_containing_dash' do
 
   context 'define named foo-bar' do
     let(:code) { 'define foo::foo-bar { }' }
-    let(:fullpath) { '/etc/puppet/modules/foo/manifests/foo-bar.pp' }
+    let(:path) { 'foo/manifests/foo-bar.pp' }
 
     it 'should only detect a single problem' do
       expect(problems).to have(1).problem
@@ -32,7 +32,7 @@ describe 'names_containing_dash' do
 
   context 'class named bar-foo' do
     let(:code) { 'class foo::bar-foo { }' }
-    let(:fullpath) { '/etc/puppet/modules/foo/manifests/bar-foo.pp' }
+    let(:path) { 'foo/manifests/bar-foo.pp' }
 
     it 'should only detect a single problem' do
       expect(problems).to have(1).problem

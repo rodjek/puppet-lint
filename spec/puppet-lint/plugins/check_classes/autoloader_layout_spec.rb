@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'autoloader_layout' do
   context 'foo::bar in foo/manifests/bar.pp' do
     let(:code) { "class foo::bar { }" }
-    let(:fullpath) { '/etc/puppet/modules/foo/manifests/bar.pp' }
+    let(:path) { 'foo/manifests/bar.pp' }
 
     it 'should not detect any problems' do
       expect(problems).to have(0).problems
@@ -12,7 +12,7 @@ describe 'autoloader_layout' do
 
   context 'foo::bar::baz in foo/manifests/bar/baz.pp' do
     let(:code) { 'define foo::bar::baz() { }' }
-    let(:fullpath) { '/etc/puppet/modules/foo/manifests/bar/baz.pp' }
+    let(:path) { 'foo/manifests/bar/baz.pp' }
 
     it 'should not detect any problems' do
       expect(problems).to have(0).problems
@@ -21,7 +21,7 @@ describe 'autoloader_layout' do
 
   context 'foo in foo/manifests/init.pp' do
     let(:code) { 'class foo { }' }
-    let(:fullpath) { '/etc/puppet/modules/foo/manifests/init.pp' }
+    let(:path) { 'foo/manifests/init.pp' }
 
     it 'should not detect any problems' do
       expect(problems).to have(0).problems
@@ -30,7 +30,7 @@ describe 'autoloader_layout' do
 
   context 'foo::bar in foo/manifests/init.pp' do
     let(:code) { 'class foo::bar { }' }
-    let(:fullpath) { '/etc/puppet/modules/foo/manifests/init.pp' }
+    let(:path) { 'foo/manifests/init.pp' }
     let(:msg) { 'foo::bar not in autoload module layout' }
 
     it 'should only detect a single problem' do
@@ -51,7 +51,7 @@ describe 'autoloader_layout' do
       }
       "
     }
-    let(:fullpath) { '/etc/puppet/modules/bar/manifests/init.pp' }
+    let(:path) { 'bar/manifests/init.pp' }
 
     it 'should not detect any problems' do
       expect(problems).to have(0).problems
