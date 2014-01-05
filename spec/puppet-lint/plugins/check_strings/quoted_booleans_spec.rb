@@ -1,59 +1,59 @@
 require 'spec_helper'
 
 describe 'quoted_booleans' do
-  describe 'quoted false' do
-    let(:code) { "class { 'foo': boolFlag => 'false' }" }
+  let(:msg) { 'quoted boolean value found' }
 
-    its(:problems) {
-      should only_have_problem({
-        :kind       => :warning,
-        :message    => 'quoted boolean value found',
-        :linenumber => 1,
-        :column     => 28,
-      })
-    }
+  context 'with fix disabled' do
+    context 'quoted false' do
+      let(:code) { "class { 'foo': boolFlag => 'false' }" }
+
+      it 'should only detect a single problem' do
+        expect(problems).to have(1).problem
+      end
+
+      it 'should create a warning' do
+        expect(problems).to contain_warning(msg).on_line(1).in_column(28)
+      end
+    end
+
+    context 'quoted true' do
+      let(:code) { "class { 'foo': boolFlag => 'true' }" }
+
+      it 'should only detect a single problem' do
+        expect(problems).to have(1).problem
+      end
+
+      it 'should create a warning' do
+        expect(problems).to contain_warning(msg).on_line(1).in_column(28)
+      end
+    end
+
+    context 'double quoted true' do
+      let(:code) { "class { 'foo': boolFlag => \"true\" }" }
+
+      it 'should only detect a single problem' do
+        expect(problems).to have(1).problem
+      end
+
+      it 'should create a warning' do
+        expect(problems).to contain_warning(msg).on_line(1).in_column(28)
+      end
+    end
+
+    context 'double quoted false' do
+      let(:code) { "class { 'foo': boolFlag => \"false\" }" }
+
+      it 'should only detect a single problem' do
+        expect(problems).to have(1).problem
+      end
+
+      it 'should create a warning' do
+        expect(problems).to contain_warning(msg).on_line(1).in_column(28)
+      end
+    end
   end
 
-  describe 'quoted true' do
-    let(:code) { "class { 'foo': boolFlag => 'true' }" }
-
-    its(:problems) {
-      should only_have_problem({
-        :kind       => :warning,
-        :message    => 'quoted boolean value found',
-        :linenumber => 1,
-        :column     => 28,
-      })
-    }
-  end
-
-  describe 'double quoted true' do
-    let(:code) { "class { 'foo': boolFlag => \"true\" }" }
-
-    its(:problems) {
-      should have_problem({
-        :kind       => :warning,
-        :message    => 'quoted boolean value found',
-        :linenumber => 1,
-        :column     => 28,
-      })
-    }
-  end
-
-  describe 'double quoted false' do
-    let(:code) { "class { 'foo': boolFlag => \"false\" }" }
-
-    its(:problems) {
-      should have_problem({
-        :kind       => :warning,
-        :message    => 'quoted boolean value found',
-        :linenumber => 1,
-        :column     => 28,
-      })
-    }
-  end
-
-  describe 'quoted false w/fix' do
+  context 'with fix enabled' do
     before do
       PuppetLint.configuration.fix = true
     end
@@ -62,82 +62,68 @@ describe 'quoted_booleans' do
       PuppetLint.configuration.fix = false
     end
 
-    let(:code) { "class { 'foo': boolFlag => 'false' }" }
+    context 'quoted false' do
+      let(:code) { "class { 'foo': boolFlag => 'false' }" }
 
-    its(:problems) {
-      should only_have_problem({
-        :kind       => :fixed,
-        :message    => 'quoted boolean value found',
-        :linenumber => 1,
-        :column     => 28,
-      })
-    }
-    its(:manifest) { should == "class { 'foo': boolFlag => false }" }
-  end
+      it 'should only detect a single problem' do
+        expect(problems).to have(1).problem
+      end
 
-  describe 'quoted true w/fix' do
-    before do
-      PuppetLint.configuration.fix = true
+      it 'should fix the manifest' do
+        expect(problems).to contain_fixed(msg).on_line(1).in_column(28)
+      end
+
+      it 'should unquote the boolean' do
+        expect(manifest).to eq("class { 'foo': boolFlag => false }")
+      end
     end
 
-    after do
-      PuppetLint.configuration.fix = false
+    context 'quoted true' do
+      let(:code) { "class { 'foo': boolFlag => 'true' }" }
+
+      it 'should only detect a single problem' do
+        expect(problems).to have(1).problem
+      end
+
+      it 'should fix the manifest' do
+        expect(problems).to contain_fixed(msg).on_line(1).in_column(28)
+      end
+
+      it 'should unquote the boolean' do
+        expect(manifest).to eq("class { 'foo': boolFlag => true }")
+      end
     end
 
-    let(:code) { "class { 'foo': boolFlag => 'true' }" }
+    context 'double quoted true' do
+      let(:code) { "class { 'foo': boolFlag => \"true\" }" }
 
-    its(:problems) {
-      should only_have_problem({
-        :kind       => :fixed,
-        :message    => 'quoted boolean value found',
-        :linenumber => 1,
-        :column     => 28,
-      })
-    }
-    its(:manifest) { should == "class { 'foo': boolFlag => true }" }
-  end
+      it 'should only detect a single problem' do
+        expect(problems).to have(1).problem
+      end
 
-  describe 'double quoted true w/fix' do
-    before do
-      PuppetLint.configuration.fix = true
+      it 'should fix the manifest' do
+        expect(problems).to contain_fixed(msg).on_line(1).in_column(28)
+      end
+
+      it 'should unquote the boolean' do
+        expect(manifest).to eq("class { 'foo': boolFlag => true }")
+      end
     end
 
-    after do
-      PuppetLint.configuration.fix = false
+    context 'double quoted false' do
+      let(:code) { "class { 'foo': boolFlag => \"false\" }" }
+
+      it 'should only detect a single problem' do
+        expect(problems).to have(1).problem
+      end
+
+      it 'should fix the manifest' do
+        expect(problems).to contain_fixed(msg).on_line(1).in_column(28)
+      end
+
+      it 'should unquote the boolean' do
+        expect(manifest).to eq("class { 'foo': boolFlag => false }")
+      end
     end
-
-    let(:code) { "class { 'foo': boolFlag => \"true\" }" }
-
-    its(:problems) {
-      should have_problem({
-        :kind       => :fixed,
-        :message    => 'quoted boolean value found',
-        :linenumber => 1,
-        :column     => 28,
-      })
-    }
-    its(:manifest) { should == "class { 'foo': boolFlag => true }" }
-  end
-
-  describe 'double quoted false w/fix' do
-    before do
-      PuppetLint.configuration.fix = true
-    end
-
-    after do
-      PuppetLint.configuration.fix = false
-    end
-
-    let(:code) { "class { 'foo': boolFlag => \"false\" }" }
-
-    its(:problems) {
-      should have_problem({
-        :kind       => :fixed,
-        :message    => 'quoted boolean value found',
-        :linenumber => 1,
-        :column     => 28,
-      })
-    }
-    its(:manifest) { should == "class { 'foo': boolFlag => false }" }
   end
 end

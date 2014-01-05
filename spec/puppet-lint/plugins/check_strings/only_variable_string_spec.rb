@@ -1,44 +1,43 @@
 require 'spec_helper'
 
 describe 'only_variable_string' do
+  let(:msg) { 'string containing only a variable' }
+
   context 'with fix disabled' do
-    describe 'string containing only a variable' do
+    context 'string containing only a variable' do
       let(:code) { '"${foo}"' }
 
-      its(:problems) {
-        should only_have_problem({
-          :kind       => :warning,
-          :message    => 'string containing only a variable',
-          :linenumber => 1,
-          :column     => 3,
-        })
-      }
+      it 'should only detect a single problem' do
+        expect(problems).to have(1).problem
+      end
+
+      it 'should create a warning' do
+        expect(problems).to contain_warning(msg).on_line(1).in_column(3)
+      end
     end
 
-    describe 'string containing only a variable w/ ref' do
+    context 'string containing only a variable w/ ref' do
       let(:code) { '"${foo[0]}"' }
 
-      its(:problems) {
-        should only_have_problem({
-          :kind => :warning,
-          :message => 'string containing only a variable',
-          :linenumber => 1,
-          :column => 3,
-        })
-      }
+      it 'should only detect a single problem' do
+        expect(problems).to have(1).problem
+      end
+
+      it 'should create a warning' do
+        expect(problems).to contain_warning(msg).on_line(1).in_column(3)
+      end
     end
 
-    describe 'string containing only a variable w/ lots of refs' do
+    context 'string containing only a variable w/ lots of refs' do
       let(:code) { '"${foo[0][aoeuaoeu][bar][999]}"' }
 
-      its(:problems) {
-        should only_have_problem({
-          :kind       => :warning,
-          :message    => 'string containing only a variable',
-          :linenumber => 1,
-          :column     => 3,
-        })
-      }
+      it 'should only detect a single problem' do
+        expect(problems).to have(1).problem
+      end
+
+      it 'should create a warning' do
+        expect(problems).to contain_warning(msg).on_line(1).in_column(3)
+      end
     end
   end
 
@@ -51,49 +50,52 @@ describe 'only_variable_string' do
       PuppetLint.configuration.fix = false
     end
 
-    describe 'string containing only a variable' do
+    context 'string containing only a variable' do
       let(:code) { '"${foo}"' }
 
-      its(:problems) {
-        should only_have_problem({
-          :kind       => :fixed,
-          :message    => 'string containing only a variable',
-          :linenumber => 1,
-          :column     => 3,
-        })
-      }
+      it 'should only detect a single problem' do
+        expect(problems).to have(1).problem
+      end
 
-      its(:manifest) { should == "$foo" }
+      it 'should fix the manifest' do
+        expect(problems).to contain_fixed(msg).on_line(1).in_column(3)
+      end
+
+      it 'should unquote the variable' do
+        expect(manifest).to eq("$foo")
+      end
     end
 
-    describe 'string contaiting only a variable w/ ref' do
+    context 'string contaiting only a variable w/ ref' do
       let(:code) { '"${foo[0]}"' }
 
-      its(:problems) {
-        should only_have_problem({
-          :kind       => :fixed,
-          :message    => 'string containing only a variable',
-          :linenumber => 1,
-          :column     => 3,
-        })
-      }
+      it 'should only detect a single problem' do
+        expect(problems).to have(1).problem
+      end
 
-      its(:manifest) { should == "$foo[0]" }
+      it 'should fix the manifest' do
+        expect(problems).to contain_fixed(msg).on_line(1).in_column(3)
+      end
+
+      it 'should unquoted the variable' do
+        expect(manifest).to eq("$foo[0]")
+      end
     end
 
-    describe 'string containing only a variable w/ lots of refs' do
+    context 'string containing only a variable w/ lots of refs' do
       let(:code) { '"${foo[0][aoeuaoeu][bar][999]}"' }
 
-      its(:problems) {
-        should only_have_problem({
-          :kind       => :fixed,
-          :message    => 'string containing only a variable',
-          :linenumber => 1,
-          :column     => 3,
-        })
-      }
+      it 'should only detect a single problem' do
+        expect(problems).to have(1).problem
+      end
 
-      its(:manifest) { should == "$foo[0][aoeuaoeu][bar][999]" }
+      it 'should fix the manifest' do
+        expect(problems).to contain_fixed(msg).on_line(1).in_column(3)
+      end
+
+      it 'should unquote the variable' do
+        expect(manifest).to eq("$foo[0][aoeuaoeu][bar][999]")
+      end
     end
   end
 end

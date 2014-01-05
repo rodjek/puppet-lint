@@ -85,7 +85,7 @@ describe PuppetLint::Bin do
     its(:stdout) { should match(/^ERROR/) }
   end
 
-  context 'when limited to errors only' do
+  context 'when limited to warnings only' do
     let(:args) { [
       '--error-level', 'warning',
       'spec/fixtures/test/manifests/warning.pp',
@@ -94,6 +94,18 @@ describe PuppetLint::Bin do
 
     its(:exitstatus) { should == 1 }
     its(:stdout) { should match(/^WARNING/) }
+  end
+
+  context 'when specifying a specific check to run' do
+    let(:args) { [
+      '--only-check', 'parameter_order',
+      'spec/fixtures/test/manifests/warning.pp',
+      'spec/fixtures/test/manifests/fail.pp',
+    ] }
+
+    its(:exitstatus) { should == 0 }
+    its(:stdout) { should_not match(/ERROR/) }
+    its(:stdout) { should match(/WARNING/) }
   end
 
   context 'when asked to display filenames ' do
@@ -266,7 +278,7 @@ describe PuppetLint::Bin do
           with('/etc/puppet-lint.rc').and_return(false)
 
         msg = 'Depreciated: Found ~/.puppet-lintrc instead of ~/.puppet-lint.rc'
-        subject.stderr.should == msg
+        expect(subject.stderr).to eq(msg)
       end
 
       it 'should have .puppet-lintrc as depreciated' do
@@ -282,7 +294,7 @@ describe PuppetLint::Bin do
           with('/etc/puppet-lint.rc').and_return(false)
 
         msg = 'Depreciated: Read .puppet-lintrc instead of .puppet-lint.rc'
-        subject.stderr.should == msg
+        expect(subject.stderr).to eq(msg)
       end
     end
   end

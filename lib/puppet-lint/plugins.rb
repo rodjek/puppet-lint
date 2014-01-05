@@ -2,7 +2,7 @@ require 'pathname'
 
 class PuppetLint
   class Plugins
-    # Public: Find any gems containing puppet-lint plugins and load them.
+    # Internal: Find any gems containing puppet-lint plugins and load them.
     #
     # Returns nothing.
     def self.load_from_gems
@@ -14,6 +14,14 @@ class PuppetLint
         end
       end
     end
+
+    # Public: Load the puppet-lint spec_helper.rb
+    #
+    # Returns nothings.
+    def self.load_spec_helper
+      gemspec = gemspecs.select { |spec| spec.name == 'puppet-lint' }.first
+      load Pathname.new(gemspec.full_gem_path) + 'spec/spec_helper.rb'
+    end
   private
     # Internal: Check if RubyGems is loaded and available.
     #
@@ -22,18 +30,23 @@ class PuppetLint
       defined? ::Gem
     end
 
+    # Internal: Retrieve a list of avaliable gemspecs.
+    #
+    # Returns an Array of Gem::Specification objects.
+    def self.gemspecs
+      @gemspecs ||= if Gem::Specification.respond_to?(:latest_specs)
+        Gem::Specification.latest_specs
+      else
+        Gem.searcher.init_gemspecs
+      end
+    end
+
     # Internal: Retrieve a list of available gem paths from RubyGems.
     #
     # Returns an Array of Pathname objects.
     def self.gem_directories
       if has_rubygems?
-        if Gem::Specification.respond_to? :latest_specs
-          specs = Gem::Specification.latest_specs
-        else
-          specs = Gem.searcher.init_gemspecs
-        end
-
-        specs.reject { |spec| spec.name == 'puppet-lint' }.map do |spec|
+        gemspecs.reject { |spec| spec.name == 'puppet-lint' }.map do |spec|
           Pathname.new(spec.full_gem_path) + 'lib'
         end
       else

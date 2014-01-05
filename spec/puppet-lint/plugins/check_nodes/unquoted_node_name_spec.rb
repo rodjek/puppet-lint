@@ -1,36 +1,43 @@
 require 'spec_helper'
 
 describe 'unquoted_node_name' do
+  let(:msg) { 'unquoted node name found' }
+
   context 'with fix disabled' do
-    describe 'unquoted node name' do
+    context 'unquoted node name' do
       let(:code) { "node foo { }" }
 
-      its(:problems) {
-        should have_problem({
-          :kind       => :warning,
-          :message    => 'unquoted node name found',
-          :linenumber => 1,
-          :column     => 6,
-        })
-      }
+      it 'should only detect a single problem' do
+        expect(problems).to have(1).problem
+      end
+
+      it 'should create a warning' do
+        expect(problems).to contain_warning(msg).on_line(1).in_column(6)
+      end
     end
 
-    describe 'default node' do
+    context 'default node' do
       let(:code) { "node default { }" }
 
-      its(:problems) { should be_empty }
+      it 'should not detect any problems' do
+        expect(problems).to have(0).problems
+      end
     end
 
-    describe 'single quoted node name' do
+    context 'single quoted node name' do
       let(:code) { "node 'foo' { }" }
 
-      its(:problems) { should be_empty }
+      it 'should not detect any problems' do
+        expect(problems).to have(0).problems
+      end
     end
 
-    describe 'regex node name' do
+    context 'regex node name' do
       let(:code) { "node /foo/ { }" }
 
-      its(:problems) { should be_empty }
+      it 'should not detect any problems' do
+        expect(problems).to have(0).problems
+      end
     end
   end
 
@@ -43,19 +50,20 @@ describe 'unquoted_node_name' do
       PuppetLint.configuration.fix = false
     end
 
-    describe 'unquoted node name' do
+    context 'unquoted node name' do
       let(:code) { "node foo { }" }
 
-      its(:problems) {
-        should have_problem({
-          :kind       => :fixed,
-          :message    => 'unquoted node name found',
-          :linenumber => 1,
-          :column     => 6,
-        })
-      }
+      it 'should only detect a single problem' do
+        expect(problems).to have(1).problem
+      end
 
-      its(:manifest) { should eq("node 'foo' { }") }
+      it 'should fix the manifest' do
+        expect(problems).to contain_fixed(msg).on_line(1).in_column(6)
+      end
+
+      it 'should quote the node name' do
+        expect(manifest).to eq("node 'foo' { }")
+      end
     end
   end
 end

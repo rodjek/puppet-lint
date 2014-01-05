@@ -1,23 +1,29 @@
 require 'spec_helper'
 
 describe 'ensure_first_param' do
-  describe 'ensure as only attr in a single line resource' do
+  let(:msg) { "ensure found on line but it's not the first attribute" }
+
+  context 'ensure as only attr in a single line resource' do
     let(:code) { "file { 'foo': ensure => present }" }
 
-    its(:problems) { should be_empty }
+    it 'should not detect any problems' do
+      expect(problems).to have(0).problems
+    end
   end
 
-  describe 'ensure as only attr in a multi line resource' do
+  context 'ensure as only attr in a multi line resource' do
     let(:code) { "
       file { 'foo':
         ensure => present,
       }"
     }
 
-    its(:problems) { should be_empty }
+    it 'should not detect any problems' do
+      expect(problems).to have(0).problems
+    end
   end
 
-  describe 'ensure as second attr in a multi line resource' do
+  context 'ensure as second attr in a multi line resource' do
     let(:code) { "
       file { 'foo':
         mode   => '0000',
@@ -25,12 +31,16 @@ describe 'ensure_first_param' do
       }"
     }
 
-    its(:problems) {
-      should only_have_problem :kind => :warning, :message => "ensure found on line but it's not the first attribute", :linenumber => 4
-    }
+    it 'should only detect a single problem' do
+      expect(problems).to have(1).problem
+    end
+
+    it 'should create a warning' do
+      expect(problems).to contain_warning(msg).on_line(4).in_column(9)
+    end
   end
 
-  describe 'ensure as first attr in a multi line resource' do
+  context 'ensure as first attr in a multi line resource' do
     let(:code) { "
       file { 'foo':
         ensure => present,
@@ -38,6 +48,8 @@ describe 'ensure_first_param' do
       }"
     }
 
-    its(:problems) { should be_empty }
+    it 'should not detect any problems' do
+      expect(problems).to have(0).problems
+    end
   end
 end

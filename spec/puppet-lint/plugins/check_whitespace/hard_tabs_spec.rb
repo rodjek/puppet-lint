@@ -1,20 +1,23 @@
 require 'spec_helper'
 
 describe 'hard_tabs' do
-  describe 'hard tabs indents' do
-    let(:code) { "\tfoo => bar," }
+  let(:msg) { 'tab character found' }
 
-    its(:problems) {
-      should have_problem({
-        :kind       => :error,
-        :message    => 'tab character found',
-        :linenumber => 1,
-        :column     => 1,
-      })
-    }
+  context 'with fix disabled' do
+    context 'hard tabs indents' do
+      let(:code) { "\tfoo => bar," }
+
+      it 'should only detect a single problem' do
+        expect(problems).to have(1).problem
+      end
+
+      it 'should create an error' do
+        expect(problems).to contain_error(msg).on_line(1).in_column(1)
+      end
+    end
   end
 
-  describe 'hard tabs indents' do
+  context 'with fix enabled' do
     before do
       PuppetLint.configuration.fix = true
     end
@@ -23,16 +26,20 @@ describe 'hard_tabs' do
       PuppetLint.configuration.fix = false
     end
 
-    let(:code) { "\tfoo => bar," }
+    context 'hard tabs indents' do
+      let(:code) { "\tfoo => bar," }
 
-    its(:problems) {
-      should have_problem({
-        :kind       => :fixed,
-        :message    => 'tab character found',
-        :linenumber => 1,
-        :column     => 1,
-      })
-    }
-    its(:manifest) { should == "  foo => bar," }
+      it 'should only detect a single problem' do
+        expect(problems).to have(1).problem
+      end
+
+      it 'should fix the manifest' do
+        expect(problems).to contain_fixed(msg).on_line(1).in_column(1)
+      end
+
+      it 'should convert the tab characters into spaces' do
+        expect(manifest).to eq("  foo => bar,")
+      end
+    end
   end
 end

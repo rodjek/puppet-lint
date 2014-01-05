@@ -76,6 +76,13 @@ class PuppetLint::Bin
       opts.separator ""
       opts.separator "    Disable checks:"
 
+      opts.on('--only-check CHECKS', 'Provide a comma seperated list of checks that should be run') do |check_list|
+        enable_checks = check_list.split(',').map { |check| check.to_sym }
+        (PuppetLint.configuration.checks - enable_checks).each do |check|
+          PuppetLint.configuration.send("disable_#{check}")
+        end
+      end
+
       PuppetLint.configuration.checks.each do |check|
         opts.on("--no-#{check}-check", "Skip the #{check} check") do
           PuppetLint.configuration.send("disable_#{check}")

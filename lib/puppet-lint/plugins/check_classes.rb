@@ -196,7 +196,7 @@ PuppetLint.new_check(:nested_classes_or_defines) do
 
         if token.type == :DEFINE
           notify :warning, {
-            :message    => "define defined inside a class",
+            :message    => "defined type defined inside a class",
             :linenumber => token.line,
             :column     => token.column,
           }

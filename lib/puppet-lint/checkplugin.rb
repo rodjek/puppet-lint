@@ -66,8 +66,6 @@ class PuppetLint::CheckPlugin
   def default_info
     @default_info ||= {
       :check      => self.class.const_get('NAME'),
-      :linenumber => 0,
-      :column     => 0,
       :fullpath   => fullpath,
       :path       => path,
       :filename   => filename,
@@ -87,6 +85,17 @@ class PuppetLint::CheckPlugin
   def notify(kind, problem)
     problem[:kind] = kind
     problem.merge!(default_info) { |key, v1, v2| v1 }
+
+    unless [:warning, :error, :fixed].include? kind
+      raise ArgumentError, "unknown value passed for kind"
+    end
+
+    [:message, :linenumber, :column, :check].each do |attr|
+      unless problem.has_key? attr
+        raise ArgumentError, "problem hash must contain #{attr.inspect}"
+      end
+    end
+
     @problems << problem
   end
 end

@@ -7,50 +7,49 @@ describe PuppetLint::Configuration do
     klass = Class.new
     subject.add_check('foo', klass)
 
-    subject.should respond_to(:foo_enabled?)
-    subject.should_not respond_to(:bar_enabled?)
-    subject.should respond_to(:enable_foo)
-    subject.should respond_to(:disable_foo)
+    expect(subject).to respond_to(:foo_enabled?)
+    expect(subject).to_not respond_to(:bar_enabled?)
+    expect(subject).to respond_to(:enable_foo)
+    expect(subject).to respond_to(:disable_foo)
 
     subject.disable_foo
-    subject.settings['foo_disabled'].should == true
-    subject.foo_enabled?.should == false
+    expect(subject.settings['foo_disabled']).to be_true
+    expect(subject.foo_enabled?).to be_false
 
     subject.enable_foo
-    subject.settings['foo_disabled'].should == false
-    subject.foo_enabled?.should == true
+    expect(subject.settings['foo_disabled']).to be_false
+    expect(subject.foo_enabled?).to be_true
   end
 
   it 'should know what checks have been added' do
     klass = Class.new
     subject.add_check('foo', klass)
-    subject.checks.should include('foo')
+    expect(subject.checks).to include('foo')
   end
 
   it 'should respond nil to unknown config options' do
-    subject.foobarbaz.should == nil
+    expect(subject.foobarbaz).to be_nil
   end
 
   it 'should create options on the fly' do
     subject.add_option('bar')
 
-    subject.bar.should == nil
+    expect(subject.bar).to be_nil
 
     subject.bar = 'aoeui'
-    subject.bar.should == 'aoeui'
+    expect(subject.bar).to eq('aoeui')
   end
 
   it 'should be able to set sane defaults' do
     subject.defaults
 
-    subject.settings.should == {
+    expect(subject.settings).to eq({
       'with_filename' => false,
       'fail_on_warnings' => false,
       'error_level' => :all,
       'log_format' => '',
       'with_context' => false,
       'fix' => false,
-    }
+    })
   end
 end
-

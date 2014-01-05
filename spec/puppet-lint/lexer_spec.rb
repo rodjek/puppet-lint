@@ -14,27 +14,27 @@ describe PuppetLint::Lexer do
   context '#new_token' do
     it 'should calculate the line number for an empty string' do
       token = @lexer.new_token(:TEST, 'test', :chunk => '')
-      token.line.should == 1
+      expect(token.line).to eq(1)
     end
 
     it 'should calculate the line number for a multi line string' do
       token = @lexer.new_token(:TEST, 'test', :chunk => "foo\nbar")
-      token.line.should == 2
+      expect(token.line).to eq(2)
     end
 
     it 'should calculate the column number for an empty string' do
       token = @lexer.new_token(:TEST, 'test', :chunk => '')
-      token.column.should == 1
+      expect(token.column).to eq(1)
     end
 
     it 'should calculate the column number for a single line string' do
       token = @lexer.new_token(:TEST, 'test', :chunk => 'this is a test')
-      token.column.should == 14
+      expect(token.column).to eq(14)
     end
 
     it 'should calculate the column number for a multi line string' do
       token = @lexer.new_token(:TEST, 'test', :chunk => "foo\nbar\nbaz\ngronk")
-      token.column.should == 5
+      expect(token.column).to eq(5)
     end
   end
 
@@ -42,22 +42,22 @@ describe PuppetLint::Lexer do
     it 'should get a segment with a single terminator' do
       data = StringScanner.new('foo"bar')
       value, terminator = @lexer.get_string_segment(data, '"')
-      value.should == 'foo'
-      terminator.should == '"'
+      expect(value).to eq('foo')
+      expect(terminator).to eq('"')
     end
 
     it 'should get a segment with multiple terminators' do
       data = StringScanner.new('foo"bar$baz')
       value, terminator = @lexer.get_string_segment(data, "'$")
-      value.should == 'foo"bar'
-      terminator.should == '$'
+      expect(value).to eq('foo"bar')
+      expect(terminator).to eq('$')
     end
 
     it 'should not get a segment with an escaped terminator' do
       data = StringScanner.new('foo"bar')
       value, terminator = @lexer.get_string_segment(data, '$')
-      value.should be_nil
-      terminator.should be_nil
+      expect(value).to be_nil
+      expect(terminator).to be_nil
     end
   end
 
@@ -66,410 +66,410 @@ describe PuppetLint::Lexer do
       @lexer.interpolate_string('foo bar baz"',1, 1)
       token = @lexer.tokens.first
 
-      @lexer.tokens.length.should == 1
-      token.type.should == :STRING
-      token.value.should == 'foo bar baz'
-      token.line.should == 1
-      token.column.should == 1
+      expect(@lexer.tokens.length).to eq(1)
+      expect(token.type).to eq(:STRING)
+      expect(token.value).to eq('foo bar baz')
+      expect(token.line).to eq(1)
+      expect(token.column).to eq(1)
     end
 
     it 'should handle a string with a newline' do
       @lexer.interpolate_string(%{foo\nbar"}, 1, 1)
       token = @lexer.tokens.first
 
-      @lexer.tokens.length.should == 1
-      token.type.should == :STRING
-      token.value.should == "foo\nbar"
-      token.line.should == 1
-      token.column.should == 1
+      expect(@lexer.tokens.length).to eq(1)
+      expect(token.type).to eq(:STRING)
+      expect(token.value).to eq("foo\nbar")
+      expect(token.line).to eq(1)
+      expect(token.column).to eq(1)
     end
 
     it 'should handle a string with a single variable and suffix' do
       @lexer.interpolate_string('${foo}bar"', 1, 1)
       tokens = @lexer.tokens
 
-      tokens.length.should == 3
+      expect(tokens.length).to eq(3)
 
-      tokens[0].type.should == :DQPRE
-      tokens[0].value.should == ''
-      tokens[0].line.should == 1
-      tokens[0].column.should == 1
+      expect(tokens[0].type).to eq(:DQPRE)
+      expect(tokens[0].value).to eq('')
+      expect(tokens[0].line).to eq(1)
+      expect(tokens[0].column).to eq(1)
 
-      tokens[1].type.should == :VARIABLE
-      tokens[1].value.should == 'foo'
-      tokens[1].line.should == 1
-      tokens[1].column.should == 3
+      expect(tokens[1].type).to eq(:VARIABLE)
+      expect(tokens[1].value).to eq('foo')
+      expect(tokens[1].line).to eq(1)
+      expect(tokens[1].column).to eq(3)
 
-      tokens[2].type.should == :DQPOST
-      tokens[2].value.should == 'bar'
-      tokens[2].line.should == 1
-      tokens[2].column.should == 8
+      expect(tokens[2].type).to eq(:DQPOST)
+      expect(tokens[2].value).to eq('bar')
+      expect(tokens[2].line).to eq(1)
+      expect(tokens[2].column).to eq(8)
     end
 
     it 'should handle a string with a single variable and surrounding text' do
       @lexer.interpolate_string('foo${bar}baz"', 1, 1)
       tokens = @lexer.tokens
 
-      tokens.length.should == 3
+      expect(tokens.length).to eq(3)
 
-      tokens[0].type.should == :DQPRE
-      tokens[0].value.should == 'foo'
-      tokens[0].line.should == 1
-      tokens[0].column.should == 1
+      expect(tokens[0].type).to eq(:DQPRE)
+      expect(tokens[0].value).to eq('foo')
+      expect(tokens[0].line).to eq(1)
+      expect(tokens[0].column).to eq(1)
 
-      tokens[1].type.should == :VARIABLE
-      tokens[1].value.should == 'bar'
-      tokens[1].line.should == 1
-      tokens[1].column.should == 6
+      expect(tokens[1].type).to eq(:VARIABLE)
+      expect(tokens[1].value).to eq('bar')
+      expect(tokens[1].line).to eq(1)
+      expect(tokens[1].column).to eq(6)
 
-      tokens[2].type.should == :DQPOST
-      tokens[2].value.should == 'baz'
-      tokens[2].line.should == 1
-      tokens[2].column.should == 11
+      expect(tokens[2].type).to eq(:DQPOST)
+      expect(tokens[2].value).to eq('baz')
+      expect(tokens[2].line).to eq(1)
+      expect(tokens[2].column).to eq(11)
     end
 
     it 'should handle a string with multiple variables and surrounding text' do
       @lexer.interpolate_string('foo${bar}baz${gronk}meh"', 1, 1)
       tokens = @lexer.tokens
 
-      tokens.length.should == 5
+      expect(tokens.length).to eq(5)
 
-      tokens[0].type.should == :DQPRE
-      tokens[0].value.should == 'foo'
-      tokens[0].line.should == 1
-      tokens[0].column.should == 1
+      expect(tokens[0].type).to eq(:DQPRE)
+      expect(tokens[0].value).to eq('foo')
+      expect(tokens[0].line).to eq(1)
+      expect(tokens[0].column).to eq(1)
 
-      tokens[1].type.should == :VARIABLE
-      tokens[1].value.should == 'bar'
-      tokens[1].line.should == 1
-      tokens[1].column.should == 6
+      expect(tokens[1].type).to eq(:VARIABLE)
+      expect(tokens[1].value).to eq('bar')
+      expect(tokens[1].line).to eq(1)
+      expect(tokens[1].column).to eq(6)
 
-      tokens[2].type.should == :DQMID
-      tokens[2].value.should == 'baz'
-      tokens[2].line.should == 1
-      tokens[2].column.should == 11
+      expect(tokens[2].type).to eq(:DQMID)
+      expect(tokens[2].value).to eq('baz')
+      expect(tokens[2].line).to eq(1)
+      expect(tokens[2].column).to eq(11)
 
-      tokens[3].type.should == :VARIABLE
-      tokens[3].value.should == 'gronk'
-      tokens[3].line.should == 1
-      tokens[3].column.should == 15
+      expect(tokens[3].type).to eq(:VARIABLE)
+      expect(tokens[3].value).to eq('gronk')
+      expect(tokens[3].line).to eq(1)
+      expect(tokens[3].column).to eq(15)
 
-      tokens[4].type.should == :DQPOST
-      tokens[4].value.should == 'meh'
-      tokens[4].line.should == 1
-      tokens[4].column.should == 22
+      expect(tokens[4].type).to eq(:DQPOST)
+      expect(tokens[4].value).to eq('meh')
+      expect(tokens[4].line).to eq(1)
+      expect(tokens[4].column).to eq(22)
     end
 
     it 'should handle a string with only a single variable' do
       @lexer.interpolate_string('${bar}"', 1, 1)
       tokens = @lexer.tokens
 
-      tokens.length.should == 3
+      expect(tokens.length).to eq(3)
 
-      tokens[0].type.should == :DQPRE
-      tokens[0].value.should == ''
-      tokens[0].line.should == 1
-      tokens[0].column.should == 1
+      expect(tokens[0].type).to eq(:DQPRE)
+      expect(tokens[0].value).to eq('')
+      expect(tokens[0].line).to eq(1)
+      expect(tokens[0].column).to eq(1)
 
-      tokens[1].type.should == :VARIABLE
-      tokens[1].value.should == 'bar'
-      tokens[1].line.should == 1
-      tokens[1].column.should == 3
+      expect(tokens[1].type).to eq(:VARIABLE)
+      expect(tokens[1].value).to eq('bar')
+      expect(tokens[1].line).to eq(1)
+      expect(tokens[1].column).to eq(3)
 
-      tokens[2].type.should == :DQPOST
-      tokens[2].value.should == ''
-      tokens[2].line.should == 1
-      tokens[2].column.should == 8
+      expect(tokens[2].type).to eq(:DQPOST)
+      expect(tokens[2].value).to eq('')
+      expect(tokens[2].line).to eq(1)
+      expect(tokens[2].column).to eq(8)
     end
 
     it 'should handle a string with only many variables' do
       @lexer.interpolate_string('${bar}${gronk}"', 1, 1)
       tokens = @lexer.tokens
 
-      tokens.length.should == 5
+      expect(tokens.length).to eq(5)
 
-      tokens[0].type.should == :DQPRE
-      tokens[0].value.should == ''
-      tokens[0].line.should == 1
-      tokens[0].column.should == 1
+      expect(tokens[0].type).to eq(:DQPRE)
+      expect(tokens[0].value).to eq('')
+      expect(tokens[0].line).to eq(1)
+      expect(tokens[0].column).to eq(1)
 
-      tokens[1].type.should == :VARIABLE
-      tokens[1].value.should == 'bar'
-      tokens[1].line.should == 1
-      tokens[1].column.should == 3
+      expect(tokens[1].type).to eq(:VARIABLE)
+      expect(tokens[1].value).to eq('bar')
+      expect(tokens[1].line).to eq(1)
+      expect(tokens[1].column).to eq(3)
 
-      tokens[2].type.should == :DQMID
-      tokens[2].value.should == ''
-      tokens[2].line.should == 1
-      tokens[2].column.should == 8
+      expect(tokens[2].type).to eq(:DQMID)
+      expect(tokens[2].value).to eq('')
+      expect(tokens[2].line).to eq(1)
+      expect(tokens[2].column).to eq(8)
 
-      tokens[3].type.should == :VARIABLE
-      tokens[3].value.should == 'gronk'
-      tokens[3].line.should == 1
-      tokens[3].column.should == 9
+      expect(tokens[3].type).to eq(:VARIABLE)
+      expect(tokens[3].value).to eq('gronk')
+      expect(tokens[3].line).to eq(1)
+      expect(tokens[3].column).to eq(9)
 
-      tokens[4].type.should == :DQPOST
-      tokens[4].value.should == ''
-      tokens[4].line.should == 1
-      tokens[4].column.should == 16
+      expect(tokens[4].type).to eq(:DQPOST)
+      expect(tokens[4].value).to eq('')
+      expect(tokens[4].line).to eq(1)
+      expect(tokens[4].column).to eq(16)
     end
 
     it 'should handle a string with only an unenclosed variable' do
       @lexer.interpolate_string('$foo"', 1, 1)
       tokens = @lexer.tokens
 
-      tokens.length.should == 3
+      expect(tokens.length).to eq(3)
 
-      tokens[0].type.should == :DQPRE
-      tokens[0].value.should == ''
-      tokens[0].line.should == 1
-      tokens[0].column.should == 1
+      expect(tokens[0].type).to eq(:DQPRE)
+      expect(tokens[0].value).to eq('')
+      expect(tokens[0].line).to eq(1)
+      expect(tokens[0].column).to eq(1)
 
-      tokens[1].type.should == :UNENC_VARIABLE
-      tokens[1].value.should == 'foo'
-      tokens[1].line.should == 1
-      tokens[1].column.should == 2
+      expect(tokens[1].type).to eq(:UNENC_VARIABLE)
+      expect(tokens[1].value).to eq('foo')
+      expect(tokens[1].line).to eq(1)
+      expect(tokens[1].column).to eq(2)
 
-      tokens[2].type.should == :DQPOST
-      tokens[2].value.should == ''
-      tokens[2].line.should == 1
-      tokens[2].column.should == 6
+      expect(tokens[2].type).to eq(:DQPOST)
+      expect(tokens[2].value).to eq('')
+      expect(tokens[2].line).to eq(1)
+      expect(tokens[2].column).to eq(6)
     end
 
     it 'should handle a string with a nested string inside it' do
       @lexer.interpolate_string(%q{string with ${'a nested single quoted string'} inside it"}, 1, 1)
       tokens = @lexer.tokens
 
-      tokens.length.should == 3
+      expect(tokens.length).to eq(3)
 
-      tokens[0].type.should == :DQPRE
-      tokens[0].value.should == 'string with '
-      tokens[0].line.should == 1
-      tokens[0].column.should == 1
+      expect(tokens[0].type).to eq(:DQPRE)
+      expect(tokens[0].value).to eq('string with ')
+      expect(tokens[0].line).to eq(1)
+      expect(tokens[0].column).to eq(1)
 
-      tokens[1].type.should == :SSTRING
-      tokens[1].value.should == 'a nested single quoted string'
-      tokens[1].line.should == 1
-      tokens[1].column.should == 16
+      expect(tokens[1].type).to eq(:SSTRING)
+      expect(tokens[1].value).to eq('a nested single quoted string')
+      expect(tokens[1].line).to eq(1)
+      expect(tokens[1].column).to eq(16)
 
-      tokens[2].type.should == :DQPOST
-      tokens[2].value.should == ' inside it'
-      tokens[2].line.should == 1
-      tokens[2].column.should == 48
+      expect(tokens[2].type).to eq(:DQPOST)
+      expect(tokens[2].value).to eq(' inside it')
+      expect(tokens[2].line).to eq(1)
+      expect(tokens[2].column).to eq(48)
     end
 
     it 'should handle a string with nested math' do
       @lexer.interpolate_string(%q{string with ${(3+5)/4} nested math"}, 1, 1)
       tokens = @lexer.tokens
 
-      tokens.length.should == 9
+      expect(tokens.length).to eq(9)
 
-      tokens[0].type.should == :DQPRE
-      tokens[0].value.should == 'string with '
-      tokens[0].line.should == 1
-      tokens[0].column.should == 1
+      expect(tokens[0].type).to eq(:DQPRE)
+      expect(tokens[0].value).to eq('string with ')
+      expect(tokens[0].line).to eq(1)
+      expect(tokens[0].column).to eq(1)
 
-      tokens[1].type.should == :LPAREN
-      tokens[1].line.should == 1
-      tokens[1].column.should == 16
+      expect(tokens[1].type).to eq(:LPAREN)
+      expect(tokens[1].line).to eq(1)
+      expect(tokens[1].column).to eq(16)
 
-      tokens[2].type.should == :NUMBER
-      tokens[2].value.should == '3'
-      tokens[2].line.should == 1
-      tokens[2].column.should == 17
+      expect(tokens[2].type).to eq(:NUMBER)
+      expect(tokens[2].value).to eq('3')
+      expect(tokens[2].line).to eq(1)
+      expect(tokens[2].column).to eq(17)
 
-      tokens[3].type.should == :PLUS
-      tokens[3].line.should == 1
-      tokens[3].column.should == 18
+      expect(tokens[3].type).to eq(:PLUS)
+      expect(tokens[3].line).to eq(1)
+      expect(tokens[3].column).to eq(18)
 
-      tokens[4].type.should == :NUMBER
-      tokens[4].value.should == '5'
-      tokens[4].line.should == 1
-      tokens[4].column.should == 19
+      expect(tokens[4].type).to eq(:NUMBER)
+      expect(tokens[4].value).to eq('5')
+      expect(tokens[4].line).to eq(1)
+      expect(tokens[4].column).to eq(19)
 
-      tokens[5].type.should == :RPAREN
-      tokens[5].line.should == 1
-      tokens[5].column.should == 20
+      expect(tokens[5].type).to eq(:RPAREN)
+      expect(tokens[5].line).to eq(1)
+      expect(tokens[5].column).to eq(20)
 
-      tokens[6].type.should == :DIV
-      tokens[6].line.should == 1
-      tokens[6].column.should == 21
+      expect(tokens[6].type).to eq(:DIV)
+      expect(tokens[6].line).to eq(1)
+      expect(tokens[6].column).to eq(21)
 
-      tokens[7].type.should == :NUMBER
-      tokens[7].value.should == '4'
-      tokens[7].line.should == 1
-      tokens[7].column.should == 22
+      expect(tokens[7].type).to eq(:NUMBER)
+      expect(tokens[7].value).to eq('4')
+      expect(tokens[7].line).to eq(1)
+      expect(tokens[7].column).to eq(22)
 
-      tokens[8].type.should == :DQPOST
-      tokens[8].value.should == ' nested math'
-      tokens[8].line.should == 1
-      tokens[8].column.should == 24
+      expect(tokens[8].type).to eq(:DQPOST)
+      expect(tokens[8].value).to eq(' nested math')
+      expect(tokens[8].line).to eq(1)
+      expect(tokens[8].column).to eq(24)
     end
 
     it 'should handle a string with a nested array' do
       @lexer.interpolate_string(%q{string with ${['an array ', $v2]} in it"}, 1, 1)
       tokens = @lexer.tokens
 
-      tokens.length.should == 8
+      expect(tokens.length).to eq(8)
 
-      tokens[0].type.should == :DQPRE
-      tokens[0].value.should == 'string with '
-      tokens[0].line.should == 1
-      tokens[0].column.should == 1
+      expect(tokens[0].type).to eq(:DQPRE)
+      expect(tokens[0].value).to eq('string with ')
+      expect(tokens[0].line).to eq(1)
+      expect(tokens[0].column).to eq(1)
 
-      tokens[1].type.should == :LBRACK
-      tokens[1].line.should == 1
-      tokens[1].column.should == 16
+      expect(tokens[1].type).to eq(:LBRACK)
+      expect(tokens[1].line).to eq(1)
+      expect(tokens[1].column).to eq(16)
 
-      tokens[2].type.should == :SSTRING
-      tokens[2].value.should == 'an array '
-      tokens[2].line.should == 1
-      tokens[2].column.should == 17
+      expect(tokens[2].type).to eq(:SSTRING)
+      expect(tokens[2].value).to eq('an array ')
+      expect(tokens[2].line).to eq(1)
+      expect(tokens[2].column).to eq(17)
 
-      tokens[3].type.should == :COMMA
-      tokens[3].line.should == 1
-      tokens[3].column.should == 28
+      expect(tokens[3].type).to eq(:COMMA)
+      expect(tokens[3].line).to eq(1)
+      expect(tokens[3].column).to eq(28)
 
-      tokens[4].type.should == :WHITESPACE
-      tokens[4].value.should == ' '
-      tokens[4].line.should == 1
-      tokens[4].column.should == 29
+      expect(tokens[4].type).to eq(:WHITESPACE)
+      expect(tokens[4].value).to eq(' ')
+      expect(tokens[4].line).to eq(1)
+      expect(tokens[4].column).to eq(29)
 
-      tokens[5].type.should == :VARIABLE
-      tokens[5].value.should == 'v2'
-      tokens[5].line.should == 1
-      tokens[5].column.should == 30
+      expect(tokens[5].type).to eq(:VARIABLE)
+      expect(tokens[5].value).to eq('v2')
+      expect(tokens[5].line).to eq(1)
+      expect(tokens[5].column).to eq(30)
 
-      tokens[6].type.should == :RBRACK
-      tokens[6].line.should == 1
-      tokens[6].column.should == 33
+      expect(tokens[6].type).to eq(:RBRACK)
+      expect(tokens[6].line).to eq(1)
+      expect(tokens[6].column).to eq(33)
 
-      tokens[7].type.should == :DQPOST
-      tokens[7].value.should == ' in it'
-      tokens[7].line.should == 1
-      tokens[7].column.should == 35
+      expect(tokens[7].type).to eq(:DQPOST)
+      expect(tokens[7].value).to eq(' in it')
+      expect(tokens[7].line).to eq(1)
+      expect(tokens[7].column).to eq(35)
     end
 
     it 'should handle a string of $s' do
       @lexer.interpolate_string(%q{$$$$"}, 1, 1)
       tokens = @lexer.tokens
 
-      tokens.length.should == 1
+      expect(tokens.length).to eq(1)
 
-      tokens[0].type.should == :STRING
-      tokens[0].value.should == '$$$$'
-      tokens[0].line.should == 1
-      tokens[0].column.should == 1
+      expect(tokens[0].type).to eq(:STRING)
+      expect(tokens[0].value).to eq('$$$$')
+      expect(tokens[0].line).to eq(1)
+      expect(tokens[0].column).to eq(1)
     end
 
     it 'should handle "$foo$bar"' do
       @lexer.interpolate_string(%q{$foo$bar"}, 1, 1)
       tokens = @lexer.tokens
 
-      tokens.length.should == 5
+      expect(tokens.length).to eq(5)
 
-      tokens[0].type.should == :DQPRE
-      tokens[0].value.should == ''
-      tokens[0].line.should == 1
-      tokens[0].column.should == 1
+      expect(tokens[0].type).to eq(:DQPRE)
+      expect(tokens[0].value).to eq('')
+      expect(tokens[0].line).to eq(1)
+      expect(tokens[0].column).to eq(1)
 
-      tokens[1].type.should == :UNENC_VARIABLE
-      tokens[1].value.should == 'foo'
-      tokens[1].line.should == 1
-      tokens[1].column.should == 2
+      expect(tokens[1].type).to eq(:UNENC_VARIABLE)
+      expect(tokens[1].value).to eq('foo')
+      expect(tokens[1].line).to eq(1)
+      expect(tokens[1].column).to eq(2)
 
-      tokens[2].type.should == :DQMID
-      tokens[2].value.should == ''
-      tokens[2].line.should == 1
-      tokens[2].column.should == 6
+      expect(tokens[2].type).to eq(:DQMID)
+      expect(tokens[2].value).to eq('')
+      expect(tokens[2].line).to eq(1)
+      expect(tokens[2].column).to eq(6)
 
-      tokens[3].type.should == :UNENC_VARIABLE
-      tokens[3].value.should == 'bar'
-      tokens[3].line.should == 1
-      tokens[3].column.should == 6
+      expect(tokens[3].type).to eq(:UNENC_VARIABLE)
+      expect(tokens[3].value).to eq('bar')
+      expect(tokens[3].line).to eq(1)
+      expect(tokens[3].column).to eq(6)
 
-      tokens[4].type.should == :DQPOST
-      tokens[4].value.should == ''
-      tokens[4].line.should == 1
-      tokens[4].column.should == 10
+      expect(tokens[4].type).to eq(:DQPOST)
+      expect(tokens[4].value).to eq('')
+      expect(tokens[4].line).to eq(1)
+      expect(tokens[4].column).to eq(10)
     end
 
     it 'should handle "foo$bar$"' do
       @lexer.interpolate_string(%q{foo$bar$"}, 1, 1)
       tokens = @lexer.tokens
 
-      tokens.length.should == 3
+      expect(tokens.length).to eq(3)
 
-      tokens[0].type.should == :DQPRE
-      tokens[0].value.should == 'foo'
-      tokens[0].line.should == 1
-      tokens[0].column.should == 1
+      expect(tokens[0].type).to eq(:DQPRE)
+      expect(tokens[0].value).to eq('foo')
+      expect(tokens[0].line).to eq(1)
+      expect(tokens[0].column).to eq(1)
 
-      tokens[1].type.should == :UNENC_VARIABLE
-      tokens[1].value.should == 'bar'
-      tokens[1].line.should == 1
-      tokens[1].column.should == 5
+      expect(tokens[1].type).to eq(:UNENC_VARIABLE)
+      expect(tokens[1].value).to eq('bar')
+      expect(tokens[1].line).to eq(1)
+      expect(tokens[1].column).to eq(5)
 
-      tokens[2].type.should == :DQPOST
-      tokens[2].value.should == '$'
-      tokens[2].line.should == 1
-      tokens[2].column.should == 9
+      expect(tokens[2].type).to eq(:DQPOST)
+      expect(tokens[2].value).to eq('$')
+      expect(tokens[2].line).to eq(1)
+      expect(tokens[2].column).to eq(9)
     end
 
     it 'should handle "foo$$bar"' do
       @lexer.interpolate_string(%q{foo$$bar"}, 1, 1)
       tokens = @lexer.tokens
 
-      tokens.length.should == 3
+      expect(tokens.length).to eq(3)
 
-      tokens[0].type.should == :DQPRE
-      tokens[0].value.should == 'foo$'
-      tokens[0].line.should == 1
-      tokens[0].column.should == 1
+      expect(tokens[0].type).to eq(:DQPRE)
+      expect(tokens[0].value).to eq('foo$')
+      expect(tokens[0].line).to eq(1)
+      expect(tokens[0].column).to eq(1)
 
-      tokens[1].type.should == :UNENC_VARIABLE
-      tokens[1].value.should == 'bar'
-      tokens[1].line.should == 1
-      tokens[1].column.should == 6
+      expect(tokens[1].type).to eq(:UNENC_VARIABLE)
+      expect(tokens[1].value).to eq('bar')
+      expect(tokens[1].line).to eq(1)
+      expect(tokens[1].column).to eq(6)
 
-      tokens[2].type.should == :DQPOST
-      tokens[2].value.should == ''
-      tokens[2].line.should == 1
-      tokens[2].column.should == 10
+      expect(tokens[2].type).to eq(:DQPOST)
+      expect(tokens[2].value).to eq('')
+      expect(tokens[2].line).to eq(1)
+      expect(tokens[2].column).to eq(10)
     end
 
     it 'should handle an empty string' do
       @lexer.interpolate_string(%q{"}, 1, 1)
       tokens = @lexer.tokens
 
-      tokens.length.should == 1
+      expect(tokens.length).to eq(1)
 
-      tokens[0].type.should == :STRING
-      tokens[0].value.should == ''
-      tokens[0].line.should == 1
-      tokens[0].column.should == 1
+      expect(tokens[0].type).to eq(:STRING)
+      expect(tokens[0].value).to eq('')
+      expect(tokens[0].line).to eq(1)
+      expect(tokens[0].column).to eq(1)
     end
 
     it 'should handle "$foo::::bar"' do
       @lexer.interpolate_string(%q{$foo::::bar"}, 1, 1)
       tokens = @lexer.tokens
 
-      tokens.length.should == 3
+      expect(tokens.length).to eq(3)
 
-      tokens[0].type.should == :DQPRE
-      tokens[0].value.should == ''
-      tokens[0].line.should == 1
-      tokens[0].column.should == 1
+      expect(tokens[0].type).to eq(:DQPRE)
+      expect(tokens[0].value).to eq('')
+      expect(tokens[0].line).to eq(1)
+      expect(tokens[0].column).to eq(1)
 
-      tokens[1].type.should == :UNENC_VARIABLE
-      tokens[1].value.should == 'foo'
-      tokens[1].line.should == 1
-      tokens[1].column.should == 2
+      expect(tokens[1].type).to eq(:UNENC_VARIABLE)
+      expect(tokens[1].value).to eq('foo')
+      expect(tokens[1].line).to eq(1)
+      expect(tokens[1].column).to eq(2)
 
-      tokens[2].type.should == :DQPOST
-      tokens[2].value.should == '::::bar'
-      tokens[2].line.should == 1
-      tokens[2].column.should == 6
+      expect(tokens[2].type).to eq(:DQPOST)
+      expect(tokens[2].value).to eq('::::bar')
+      expect(tokens[2].line).to eq(1)
+      expect(tokens[2].column).to eq(6)
     end
   end
 
@@ -494,8 +494,8 @@ describe PuppetLint::Lexer do
   ].each do |keyword|
     it "should handle '#{keyword}' as a keyword" do
       token = @lexer.tokenise(keyword).first
-      token.type.should == keyword.upcase.to_sym
-      token.value.should == keyword
+      expect(token.type).to eq(keyword.upcase.to_sym)
+      expect(token.value).to eq(keyword)
     end
   end
 
@@ -547,202 +547,202 @@ describe PuppetLint::Lexer do
   ].each do |name, string|
     it "should have a token named '#{name.to_s}'" do
       token = @lexer.tokenise(string).first
-      token.type.should == name
-      token.value.should == string
+      expect(token.type).to eq(name)
+      expect(token.value).to eq(string)
     end
   end
 
   context ':CLASSREF' do
     it 'should match single capitalised alphanumeric term' do
       token = @lexer.tokenise('One').first
-      token.type.should == :CLASSREF
-      token.value.should == 'One'
+      expect(token.type).to eq(:CLASSREF)
+      expect(token.value).to eq('One')
     end
 
     it 'should match two capitalised alphanumeric terms sep by ::' do
       token = @lexer.tokenise('One::Two').first
-      token.type.should == :CLASSREF
-      token.value.should == 'One::Two'
+      expect(token.type).to eq(:CLASSREF)
+      expect(token.value).to eq('One::Two')
     end
 
     it 'should match many capitalised alphanumeric terms sep by ::' do
       token = @lexer.tokenise('One::Two::Three::Four::Five').first
-      token.type.should == :CLASSREF
-      token.value.should == 'One::Two::Three::Four::Five'
+      expect(token.type).to eq(:CLASSREF)
+      expect(token.value).to eq('One::Two::Three::Four::Five')
     end
 
     it 'should match capitalised terms prefixed by ::' do
       token = @lexer.tokenise('::One').first
-      token.type.should == :CLASSREF
-      token.value.should == '::One'
+      expect(token.type).to eq(:CLASSREF)
+      expect(token.value).to eq('::One')
     end
   end
 
   context ':NAME' do
     it 'should match lowercase alphanumeric terms' do
       token = @lexer.tokenise('one-two').first
-      token.type.should == :NAME
-      token.value.should == 'one-two'
+      expect(token.type).to eq(:NAME)
+      expect(token.value).to eq('one-two')
     end
 
     it 'should match lowercase alphanumeric terms sep by ::' do
       token = @lexer.tokenise('one::two').first
-      token.type.should == :NAME
-      token.value.should == 'one::two'
+      expect(token.type).to eq(:NAME)
+      expect(token.value).to eq('one::two')
     end
 
     it 'should match many lowercase alphanumeric terms sep by ::' do
       token = @lexer.tokenise('one::two::three::four::five').first
-      token.type.should == :NAME
-      token.value.should == 'one::two::three::four::five'
+      expect(token.type).to eq(:NAME)
+      expect(token.value).to eq('one::two::three::four::five')
     end
 
     it 'should match lowercase alphanumeric terms prefixed by ::' do
       token = @lexer.tokenise('::1one::2two::3three').first
-      token.type.should == :NAME
-      token.value.should == '::1one::2two::3three'
+      expect(token.type).to eq(:NAME)
+      expect(token.value).to eq('::1one::2two::3three')
     end
   end
 
   context ':NUMBER' do
     it 'should match numeric terms' do
       token = @lexer.tokenise('1234567890').first
-      token.type.should == :NUMBER
-      token.value.should == '1234567890'
+      expect(token.type).to eq(:NUMBER)
+      expect(token.value).to eq('1234567890')
     end
 
     it 'should match float terms' do
       token = @lexer.tokenise('12345.6789').first
-      token.type.should == :NUMBER
-      token.value.should == '12345.6789'
+      expect(token.type).to eq(:NUMBER)
+      expect(token.value).to eq('12345.6789')
     end
 
     it 'should match hexadecimal terms' do
       token = @lexer.tokenise('0xCAFE1029').first
-      token.type.should == :NUMBER
-      token.value.should == '0xCAFE1029'
+      expect(token.type).to eq(:NUMBER)
+      expect(token.value).to eq('0xCAFE1029')
     end
 
     it 'should match float with exponent terms' do
       token = @lexer.tokenise('10e23').first
-      token.type.should == :NUMBER
-      token.value.should == '10e23'
+      expect(token.type).to eq(:NUMBER)
+      expect(token.value).to eq('10e23')
     end
 
     it 'should match float with negative exponent terms' do
       token = @lexer.tokenise('10e-23').first
-      token.type.should == :NUMBER
-      token.value.should == '10e-23'
+      expect(token.type).to eq(:NUMBER)
+      expect(token.value).to eq('10e-23')
     end
 
     it 'should match float with exponent terms' do
       token = @lexer.tokenise('1.234e5').first
-      token.type.should == :NUMBER
-      token.value.should == '1.234e5'
+      expect(token.type).to eq(:NUMBER)
+      expect(token.value).to eq('1.234e5')
     end
   end
 
   context ':COMMENT' do
     it 'should match everything on a line after #' do
       token = @lexer.tokenise('foo # bar baz')[2]
-      token.type.should == :COMMENT
-      token.value.should == 'bar baz'
+      expect(token.type).to eq(:COMMENT)
+      expect(token.value).to eq('bar baz')
     end
   end
 
   context ':MLCOMMENT' do
     it 'should match comments on a single line' do
       token = @lexer.tokenise('/* foo bar */').first
-      token.type.should == :MLCOMMENT
-      token.value.should == 'foo bar'
+      expect(token.type).to eq(:MLCOMMENT)
+      expect(token.value).to eq('foo bar')
     end
 
     it 'should match comments on multiple lines' do
       token = @lexer.tokenise("/* foo\n * bar\n*/").first
-      token.type.should == :MLCOMMENT
-      token.value.should == "foo\nbar"
+      expect(token.type).to eq(:MLCOMMENT)
+      expect(token.value).to eq("foo\nbar")
     end
   end
 
   context ':SLASH_COMMENT' do
     it 'should match everyone on a line after //' do
       token = @lexer.tokenise('foo // bar baz')[2]
-      token.type.should == :SLASH_COMMENT
-      token.value.should == 'bar baz'
+      expect(token.type).to eq(:SLASH_COMMENT)
+      expect(token.value).to eq('bar baz')
     end
   end
 
   context ':SSTRING' do
     it 'should match a single quoted string' do
       token = @lexer.tokenise("'single quoted string'").first
-      token.type.should == :SSTRING
-      token.value.should == 'single quoted string'
+      expect(token.type).to eq(:SSTRING)
+      expect(token.value).to eq('single quoted string')
     end
 
     it "should match a single quoted string with an escaped '" do
       token = @lexer.tokenise(%q{'single quoted string with "\\'"'}).first
-      token.type.should == :SSTRING
-      token.value.should == 'single quoted string with "\\\'"'
+      expect(token.type).to eq(:SSTRING)
+      expect(token.value).to eq('single quoted string with "\\\'"')
     end
 
     it "should match a single quoted string with an escaped $" do
       token = @lexer.tokenise(%q{'single quoted string with "\$"'}).first
-      token.type.should == :SSTRING
-      token.value.should == 'single quoted string with "\\$"'
+      expect(token.type).to eq(:SSTRING)
+      expect(token.value).to eq('single quoted string with "\\$"')
     end
 
     it "should match a single quoted string with an escaped ." do
       token = @lexer.tokenise(%q{'single quoted string with "\."'}).first
-      token.type.should == :SSTRING
-      token.value.should == 'single quoted string with "\\."'
+      expect(token.type).to eq(:SSTRING)
+      expect(token.value).to eq('single quoted string with "\\."')
     end
 
     it "should match a single quoted string with an escaped \\n" do
       token = @lexer.tokenise(%q{'single quoted string with "\n"'}).first
-      token.type.should == :SSTRING
-      token.value.should == 'single quoted string with "\\n"'
+      expect(token.type).to eq(:SSTRING)
+      expect(token.value).to eq('single quoted string with "\\n"')
     end
 
     it "should match a single quoted string with an escaped \\" do
       token = @lexer.tokenise(%q{'single quoted string with "\\\\"'}).first
-      token.type.should == :SSTRING
-      token.value.should == 'single quoted string with "\\\\"'
+      expect(token.type).to eq(:SSTRING)
+      expect(token.value).to eq('single quoted string with "\\\\"')
     end
 
     it "should match an empty string" do
       token = @lexer.tokenise("''").first
-      token.type.should == :SSTRING
-      token.value.should == ''
+      expect(token.type).to eq(:SSTRING)
+      expect(token.value).to eq('')
     end
 
     it "should match an empty string ending with \\\\" do
       token = @lexer.tokenise("'foo\\\\'").first
-      token.type.should == :SSTRING
-      token.value.should == %{foo\\\\}
+      expect(token.type).to eq(:SSTRING)
+      expect(token.value).to eq(%{foo\\\\})
     end
   end
 
   context ':REGEX' do
     it 'should match anything enclosed in //' do
       token = @lexer.tokenise('/this is a regex/').first
-      token.type.should == :REGEX
-      token.value.should == 'this is a regex'
+      expect(token.type).to eq(:REGEX)
+      expect(token.value).to eq('this is a regex')
     end
 
     it 'should not match if there is \n in the regex' do
       token = @lexer.tokenise("/this is \n a regex/").first
-      token.type.should_not == :REGEX
+      expect(token.type).to_not eq(:REGEX)
     end
 
     it 'should not consider \/ to be the end of the regex' do
       token = @lexer.tokenise('/this is \/ a regex/').first
-      token.type.should == :REGEX
-      token.value.should == 'this is \\/ a regex'
+      expect(token.type).to eq(:REGEX)
+      expect(token.value).to eq('this is \\/ a regex')
     end
 
     it 'should not match chained division' do
       tokens = @lexer.tokenise('$x = $a/$b/$c')
-      tokens.select { |r| r.type == :REGEX }.should == []
+      expect(tokens.select { |r| r.type == :REGEX }).to be_empty
     end
   end
 

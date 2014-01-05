@@ -1,23 +1,25 @@
 require 'spec_helper'
 
 describe 'right_to_left_relationship' do
-  describe 'chain 2 resources left to right' do
+  let(:msg) { 'right-to-left (<-) relationship' }
+
+  context 'chain 2 resources left to right' do
     let(:code) { "Class[foo] -> Class[bar]" }
 
-    its(:problems) { should be_empty }
+    it 'should not detect any problems' do
+      expect(problems).to have(0).problems
+    end
   end
 
-  describe 'chain 2 resources right to left' do
+  context 'chain 2 resources right to left' do
     let(:code) { "Class[foo] <- Class[bar]" }
 
-    its(:problems) {
-      should have_problem({
-        :kind       => :warning,
-        :message    => "right-to-left (<-) relationship",
-        :linenumber => 1,
-        :column     => 12,
-      })
-      should_not have_problem :kind => :error
-    }
+    it 'should only detect a single problem' do
+      expect(problems).to have(1).problem
+    end
+
+    it 'should create a warning' do
+      expect(problems).to contain_warning(msg).on_line(1).in_column(12)
+    end
   end
 end
