@@ -52,7 +52,7 @@ end
 PuppetLint.new_check(:'80chars') do
   def check
     manifest_lines.each_with_index do |line, idx|
-      unless line =~ /:\/\//
+      unless line =~ /:\/\// || line =~ /template\(/
         if line.scan(/./mu).size > 80
           notify :warning, {
             :message    => 'line has more than 80 characters',
