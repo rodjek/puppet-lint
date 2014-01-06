@@ -1,4 +1,5 @@
 require 'puppet-lint'
+require 'puppet-lint/optparser'
 require 'rake'
 require 'rake/tasklib'
 
@@ -9,6 +10,7 @@ class PuppetLint
 
       task :lint do
         PuppetLint.configuration.with_filename = true
+        PuppetLint::OptParser.build
 
         RakeFileUtils.send(:verbose, true) do
           linter = PuppetLint.new
