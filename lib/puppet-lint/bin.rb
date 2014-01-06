@@ -1,4 +1,4 @@
-require 'optparse'
+require 'puppet-lint/optparser'
 
 class PuppetLint::Bin
   # Public: Initialise a new PuppetLint::Bin.
@@ -13,96 +13,7 @@ class PuppetLint::Bin
   #
   # Returns an Integer exit code to be passed back to the shell.
   def run
-    help = <<-EOHELP
-    Puppet-lint
-
-    Basic Command Line Usage:
-      puppet-lint [OPTIONS] [PATH]
-
-            PATH                         The path to the Puppet manifest.
-
-    Options:
-    EOHELP
-
-    opts = OptionParser.new do |opts|
-      opts.banner = help
-
-      opts.on("--version", "Display current version.") do
-        puts "puppet-lint " + PuppetLint::VERSION
-        return 0
-      end
-
-      opts.on('--with-context', 'Show where in the manifest the problem is') do
-        PuppetLint.configuration.with_context = true
-      end
-
-      opts.on("--with-filename", "Display the filename before the warning") do
-        PuppetLint.configuration.with_filename = true
-      end
-
-      opts.on("--fail-on-warnings", "Return a non-zero exit status for warnings.") do
-        PuppetLint.configuration.fail_on_warnings = true
-      end
-
-      opts.on("--error-level LEVEL", [:all, :warning, :error], "The level of error to return.", "(warning, error, all)") do |el|
-        PuppetLint.configuration.error_level = el
-      end
-
-      opts.on("-l", '--load FILE', 'Load a file containing custom puppet-lint checks.') do |f|
-        load f
-      end
-
-      opts.on('-f', '--fix', 'Attempt to automatically fix errors') do
-        PuppetLint.configuration.fix = true
-      end
-
-      opts.on("--log-format FORMAT",
-        "Change the log format.", "Overrides --with-filename.",
-        "The following placeholders can be used:",
-        "%{filename}   - Filename without path.",
-        "%{path}       - Path as provided.",
-        "%{fullpath}   - Full path.",
-        "%{linenumber} - Line number.",
-        "%{column}     - Column number.",
-        "%{kind}       - The kind of message.",
-        "              - (warning, error)",
-        "%{KIND}       - Uppercase version of %{kind}",
-        "%{check}      - Name of the check.",
-        "%{message}    - The message."
-      ) do |format|
-        PuppetLint.configuration.log_format = format
-      end
-
-      opts.separator ""
-      opts.separator "    Disable checks:"
-
-      opts.on('--only-check CHECKS', 'Provide a comma seperated list of checks that should be run') do |check_list|
-        enable_checks = check_list.split(',').map { |check| check.to_sym }
-        (PuppetLint.configuration.checks - enable_checks).each do |check|
-          PuppetLint.configuration.send("disable_#{check}")
-        end
-      end
-
-      PuppetLint.configuration.checks.each do |check|
-        opts.on("--no-#{check}-check", "Skip the #{check} check") do
-          PuppetLint.configuration.send("disable_#{check}")
-        end
-      end
-
-      opts.load('/etc/puppet-lint.rc')
-
-      if ENV['HOME']
-        opts.load(File.expand_path('~/.puppet-lint.rc'))
-        if opts.load(File.expand_path('~/.puppet-lintrc'))
-          $stderr.puts 'Depreciated: Found ~/.puppet-lintrc instead of ~/.puppet-lint.rc'
-        end
-      end
-
-      opts.load('.puppet-lint.rc')
-      if opts.load('.puppet-lintrc')
-        $stderr.puts 'Depreciated: Read .puppet-lintrc instead of .puppet-lint.rc'
-      end
-    end
+    opts = PuppetLint::OptParser.build
 
     begin
       opts.parse!(@args)
@@ -110,6 +21,11 @@ class PuppetLint::Bin
       puts "puppet-lint: #{$!.message}"
       puts "puppet-lint: try 'puppet-lint --help' for more information"
       return 1
+    end
+
+    if PuppetLint.configuration.display_version
+      puts "puppet-lint #{PuppetLint::VERSION}"
+      return 0
     end
 
     if @args[0].nil?
