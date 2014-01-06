@@ -16,6 +16,18 @@ describe '80chars' do
     end
   end
 
+  context 'file resource with a template line > 80c' do
+    let(:code) { "
+      file {
+        content => template('mymodule/this/is/a/truely/absurdly/long/path/that/should/make/you/feel/bad'),
+      }"
+    }
+
+    it 'should not detect any problems' do
+      expect(problems).to have(0).problems
+    end
+  end
+
   context 'length of lines with UTF-8 characters' do
     let(:code) { "
       # ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
