@@ -261,41 +261,5 @@ describe PuppetLint::Bin do
       its(:exitstatus) { should == 1 }
       its(:stdout) { should == 'test::foo not in autoload module layout' }
     end
-
-    context 'when loading options from a file' do
-      let(:args) { 'spec/fixtures/test/manifests/fail.pp' }
-
-      it 'should have ~/.puppet-lintrc as depreciated' do
-        OptionParser.any_instance.stub(:load).
-          with(File.expand_path('~/.puppet-lintrc')).and_return(true)
-        OptionParser.any_instance.stub(:load).
-          with(File.expand_path('~/.puppet-lint.rc')).and_return(false)
-        OptionParser.any_instance.stub(:load).
-          with('.puppet-lintrc').and_return(false)
-        OptionParser.any_instance.stub(:load).
-          with('.puppet-lint.rc').and_return(false)
-        OptionParser.any_instance.stub(:load).
-          with('/etc/puppet-lint.rc').and_return(false)
-
-        msg = 'Depreciated: Found ~/.puppet-lintrc instead of ~/.puppet-lint.rc'
-        expect(subject.stderr).to eq(msg)
-      end
-
-      it 'should have .puppet-lintrc as depreciated' do
-        OptionParser.any_instance.stub(:load).
-          with(File.expand_path('~/.puppet-lintrc')).and_return(false)
-        OptionParser.any_instance.stub(:load).
-          with(File.expand_path('~/.puppet-lint.rc')).and_return(false)
-        OptionParser.any_instance.stub(:load).
-          with('.puppet-lintrc').and_return(true)
-        OptionParser.any_instance.stub(:load).
-          with('.puppet-lint.rc').and_return(false)
-        OptionParser.any_instance.stub(:load).
-          with('/etc/puppet-lint.rc').and_return(false)
-
-        msg = 'Depreciated: Read .puppet-lintrc instead of .puppet-lint.rc'
-        expect(subject.stderr).to eq(msg)
-      end
-    end
   end
 end
