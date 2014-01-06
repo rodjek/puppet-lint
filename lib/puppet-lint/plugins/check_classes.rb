@@ -66,6 +66,8 @@ PuppetLint.new_check(:names_containing_dash) do
   end
 end
 
+# Public: Check the manifest tokens for any classes that inherit a params
+# subclass and record a warning for each instance found.
 PuppetLint.new_check(:class_inherits_from_params_class) do
   def check
     class_indexes.each do |class_idx|

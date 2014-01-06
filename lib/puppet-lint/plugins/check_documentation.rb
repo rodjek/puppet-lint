@@ -1,3 +1,6 @@
+# Public: Check the manifest tokens for any class or defined type that does not
+# have a comment directly above it (hopefully, explaining the usage of it) and
+# record a warning for each instance found.
 PuppetLint.new_check(:documentation) do
   def check
     comment_tokens = {

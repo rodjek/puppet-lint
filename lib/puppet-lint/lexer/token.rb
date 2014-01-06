@@ -1,35 +1,35 @@
 class PuppetLint
   class Lexer
     class Token
-      # Internal: Returns the Symbol type of the Token.
+      # Public: Returns the Symbol type of the Token.
       attr_accessor :type
 
-      # Internal: Returns the String value of the Token.
+      # Public: Returns the String value of the Token.
       attr_accessor :value
 
-      # Internal: Returns the Integer line number of the manifest text where
+      # Public: Returns the Integer line number of the manifest text where
       # the Token can be found.
       attr_reader :line
 
-      # Internal: Returns the Integer column number of the line of the manifest
+      # Public: Returns the Integer column number of the line of the manifest
       # text where the Token can be found.
       attr_reader :column
 
-      # Internal: Gets/sets the next token in the manifest.
+      # Public: Gets/sets the next token in the manifest.
       attr_accessor :next_token
 
-      # Internal: Gets/sets the previous token in the manifest.
+      # Public: Gets/sets the previous token in the manifest.
       attr_accessor :prev_token
 
-      # Internal: Gets/sets the next code token (skips whitespace, comments,
+      # Public: Gets/sets the next code token (skips whitespace, comments,
       # etc) in the manifest.
       attr_accessor :next_code_token
 
-      # Internal: Gets/sets the previous code tokne (skips whitespace,
+      # Public: Gets/sets the previous code tokne (skips whitespace,
       # comments, etc) in the manifest.
       attr_accessor :prev_code_token
 
-      # Internal: Initialise a new Token object.
+      # Public: Initialise a new Token object.
       #
       # type   - An upper case Symbol describing the type of Token.
       # value  - The String value of the Token.
@@ -50,7 +50,7 @@ class PuppetLint
         @prev_code_token = nil
       end
 
-      # Internal: Produce a human friendly description of the Token when
+      # Public: Produce a human friendly description of the Token when
       # inspected.
       #
       # Returns a String describing the Token.
@@ -58,7 +58,7 @@ class PuppetLint
         "<Token #{@type.inspect} (#{@value}) @#{@line}:#{@column}>"
       end
 
-      # Internal: Produce a Puppet DSL representation of a Token.
+      # Public: Produce a Puppet DSL representation of a Token.
       #
       # Returns a Puppet DSL String.
       def to_manifest

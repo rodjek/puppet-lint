@@ -14,6 +14,7 @@ class PuppetLint
   # Public: Gets/Sets the String manifest code to be checked.
   attr_accessor :code
 
+  # Public: Gets the String manifest with the errors fixed.
   attr_reader :manifest
 
   # Public: Returns an Array of Hashes describing the problems found in the
@@ -170,6 +171,11 @@ class PuppetLint
     report @problems
   end
 
+  # Public: Define a new check.
+  #
+  # name  - A unique name for the check as a Symbol
+  # block - The check logic. This must contain a `check` method and optionally
+  #         a `fix` method.
   def self.new_check(name, &block)
     class_name = name.to_s.split('_').map(&:capitalize).join
     klass = PuppetLint.const_set("Check#{class_name}", Class.new(PuppetLint::CheckPlugin))
