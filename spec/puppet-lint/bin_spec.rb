@@ -222,6 +222,16 @@ describe PuppetLint::Bin do
       its(:stdout) { should == '2' }
     end
 
+    context 'to print %{line}' do
+      let(:args) { [
+        '--log-format', '%{line}',
+        'spec/fixtures/test/manifests/fail.pp'
+      ] }
+
+      its(:exitstatus) { should == 1 }
+      its(:stdout) { should == '2' }
+    end
+
     context 'to print %{kind}' do
       let(:args) { [
         '--log-format', '%{kind}',

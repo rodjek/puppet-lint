@@ -11,9 +11,9 @@ PuppetLint.new_check(:selector_inside_resource) do
             unless token.next_code_token.next_code_token.nil?
               if token.next_code_token.next_code_token.type == :QMARK
                 notify :warning, {
-                  :message    => 'selector inside resource block',
-                  :linenumber => token.line,
-                  :column     => token.column,
+                  :message => 'selector inside resource block',
+                  :line    => token.line,
+                  :column  => token.column,
                 }
               end
             end
@@ -53,9 +53,9 @@ PuppetLint.new_check(:case_without_default) do
 
       unless case_tokens.index { |r| r.type == :DEFAULT }
         notify :warning, {
-          :message    => 'case statement without a default case',
-          :linenumber => case_tokens.first.line,
-          :column     => case_tokens.first.column,
+          :message => 'case statement without a default case',
+          :line    => case_tokens.first.line,
+          :column  => case_tokens.first.column,
         }
       end
     end

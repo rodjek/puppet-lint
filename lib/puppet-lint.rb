@@ -21,14 +21,14 @@ class PuppetLint
   # manifest.
   #
   # Each Hash will contain *at least*:
-  #   :check      - The Symbol name of the check that generated the problem.
-  #   :kind       - The Symbol kind of the problem (:error, :warning, or
-  #                 :fixed).
-  #   :linenumber - The Integer line number of the location of the problem in
-  #                 the manifest.
-  #   :column     - The Integer column number of the location of the problem in
-  #                 the manifest.
-  #   :message    - The String message describing the problem that was found.
+  #   :check   - The Symbol name of the check that generated the problem.
+  #   :kind    - The Symbol kind of the problem (:error, :warning, or
+  #              :fixed).
+  #   :line    - The Integer line number of the location of the problem in
+  #              the manifest.
+  #   :column  - The Integer column number of the location of the problem in
+  #              the manifest.
+  #   :message - The String message describing the problem that was found.
   attr_reader :problems
 
   # Public: Gets/Sets the String path to the manifest to be checked.
@@ -82,7 +82,7 @@ class PuppetLint
   def log_format
     if configuration.log_format == ''
       ## recreate previous old log format as far as thats possible.
-      format = '%{KIND}: %{message} on line %{linenumber}'
+      format = '%{KIND}: %{message} on line %{line}'
       if configuration.with_filename
         format.prepend '%{path} - '
       end
@@ -110,7 +110,7 @@ class PuppetLint
   def print_context(message)
     return if message[:check] == 'documentation'
     return if message[:kind] == :fixed
-    line = PuppetLint::Data.manifest_lines[message[:linenumber] - 1]
+    line = PuppetLint::Data.manifest_lines[message[:line] - 1]
     offset = line.index(/\S/) || 1
     puts "\n  #{line.strip}"
     printf "%#{message[:column] + 2 - offset}s\n\n", '^'

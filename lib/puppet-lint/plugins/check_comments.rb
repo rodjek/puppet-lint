@@ -6,10 +6,10 @@ PuppetLint.new_check(:slash_comments) do
       token.type == :SLASH_COMMENT
     }.each do |token|
       notify :warning, {
-        :message    => '// comment found',
-        :linenumber => token.line,
-        :column     => token.column,
-        :token      => token,
+        :message => '// comment found',
+        :line    => token.line,
+        :column  => token.column,
+        :token   => token,
       }
     end
   end
@@ -27,9 +27,9 @@ PuppetLint.new_check(:star_comments) do
       token.type == :MLCOMMENT
     }.each do |token|
       notify :warning, {
-        :message    => '/* */ comment found',
-        :linenumber => token.line,
-        :column     => token.column,
+        :message => '/* */ comment found',
+        :line    => token.line,
+        :column  => token.column,
       }
     end
   end

@@ -21,11 +21,11 @@ class PuppetLint::Checks
       PuppetLint::Data.tokens = lexer.tokenise(content)
     rescue PuppetLint::LexerError => e
       problems << {
-        :kind       => :error,
-        :check      => :syntax,
-        :message    => 'Syntax error (try running `puppet parser validate <file>`)',
-        :linenumber => e.line_no,
-        :column     => e.column,
+        :kind    => :error,
+        :check   => :syntax,
+        :message => 'Syntax error (try running `puppet parser validate <file>`)',
+        :line    => e.line_no,
+        :column  => e.column,
       }
       PuppetLint::Data.tokens = []
     end

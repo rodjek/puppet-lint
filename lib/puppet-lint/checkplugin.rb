@@ -76,10 +76,10 @@ class PuppetLint::CheckPlugin
   #
   # kind    - The Symbol problem type (:warning or :error).
   # problem - A Hash containing the attributes of the problem
-  #   :message    - The String message describing the problem.
-  #   :linenumber - The Integer line number of the location of the problem.
-  #   :column     - The Integer column number of the location of the problem.
-  #   :check      - The Symbol name of the check that detected the problem.
+  #   :message - The String message describing the problem.
+  #   :line    - The Integer line number of the location of the problem.
+  #   :column  - The Integer column number of the location of the problem.
+  #   :check   - The Symbol name of the check that detected the problem.
   #
   # Returns nothing.
   def notify(kind, problem)
@@ -90,7 +90,7 @@ class PuppetLint::CheckPlugin
       raise ArgumentError, "unknown value passed for kind"
     end
 
-    [:message, :linenumber, :column, :check].each do |attr|
+    [:message, :line, :column, :check].each do |attr|
       unless problem.has_key? attr
         raise ArgumentError, "problem hash must contain #{attr.inspect}"
       end
