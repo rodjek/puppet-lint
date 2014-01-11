@@ -27,13 +27,12 @@ end
 # Public: Check the manifest tokens for double quoted strings that contain
 # a single variable only and record a warning for each instance found.
 PuppetLint.new_check(:only_variable_string) do
+  VAR_TYPES = Set[:VARIABLE, :UNENC_VARIABLE]
   def check
-    variable_token_types = Set.new [:VARIABLE, :UNENC_VARIABLE]
-
     tokens.each_with_index do |start_token, start_token_idx|
       if start_token.type == :DQPRE and start_token.value == ''
         var_token = start_token.next_token
-        if variable_token_types.include? var_token.type
+        if VAR_TYPES.include? var_token.type
           eos_offset = 2
           loop do
             eos_token = tokens[start_token_idx + eos_offset]
@@ -125,9 +124,12 @@ end
 # containing only a boolean value and record a warning for each instance
 # found.
 PuppetLint.new_check(:quoted_booleans) do
+  STRING_TYPES = Set[:STRING, :SSTRING]
+  BOOLEANS = Set['true', 'false']
+
   def check
     tokens.select { |r|
-      string_token_types.include?(r.type) && %w{true false}.include?(r.value)
+      STRING_TYPES.include?(r.type) && BOOLEANS.include?(r.value)
     }.each do |token|
       notify :warning, {
         :message => 'quoted boolean value found',
@@ -140,11 +142,6 @@ PuppetLint.new_check(:quoted_booleans) do
 
   def fix(problem)
     problem[:token].type = problem[:token].value.upcase.to_sym
-  end
-
-  private
-  def string_token_types
-    Set[:STRING, :SSTRING]
   end
 end
 

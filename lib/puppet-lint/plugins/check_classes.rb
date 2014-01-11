@@ -161,28 +161,24 @@ end
 # Public: Test the manifest tokens for any classes or defined types that are
 # defined inside another class.
 PuppetLint.new_check(:nested_classes_or_defines) do
+  TOKENS = Set[:CLASS, :DEFINE]
+
   def check
     class_indexes.each do |class_idx|
       # Skip the first token so that we don't pick up the first :CLASS
       class_tokens = class_idx[:tokens][1..-1]
 
       class_tokens.each do |token|
-        if token.type == :CLASS
+        if TOKENS.include?(token.type)
           if token.next_code_token.type != :LBRACE
+            type = token.type == :CLASS ? 'class' : 'defined type'
+
             notify :warning, {
-              :message => "class defined inside a class",
+              :message => "#{type} defined inside a class",
               :line    => token.line,
               :column  => token.column,
             }
           end
-        end
-
-        if token.type == :DEFINE
-          notify :warning, {
-            :message => "defined type defined inside a class",
-            :line    => token.line,
-            :column  => token.column,
-          }
         end
       end
     end
@@ -195,29 +191,31 @@ end
 # defined in the local scope and record a warning for each variable that has
 # not.
 PuppetLint.new_check(:variable_scope) do
+  DEFAULT_SCOPE_VARS = Set[
+    'name',
+    'title',
+    'module_name',
+    'environment',
+    'clientcert',
+    'clientversion',
+    'servername',
+    'serverip',
+    'serverversion',
+    'caller_module_name',
+  ]
+  POST_VAR_TOKENS = Set[:COMMA, :EQUALS, :RPAREN]
+
   def check
-    variables_in_scope = [
-      'name',
-      'title',
-      'module_name',
-      'environment',
-      'clientcert',
-      'clientversion',
-      'servername',
-      'serverip',
-      'serverversion',
-      'caller_module_name',
-    ]
+    variables_in_scope = DEFAULT_SCOPE_VARS.clone
 
     (class_indexes + defined_type_indexes).each do |idx|
-      referenced_variables = []
+      referenced_variables = Set[]
       object_tokens = idx[:tokens]
 
       unless idx[:param_tokens].nil?
-        param_tokens = idx[:param_tokens]
-        param_tokens.each do |token|
+        idx[:param_tokens].each do |token|
           if token.type == :VARIABLE
-            if Set[:COMMA, :EQUALS, :RPAREN].include? token.next_code_token.type
+            if POST_VAR_TOKENS.include? token.next_code_token.type
               variables_in_scope << token.value
             end
           end

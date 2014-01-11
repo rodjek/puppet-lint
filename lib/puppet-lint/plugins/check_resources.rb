@@ -43,6 +43,8 @@ PuppetLint.new_check(:ensure_first_param) do
   end
 end
 
+# Public: Check the tokens of each resource instance for any duplicate
+# parameters and record a warning for each instance found.
 PuppetLint.new_check(:duplicate_params) do
   def check
     resource_indexes.each do |resource|
@@ -86,6 +88,8 @@ end
 # parameter and if found, record a warning if the value of that parameter is
 # not a quoted string.
 PuppetLint.new_check(:unquoted_file_mode) do
+  TOKEN_TYPES = Set[:NAME, :NUMBER]
+
   def check
     resource_indexes.each do |resource|
       if resource[:type].value == "file"
@@ -93,7 +97,7 @@ PuppetLint.new_check(:unquoted_file_mode) do
           param_token.value == 'mode'
         }.each do |param_token|
           value_token = param_token.next_code_token.next_code_token
-          if {:NAME => true, :NUMBER => true}.include? value_token.type
+          if TOKEN_TYPES.include? value_token.type
             notify :warning, {
               :message => 'unquoted file mode',
               :line    => value_token.line,
@@ -115,10 +119,11 @@ end
 # parameter and if found, record a warning if the value of that parameter is
 # not a 4 digit octal value (0755) or a symbolic mode ('o=rwx,g+r').
 PuppetLint.new_check(:file_mode) do
-  def check
-    msg = 'mode should be represented as a 4 digit octal value or symbolic mode'
-    sym_mode = /\A([ugoa]*[-=+][-=+rstwxXugo]*)(,[ugoa]*[-=+][-=+rstwxXugo]*)*\Z/
+  MSG = 'mode should be represented as a 4 digit octal value or symbolic mode'
+  SYM_RE = "([ugoa]*[-=+][-=+rstwxXugo]*)(,[ugoa]*[-=+][-=+rstwxXugo]*)*"
+  IGNORE_TYPES = Set[:VARIABLE, :UNDEF]
 
+  def check
     resource_indexes.each do |resource|
       if resource[:type].value == "file"
         resource[:param_tokens].select { |param_token|
@@ -126,13 +131,11 @@ PuppetLint.new_check(:file_mode) do
         }.each do |param_token|
           value_token = param_token.next_code_token.next_code_token
 
-          break if value_token.value =~ /\A[0-7]{4}\Z/
-          break if value_token.type == :VARIABLE
-          break if value_token.value =~ sym_mode
-          break if value_token.type == :UNDEF
+          break if value_token.value =~ /\A([0-7]{4}|#{SYM_RE})\Z/
+          break if IGNORE_TYPES.include?(value_token.type)
 
           notify :warning, {
-            :message => msg,
+            :message => MSG,
             :line    => value_token.line,
             :column  => value_token.column,
             :token   => value_token,

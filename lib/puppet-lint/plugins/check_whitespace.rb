@@ -1,9 +1,11 @@
 # Public: Check the raw manifest string for lines containing hard tab
 # characters and record an error for each instance found.
 PuppetLint.new_check(:hard_tabs) do
+  WHITESPACE_TYPES = Set[:INDENT, :WHITESPACE]
+
   def check
     tokens.select { |r|
-      [:INDENT, :WHITESPACE].include?(r.type) && r.value.include?("\t")
+      WHITESPACE_TYPES.include?(r.type) && r.value.include?("\t")
     }.each do |token|
       notify :error, {
         :message => 'tab character found',
@@ -87,13 +89,15 @@ end
 # Public: Check the manifest tokens for any arrows (=>) in a grouping ({}) that
 # are not aligned with other arrows in that grouping.
 PuppetLint.new_check(:arrow_alignment) do
+  COMMENT_TYPES = Set[:COMMENT, :SLASH_COMMENT, :MLCOMMENT]
+
   def check
     resource_indexes.each do |res_idx|
       indent_depth = [0]
       indent_depth_idx = 0
       resource_tokens = res_idx[:tokens]
       resource_tokens.reject! do |token|
-        {:COMMENT => true, :SLASH_COMMENT => true, :MLCOMMENT => true}.include? token.type
+        COMMENT_TYPES.include? token.type
       end
 
       # If this is a single line resource, skip it
