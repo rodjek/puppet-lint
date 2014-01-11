@@ -86,7 +86,11 @@ class PuppetLint::Data
                   unless tokens[real_idx].type == :SEMIC && depth > 1
                     depth -= 1
                     if depth == 0
-                      result << {:start => token_idx + 1, :end => real_idx}
+                      result << {
+                        :start  => token_idx + 1,
+                        :end    => real_idx,
+                        :tokens => tokens[(token_idx + 1)..real_idx],
+                      }
                       break
                     end
                   end
@@ -128,7 +132,11 @@ class PuppetLint::Data
                 brace_depth -= 1
                 if brace_depth == 0 && ! in_params
                   if token.next_code_token.type != :LBRACE
-                    result << {:start => i, :end => i + j + 1}
+                    result << {
+                      :start  => i,
+                      :end    => i + j + 1,
+                      :tokens => tokens[i..(i + j + 1)],
+                    }
                   end
                   break
                 end
@@ -168,7 +176,11 @@ class PuppetLint::Data
               elsif define_token.type == :RBRACE
                 brace_depth -= 1
                 if brace_depth == 0 && !in_params
-                  result << {:start => i, :end => i + j + 1}
+                  result << {
+                    :start => i,
+                    :end   => i + j + 1,
+                    :token => tokens[i..(i + j + 1)],
+                  }
                   break
                 end
               end
