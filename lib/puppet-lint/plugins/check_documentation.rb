@@ -16,13 +16,13 @@ PuppetLint.new_check(:documentation) do
     }
 
     (class_indexes + defined_type_indexes).each do |item_idx|
-      prev_token = tokens[item_idx[:start] - 1]
+      prev_token = item_idx[:tokens].first.prev_token
       while (!prev_token.nil?) && whitespace_tokens.include?(prev_token.type)
         prev_token = prev_token.prev_token
       end
 
       unless (!prev_token.nil?) && comment_tokens.include?(prev_token.type)
-        first_token = tokens[item_idx[:start]]
+        first_token = item_idx[:tokens].first
         if first_token.type == :CLASS
           type = 'class'
         else

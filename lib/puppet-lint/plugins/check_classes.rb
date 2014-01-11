@@ -19,8 +19,8 @@ PuppetLint.new_check(:autoloader_layout) do
   def check
     unless fullpath.nil? || fullpath == ''
       (class_indexes + defined_type_indexes).each do |class_idx|
-        class_tokens = tokens[class_idx[:start]..class_idx[:end]]
-        title_token = class_tokens[class_tokens.index { |r| r.type == :NAME }]
+        class_tokens = class_idx[:tokens]
+        title_token = class_tokens.select { |r| r.type == :NAME }.first
         split_title = title_token.value.split('::')
         mod = split_title.first
         if split_title.length > 1
@@ -46,8 +46,8 @@ end
 PuppetLint.new_check(:names_containing_dash) do
   def check
     (class_indexes + defined_type_indexes).each do |class_idx|
-      class_tokens = tokens[class_idx[:start]..class_idx[:end]]
-      title_token = class_tokens[class_tokens.index { |r| r.type == :NAME }]
+      class_tokens = class_idx[:tokens]
+      title_token = class_tokens.select { |r| r.type == :NAME }.first
 
       if title_token.value.include? '-'
         if class_tokens.first.type == :CLASS
@@ -71,10 +71,11 @@ end
 PuppetLint.new_check(:class_inherits_from_params_class) do
   def check
     class_indexes.each do |class_idx|
-      class_tokens = tokens[class_idx[:start]..class_idx[:end]]
-      inherits_idx = class_tokens.index { |r| r.type == :INHERITS }
-      unless inherits_idx.nil?
-        inherited_class_token = class_tokens[inherits_idx].next_code_token
+      class_tokens = class_idx[:tokens]
+      inherits_token = class_tokens.select { |r| r.type == :INHERITS }.first
+
+      unless inherits_token.nil?
+        inherited_class_token = inherits_token.next_code_token
         if inherited_class_token.value.end_with? '::params'
           notify :warning, {
             :message    => 'class inheriting from params class',
@@ -93,26 +94,8 @@ end
 PuppetLint.new_check(:parameter_order) do
   def check
     defined_type_indexes.each do |class_idx|
-      token_idx = class_idx[:start]
-      depth = 0
-      lparen_idx = nil
-      rparen_idx = nil
-      tokens[token_idx..-1].each_index do |t|
-        idx = token_idx + t
-        if tokens[idx].type == :LPAREN
-          depth += 1
-          lparen_idx = idx if depth == 1
-        elsif tokens[idx].type == :RPAREN
-          depth -= 1
-          if depth == 0
-            rparen_idx = idx
-            break
-          end
-        end
-      end
-
-      unless lparen_idx.nil? or rparen_idx.nil?
-        param_tokens = tokens[lparen_idx+1..rparen_idx-1].reject { |r|
+      unless class_idx[:param_tokens].nil?
+        param_tokens = class_idx[:param_tokens].reject { |r|
           formatting_tokens.include? r.type
         }
 
@@ -155,23 +138,21 @@ end
 PuppetLint.new_check(:inherits_across_namespaces) do
   def check
     class_indexes.each do |class_idx|
-      class_token = tokens[class_idx[:start]]
+      class_token = class_idx[:tokens].first
       class_name_token = class_token.next_code_token
-      inherits_token = class_name_token.next_code_token
+      inherits_token = class_idx[:tokens].select { |r| r.type == :INHERITS }.first
       next if inherits_token.nil?
 
-      if inherits_token.type == :INHERITS
-        inherited_class_token = inherits_token.next_code_token
-        inherited_module_name = inherited_class_token.value.split('::').reject { |r| r.empty? }.first
-        class_module_name = class_name_token.value.split('::').reject { |r| r.empty? }.first
+      inherited_class_token = inherits_token.next_code_token
+      inherited_module_name = inherited_class_token.value.split('::').reject { |r| r.empty? }.first
+      class_module_name = class_name_token.value.split('::').reject { |r| r.empty? }.first
 
-        unless class_module_name == inherited_module_name
-          notify :warning, {
-            :message    => "class inherits across module namespaces",
-            :linenumber => inherited_class_token.line,
-            :column     => inherited_class_token.column,
-          }
-        end
+      unless class_module_name == inherited_module_name
+        notify :warning, {
+          :message    => "class inherits across module namespaces",
+          :linenumber => inherited_class_token.line,
+          :column     => inherited_class_token.column,
+        }
       end
     end
   end
@@ -183,7 +164,7 @@ PuppetLint.new_check(:nested_classes_or_defines) do
   def check
     class_indexes.each do |class_idx|
       # Skip the first token so that we don't pick up the first :CLASS
-      class_tokens = tokens[class_idx[:start]+1..class_idx[:end]]
+      class_tokens = class_idx[:tokens][1..-1]
 
       class_tokens.each do |token|
         if token.type == :CLASS
@@ -229,26 +210,11 @@ PuppetLint.new_check(:variable_scope) do
     ]
 
     (class_indexes + defined_type_indexes).each do |idx|
-      object_tokens = tokens[idx[:start]..idx[:end]]
-      depth = 0
-      lparen_idx = nil
-      rparen_idx = nil
-      object_tokens.each_with_index do |token, i|
-        if token.type == :LPAREN
-          depth += 1
-          lparen_idx = i if depth == 1
-        elsif token.type == :RPAREN
-          depth -= 1
-          if depth == 0
-            rparen_idx = i
-            break
-          end
-        end
-      end
       referenced_variables = []
+      object_tokens = idx[:tokens]
 
-      unless lparen_idx.nil? or rparen_idx.nil?
-        param_tokens = object_tokens[lparen_idx..rparen_idx]
+      unless idx[:param_tokens].nil?
+        param_tokens = idx[:param_tokens]
         param_tokens.each do |token|
           if token.type == :VARIABLE
             if Set[:COMMA, :EQUALS, :RPAREN].include? token.next_code_token.type
