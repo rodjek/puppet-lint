@@ -162,9 +162,10 @@ class PuppetLint::Data
               if brace_depth == 0 && !in_params
                 if token.next_code_token.type != :LBRACE
                   result << {
-                    :start => i,
-                    :end   => i + j + 1,
-                    :token => tokens[i..(i + j + 1)],
+                    :start        => i,
+                    :end          => i + j + 1,
+                    :tokens       => tokens[i..(i + j + 1)],
+                    :param_tokens => param_tokens(tokens[i..(i + j + 1)]),
                   }
                   break
                 end
@@ -174,6 +175,31 @@ class PuppetLint::Data
         end
       end
       result
+    end
+
+    def param_tokens(these_tokens)
+      depth = 0
+      lparen_idx = nil
+      rparen_idx = nil
+
+      these_tokens.each_with_index do |token, i|
+        if token.type == :LPAREN
+          depth += 1
+          lparen_idx = i if depth == 1
+        elsif token.type == :RPAREN
+          depth -= 1
+          if depth == 0
+            rparen_idx = i
+            break
+          end
+        end
+      end
+
+      if lparen_idx.nil? or rparen_idx.nil?
+        nil
+      else
+        these_tokens[(lparen_idx + 1)..(rparen_idx - 1)]
+      end
     end
 
     # Internal: Retrieves a list of token types that are considered to be
