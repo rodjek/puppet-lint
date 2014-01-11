@@ -44,16 +44,19 @@ class PuppetLint::OptParser
       opts.on('--log-format FORMAT',
               'Change the log format.', 'Overrides --with-filename.',
               'The following placeholders can be used:',
-              '%{filename}   - Filename without path.',
-              '%{path}       - Path as provided to puppet-lint.',
-              '%{fullpath}   - Expanded path to the file.',
-              '%{linenumber} - Line number.',
-              '%{column}     - Column number.',
-              '%{kind}       - The kind of message (warning, error).',
-              '%{KIND}       - Uppercase version of %{kind}.',
-              '%{check}      - The name of the check.',
-              '%{message}    - The message.'
+              '%{filename} - Filename without path.',
+              '%{path}     - Path as provided to puppet-lint.',
+              '%{fullpath} - Expanded path to the file.',
+              '%{line}     - Line number.',
+              '%{column}   - Column number.',
+              '%{kind}     - The kind of message (warning, error).',
+              '%{KIND}     - Uppercase version of %{kind}.',
+              '%{check}    - The name of the check.',
+              '%{message}  - The message.'
       ) do |format|
+        if format.include?('%{linenumber}')
+          $stderr.puts "DEPRECATION: Please use %{line} instead of %{linenumber}"
+        end
         PuppetLint.configuration.log_format = format
       end
 

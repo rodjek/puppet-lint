@@ -4,9 +4,9 @@ PuppetLint.new_check(:right_to_left_relationship) do
   def check
     tokens.select { |r| r.type == :OUT_EDGE }.each do |token|
       notify :warning, {
-        :message    =>  'right-to-left (<-) relationship',
-        :linenumber => token.line,
-        :column     => token.column,
+        :message =>  'right-to-left (<-) relationship',
+        :line    => token.line,
+        :column  => token.column,
       }
     end
   end
@@ -31,9 +31,9 @@ PuppetLint.new_check(:autoloader_layout) do
 
         unless fullpath.end_with? expected_path
           notify :error, {
-            :message    => "#{title_token.value} not in autoload module layout",
-            :linenumber => title_token.line,
-            :column     => title_token.column,
+            :message => "#{title_token.value} not in autoload module layout",
+            :line    => title_token.line,
+            :column  => title_token.column,
           }
         end
       end
@@ -57,9 +57,9 @@ PuppetLint.new_check(:names_containing_dash) do
         end
 
         notify :warning, {
-          :message    => "#{obj_type} name containing a dash",
-          :linenumber => title_token.line,
-          :column     => title_token.column,
+          :message => "#{obj_type} name containing a dash",
+          :line    => title_token.line,
+          :column  => title_token.column,
         }
       end
     end
@@ -77,9 +77,9 @@ PuppetLint.new_check(:class_inherits_from_params_class) do
         inherited_class_token = class_tokens[inherits_idx].next_code_token
         if inherited_class_token.value.end_with? '::params'
           notify :warning, {
-            :message    => 'class inheriting from params class',
-            :linenumber => inherited_class_token.line,
-            :column     => inherited_class_token.column,
+            :message => 'class inheriting from params class',
+            :line    => inherited_class_token.line,
+            :column  => inherited_class_token.column,
           }
         end
       end
@@ -136,9 +136,9 @@ PuppetLint.new_check(:parameter_order) do
                 unless prev_token.nil? or prev_token.type == :EQUALS
                   msg = 'optional parameter listed before required parameter'
                   notify :warning, {
-                    :message    => msg,
-                    :linenumber => this_token.line,
-                    :column     => this_token.column,
+                    :message => msg,
+                    :line    => this_token.line,
+                    :column  => this_token.column,
                   }
                 end
               end
@@ -167,9 +167,9 @@ PuppetLint.new_check(:inherits_across_namespaces) do
 
         unless class_module_name == inherited_module_name
           notify :warning, {
-            :message    => "class inherits across module namespaces",
-            :linenumber => inherited_class_token.line,
-            :column     => inherited_class_token.column,
+            :message => "class inherits across module namespaces",
+            :line    => inherited_class_token.line,
+            :column  => inherited_class_token.column,
           }
         end
       end
@@ -189,18 +189,18 @@ PuppetLint.new_check(:nested_classes_or_defines) do
         if token.type == :CLASS
           if token.next_code_token.type != :LBRACE
             notify :warning, {
-              :message    => "class defined inside a class",
-              :linenumber => token.line,
-              :column     => token.column,
+              :message => "class defined inside a class",
+              :line    => token.line,
+              :column  => token.column,
             }
           end
         end
 
         if token.type == :DEFINE
           notify :warning, {
-            :message    => "defined type defined inside a class",
-            :linenumber => token.line,
-            :column     => token.column,
+            :message => "defined type defined inside a class",
+            :line    => token.line,
+            :column  => token.column,
           }
         end
       end
@@ -274,9 +274,9 @@ PuppetLint.new_check(:variable_scope) do
           unless variables_in_scope.include? token.value
             unless token.value =~ /\d+/
               notify :warning, {
-                :message    => msg,
-                :linenumber => token.line,
-                :column     => token.column,
+                :message => msg,
+                :line    => token.line,
+                :column  => token.column,
               }
             end
           end

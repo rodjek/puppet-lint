@@ -8,10 +8,10 @@ PuppetLint.new_check(:unquoted_node_name) do
       value_token = token.next_code_token
       unless value_token.value == 'default'
         notify :warning, {
-          :message    => 'unquoted node name found',
-          :linenumber => value_token.line,
-          :column     => value_token.column,
-          :token      => value_token,
+          :message => 'unquoted node name found',
+          :line    => value_token.line,
+          :column  => value_token.column,
+          :token   => value_token,
         }
       end
     end
