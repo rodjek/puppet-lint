@@ -87,9 +87,11 @@ class PuppetLint::Data
                     depth -= 1
                     if depth == 0
                       result << {
-                        :start  => token_idx + 1,
-                        :end    => real_idx,
-                        :tokens => tokens[(token_idx + 1)..real_idx],
+                        :start        => token_idx + 1,
+                        :end          => real_idx,
+                        :tokens       => tokens[(token_idx + 1)..real_idx],
+                        :type         => find_resource_type_token(token_idx),
+                        :param_tokens => find_resource_param_tokens(tokens[(token_idx + 1)..real_idx]),
                       }
                       break
                     end
@@ -101,6 +103,29 @@ class PuppetLint::Data
         end
         result
       end.call
+    end
+
+    # Internal: Find the Token representing the type of a resource definition.
+    #
+    # index - The Integer pointing to the start of the resource in the `tokens`
+    #         array.
+    #
+    # Returns a Token object.
+    def find_resource_type_token(index)
+      tokens[tokens[0..index].rindex { |token| token.type == :LBRACE }].prev_code_token
+    end
+
+    # Internal: Find all the Token objects representing the parameter names in
+    # a resource definition.
+    #
+    # resource_tokens - An Array of Token objects that comprise the resource
+    #                   definition.
+    #
+    # Returns an Array of Token objects.
+    def find_resource_param_tokens(resource_tokens)
+      resource_tokens.select { |token|
+        token.type == :NAME && token.next_code_token.type == :FARROW
+      }
     end
 
     # Internal: Calculate the positions of all class definitions within the
