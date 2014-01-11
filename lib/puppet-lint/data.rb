@@ -86,7 +86,13 @@ class PuppetLint::Data
                   unless tokens[real_idx].type == :SEMIC && depth > 1
                     depth -= 1
                     if depth == 0
-                      result << {:start => token_idx + 1, :end => real_idx}
+                      result << {
+                        :start        => token_idx + 1,
+                        :end          => real_idx,
+                        :tokens       => tokens[(token_idx + 1)..real_idx],
+                        :type         => find_resource_type_token(token_idx),
+                        :param_tokens => find_resource_param_tokens(tokens[(token_idx + 1)..real_idx]),
+                      }
                       break
                     end
                   end
@@ -99,84 +105,126 @@ class PuppetLint::Data
       end.call
     end
 
+    # Internal: Find the Token representing the type of a resource definition.
+    #
+    # index - The Integer pointing to the start of the resource in the `tokens`
+    #         array.
+    #
+    # Returns a Token object.
+    def find_resource_type_token(index)
+      tokens[tokens[0..index].rindex { |token| token.type == :LBRACE }].prev_code_token
+    end
+
+    # Internal: Find all the Token objects representing the parameter names in
+    # a resource definition.
+    #
+    # resource_tokens - An Array of Token objects that comprise the resource
+    #                   definition.
+    #
+    # Returns an Array of Token objects.
+    def find_resource_param_tokens(resource_tokens)
+      resource_tokens.select { |token|
+        token.type == :NAME && token.next_code_token.type == :FARROW
+      }
+    end
+
     # Internal: Calculate the positions of all class definitions within the
     # `tokens` Array.
     #
     # Returns an Array of Hashes, each containing:
-    #   :start - An Integer position in the `tokens` Array pointing to the
-    #            first Token of a class definition.
-    #   :end   - An Integer position in the `tokens` Array pointing to the last
-    #            Token of a class definition.
+    #   :start  - An Integer position in the `tokens` Array pointing to the
+    #             first Token of a class definition.
+    #   :end    - An Integer position in the `tokens` Array pointing to the last
+    #             Token of a class definition.
+    #   :tokens - An Array consisting of all the Token objects that make up the
+    #             class definition.
     def class_indexes
-      @class_indexes ||= Proc.new do
-        result = []
-        tokens.each_with_index do |token, i|
-          if token.type == :CLASS
-            brace_depth = 0
-            paren_depth = 0
-            in_params = false
-            tokens[i+1..-1].each_with_index do |class_token, j|
-              if class_token.type == :LPAREN
-                in_params = true if paren_depth == 1
-                paren_depth += 1
-              elsif class_token.type == :RPAREN
-                in_params = false if paren_depth == 0
-                paren_depth -= 1
-              elsif class_token.type == :LBRACE
-                brace_depth += 1
-              elsif class_token.type == :RBRACE
-                brace_depth -= 1
-                if brace_depth == 0 && ! in_params
-                  if token.next_code_token.type != :LBRACE
-                    result << {:start => i, :end => i + j + 1}
-                  end
-                  break
-                end
-              end
-            end
-          end
-        end
-        result
-      end.call
+      @class_indexes ||= definition_indexes(:CLASS)
     end
 
     # Internal: Calculate the positions of all defined type definitions within
     # the `tokens` Array.
     #
     # Returns an Array of Hashes, each containing:
-    #   :start - An Integer position in the `tokens` Array pointing to the
-    #            first Token of a defined type definition.
-    #   :end   - An Integer position in the `tokens` Array pointing to the last
-    #            Token of a defined type definition.
+    #   :start  - An Integer position in the `tokens` Array pointing to the
+    #             first Token of a defined type definition.
+    #   :end    - An Integer position in the `tokens` Array pointing to the last
+    #             Token of a defined type definition.
+    #   :tokens - An Array consisting of all the Token objects that make up the
+    #             defined type.
     def defined_type_indexes
-      @defined_type_indexes ||= Proc.new do
-        result = []
-        tokens.each_with_index do |token, i|
-          if token.type == :DEFINE
-            brace_depth = 0
-            paren_depth = 0
-            in_params = false
-            tokens[i+1..-1].each_with_index do |define_token, j|
-              if define_token.type == :LPAREN
-                in_params = true if paren_depth == 0
-                paren_depth += 1
-              elsif define_token.type == :RPAREN
-                in_params = false if paren_depth == 1
-                paren_depth -= 1
-              elsif define_token.type == :LBRACE
-                brace_depth += 1
-              elsif define_token.type == :RBRACE
-                brace_depth -= 1
-                if brace_depth == 0 && !in_params
-                  result << {:start => i, :end => i + j + 1}
+      @defined_type_indexes ||= definition_indexes(:DEFINE)
+    end
+
+    # Internal: Calculate the positions of all the specified defintion types
+    # within the `tokens` Array.
+    #
+    # Returns an Array of Hashes, each containing:
+    #   :start  - An Integer position in the `tokens` Array pointing to the
+    #             first Token of a definition.
+    #   :end    - An Integer position in the `tokens` Array pointing to the last
+    #             Token of a definition.
+    #   :tokens - An Array consisting of all the Token objects that make up the
+    #             definition.
+    def definition_indexes(type)
+      result = []
+      tokens.each_with_index do |token, i|
+        if token.type == type
+          brace_depth = 0
+          paren_depth = 0
+          in_params = false
+          tokens[i+1..-1].each_with_index do |definition_token, j|
+            if definition_token.type == :LPAREN
+              in_params = true if paren_depth == 0
+              paren_depth += 1
+            elsif definition_token.type == :RPAREN
+              in_params = false if paren_depth == 1
+              paren_depth -= 1
+            elsif definition_token.type == :LBRACE
+              brace_depth += 1
+            elsif definition_token.type == :RBRACE
+              brace_depth -= 1
+              if brace_depth == 0 && !in_params
+                if token.next_code_token.type != :LBRACE
+                  result << {
+                    :start        => i,
+                    :end          => i + j + 1,
+                    :tokens       => tokens[i..(i + j + 1)],
+                    :param_tokens => param_tokens(tokens[i..(i + j + 1)]),
+                  }
                   break
                 end
               end
             end
           end
         end
-        result
-      end.call
+      end
+      result
+    end
+
+    def param_tokens(these_tokens)
+      depth = 0
+      lparen_idx = nil
+      rparen_idx = nil
+
+      these_tokens.each_with_index do |token, i|
+        if token.type == :LPAREN
+          depth += 1
+          lparen_idx = i if depth == 1
+        elsif token.type == :RPAREN
+          depth -= 1
+          if depth == 0
+            rparen_idx = i
+            break
+          end
+        end
+      end
+
+      if lparen_idx.nil? or rparen_idx.nil?
+        nil
+      else
+        these_tokens[(lparen_idx + 1)..(rparen_idx - 1)]
+      end
     end
 
     # Internal: Retrieves a list of token types that are considered to be

@@ -25,18 +25,13 @@ end
 PuppetLint.new_check(:ensure_first_param) do
   def check
     resource_indexes.each do |resource|
-      resource_tokens = tokens[resource[:start]..resource[:end]]
-
-      param_tokens = resource_tokens.select { |resource_token|
-        resource_token.type == :NAME && resource_token.next_code_token.type == :FARROW
-      }
-      ensure_attr_index = param_tokens.index { |resource_token|
-        resource_token.value == 'ensure'
+      ensure_attr_index = resource[:param_tokens].index { |param_token|
+        param_token.value == 'ensure'
       }
 
       unless ensure_attr_index.nil?
         if ensure_attr_index > 0
-          ensure_token = param_tokens[ensure_attr_index]
+          ensure_token = resource[:param_tokens][ensure_attr_index]
           notify :warning, {
             :message => "ensure found on line but it's not the first attribute",
             :line    => ensure_token.line,
@@ -51,7 +46,7 @@ end
 PuppetLint.new_check(:duplicate_params) do
   def check
     resource_indexes.each do |resource|
-      resource_tokens = tokens[resource[:start]..resource[:end]].reject { |r|
+      resource_tokens = resource[:tokens].reject { |r|
         formatting_tokens.include? r.type
       }
 
@@ -93,19 +88,11 @@ end
 PuppetLint.new_check(:unquoted_file_mode) do
   def check
     resource_indexes.each do |resource|
-      resource_tokens = tokens[resource[:start]..resource[:end]]
-      prev_tokens = tokens[0..resource[:start]]
-
-      lbrace_idx = prev_tokens.rindex { |r|
-        r.type == :LBRACE
-      }
-
-      resource_type_token = tokens[lbrace_idx].prev_code_token
-      if resource_type_token.value == "file"
-        resource_tokens.select { |resource_token|
-          resource_token.type == :NAME and resource_token.value == 'mode'
-        }.each do |resource_token|
-          value_token = resource_token.next_code_token.next_code_token
+      if resource[:type].value == "file"
+        resource[:param_tokens].select { |param_token|
+          param_token.value == 'mode'
+        }.each do |param_token|
+          value_token = param_token.next_code_token.next_code_token
           if {:NAME => true, :NUMBER => true}.include? value_token.type
             notify :warning, {
               :message => 'unquoted file mode',
@@ -133,21 +120,11 @@ PuppetLint.new_check(:file_mode) do
     sym_mode = /\A([ugoa]*[-=+][-=+rstwxXugo]*)(,[ugoa]*[-=+][-=+rstwxXugo]*)*\Z/
 
     resource_indexes.each do |resource|
-      resource_tokens = tokens[resource[:start]..resource[:end]]
-      prev_tokens = tokens[0..resource[:start]]
-
-      lbrace_idx = prev_tokens.rindex { |r|
-        r.type == :LBRACE
-      }
-
-      resource_type_token = tokens[lbrace_idx].prev_code_token
-      if resource_type_token.value == "file"
-        resource_tokens.select { |resource_token|
-          resource_token.type == :NAME and resource_token.value == 'mode'
-        }.each do |resource_token|
-          break unless resource_token.next_code_token.type == :FARROW
-
-          value_token = resource_token.next_code_token.next_code_token
+      if resource[:type].value == "file"
+        resource[:param_tokens].select { |param_token|
+          param_token.value == 'mode'
+        }.each do |param_token|
+          value_token = param_token.next_code_token.next_code_token
 
           break if value_token.value =~ /\A[0-7]{4}\Z/
           break if value_token.type == :VARIABLE
@@ -181,17 +158,9 @@ end
 PuppetLint.new_check(:ensure_not_symlink_target) do
   def check
     resource_indexes.each do |resource|
-      resource_tokens = tokens[resource[:start]..resource[:end]]
-      prev_tokens = tokens[0..resource[:start]]
-
-      lbrace_idx = prev_tokens.rindex { |r|
-        r.type == :LBRACE
-      }
-
-      resource_type_token = tokens[lbrace_idx].prev_code_token
-      if resource_type_token.value == "file"
-        resource_tokens.select { |resource_token|
-          resource_token.type == :NAME and resource_token.value == 'ensure'
+      if resource[:type].value == "file"
+        resource[:param_tokens].select { |param_token|
+          param_token.value == 'ensure'
         }.each do |ensure_token|
           value_token = ensure_token.next_code_token.next_code_token
           if value_token.value.start_with? '/'

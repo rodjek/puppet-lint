@@ -91,7 +91,7 @@ PuppetLint.new_check(:arrow_alignment) do
     resource_indexes.each do |res_idx|
       indent_depth = [0]
       indent_depth_idx = 0
-      resource_tokens = tokens[res_idx[:start]..res_idx[:end]]
+      resource_tokens = res_idx[:tokens]
       resource_tokens.reject! do |token|
         {:COMMENT => true, :SLASH_COMMENT => true, :MLCOMMENT => true}.include? token.type
       end
