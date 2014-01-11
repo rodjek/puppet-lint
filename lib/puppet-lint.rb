@@ -125,6 +125,7 @@ class PuppetLint
   def report(problems)
     problems.each do |message|
       message[:KIND] = message[:kind].to_s.upcase
+      message[:linenumber] = message[:line]
 
       if message[:kind] == :fixed || [message[:kind], :all].include?(configuration.error_level)
         format_message message

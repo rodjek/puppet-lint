@@ -54,6 +54,9 @@ class PuppetLint::OptParser
               '%{check}    - The name of the check.',
               '%{message}  - The message.'
       ) do |format|
+        if format.include?('%{linenumber}')
+          $stderr.puts "DEPRECATION: Please use %{line} instead of %{linenumber}"
+        end
         PuppetLint.configuration.log_format = format
       end
 
