@@ -13,7 +13,7 @@ module RSpec
       end
 
       def on_line(line)
-        @expected_problem[:linenumber] = line
+        @expected_problem[:line] = line
         @description << "on line #{line}"
         self
       end

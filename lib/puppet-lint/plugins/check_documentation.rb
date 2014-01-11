@@ -30,9 +30,9 @@ PuppetLint.new_check(:documentation) do
         end
 
         notify :warning, {
-          :message    => "#{type} not documented",
-          :linenumber => first_token.line,
-          :column     => first_token.column,
+          :message => "#{type} not documented",
+          :line    => first_token.line,
+          :column  => first_token.column,
         }
       end
     end

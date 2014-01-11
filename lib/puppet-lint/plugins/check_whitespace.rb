@@ -6,10 +6,10 @@ PuppetLint.new_check(:hard_tabs) do
       [:INDENT, :WHITESPACE].include?(r.type) && r.value.include?("\t")
     }.each do |token|
       notify :error, {
-        :message    => 'tab character found',
-        :linenumber => token.line,
-        :column     => token.column,
-        :token      => token,
+        :message => 'tab character found',
+        :line    => token.line,
+        :column  => token.column,
+        :token   => token,
       }
     end
   end
@@ -29,10 +29,10 @@ PuppetLint.new_check(:trailing_whitespace) do
       token.next_token.nil? || token.next_token.type == :NEWLINE
     }.each do |token|
       notify :error, {
-        :message    => 'trailing whitespace found',
-        :linenumber => token.line,
-        :column     => token.column,
-        :token      => token,
+        :message => 'trailing whitespace found',
+        :line    => token.line,
+        :column  => token.column,
+        :token   => token,
       }
     end
   end
@@ -56,9 +56,9 @@ PuppetLint.new_check(:'80chars') do
       unless line =~ /:\/\// || line =~ /template\(/
         if line.scan(/./mu).size > 80
           notify :warning, {
-            :message    => 'line has more than 80 characters',
-            :linenumber => idx + 1,
-            :column     => 80,
+            :message => 'line has more than 80 characters',
+            :line    => idx + 1,
+            :column  => 80,
           }
         end
       end
@@ -76,9 +76,9 @@ PuppetLint.new_check(:'2sp_soft_tabs') do
       r.value.length % 2 == 0
     }.each do |token|
       notify :error, {
-        :message    => 'two-space soft tabs not used',
-        :linenumber => token.line,
-        :column     => token.column,
+        :message => 'two-space soft tabs not used',
+        :line    => token.line,
+        :column  => token.column,
       }
     end
   end
@@ -126,7 +126,7 @@ PuppetLint.new_check(:arrow_alignment) do
           unless indent_depth[indent_depth_idx] == indent_length
             notify :warning, {
               :message      => 'indentation of => is not properly aligned',
-              :linenumber   => token.line,
+              :line         => token.line,
               :column       => token.column,
               :token        => token,
               :indent_depth => indent_depth[indent_depth_idx],

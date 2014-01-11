@@ -11,10 +11,10 @@ PuppetLint.new_check(:double_quoted_strings) do
       r.value[/(\\\$|\\"|\\'|\r|\t|\\t|\n|\\n)/].nil?
     }.each do |token|
       notify :warning, {
-        :message    => 'double quoted string containing no variables',
-        :linenumber => token.line,
-        :column     => token.column,
-        :token      => token,
+        :message => 'double quoted string containing no variables',
+        :line    => token.line,
+        :column  => token.column,
+        :token   => token,
       }
     end
   end
@@ -44,7 +44,7 @@ PuppetLint.new_check(:only_variable_string) do
               if eos_token.value == ''
                 notify :warning, {
                   :message     => 'string containing only a variable',
-                  :linenumber  => var_token.line,
+                  :line        => var_token.line,
                   :column      => var_token.column,
                   :start_token => start_token,
                   :var_token   => var_token,
@@ -92,10 +92,10 @@ PuppetLint.new_check(:variables_not_enclosed) do
       r.type == :UNENC_VARIABLE
     }.each do |token|
       notify :warning, {
-        :message    => 'variable not enclosed in {}',
-        :linenumber => token.line,
-        :column     => token.column,
-        :token      => token,
+        :message => 'variable not enclosed in {}',
+        :line    => token.line,
+        :column  => token.column,
+        :token   => token,
       }
     end
   end
@@ -113,9 +113,9 @@ PuppetLint.new_check(:single_quote_string_with_variables) do
       r.type == :SSTRING && r.value.include?('${')
     }.each do |token|
       notify :error, {
-        :message    => 'single quoted string containing a variable found',
-        :linenumber => token.line,
-        :column     => token.column,
+        :message => 'single quoted string containing a variable found',
+        :line    => token.line,
+        :column  => token.column,
       }
     end
   end
@@ -130,10 +130,10 @@ PuppetLint.new_check(:quoted_booleans) do
       string_token_types.include?(r.type) && %w{true false}.include?(r.value)
     }.each do |token|
       notify :warning, {
-        :message    => 'quoted boolean value found',
-        :linenumber => token.line,
-        :column     => token.column,
-        :token      => token,
+        :message => 'quoted boolean value found',
+        :line    => token.line,
+        :column  => token.column,
+        :token   => token,
       }
     end
   end
@@ -159,9 +159,9 @@ PuppetLint.new_check(:puppet_url_without_modules) do
       token.value[/puppet:\/\/.*?\/(.+)/, 1].start_with?('modules/')
     }.each do |token|
       notify :warning, {
-        :message    => 'puppet:// URL without modules/ found',
-        :linenumber => token.line,
-        :column     => token.column,
+        :message => 'puppet:// URL without modules/ found',
+        :line    => token.line,
+        :column  => token.column,
       }
     end
   end

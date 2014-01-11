@@ -5,10 +5,10 @@ PuppetLint.new_check(:unquoted_resource_title) do
     title_tokens.each do |token|
       if token.type == :NAME
         notify :warning, {
-          :message    => 'unquoted resource title',
-          :linenumber => token.line,
-          :column     => token.column,
-          :token      => token,
+          :message => 'unquoted resource title',
+          :line    => token.line,
+          :column  => token.column,
+          :token   => token,
         }
       end
     end
@@ -33,9 +33,9 @@ PuppetLint.new_check(:ensure_first_param) do
         if ensure_attr_index > 0
           ensure_token = resource[:param_tokens][ensure_attr_index]
           notify :warning, {
-            :message    => "ensure found on line but it's not the first attribute",
-            :linenumber => ensure_token.line,
-            :column     => ensure_token.column,
+            :message => "ensure found on line but it's not the first attribute",
+            :line    => ensure_token.line,
+            :column  => ensure_token.column,
           }
         end
       end
@@ -69,9 +69,9 @@ PuppetLint.new_check(:duplicate_params) do
           next unless prev_token.type == :NAME
           if seen_params[level].include? prev_token.value
             notify :error, {
-              :message    => 'duplicate parameter found in resource',
-              :linenumber => prev_token.line,
-              :column     => prev_token.column,
+              :message => 'duplicate parameter found in resource',
+              :line    => prev_token.line,
+              :column  => prev_token.column,
             }
           else
             seen_params[level][prev_token.value] = true
@@ -95,10 +95,10 @@ PuppetLint.new_check(:unquoted_file_mode) do
           value_token = param_token.next_code_token.next_code_token
           if {:NAME => true, :NUMBER => true}.include? value_token.type
             notify :warning, {
-              :message    => 'unquoted file mode',
-              :linenumber => value_token.line,
-              :column     => value_token.column,
-              :token      => value_token,
+              :message => 'unquoted file mode',
+              :line    => value_token.line,
+              :column  => value_token.column,
+              :token   => value_token,
             }
           end
         end
@@ -132,10 +132,10 @@ PuppetLint.new_check(:file_mode) do
           break if value_token.type == :UNDEF
 
           notify :warning, {
-            :message    => msg,
-            :linenumber => value_token.line,
-            :column     => value_token.column,
-            :token      => value_token,
+            :message => msg,
+            :line    => value_token.line,
+            :column  => value_token.column,
+            :token   => value_token,
           }
         end
       end
@@ -165,9 +165,9 @@ PuppetLint.new_check(:ensure_not_symlink_target) do
           value_token = ensure_token.next_code_token.next_code_token
           if value_token.value.start_with? '/'
             notify :warning, {
-              :message    => 'symlink target specified in ensure attr',
-              :linenumber => value_token.line,
-              :column     => value_token.column,
+              :message => 'symlink target specified in ensure attr',
+              :line    => value_token.line,
+              :column  => value_token.column,
             }
           end
         end
