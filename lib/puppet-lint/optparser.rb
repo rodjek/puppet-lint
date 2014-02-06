@@ -37,6 +37,10 @@ class PuppetLint::OptParser
         PuppetLint.configuration.error_level = el
       end
 
+      opts.on('--relative', 'Ignore the working directory during structure tests') do
+        PuppetLint.configuration.relative = true
+      end
+
       opts.on('-l', '--load FILE', 'Load a file containing custom puppet-lint checks.') do |f|
         load f
       end

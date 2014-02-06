@@ -57,4 +57,49 @@ describe 'autoloader_layout' do
       expect(problems).to have(0).problems
     end
   end
+
+  context 'foo in puppet-foo/manifests/init.pp' do
+    let(:code) { 'class foo { }' }
+    let(:path) { 'puppet-foo/manifests/init.pp' }
+
+    it 'should detect a single problem' do
+      expect(problems).to have(1).problems
+    end
+  end
+
+  context 'foo in puppet-foo/manifests/bar.pp with relative option' do
+    before do
+      PuppetLint.configuration.relative = true
+    end
+
+    after do
+      PuppetLint.configuration.relative = false
+    end
+
+    let(:code) { 'class foo { }' }
+    let(:path) { 'puppet-foo/manifests/bar.pp' }
+
+    it 'should detect a single problem' do
+      expect(problems).to have(1).problems
+    end
+  end
+
+  context 'foo in puppet-foo/manifests/init.pp with relative option' do
+    before do
+      PuppetLint.configuration.relative = true
+    end
+
+    after do
+      PuppetLint.configuration.relative = false
+    end
+
+    let(:code) { 'class foo { }' }
+    let(:path) { 'puppet-foo/manifests/init.pp' }
+
+    it 'should not detect any problems' do
+      expect(problems).to have(0).problems
+    end
+  end
+
+
 end
