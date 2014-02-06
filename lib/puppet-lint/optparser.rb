@@ -37,7 +37,7 @@ class PuppetLint::OptParser
         PuppetLint.configuration.error_level = el
       end
 
-      opts.on('--relative', 'Compare module layout relative to the working directory') do
+      opts.on('--relative', 'Compare module layout relative to the module root') do
         PuppetLint.configuration.relative = true
       end
 
