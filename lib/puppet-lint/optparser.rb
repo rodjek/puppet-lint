@@ -37,7 +37,7 @@ class PuppetLint::OptParser
         PuppetLint.configuration.error_level = el
       end
 
-      opts.on('--relative', 'Ignore the working directory during structure tests') do
+      opts.on('--relative', 'Compare module layout relative to the working directory') do
         PuppetLint.configuration.relative = true
       end
 
