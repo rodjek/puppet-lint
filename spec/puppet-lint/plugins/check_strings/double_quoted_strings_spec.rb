@@ -117,6 +117,14 @@ describe 'double_quoted_strings' do
         expect(problems).to contain_warning(msg).on_line(1).in_column(12)
       end
     end
+
+    context 'single quotes in a double quoted string' do
+      let(:code) { "\"this 'string' 'has' lots of 'quotes'\"" }
+
+      it 'should not detect any problems' do
+        expect(problems).to have(0).problems
+      end
+    end
   end
 
   context 'with fix enabled' do
@@ -165,6 +173,18 @@ describe 'double_quoted_strings' do
 
       it 'should convert the double quoted string into single quotes' do
         expect(manifest).to eq("'aoeu' '${foo}'")
+      end
+    end
+
+    context 'single quotes in a double quoted string' do
+      let(:code) { "\"this 'string' 'has' lots of 'quotes'\"" }
+
+      it 'should not detect any problems' do
+        expect(problems).to have(0).problems
+      end
+
+      it 'should not modify the manifest' do
+        expect(manifest).to eq(code)
       end
     end
   end
