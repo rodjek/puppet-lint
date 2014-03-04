@@ -25,7 +25,7 @@ class PuppetLint
             linter.run
             linter.print_problems
           end
-          fail if linter.errors? || (
+          abort if linter.errors? || (
             linter.warnings? && PuppetLint.configuration.fail_on_warnings
           )
         end
