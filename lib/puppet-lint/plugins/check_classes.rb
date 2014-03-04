@@ -29,6 +29,10 @@ PuppetLint.new_check(:autoloader_layout) do
           expected_path = "/#{title_token.value}/manifests/init.pp"
         end
 
+        if PuppetLint.configuration.relative
+          expected_path = expected_path.gsub(/^\//,'').split('/')[1..-1].join('/')
+        end
+
         unless fullpath.end_with? expected_path
           notify :error, {
             :message => "#{title_token.value} not in autoload module layout",

@@ -37,6 +37,10 @@ class PuppetLint::OptParser
         PuppetLint.configuration.error_level = el
       end
 
+      opts.on('--relative', 'Compare module layout relative to the module root') do
+        PuppetLint.configuration.relative = true
+      end
+
       opts.on('-l', '--load FILE', 'Load a file containing custom puppet-lint checks.') do |f|
         load f
       end
