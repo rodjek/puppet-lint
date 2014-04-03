@@ -3,13 +3,13 @@
 # each instance found.
 PuppetLint.new_check(:double_quoted_strings) do
   def check
-    tokens.select { |r|
-      r.type == :STRING
-    }.each { |r|
-      r.value.gsub!(' '*r.column, "\n")
-    }.select { |r|
-      r.value[/(\\\$|\\"|\\'|\r|\t|\\t|\n|\\n)/].nil?
-    }.each do |token|
+    tokens.select { |token|
+      token.type == :STRING
+    }.map { |token|
+      [token, token.value.gsub(' '*token.column, "\n")]
+    }.select { |token, sane_value|
+      sane_value[/(\\\$|\\"|\\'|\r|\t|\\t|\n|\\n)/].nil?
+    }.each do |token, sane_value|
       notify :warning, {
         :message => 'double quoted string containing no variables',
         :line    => token.line,
