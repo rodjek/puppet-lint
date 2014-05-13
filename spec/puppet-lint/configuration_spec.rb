@@ -50,6 +50,7 @@ describe PuppetLint::Configuration do
       'log_format' => '',
       'with_context' => false,
       'fix' => false,
+      'show_ignored' => false,
     })
   end
 end

@@ -1,4 +1,5 @@
 require 'singleton'
+require 'set'
 
 class PuppetLint::Data
   include Singleton
@@ -233,6 +234,57 @@ class PuppetLint::Data
     # Returns an Array of Symbols.
     def formatting_tokens
       @formatting_tokens ||= PuppetLint::Lexer::FORMATTING_TOKENS
+    end
+
+    # Internal: Retrieves a Hash of Sets. Each key is a check name Symbol and
+    # the Set of Integers returned lists all the lines that the check results
+    # should be ignored on.
+    #
+    # Returns a Hash of Sets of Integers.
+    def ignore_overrides
+      @ignore_overrides ||= {}
+    end
+
+    # Internal: Parses all COMMENT, MLCOMMENT and SLASH_COMMENT tokens looking
+    # for control comments (comments that enable or disable checks). Builds the
+    # contents of the `ignore_overrides` hash.
+    #
+    # Returns nothing.
+    def parse_control_comments
+      @ignore_overrides.each_key { |check| @ignore_overrides[check].clear }
+
+      comment_token_types = Set[:COMMENT, :MLCOMMENT, :SLASH_COMMENT]
+
+      comment_tokens = tokens.select { |token|
+        comment_token_types.include?(token.type)
+      }
+      control_comment_tokens = comment_tokens.select { |token|
+        token.value =~ /\Alint:(ignore:[\w\d]+|endignore)\Z/
+      }
+
+      stack = []
+      control_comment_tokens.each do |token|
+        split_comment = token.value.split(':')
+        command = split_comment[1]
+
+        if command == 'ignore'
+          check = split_comment[2].to_sym
+
+          if token.prev_token && !Set[:NEWLINE, :INDENT].include?(token.prev_token.type)
+            # control comment at the end of the line, override applies to
+            # a single line only
+            (ignore_overrides[check] ||= Set.new) << token.line
+          else
+            stack << token
+          end
+        else
+          start_token = stack.pop
+          unless start_token.nil?
+            check = start_token.value.split(':').last.to_sym
+            (ignore_overrides[check] ||= Set.new).merge(start_token.line..token.line)
+          end
+        end
+      end
     end
   end
 end

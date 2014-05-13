@@ -37,6 +37,10 @@ class PuppetLint::OptParser
         PuppetLint.configuration.error_level = el
       end
 
+      opts.on('--show-ignored', 'Show problems that have been ignored by control comments') do
+        PuppetLint.configuration.show_ignored = true
+      end
+
       opts.on('--relative', 'Compare module layout relative to the module root') do
         PuppetLint.configuration.relative = true
       end

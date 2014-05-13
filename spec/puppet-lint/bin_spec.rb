@@ -273,4 +273,23 @@ describe PuppetLint::Bin do
       its(:stdout) { should == 'test::foo not in autoload module layout' }
     end
   end
+
+  context 'when hiding ignored problems' do
+    let(:args) { [
+      'spec/fixtures/test/manifests/ignore.pp'
+    ] }
+
+    its(:exitstatus) { should == 0 }
+    its(:stdout) { should_not match(/IGNORED/) }
+  end
+
+  context 'when showing ignored problems' do
+    let(:args) { [
+      '--show-ignored',
+      'spec/fixtures/test/manifests/ignore.pp',
+    ] }
+
+    its(:exitstatus) { should == 0 }
+    its(:stdout) { should match(/IGNORED/) }
+  end
 end

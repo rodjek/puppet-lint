@@ -6,8 +6,13 @@ class PuppetLint::CheckPlugin
   def run
     check
 
-    if PuppetLint.configuration.fix && self.respond_to?(:fix)
-      @problems.each do |problem|
+    @problems.each do |problem|
+      if PuppetLint::Data.ignore_overrides[problem[:check]].include?(problem[:line])
+        problem[:kind] = :ignored
+        next
+      end
+
+      if PuppetLint.configuration.fix && self.respond_to?(:fix)
         begin
           fix(problem)
         rescue PuppetLint::NoFix
