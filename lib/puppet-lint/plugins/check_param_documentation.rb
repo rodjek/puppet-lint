@@ -64,6 +64,7 @@ PuppetLint.new_check(:param_documentation) do
         end
 
         current = first_token
+
         while (WHITESPACE_TOKENS + COMMENT_TOKENS).include?(current.type)
           if ( current.value.include?("[*#{name}*]")) then
 
@@ -124,7 +125,10 @@ PuppetLint.new_check(:param_documentation) do
               end
             end
           end
-          if !current.next_token.nil? then
+
+          # Only search up to the firest code token - all parameter
+          # doc should precede the class definition
+          if !current.next_token.nil? and (WHITESPACE_TOKENS + COMMENT_TOKENS).include?(current.next_token.type) then
             current = current.next_token
           else
             notify :warning, {
