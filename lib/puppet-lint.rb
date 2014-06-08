@@ -45,7 +45,7 @@ class PuppetLint
   # Public: Initialise a new PuppetLint object.
   def initialize
     @code = nil
-    @statistics = {:error => 0, :warning => 0, :fixed => 0}
+    @statistics = {:error => 0, :warning => 0, :fixed => 0, :ignored => 0}
     @manifest = ''
   end
 
@@ -99,6 +99,9 @@ class PuppetLint
   def format_message(message)
     format = log_format
     puts format % message
+    if message[:kind] == :ignored && !message[:reason].nil?
+      puts "  #{message[:reason]}"
+    end
   end
 
   # Internal: Print out the line of the manifest on which the problem was found
@@ -124,6 +127,8 @@ class PuppetLint
   # Returns nothing.
   def report(problems)
     problems.each do |message|
+      next if message[:kind] == :ignored && !PuppetLint.configuration.show_ignored
+
       message[:KIND] = message[:kind].to_s.upcase
       message[:linenumber] = message[:line]
 
@@ -183,6 +188,7 @@ class PuppetLint
     klass.const_set('NAME', name)
     klass.class_exec(&block)
     PuppetLint.configuration.add_check(name, klass)
+    PuppetLint::Data.ignore_overrides[name] ||= {}
   end
 end
 

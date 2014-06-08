@@ -19,6 +19,7 @@ class PuppetLint::Checks
     lexer = PuppetLint::Lexer.new
     begin
       PuppetLint::Data.tokens = lexer.tokenise(content)
+      PuppetLint::Data.parse_control_comments
     rescue PuppetLint::LexerError => e
       problems << {
         :kind    => :error,
