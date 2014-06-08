@@ -292,4 +292,17 @@ describe PuppetLint::Bin do
     its(:exitstatus) { should == 0 }
     its(:stdout) { should match(/IGNORED/) }
   end
+
+  context 'when showing ignored problems with a reason' do
+    let(:args) { [
+      '--show-ignored',
+      'spec/fixtures/test/manifests/ignore_reason.pp',
+    ] }
+
+    its(:exitstatus) { should == 0 }
+    its(:stdout) { should eq [
+      "IGNORED: double quoted string containing no variables on line 1",
+      "  for a good reason",
+    ].join("\n") }
+  end
 end

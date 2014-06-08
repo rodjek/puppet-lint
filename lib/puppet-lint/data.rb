@@ -259,29 +259,31 @@ class PuppetLint::Data
         comment_token_types.include?(token.type)
       }
       control_comment_tokens = comment_tokens.select { |token|
-        token.value =~ /\Alint:(ignore:[\w\d]+|endignore)\Z/
+        token.value =~ /\Alint:(ignore:[\w\d]+|endignore)/
       }
 
       stack = []
       control_comment_tokens.each do |token|
-        split_comment = token.value.split(':')
-        command = split_comment[1]
+        control, reason = token.value.split(' ', 2)
+        split_control = control.split(':')
+        command = split_control[1]
 
         if command == 'ignore'
-          check = split_comment[2].to_sym
+          check = split_control[2].to_sym
 
           if token.prev_token && !Set[:NEWLINE, :INDENT].include?(token.prev_token.type)
             # control comment at the end of the line, override applies to
             # a single line only
-            (ignore_overrides[check] ||= Set.new) << token.line
+            (ignore_overrides[check] ||= {})[token.line] = reason
           else
-            stack << token
+            stack << [token.line, reason, check]
           end
         else
-          start_token = stack.pop
-          unless start_token.nil?
-            check = start_token.value.split(':').last.to_sym
-            (ignore_overrides[check] ||= Set.new).merge(start_token.line..token.line)
+          start = stack.pop
+          unless start.nil?
+            (start[0]..token.line).each do |i|
+              (ignore_overrides[start[2]] ||= {})[i] = start[1]
+            end
           end
         end
       end

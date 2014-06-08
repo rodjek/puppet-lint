@@ -24,6 +24,12 @@ module RSpec
         self
       end
 
+      def with_reason(reason)
+        @expected_problem[:reason] = reason
+        @description << "with reason '#{reason}'"
+        self
+      end
+
       def matches?(problems)
         @problems = problems
 

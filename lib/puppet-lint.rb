@@ -99,6 +99,9 @@ class PuppetLint
   def format_message(message)
     format = log_format
     puts format % message
+    if message[:kind] == :ignored && !message[:reason].nil?
+      puts "  #{message[:reason]}"
+    end
   end
 
   # Internal: Print out the line of the manifest on which the problem was found
@@ -185,7 +188,7 @@ class PuppetLint
     klass.const_set('NAME', name)
     klass.class_exec(&block)
     PuppetLint.configuration.add_check(name, klass)
-    PuppetLint::Data.ignore_overrides[name] ||= Set.new
+    PuppetLint::Data.ignore_overrides[name] ||= {}
   end
 end
 
