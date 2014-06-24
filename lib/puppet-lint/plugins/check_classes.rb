@@ -228,7 +228,7 @@ PuppetLint.new_check(:variable_scope) do
 
       object_tokens.each do |token|
         if token.type == :VARIABLE
-          if token.next_code_token.type == :EQUALS
+          if token.next_code_token.type == :EQUALS or token.next_code_token.type == :PIPE
             variables_in_scope << token.value
           else
             referenced_variables << token

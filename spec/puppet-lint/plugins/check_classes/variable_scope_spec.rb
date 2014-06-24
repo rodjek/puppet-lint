@@ -112,4 +112,23 @@ describe 'variable_scope' do
       expect(problems).to have(0).problems
     end
   end
+
+
+  context 'define with for each loops' do
+    let(:code) { "
+      define foreach ()
+        $array = [ 'bar', 'moo' ]
+        $array.each |$a| {
+        }
+
+        $hash = { 'a' => 100, 'b' => 200 }
+        $hash.each |$k, $v| {
+        }
+      }"
+    }
+
+    it 'should not detect any problems' do
+      expect(problems).to have(0).problems
+    end
+  end
 end
