@@ -182,13 +182,13 @@ class PuppetLint
 
           elsif comment = chunk[/\A(#.*)/, 1]
             comment_size = comment.size
-            comment.sub!(/# ?/, '')
+            comment.sub!(/#/, '')
             tokens << new_token(:COMMENT, comment, :chunk => code[0..i])
             i += comment_size
 
           elsif slash_comment = chunk[/\A(\/\/.*)/, 1]
             slash_comment_size = slash_comment.size
-            slash_comment.sub!(/\/\/ ?/, '')
+            slash_comment.sub!(/\/\//, '')
             tokens << new_token(:SLASH_COMMENT, slash_comment, :chunk => code[0..i])
             i += slash_comment_size
 

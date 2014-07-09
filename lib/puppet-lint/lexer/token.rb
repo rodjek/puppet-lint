@@ -85,7 +85,7 @@ class PuppetLint
           if @value.start_with?('#') || @value.empty?
             "##{@value}"
           else
-            "# #{@value}"
+            "##{@value}"
           end
         when :REGEX
           "/#{@value}/"

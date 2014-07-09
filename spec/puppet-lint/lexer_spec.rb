@@ -647,7 +647,7 @@ describe PuppetLint::Lexer do
     it 'should match everything on a line after #' do
       token = @lexer.tokenise('foo # bar baz')[2]
       expect(token.type).to eq(:COMMENT)
-      expect(token.value).to eq('bar baz')
+      expect(token.value).to eq(' bar baz')
     end
   end
 
@@ -669,7 +669,7 @@ describe PuppetLint::Lexer do
     it 'should match everyone on a line after //' do
       token = @lexer.tokenise('foo // bar baz')[2]
       expect(token.type).to eq(:SLASH_COMMENT)
-      expect(token.value).to eq('bar baz')
+      expect(token.value).to eq(' bar baz')
     end
   end
 
