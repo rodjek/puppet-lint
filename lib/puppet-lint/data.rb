@@ -259,12 +259,12 @@ class PuppetLint::Data
         comment_token_types.include?(token.type)
       }
       control_comment_tokens = comment_tokens.select { |token|
-        token.value =~ /\Alint:(ignore:[\w\d]+|endignore)/
+        token.value.strip =~ /\Alint:(ignore:[\w\d]+|endignore)/
       }
 
       stack = []
       control_comment_tokens.each do |token|
-        control, reason = token.value.split(' ', 2)
+        control, reason = token.value.strip.split(' ', 2)
         split_control = control.split(':')
         command = split_control[1]
 
