@@ -82,11 +82,7 @@ class PuppetLint
         when :NEWLINE
           "\n"
         when :COMMENT
-          if @value.start_with?('#') || @value.empty?
-            "##{@value}"
-          else
-            "##{@value}"
-          end
+          "##{@value}"
         when :REGEX
           "/#{@value}/"
         else
