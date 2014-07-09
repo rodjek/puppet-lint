@@ -49,6 +49,10 @@ class PuppetLint::OptParser
         load f
       end
 
+      opts.on('-f', '--fix', 'Attempt to automatically fix errors') do
+        PuppetLint.configuration.fix = true
+      end
+
       opts.on('--log-format FORMAT',
               'Change the log format.', 'Overrides --with-filename.',
               'The following placeholders can be used:',
