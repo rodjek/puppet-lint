@@ -182,6 +182,28 @@ describe PuppetLint::Lexer do
       expect(tokens[2].column).to eq(8)
     end
 
+    it 'should handle a variable with an array reference' do
+      @lexer.interpolate_string('${foo[bar][baz]}"', 1, 1)
+      tokens = @lexer.tokens
+
+      expect(tokens.length).to eq(3)
+
+      expect(tokens[0].type).to eq(:DQPRE)
+      expect(tokens[0].value).to eq('')
+      expect(tokens[0].line).to eq(1)
+      expect(tokens[0].column).to eq(1)
+
+      expect(tokens[1].type).to eq(:VARIABLE)
+      expect(tokens[1].value).to eq('foo[bar][baz]')
+      expect(tokens[1].line).to eq(1)
+      expect(tokens[1].column).to eq(3)
+
+      expect(tokens[2].type).to eq(:DQPOST)
+      expect(tokens[2].value).to eq('')
+      expect(tokens[2].line).to eq(1)
+      expect(tokens[2].column).to eq(18)
+    end
+
     it 'should handle a string with only many variables' do
       @lexer.interpolate_string('${bar}${gronk}"', 1, 1)
       tokens = @lexer.tokens
@@ -310,6 +332,7 @@ describe PuppetLint::Lexer do
       @lexer.interpolate_string(%q{string with ${['an array ', $v2]} in it"}, 1, 1)
       tokens = @lexer.tokens
 
+      p tokens
       expect(tokens.length).to eq(8)
 
       expect(tokens[0].type).to eq(:DQPRE)
