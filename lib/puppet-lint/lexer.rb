@@ -165,7 +165,7 @@ class PuppetLint
         end
 
         unless found
-          if var_name = chunk[/\A\$((::)?([\w-]+::)*[\w-]+)/, 1]
+          if var_name = chunk[/\A\$((::)?([\w-]+::)*[\w-]+([\[\w-]+\])*)/, 1]
             tokens << new_token(:VARIABLE, var_name, :chunk => code[0..i])
             i += var_name.size + 1
 
@@ -356,7 +356,7 @@ class PuppetLint
             end
           else
             contents = ss.scan_until(/\}/)[0..-2]
-            if contents.match(/\A(::)?([\w-]+::)*[\w-]+/)
+            if contents.match(/\A(::)?([\w-]+::)*[\w-]+([\[\w-]+\])*/)
               contents = "$#{contents}"
             end
             lexer = PuppetLint::Lexer.new
