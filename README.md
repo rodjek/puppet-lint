@@ -2,6 +2,7 @@
 
 [![Build
 Status](https://secure.travis-ci.org/rodjek/puppet-lint.png)](http://travis-ci.org/rodjek/puppet-lint)
+[![Inline docs](http://inch-ci.org/github/rodjek/puppet-lint.png?branch=master)](http://inch-ci.org/github/rodjek/puppet-lint)
 
 The goal of this project is to implement as many of the recommended Puppet
 style guidelines from the [Puppet Labs style
