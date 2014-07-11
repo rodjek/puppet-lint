@@ -26,4 +26,12 @@ describe 'variable_contains_dash' do
       expect(problems).to contain_warning(msg).on_line(1).in_column(3)
     end
   end
+
+  context 'variable with an array reference containing a dash' do
+    let(:code) { "$foo[bar-baz]" }
+
+    it 'should not detect any problems' do
+      expect(problems).to be_empty
+    end
+  end
 end
