@@ -39,6 +39,19 @@ describe 'only_variable_string' do
         expect(problems).to contain_warning(msg).on_line(1).in_column(3)
       end
     end
+
+    context 'string containing only a variable as a hash key' do
+      let(:code) { "
+        $bar = 'key'
+        $foo = {
+          \"$bar\" => 1,
+        }"
+      }
+
+      it 'should not detect any problems' do
+        expect(problems).to be_empty
+      end
+    end
   end
 
   context 'with fix enabled' do
