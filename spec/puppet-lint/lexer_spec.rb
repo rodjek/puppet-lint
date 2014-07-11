@@ -332,7 +332,6 @@ describe PuppetLint::Lexer do
       @lexer.interpolate_string(%q{string with ${['an array ', $v2]} in it"}, 1, 1)
       tokens = @lexer.tokens
 
-      p tokens
       expect(tokens.length).to eq(8)
 
       expect(tokens[0].type).to eq(:DQPRE)
