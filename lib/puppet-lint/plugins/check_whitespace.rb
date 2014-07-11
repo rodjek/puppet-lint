@@ -95,6 +95,7 @@ PuppetLint.new_check(:arrow_alignment) do
     resource_indexes.each do |res_idx|
       indent_depth = [0]
       indent_depth_idx = 0
+      level_tokens = []
       resource_tokens = res_idx[:tokens]
       resource_tokens.reject! do |token|
         COMMENT_TYPES.include? token.type
@@ -109,7 +110,8 @@ PuppetLint.new_check(:arrow_alignment) do
 
       resource_tokens.each_with_index do |token, idx|
         if token.type == :FARROW
-          indent_length = token.column
+          (level_tokens[indent_depth_idx] ||= []) << token
+          indent_length = token.prev_token.column + 1
 
           if indent_depth[indent_depth_idx] < indent_length
             indent_depth[indent_depth_idx] = indent_length
@@ -119,26 +121,19 @@ PuppetLint.new_check(:arrow_alignment) do
           indent_depth_idx += 1
           indent_depth << 0
         elsif token.type == :RBRACE
-          indent_depth_idx -= 1
-        end
-      end
-
-      indent_depth_idx = 0
-      resource_tokens.each_with_index do |token, idx|
-        if token.type == :FARROW
-          indent_length = token.column
-          unless indent_depth[indent_depth_idx] == indent_length
-            notify :warning, {
-              :message      => 'indentation of => is not properly aligned',
-              :line         => token.line,
-              :column       => token.column,
-              :token        => token,
-              :indent_depth => indent_depth[indent_depth_idx],
-            }
+          level_tokens[indent_depth_idx].each do |arrow_tok|
+            unless arrow_tok.column == indent_depth[indent_depth_idx]
+              notify :warning, {
+                :message      => 'indentation of => is not properly aligned',
+                :line         => arrow_tok.line,
+                :column       => arrow_tok.column,
+                :token        => arrow_tok,
+                :indent_depth => indent_depth[indent_depth_idx],
+              }
+            end
           end
-        elsif token.type == :LBRACE
-          indent_depth_idx += 1
-        elsif token.type == :RBRACE
+          indent_depth[indent_depth_idx] = 0
+          level_tokens[indent_depth_idx].clear
           indent_depth_idx -= 1
         end
       end
@@ -146,7 +141,7 @@ PuppetLint.new_check(:arrow_alignment) do
   end
 
   def fix(problem)
-    offset = problem[:indent_depth] - problem[:token].column
-    problem[:token].prev_token.value = problem[:token].prev_token.value + (' ' * offset)
+    new_indent = ' ' * (problem[:indent_depth] - problem[:token].prev_token.column)
+    problem[:token].prev_token.value = new_indent
   end
 end
