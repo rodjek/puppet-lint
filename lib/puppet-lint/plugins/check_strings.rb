@@ -28,6 +28,7 @@ end
 # a single variable only and record a warning for each instance found.
 PuppetLint.new_check(:only_variable_string) do
   VAR_TYPES = Set[:VARIABLE, :UNENC_VARIABLE]
+
   def check
     tokens.each_with_index do |start_token, start_token_idx|
       if start_token.type == :DQPRE and start_token.value == ''
@@ -41,6 +42,9 @@ PuppetLint.new_check(:only_variable_string) do
               eos_offset += 3
             when :DQPOST
               if eos_token.value == ''
+                if eos_token.next_code_token && eos_token.next_code_token.type == :FARROW
+                  break
+                end
                 notify :warning, {
                   :message     => 'string containing only a variable',
                   :line        => var_token.line,
