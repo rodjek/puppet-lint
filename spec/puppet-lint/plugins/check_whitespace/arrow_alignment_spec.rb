@@ -70,18 +70,18 @@ describe 'arrow_alignment' do
       end
     end
 
-    context 'issue #37' do
+    context 'nested hashes with correct indentation' do
       let(:code) { "
         class { 'lvs::base':
           virtualeservers => {
             '192.168.2.13' => {
-              vport           => '11025',
-              service         => 'smtp',
-              scheduler       => 'wlc',
-              protocol        => 'tcp',
-              checktype       => 'external',
-              checkcommand    => '/path/to/checkscript',
-              real_servers    => {
+              vport        => '11025',
+              service      => 'smtp',
+              scheduler    => 'wlc',
+              protocol     => 'tcp',
+              checktype    => 'external',
+              checkcommand => '/path/to/checkscript',
+              real_servers => {
                 'server01' => {
                   real_server => '192.168.2.14',
                   real_port   => '25',
@@ -218,6 +218,24 @@ describe 'arrow_alignment' do
         expect(problems).to have(0).problems
       end
     end
+
+    context 'resource with aligned => too far out' do
+      let(:code) { "
+        file { '/tmp/foo':
+          ensure  => file,
+          mode    => '0444',
+        }"
+      }
+
+      it 'should detect 2 problems' do
+        expect(problems).to have(2).problems
+      end
+
+      it 'should create 2 warnings' do
+        expect(problems).to contain_warning(msg).on_line(3).in_column(19)
+        expect(problems).to contain_warning(msg).on_line(4).in_column(19)
+      end
+    end
   end
 
   context 'with fix enabled' do
@@ -335,6 +353,35 @@ describe 'arrow_alignment' do
       end
 
       it 'should align the arrows' do
+        expect(manifest).to eq(fixed)
+      end
+    end
+
+    context 'resource with aligned => too far out' do
+      let(:code) { "
+        file { '/tmp/foo':
+          ensure  => file,
+          mode    => '0444',
+        }"
+      }
+
+      let(:fixed) { "
+        file { '/tmp/foo':
+          ensure => file,
+          mode   => '0444',
+        }"
+      }
+
+      it 'should detect 2 problems' do
+        expect(problems).to have(2).problems
+      end
+
+      it 'should create 2 warnings' do
+        expect(problems).to contain_fixed(msg).on_line(3).in_column(19)
+        expect(problems).to contain_fixed(msg).on_line(4).in_column(19)
+      end
+
+      it 'should realign the arrows with the minimum whitespace' do
         expect(manifest).to eq(fixed)
       end
     end
