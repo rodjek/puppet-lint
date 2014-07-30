@@ -221,7 +221,7 @@ PuppetLint.new_check(:variable_scope) do
       referenced_variables.each do |token|
         unless token.value.include? '::'
           unless variables_in_scope.include? token.value
-            unless token.value =~ /\d+/
+            unless token.value =~ /\A\d+\Z/
               notify :warning, {
                 :message => msg,
                 :line    => token.line,
