@@ -92,33 +92,25 @@ PuppetLint.new_check(:parameter_order) do
   def check
     defined_type_indexes.each do |class_idx|
       unless class_idx[:param_tokens].nil?
-        param_tokens = class_idx[:param_tokens].reject { |r|
-          formatting_tokens.include? r.type
-        }
-
         paren_stack = []
-        param_tokens.each_index do |param_tokens_idx|
-          this_token = param_tokens[param_tokens_idx]
-          next_token = param_tokens[param_tokens_idx+1]
-          prev_token = param_tokens[param_tokens_idx-1]
-
-          if this_token.type == :LPAREN
+        class_idx[:param_tokens].each_with_index do |token, i|
+          if token.type == :LPAREN
             paren_stack.push(true)
-          elsif this_token.type == :RPAREN
+          elsif token.type == :RPAREN
             paren_stack.pop
           end
           next unless paren_stack.empty?
 
-          if this_token.type == :VARIABLE
-            if next_token.nil? || next_token.type == :COMMA
-              prev_tokens = param_tokens[0..param_tokens_idx]
+          if token.type == :VARIABLE
+            if token.next_code_token.nil? || [:COMMA, :RPAREN].include?(token.next_code_token.type)
+              prev_tokens = class_idx[:param_tokens][0..i]
               unless prev_tokens.rindex { |r| r.type == :EQUALS }.nil?
-                unless prev_token.nil? or prev_token.type == :EQUALS
+                unless token.prev_code_token.nil? or token.prev_code_token.type == :EQUALS
                   msg = 'optional parameter listed before required parameter'
                   notify :warning, {
                     :message => msg,
-                    :line    => this_token.line,
-                    :column  => this_token.column,
+                    :line    => token.line,
+                    :column  => token.column,
                   }
                 end
               end
