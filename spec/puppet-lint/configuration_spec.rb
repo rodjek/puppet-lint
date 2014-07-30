@@ -13,12 +13,12 @@ describe PuppetLint::Configuration do
     expect(subject).to respond_to(:disable_foo)
 
     subject.disable_foo
-    expect(subject.settings['foo_disabled']).to be_true
-    expect(subject.foo_enabled?).to be_false
+    expect(subject.settings['foo_disabled']).to be_truthy
+    expect(subject.foo_enabled?).to be_falsey
 
     subject.enable_foo
-    expect(subject.settings['foo_disabled']).to be_false
-    expect(subject.foo_enabled?).to be_true
+    expect(subject.settings['foo_disabled']).to be_falsey
+    expect(subject.foo_enabled?).to be_truthy
   end
 
   it 'should know what checks have been added' do

@@ -38,20 +38,20 @@ describe PuppetLint::Bin do
   context 'when running normally' do
     let(:args) { 'spec/fixtures/test/manifests/init.pp' }
 
-    its(:exitstatus) { should == 0 }
+    its(:exitstatus) { is_expected.to eq(0) }
   end
 
   context 'when running without arguments' do
     let(:args) { [] }
 
-    its(:exitstatus) { should == 1 }
+    its(:exitstatus) { is_expected.to eq(1) }
   end
 
   context 'when asked to display version' do
     let(:args) { '--version' }
 
-    its(:exitstatus) { should == 0 }
-    its(:stdout) { should == "puppet-lint #{PuppetLint::VERSION}" }
+    its(:exitstatus) { is_expected.to eq(0) }
+    its(:stdout) { is_expected.to eq("puppet-lint #{PuppetLint::VERSION}") }
   end
 
   context 'when passed multiple files' do
@@ -60,18 +60,18 @@ describe PuppetLint::Bin do
       'spec/fixtures/test/manifests/fail.pp',
     ] }
 
-    its(:exitstatus) { should == 1 }
-    its(:stdout) { should == [
+    its(:exitstatus) { is_expected.to eq(1) }
+    its(:stdout) { is_expected.to eq([
       'WARNING: optional parameter listed before required parameter on line 2',
       'ERROR: test::foo not in autoload module layout on line 2',
-    ].join("\n") }
+    ].join("\n")) }
   end
 
   context 'when passed a malformed file' do
     let(:args) { 'spec/fixtures/test/manifests/malformed.pp' }
 
-    its(:exitstatus) { should == 1 }
-    its(:stdout) { should == 'ERROR: Syntax error (try running `puppet parser validate <file>`) on line 1' }
+    its(:exitstatus) { is_expected.to eq(1) }
+    its(:stdout) { is_expected.to eq('ERROR: Syntax error (try running `puppet parser validate <file>`) on line 1') }
   end
 
   context 'when limited to errors only' do
@@ -81,8 +81,8 @@ describe PuppetLint::Bin do
       'spec/fixtures/test/manifests/fail.pp',
     ] }
 
-    its(:exitstatus) { should == 1 }
-    its(:stdout) { should match(/^ERROR/) }
+    its(:exitstatus) { is_expected.to eq(1) }
+    its(:stdout) { is_expected.to match(/^ERROR/) }
   end
 
   context 'when limited to warnings only' do
@@ -92,8 +92,8 @@ describe PuppetLint::Bin do
       'spec/fixtures/test/manifests/fail.pp',
     ] }
 
-    its(:exitstatus) { should == 1 }
-    its(:stdout) { should match(/^WARNING/) }
+    its(:exitstatus) { is_expected.to eq(1) }
+    its(:stdout) { is_expected.to match(/^WARNING/) }
   end
 
   context 'when specifying a specific check to run' do
@@ -103,23 +103,23 @@ describe PuppetLint::Bin do
       'spec/fixtures/test/manifests/fail.pp',
     ] }
 
-    its(:exitstatus) { should == 0 }
-    its(:stdout) { should_not match(/ERROR/) }
-    its(:stdout) { should match(/WARNING/) }
+    its(:exitstatus) { is_expected.to eq(0) }
+    its(:stdout) { is_expected.to_not match(/ERROR/) }
+    its(:stdout) { is_expected.to match(/WARNING/) }
   end
 
   context 'when asked to display filenames ' do
     let(:args) { ['--with-filename', 'spec/fixtures/test/manifests/fail.pp'] }
 
-    its(:exitstatus) { should == 1 }
-    its(:stdout) { should match(%r{^spec/fixtures/test/manifests/fail\.pp -}) }
+    its(:exitstatus) { is_expected.to eq(1) }
+    its(:stdout) { is_expected.to match(%r{^spec/fixtures/test/manifests/fail\.pp -}) }
   end
 
   context 'when not asked to fail on warnings' do
     let(:args) { ['spec/fixtures/test/manifests/warning.pp'] }
 
-    its(:exitstatus) { should == 0 }
-    its(:stdout) { should match(/optional parameter/) }
+    its(:exitstatus) { is_expected.to eq(0) }
+    its(:stdout) { is_expected.to match(/optional parameter/) }
   end
 
   context 'when asked to provide context to problems' do
@@ -128,13 +128,13 @@ describe PuppetLint::Bin do
       'spec/fixtures/test/manifests/warning.pp',
     ] }
 
-    its(:exitstatus) { should == 0 }
-    its(:stdout) { should == [
+    its(:exitstatus) { is_expected.to eq(0) }
+    its(:stdout) { is_expected.to eq([
       'WARNING: optional parameter listed before required parameter on line 2',
       '',
       "  define test::warning($foo='bar', $baz) { }",
       '                                   ^',
-    ].join("\n")
+    ].join("\n"))
     }
   end
 
@@ -144,29 +144,29 @@ describe PuppetLint::Bin do
       'spec/fixtures/test/manifests/warning.pp',
     ] }
 
-    its(:exitstatus) { should == 1 }
-    its(:stdout) { should match(/optional parameter/) }
+    its(:exitstatus) { is_expected.to eq(1) }
+    its(:stdout) { is_expected.to match(/optional parameter/) }
   end
 
   context 'when used with an invalid option' do
     let(:args) { '--foo-bar-baz' }
 
-    its(:exitstatus) { should == 1 }
-    its(:stdout) { should match(/invalid option/) }
+    its(:exitstatus) { is_expected.to eq(1) }
+    its(:stdout) { is_expected.to match(/invalid option/) }
   end
 
   context 'when passed a file that does not exist' do
     let(:args) { 'spec/fixtures/test/manifests/enoent.pp' }
 
-    its(:exitstatus) { should == 1 }
-    its(:stdout) { should match(/specified file does not exist/) }
+    its(:exitstatus) { is_expected.to eq(1) }
+    its(:stdout) { is_expected.to match(/specified file does not exist/) }
   end
 
   context 'when passed a directory' do
     let(:args) { 'spec/fixtures/' }
 
-    its(:exitstatus) { should == 1 }
-    its(:stdout) { should match(/^ERROR/) }
+    its(:exitstatus) { is_expected.to eq(1) }
+    its(:stdout) { is_expected.to match(/^ERROR/) }
   end
 
   context 'when disabling a check' do
@@ -175,8 +175,8 @@ describe PuppetLint::Bin do
       'spec/fixtures/test/manifests/fail.pp'
     ] }
 
-    its(:exitstatus) { should == 0 }
-    its(:stdout) { should == "" }
+    its(:exitstatus) { is_expected.to eq(0) }
+    its(:stdout) { is_expected.to eq("") }
   end
 
   context 'when changing the log format' do
@@ -186,8 +186,8 @@ describe PuppetLint::Bin do
         'spec/fixtures/test/manifests/fail.pp'
       ] }
 
-      its(:exitstatus) { should == 1 }
-      its(:stdout) { should == 'fail.pp' }
+      its(:exitstatus) { is_expected.to eq(1) }
+      its(:stdout) { is_expected.to eq('fail.pp') }
     end
 
     context 'to print %{path}' do
@@ -196,8 +196,8 @@ describe PuppetLint::Bin do
         'spec/fixtures/test/manifests/fail.pp'
       ] }
 
-      its(:exitstatus) { should == 1 }
-      its(:stdout) { should == 'spec/fixtures/test/manifests/fail.pp' }
+      its(:exitstatus) { is_expected.to eq(1) }
+      its(:stdout) { is_expected.to eq('spec/fixtures/test/manifests/fail.pp') }
     end
 
     context 'to print %{fullpath}' do
@@ -206,9 +206,9 @@ describe PuppetLint::Bin do
         'spec/fixtures/test/manifests/fail.pp'
       ] }
 
-      its(:exitstatus) { should == 1 }
+      its(:exitstatus) { is_expected.to eq(1) }
       its(:stdout) {
-        should match(%r{^/.+/spec/fixtures/test/manifests/fail\.pp$})
+        is_expected.to match(%r{^/.+/spec/fixtures/test/manifests/fail\.pp$})
       }
     end
 
@@ -218,9 +218,9 @@ describe PuppetLint::Bin do
         'spec/fixtures/test/manifests/fail.pp'
       ] }
 
-      its(:exitstatus) { should == 1 }
-      its(:stdout) { should == '2' }
-      its(:stderr) { should == 'DEPRECATION: Please use %{line} instead of %{linenumber}' }
+      its(:exitstatus) { is_expected.to eq(1) }
+      its(:stdout) { is_expected.to eq('2') }
+      its(:stderr) { is_expected.to eq('DEPRECATION: Please use %{line} instead of %{linenumber}') }
     end
 
     context 'to print %{line}' do
@@ -229,8 +229,8 @@ describe PuppetLint::Bin do
         'spec/fixtures/test/manifests/fail.pp'
       ] }
 
-      its(:exitstatus) { should == 1 }
-      its(:stdout) { should == '2' }
+      its(:exitstatus) { is_expected.to eq(1) }
+      its(:stdout) { is_expected.to eq('2') }
     end
 
     context 'to print %{kind}' do
@@ -239,8 +239,8 @@ describe PuppetLint::Bin do
         'spec/fixtures/test/manifests/fail.pp'
       ] }
 
-      its(:exitstatus) { should == 1 }
-      its(:stdout) { should == 'error' }
+      its(:exitstatus) { is_expected.to eq(1) }
+      its(:stdout) { is_expected.to eq('error') }
     end
 
     context 'to print %{KIND}' do
@@ -249,8 +249,8 @@ describe PuppetLint::Bin do
         'spec/fixtures/test/manifests/fail.pp'
       ] }
 
-      its(:exitstatus) { should == 1 }
-      its(:stdout) { should == 'ERROR' }
+      its(:exitstatus) { is_expected.to eq(1) }
+      its(:stdout) { is_expected.to eq('ERROR') }
     end
 
     context 'to print %{check}' do
@@ -259,8 +259,8 @@ describe PuppetLint::Bin do
         'spec/fixtures/test/manifests/fail.pp'
       ] }
 
-      its(:exitstatus) { should == 1 }
-      its(:stdout) { should == 'autoloader_layout' }
+      its(:exitstatus) { is_expected.to eq(1) }
+      its(:stdout) { is_expected.to eq('autoloader_layout') }
     end
 
     context 'to print %{message}' do
@@ -269,8 +269,8 @@ describe PuppetLint::Bin do
         'spec/fixtures/test/manifests/fail.pp'
       ] }
 
-      its(:exitstatus) { should == 1 }
-      its(:stdout) { should == 'test::foo not in autoload module layout' }
+      its(:exitstatus) { is_expected.to eq(1) }
+      its(:stdout) { is_expected.to eq('test::foo not in autoload module layout') }
     end
   end
 
@@ -279,8 +279,8 @@ describe PuppetLint::Bin do
       'spec/fixtures/test/manifests/ignore.pp'
     ] }
 
-    its(:exitstatus) { should == 0 }
-    its(:stdout) { should_not match(/IGNORED/) }
+    its(:exitstatus) { is_expected.to eq(0) }
+    its(:stdout) { is_expected.to_not match(/IGNORED/) }
   end
 
   context 'when showing ignored problems' do
@@ -289,8 +289,8 @@ describe PuppetLint::Bin do
       'spec/fixtures/test/manifests/ignore.pp',
     ] }
 
-    its(:exitstatus) { should == 0 }
-    its(:stdout) { should match(/IGNORED/) }
+    its(:exitstatus) { is_expected.to eq(0) }
+    its(:stdout) { is_expected.to match(/IGNORED/) }
   end
 
   context 'when showing ignored problems with a reason' do
@@ -299,10 +299,10 @@ describe PuppetLint::Bin do
       'spec/fixtures/test/manifests/ignore_reason.pp',
     ] }
 
-    its(:exitstatus) { should == 0 }
-    its(:stdout) { should eq [
+    its(:exitstatus) { is_expected.to eq(0) }
+    its(:stdout) { is_expected.to eq([
       "IGNORED: double quoted string containing no variables on line 1",
       "  for a good reason",
-    ].join("\n") }
+    ].join("\n")) }
   end
 end

@@ -5,14 +5,14 @@ describe PuppetLint::Lexer::Token do
     PuppetLint::Lexer::Token.new(:NAME, 'foo', 1, 2)
   end
 
-  it { should respond_to(:type) }
-  it { should respond_to(:value) }
-  it { should respond_to(:line) }
-  it { should respond_to(:column) }
+  it { is_expected.to respond_to(:type) }
+  it { is_expected.to respond_to(:value) }
+  it { is_expected.to respond_to(:line) }
+  it { is_expected.to respond_to(:column) }
 
-  its(:type) { should == :NAME }
-  its(:value) { should == 'foo' }
-  its(:line) { should == 1 }
-  its(:column) { should == 2 }
-  its(:inspect) { should == "<Token :NAME (foo) @1:2>" }
+  its(:type) { is_expected.to eq(:NAME) }
+  its(:value) { is_expected.to eq('foo') }
+  its(:line) { is_expected.to eq(1) }
+  its(:column) { is_expected.to eq(2) }
+  its(:inspect) { is_expected.to eq("<Token :NAME (foo) @1:2>") }
 end

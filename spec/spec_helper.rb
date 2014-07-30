@@ -1,5 +1,6 @@
-require 'rspec/autorun'
 require 'puppet-lint'
+require 'rspec/its'
+require 'rspec/collection_matchers'
 
 module RSpec
   module LintExampleGroup
@@ -60,7 +61,7 @@ module RSpec
         end
       end
 
-      def failure_message_for_should
+      def failure_message
         case @problems.length
         when 0
           "expected that the check would create a problem but it did not"
@@ -83,7 +84,7 @@ module RSpec
         end
       end
 
-      def failure_message_for_should_not
+      def failure_message_when_negated
         "expected that the check would not create the problem, but it did"
       end
     end
@@ -115,10 +116,8 @@ end
 RSpec.configure do |config|
   config.mock_framework = :rspec
   config.include RSpec::LintExampleGroup, {
-    :type          => :lint,
-    :example_group => {
-      :file_path => Regexp.compile(%w{spec puppet-lint plugins}.join('[\\\/]'))
-    },
+    :type      => :lint,
+    :file_path => Regexp.compile(%w{spec puppet-lint plugins}.join('[\\\/]')),
   }
   config.expect_with :rspec do |c|
     c.syntax = :expect
