@@ -116,6 +116,7 @@ PuppetLint.new_check(:file_mode) do
   MSG = 'mode should be represented as a 4 digit octal value or symbolic mode'
   SYM_RE = "([ugoa]*[-=+][-=+rstwxXugo]*)(,[ugoa]*[-=+][-=+rstwxXugo]*)*"
   IGNORE_TYPES = Set[:VARIABLE, :UNDEF]
+  MODE_RE = Regexp.new(/\A([0-7]{4}|#{SYM_RE})\Z/)
 
   def check
     resource_indexes.each do |resource|
@@ -125,8 +126,8 @@ PuppetLint.new_check(:file_mode) do
         }.each do |param_token|
           value_token = param_token.next_code_token.next_code_token
 
-          break if value_token.value =~ /\A([0-7]{4}|#{SYM_RE})\Z/
           break if IGNORE_TYPES.include?(value_token.type)
+          break if value_token.value =~ MODE_RE
 
           notify :warning, {
             :message => MSG,
