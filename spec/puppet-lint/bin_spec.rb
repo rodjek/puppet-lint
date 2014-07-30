@@ -62,8 +62,8 @@ describe PuppetLint::Bin do
 
     its(:exitstatus) { is_expected.to eq(1) }
     its(:stdout) { is_expected.to eq([
-      'WARNING: optional parameter listed before required parameter on line 2',
-      'ERROR: test::foo not in autoload module layout on line 2',
+      "#{args[0]} - WARNING: optional parameter listed before required parameter on line 2",
+      "#{args[1]} - ERROR: test::foo not in autoload module layout on line 2",
     ].join("\n")) }
   end
 
@@ -82,7 +82,7 @@ describe PuppetLint::Bin do
     ] }
 
     its(:exitstatus) { is_expected.to eq(1) }
-    its(:stdout) { is_expected.to match(/^ERROR/) }
+    its(:stdout) { is_expected.to match(/^#{args.last} - ERROR/) }
   end
 
   context 'when limited to warnings only' do
@@ -93,7 +93,8 @@ describe PuppetLint::Bin do
     ] }
 
     its(:exitstatus) { is_expected.to eq(1) }
-    its(:stdout) { is_expected.to match(/^WARNING/) }
+    its(:stdout) { is_expected.to match(/WARNING/) }
+    its(:stdout) { is_expected.to_not match(/ERROR/) }
   end
 
   context 'when specifying a specific check to run' do
@@ -166,7 +167,7 @@ describe PuppetLint::Bin do
     let(:args) { 'spec/fixtures/' }
 
     its(:exitstatus) { is_expected.to eq(1) }
-    its(:stdout) { is_expected.to match(/^ERROR/) }
+    its(:stdout) { is_expected.to match(/ERROR/) }
   end
 
   context 'when disabling a check' do

@@ -42,6 +42,10 @@ class PuppetLint::Bin
         path = @args
       end
 
+      if path.length > 1
+        PuppetLint.configuration.with_filename = true
+      end
+
       return_val = 0
       path.each do |f|
         l = PuppetLint.new

@@ -17,21 +17,24 @@ class PuppetLint::Checks
   # Returns nothing.
   def load_data(path, content)
     lexer = PuppetLint::Lexer.new
+    PuppetLint::Data.path = path
+    PuppetLint::Data.manifest_lines = content.split("\n")
     begin
       PuppetLint::Data.tokens = lexer.tokenise(content)
       PuppetLint::Data.parse_control_comments
     rescue PuppetLint::LexerError => e
       problems << {
-        :kind    => :error,
-        :check   => :syntax,
-        :message => 'Syntax error (try running `puppet parser validate <file>`)',
-        :line    => e.line_no,
-        :column  => e.column,
+        :kind     => :error,
+        :check    => :syntax,
+        :message  => 'Syntax error (try running `puppet parser validate <file>`)',
+        :line     => e.line_no,
+        :column   => e.column,
+        :fullpath => PuppetLint::Data.fullpath,
+        :path     => PuppetLint::Data.path,
+        :filename => PuppetLint::Data.filename,
       }
       PuppetLint::Data.tokens = []
     end
-    PuppetLint::Data.path = path
-    PuppetLint::Data.manifest_lines = content.split("\n")
   end
 
   # Internal: Run the lint checks over the manifest code.
