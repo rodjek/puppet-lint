@@ -50,11 +50,8 @@ end
 PuppetLint.new_check(:names_containing_dash) do
   def check
     (class_indexes + defined_type_indexes).each do |class_idx|
-      class_tokens = class_idx[:tokens]
-      title_token = class_tokens.select { |r| r.type == :NAME }.first
-
-      if title_token.value.include? '-'
-        if class_tokens.first.type == :CLASS
+      if class_idx[:name_token].value.include? '-'
+        if class_idx[:type] == :CLASS
           obj_type = 'class'
         else
           obj_type = 'defined type'
@@ -62,8 +59,8 @@ PuppetLint.new_check(:names_containing_dash) do
 
         notify :warning, {
           :message => "#{obj_type} name containing a dash",
-          :line    => title_token.line,
-          :column  => title_token.column,
+          :line    => class_idx[:name_token].line,
+          :column  => class_idx[:name_token].column,
         }
       end
     end

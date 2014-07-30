@@ -192,6 +192,8 @@ class PuppetLint::Data
                     :end          => i + j + 1,
                     :tokens       => tokens[i..(i + j + 1)],
                     :param_tokens => param_tokens(tokens[i..(i + j + 1)]),
+                    :type         => type,
+                    :name_token   => token.next_code_token,
                   }
                   break
                 end
