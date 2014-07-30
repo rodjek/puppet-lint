@@ -72,16 +72,12 @@ end
 PuppetLint.new_check(:class_inherits_from_params_class) do
   def check
     class_indexes.each do |class_idx|
-      class_tokens = class_idx[:tokens]
-      inherits_token = class_tokens.select { |r| r.type == :INHERITS }.first
-
-      unless inherits_token.nil?
-        inherited_class_token = inherits_token.next_code_token
-        if inherited_class_token.value.end_with? '::params'
+      unless class_idx[:inherited_token].nil?
+        if class_idx[:inherited_token].value.end_with? '::params'
           notify :warning, {
             :message => 'class inheriting from params class',
-            :line    => inherited_class_token.line,
-            :column  => inherited_class_token.column,
+            :line    => class_idx[:inherited_token].line,
+            :column  => class_idx[:inherited_token].column,
           }
         end
       end
@@ -139,21 +135,17 @@ end
 PuppetLint.new_check(:inherits_across_namespaces) do
   def check
     class_indexes.each do |class_idx|
-      class_token = class_idx[:tokens].first
-      class_name_token = class_token.next_code_token
-      inherits_token = class_idx[:tokens].select { |r| r.type == :INHERITS }.first
-      next if inherits_token.nil?
+      unless class_idx[:inherited_token].nil?
+        inherited_module_name = class_idx[:inherited_token].value.split('::').reject { |r| r.empty? }.first
+        class_module_name = class_idx[:name_token].value.split('::').reject { |r| r.empty? }.first
 
-      inherited_class_token = inherits_token.next_code_token
-      inherited_module_name = inherited_class_token.value.split('::').reject { |r| r.empty? }.first
-      class_module_name = class_name_token.value.split('::').reject { |r| r.empty? }.first
-
-      unless class_module_name == inherited_module_name
-        notify :warning, {
-          :message => "class inherits across module namespaces",
-          :line    => inherited_class_token.line,
-          :column  => inherited_class_token.column,
-        }
+        unless class_module_name == inherited_module_name
+          notify :warning, {
+            :message => "class inherits across module namespaces",
+            :line    => class_idx[:inherited_token].line,
+            :column  => class_idx[:inherited_token].column,
+          }
+        end
       end
     end
   end

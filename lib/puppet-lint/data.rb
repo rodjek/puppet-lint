@@ -174,26 +174,31 @@ class PuppetLint::Data
           brace_depth = 0
           paren_depth = 0
           in_params = false
+          inherited_class = nil
           tokens[i+1..-1].each_with_index do |definition_token, j|
-            if definition_token.type == :LPAREN
+            case definition_token.type
+            when :INHERITS
+              inherited_class = definition_token.next_code_token
+            when :LPAREN
               in_params = true if paren_depth == 0
               paren_depth += 1
-            elsif definition_token.type == :RPAREN
+            when :RPAREN
               in_params = false if paren_depth == 1
               paren_depth -= 1
-            elsif definition_token.type == :LBRACE
+            when :LBRACE
               brace_depth += 1
-            elsif definition_token.type == :RBRACE
+            when :RBRACE
               brace_depth -= 1
               if brace_depth == 0 && !in_params
                 if token.next_code_token.type != :LBRACE
                   result << {
-                    :start        => i,
-                    :end          => i + j + 1,
-                    :tokens       => tokens[i..(i + j + 1)],
-                    :param_tokens => param_tokens(tokens[i..(i + j + 1)]),
-                    :type         => type,
-                    :name_token   => token.next_code_token,
+                    :start           => i,
+                    :end             => i + j + 1,
+                    :tokens          => tokens[i..(i + j + 1)],
+                    :param_tokens    => param_tokens(tokens[i..(i + j + 1)]),
+                    :type            => type,
+                    :name_token      => token.next_code_token,
+                    :inherited_token => inherited_class,
                   }
                   break
                 end
