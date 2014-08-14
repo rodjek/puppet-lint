@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'names_containing_dash' do
+describe 'class_names_containing_dash' do
   let(:class_msg) { 'class name containing a dash' }
   let(:define_msg) { 'defined type name containing a dash' }
 
@@ -12,21 +12,8 @@ describe 'names_containing_dash' do
       expect(problems).to have(1).problem
     end
 
-    it 'should create a warning' do
-      expect(problems).to contain_warning(class_msg).on_line(1).in_column(7)
-    end
-  end
-
-  context 'define named foo-bar' do
-    let(:code) { 'define foo::foo-bar { }' }
-    let(:path) { 'foo/manifests/foo-bar.pp' }
-
-    it 'should only detect a single problem' do
-      expect(problems).to have(1).problem
-    end
-
-    it 'should create a warning' do
-      expect(problems).to contain_warning(define_msg).on_line(1).in_column(8)
+    it 'should create an error' do
+      expect(problems).to contain_error(msg).on_line(1).in_column(7)
     end
   end
 
@@ -38,8 +25,8 @@ describe 'names_containing_dash' do
       expect(problems).to have(1).problem
     end
 
-    it 'should create a warning' do
-      expect(problems).to contain_warning(class_msg).on_line(1).in_column(7)
+    it 'should create an error' do
+      expect(problems).to contain_error(msg).on_line(1).in_column(7)
     end
   end
 end
