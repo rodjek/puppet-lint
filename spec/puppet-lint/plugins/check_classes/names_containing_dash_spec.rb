@@ -12,8 +12,8 @@ describe 'names_containing_dash' do
       expect(problems).to have(1).problem
     end
 
-    it 'should create a warning' do
-      expect(problems).to contain_warning(class_msg).on_line(1).in_column(7)
+    it 'should create an error' do
+      expect(problems).to contain_error(class_msg).on_line(1).in_column(7)
     end
   end
 
@@ -25,8 +25,8 @@ describe 'names_containing_dash' do
       expect(problems).to have(1).problem
     end
 
-    it 'should create a warning' do
-      expect(problems).to contain_warning(define_msg).on_line(1).in_column(8)
+    it 'should create an error' do
+      expect(problems).to contain_error(define_msg).on_line(1).in_column(8)
     end
   end
 
@@ -38,8 +38,8 @@ describe 'names_containing_dash' do
       expect(problems).to have(1).problem
     end
 
-    it 'should create a warning' do
-      expect(problems).to contain_warning(class_msg).on_line(1).in_column(7)
+    it 'should create an error' do
+      expect(problems).to contain_error(class_msg).on_line(1).in_column(7)
     end
   end
 end
