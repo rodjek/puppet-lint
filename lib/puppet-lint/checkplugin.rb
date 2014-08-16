@@ -12,12 +12,18 @@ class PuppetLint::CheckPlugin
         problem[:reason] = PuppetLint::Data.ignore_overrides[problem[:check]][problem[:line]]
         next
       end
+    end
 
-      if PuppetLint.configuration.fix && self.respond_to?(:fix)
+    @problems
+  end
+
+  def fix_problems
+    @problems.each do |problem|
+      if self.respond_to?(:fix)
         begin
           fix(problem)
         rescue PuppetLint::NoFix
-          # do nothing
+          # noop
         else
           problem[:kind] = :fixed
         end

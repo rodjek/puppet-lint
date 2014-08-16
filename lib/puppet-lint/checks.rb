@@ -47,9 +47,20 @@ class PuppetLint::Checks
   def run(fileinfo, data)
     load_data(fileinfo, data)
 
+    checks_run = []
     enabled_checks.each do |check|
       klass = PuppetLint.configuration.check_object[check].new
-      @problems.concat(klass.run)
+      problems = klass.run
+
+      if PuppetLint.configuration.fix
+        checks_run << klass
+      else
+        @problems.concat(problems)
+      end
+    end
+
+    checks_run.each do |check|
+      @problems.concat(check.fix_problems)
     end
 
     @problems
