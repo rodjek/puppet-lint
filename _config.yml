@@ -1,3 +1,7 @@
 ---
 highlighter: pygments
 exclude: ["vendor"]
+markdown: kramdown
+
+redcarpet:
+  extensions: ["table"]

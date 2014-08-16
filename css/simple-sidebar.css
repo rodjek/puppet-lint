@@ -121,3 +121,7 @@
         margin-right: 0;
     }
 }
+
+table th {
+    width: 50%;
+}
