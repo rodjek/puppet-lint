@@ -2,7 +2,7 @@
 layout: default
 ---
 
-#### Check that your Puppet manifest conform to the style guide
+## Check that your Puppet manifest conform to the style guide
 
 ### Install It!
 

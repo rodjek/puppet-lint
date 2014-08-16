@@ -1,54 +1,45 @@
 <!doctype html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title>puppet-lint</title>
 
-    <link rel="stylesheet" href="/stylesheets/styles.css">
-    <link rel="stylesheet" href="/stylesheets/pygment_trac.css">
-    <script src="/javascripts/scale.fix.js"></script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/simple-sidebar.css">
+    <link rel="stylesheet" href="/css/pygment_trac.css">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
   </head>
   <body>
-    <div class="wrapper">
-      <header>
-        <h1 class="header">puppet-lint</h1>
-        <p class="header"></p>
-
-        <ul class="buttons">
-          <li class="download">
-            <a class="buttons" href="http://rubygems.org/gems/puppet-lint">Download Gem</a>
+    <div id="wrapper">
+      <div id="sidebar-wrapper">
+        <ul class="sidebar-nav">
+          <li class="sidebar-brand">
+            <a href="/">puppet-lint</a>
           </li>
           <li>
-            <a class="buttons github" href="https://github.com/rodjek/puppet-lint">View On GitHub</a>
+            <a href="/checks/">Checks</a>
+          </li>
+          <li>
+            <a href="/changelog/">Changelog</a>
+          </li>
+          <li>
+            <a href="https://github.com/rodjek/puppet-lint/issues">Issues</a>
           </li>
         </ul>
+      </div>
 
-        <ul class="menu">
-          <li><a href="/">Home</a></li>
-          <li><a href="/checks/">Checks</a></li>
-          <li><a href="/changelog/">Changelog</a></li>
-          <li><a href="https://github.com/rodjek/puppet-lint/issues">Issues</a></li>
-          <li><a href="/developing/">Writing New Checks</a>
-            <ul class="menu">
-              <li><a href="#">API Reference</a></li>
-              <li><a href="#">Token Types</a></li>
-            </ul>
-          </li>
-        </ul>
-        <p class="header">This project is maintained by <a class="header name" href="https://github.com/rodjek">rodjek</a></p>
-      </header>
-      <section>
-        {{ content }}
-      </section>
-      <footer>
-        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
-      </footer>
+      <div id="page-content-wrapper">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-lg-12">
+              {{ content }}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <!--[if !IE]><script>fixScale(document);</script><!--<![endif]-->
+    <script src="/js/jquery-1.11.0.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
   </body>
 </html>
