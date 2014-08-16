@@ -63,17 +63,19 @@ Gem::Specification.new do |spec|
   spec.files       = Dir[
     'README.md',
     'LICENSE',
-    'lib/\*\*/\*',
-    'spec/\*\*/\*',
+    'lib/**/*',
+    'spec/**/*',
   ]
-  spec.test_files  = Dir['spec/\*\*/\*']
+  spec.test_files  = Dir['spec/**/*']
   spec.summary     = 'A puppet-lint plugin to check file endings.'
   spec.description = <<-EOF
     A puppet-lint plugin to check that manifest files end with a newline.
   EOF
 
   spec.add_dependency             'puppet-lint', '~> 1.0'
-  spec.add_development_dependency 'rspec'
+  spec.add_development_dependency 'rspec', '~> 3.0'
+  spec.add_development_dependency 'rspec-its', '~> 1.0'
+  spec.add_development_dependency 'rspec-collection_matchers', '~> 1.0'
   spec.add_development_dependency 'rake'
 end
 {% endhighlight %}
@@ -87,7 +89,7 @@ Reference](http://guides.rubygems.org/specification-reference/).
 
 A few interesting lines:
 
-Line 23
+Line 20
 : This Gem has a dependency on puppet-lint with a version matching `~> 1.0`.
 The pessimistic version operator (`~>`) here means that it will match any
 version number between 1.0.0 and 2.0.0. The reason we put the upper bound there
@@ -95,10 +97,10 @@ is that under the rules of [Semantic Versioning](http://semver.org) a bump in
 the major version number means a backward incompatible API change and there's
 a good chance the plugin won't work.
 
-Lines 24 & 25
-: These gems (`rspec` and `rake`) are required for development purposes only.
-Unlike gems specified by `add_dependency`, these gems will not be installed
-when you run `gem install`.
+Lines 21-24
+: These gems are required for development purposes only. Unlike gems specified
+by `add_dependency`, these gems will not be installed when you run
+`gem install`.
 
 ### Rakefile
 {% highlight ruby %}
@@ -206,6 +208,8 @@ ran bundler (e.g. the value of `--path` if you specified one).
 : This file contains the fully resolved dependency information from bundler and
 is generally not committed when writing libraries.
 
+At this point, your code should look like [this.](https://github.com/rodjek/puppet-lint-tutorial-check/tree/step-1)
+
 ## Finding the problems in the manifest
 Now that all the setup work is done, we can start actually writing some code.
 We're going to develop this module in a test driven manner, meaning we write
@@ -213,6 +217,7 @@ our tests to describe what our check should find before we dive into the fun
 stuff.
 
 ### Write the tests
+
 #### Getting started
 First, lets create the folder where our tests will live
 
@@ -294,17 +299,17 @@ Testing that valid code doesn't passes without errors is all well and good, but
 we really want to test that our check can also detect problems.
 
 {% highlight ruby %}
-    context 'code not ending with a newline' do
-      let(:code) { "'test'" }
+context 'code not ending with a newline' do
+  let(:code) { "'test'" }
 
-      it 'should detect a single problem' do
-        expect(problems).to have(1).problem
-      end
+  it 'should detect a single problem' do
+    expect(problems).to have(1).problem
+  end
 
-      it 'should create a warning' do
-        expect(problems).to contain_warning(msg).on_line(1).in_column(6)
-      end
-    end
+  it 'should create a warning' do
+    expect(problems).to contain_warning(msg).on_line(1).in_column(6)
+  end
+end
 {% endhighlight %}
 
 At this point, the only unfamiliar thing in the above block should be the
@@ -379,7 +384,10 @@ Finished in 0.00146 seconds
 3 examples, 3 failures
 {% endhighlight %}
 
+At this point, your code should look like [this.](https://github.com/rodjek/puppet-lint-tutorial-check/tree/step-2)
+
 ### Write the logic
+
 #### Getting started
 Now for the fun bit, actually writing our check code!
 
@@ -427,36 +435,179 @@ Finished in 0.00292 seconds
 {% endhighlight %}
 
 The first thing our check needs to do is grab the last token in the file and
-check if it is a newline.
+check if it is a newline. We can do this by accessing the `tokens` array,
+which is an array of PuppetLint::Lexer::Token objects representing the
+tokenised contents of the manifest.
 
 {% highlight ruby %}
-  def check
-    last_token = tokens.last
+def check
+  last_token = tokens.last
 
-    unless last_token.type == :NEWLINE
-    end
+  unless last_token.type == :NEWLINE
   end
+end
 {% endhighlight %}
 
 Now we need to create a warning if the last token is not a newline.
 
 {% highlight ruby %}
-  def check
-    last_token = tokens.last
+def check
+  last_token = tokens.last
 
-    unless last_token.type == :NEWLINE
-      notify :warning, {
-        :message => 'expected newline at the end of the line',
-        :line    => last_token.line,
-        :column  => manifest_lines.last.length,
-      }
-    end
+  unless last_token.type == :NEWLINE
+    notify :warning, {
+      :message => 'expected newline at the end of the file',
+      :line    => last_token.line,
+      :column  => manifest_lines.last.length,
+    }
   end
+end
 {% endhighlight %}
 
+Here, we introduce `manifest_lines` which is exactly what it sounds like - the
+manifest being parsed, split into an array of lines. It's not normally used in
+checks but in this case it's a quick way of finding the column number of the
+end of the last line.
+
+Run your tests again and everything should now pass.
+
+{% highlight console %}
+$ bundle exec rake
+/opt/boxen/rbenv/versions/1.8.7-p358/bin/ruby -S rspec ./spec/puppet-lint/plugins/check_trailing_newline_spec.rb
+...
+
+Finished in 0.00246 seconds
+3 examples, 0 failures
+{% endhighlight %}
+
+At this point, your code should look like [this.](https://github.com/rodjek/puppet-lint-tutorial-check/tree/step-3)
+
 ## Fixing the problems in the manifest
+
 ### Write the tests
+
+As with the check logic, we're going to start by writing our tests.
+
+Add a new context to the `describe` block in your spec file and some `before`
+and `after` hooks to enable and disable the fix functionality.
+
+{% highlight ruby %}
+context 'with fix enabled' do
+  before do
+    PuppetLint.configuration.fix = true
+  end
+
+  after do
+    PuppetLint.configuration.fix = false
+  end
+end
+{% endhighlight %}
+
+Next, we'll add some specs.
+
+{% highlight ruby %}
+context 'code not ending in a newline' do
+  let(:code) { "'test'" }
+
+  it 'should only detect a single problem' do
+    expect(problems).to have(1).problem
+  end
+
+  it 'should fix the problem' do
+    expect(problems).to contain_fixed(msg).on_line(1).in_column(6)
+  end
+
+  it 'should add a newline to the end of the manifest' do
+    expect(manifest).to eq("'test'\n")
+  end
+end
+
+context 'code ending in a newline' do
+  let(:code) { "'test'\n" }
+
+  it 'should not detect any problems' do
+    expect(problems).to have(0).problems
+  end
+
+  it 'should not modify the manifest' do
+    expect(manifest).to eq(code)
+  end
+end
+{% endhighlight %}
+
+These specs should look pretty familiar to you.  The only new thing introduced
+here is the `manifest` helper which contains the rendered puppet manifest after
+it has gone through the fixing process.
+
+If we run the tests now, we should have a few new failures.
+
+{% highlight console %}
+$ bundle exec rake
+....FF..
+
+Failures:
+
+  1) trailing_newline with fix enabled code not ending in a newline should fix the problem
+     Failure/Error: expect(problems).to contain_fixed(msg).on_line(1).in_column(6)
+       expected that the problem
+         would be of kind :fixed, but it was :warning
+     # ./spec/puppet-lint/plugins/check_trailing_newline_spec.rb:45
+
+  2) trailing_newline with fix enabled code not ending in a newline should add a newline to the end of the manifest
+     Failure/Error: expect(manifest).to eq("'test'\n")
+
+       expected: "'test'\n"
+            got: "'test'"
+
+       (compared using ==)
+
+       Diff:
+     # ./spec/puppet-lint/plugins/check_trailing_newline_spec.rb:49
+
+Finished in 0.00529 seconds (files took 0.08811 seconds to load)
+8 examples, 2 failures
+{% endhighlight %}
+
+At this point, your code should look like [this.](https://github.com/rodjek/puppet-lint-tutorial-check/tree/step-4)
 
 ### Write the logic
 
+The first thing we need to do is define a `fix` method in
+`lib/puppet-lint/plugins/check_trailing_newlines.rb` which will be passed the
+problem hash generated by `notify` in your `check` method.
+
+{% highlight ruby %}
+def fix(problem)
+end
+{% endhighlight %}
+
+Inside this method, we can modify the `tokens` array to fix whatever problems
+we need to. In this case, all we need to do is append a newline token to the
+array.
+
+{% highlight ruby %}
+def fix(problem)
+  tokens << PuppetLint::Lexer::Token.new(:NEWLINE, "\n", 0, 0)
+end
+{% endhighlight %}
+
+Run your tests again and everything should be working.
+
+{% highlight console %}
+$ bundle exec rake
+........
+
+Finished in 0.00391 seconds (files took 0.08846 seconds to load)
+8 examples, 0 failures
+{% endhighlight %}
+
+At this point, your code should look like [this.](https://github.com/rodjek/puppet-lint-tutorial-check/tree/step-5)
+
 ## Publish it!
+
+ * Tag a release and push your code up to a hosting service like [GitHub](https://github.com).
+ * Build them gem (`gem build puppet-lint-<your check>-check.gemspec`) and push
+   it up to RubyGems (`gem push`).
+ * Create a pull request on the [puppet-lint community plugins
+   page](https://github.com/rodjek/puppet-lint/tree/gh-pages/plugins/index.md)
+   to list your plugin so others can find it.
