@@ -125,6 +125,14 @@ describe 'double_quoted_strings' do
         expect(problems).to have(0).problems
       end
     end
+
+    context 'double quoted string containing single quoted string' do
+      let(:code) { %[notify { "'foo'": }] }
+
+      it 'should not detect any problems' do
+        expect(problems).to have(0).problems
+      end
+    end
   end
 
   context 'with fix enabled' do
