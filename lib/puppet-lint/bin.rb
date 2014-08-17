@@ -1,10 +1,16 @@
 require 'puppet-lint/optparser'
 
+# Internal: The logic of the puppet-lint bin script, contained in a class for
+# ease of testing.
 class PuppetLint::Bin
   # Public: Initialise a new PuppetLint::Bin.
   #
   # args - An Array of command line argument Strings to be passed to the option
   #        parser.
+  #
+  # Examples
+  #
+  #   PuppetLint::Bin.new(ARGV).run
   def initialize(args)
     @args = args
   end

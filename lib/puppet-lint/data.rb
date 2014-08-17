@@ -1,6 +1,8 @@
 require 'singleton'
 require 'set'
 
+# Public: A singleton class storing all the information about the manifest
+# being analysed.
 class PuppetLint::Data
   include Singleton
 
@@ -12,6 +14,11 @@ class PuppetLint::Data
     # Internal: Get/Set the raw manifest data, split by \n.
     attr_accessor :manifest_lines
 
+    # Internal: Store the tokenised manifest.
+    #
+    # tokens - The Array of PuppetLint::Lexer::Token objects to store.
+    #
+    # Returns nothing.
     def tokens=(tokens)
       @tokens = tokens
       @title_tokens = nil
@@ -20,6 +27,9 @@ class PuppetLint::Data
       @defined_type_indexes = nil
     end
 
+    # Public: Get the tokenised manifest.
+    #
+    # Returns an Array of PuppetLint::Lexer::Token objects.
     def tokens
       if caller[0][/`.*'/][1..-2] == 'check'
         @tokens.dup
@@ -28,6 +38,12 @@ class PuppetLint::Data
       end
     end
 
+    # Internal: Store the path to the manifest file and populate fullpath and
+    # filename.
+    #
+    # val - The path to the file as a String.
+    #
+    # Returns nothing.
     def path=(val)
       @path = val
       if val.nil?
@@ -216,6 +232,14 @@ class PuppetLint::Data
       result
     end
 
+    # Internal: Finds all the tokens that make up the defined type or class
+    # definition parameters.
+    #
+    # these_tokens - An Array of PuppetLint::Lexer::Token objects that make up
+    #                the defined type or class definition.
+    #
+    # Returns an Array of PuppetLint::Lexer::Token objects or nil if it takes
+    # no parameters.
     def param_tokens(these_tokens)
       depth = 0
       lparen_idx = nil

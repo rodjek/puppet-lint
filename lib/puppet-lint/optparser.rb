@@ -1,5 +1,7 @@
 require 'optparse'
 
+# Public: Contains the puppet-lint option parser so that it can be used easily
+# in multiple places.
 class PuppetLint::OptParser
   HELP_TEXT = <<-EOF
     puppet-lint
@@ -12,6 +14,9 @@ class PuppetLint::OptParser
     Option:
   EOF
 
+  # Public: Initialise a new puppet-lint OptionParser.
+  #
+  # Returns an OptionParser object.
   def self.build
     OptionParser.new do |opts|
       opts.banner = HELP_TEXT

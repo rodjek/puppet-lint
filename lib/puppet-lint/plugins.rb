@@ -1,6 +1,11 @@
 require 'pathname'
 
 class PuppetLint
+  # Public: Various methods that implement puppet-lint's plugin system
+  #
+  # Examples
+  #
+  #   PuppetLint::Plugins.load_spec_helper
   class Plugins
     # Internal: Find any gems containing puppet-lint plugins and load them.
     #

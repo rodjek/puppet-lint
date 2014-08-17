@@ -1,5 +1,7 @@
 require 'puppet-lint/checkplugin'
 
+# Internal: Various methods that orchestrate the actions of the puppet-lint
+# check plugins.
 class PuppetLint::Checks
   # Public: Get an Array of problem Hashes.
   attr_accessor :problems
@@ -80,6 +82,9 @@ class PuppetLint::Checks
     end.call
   end
 
+  # Internal: Render the fixed manifest.
+  #
+  # Returns the manifest as a String.
   def manifest
     PuppetLint::Data.tokens.map { |t| t.to_manifest }.join('')
   end
