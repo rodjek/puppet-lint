@@ -1,5 +1,7 @@
 require 'puppet-lint/optparser'
 
+# Internal: The logic of the puppet-lint bin script, contained in a class for
+# ease of testing.
 class PuppetLint::Bin
   # Public: Initialise a new PuppetLint::Bin.
   #
