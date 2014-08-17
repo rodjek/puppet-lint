@@ -14,8 +14,10 @@ Gem::Specification.new do |s|
   s.executables = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
 
-  s.add_development_dependency 'rspec'
-  s.add_development_dependency 'rcov'
+  s.add_development_dependency 'rake', '~> 10.0'
+  s.add_development_dependency 'rspec', '~> 3.0'
+  s.add_development_dependency 'rspec-its', '~> 1.0'
+  s.add_development_dependency 'rspec-collection_matchers', '~> 1.0'
 
   s.authors = ['Tim Sharpe']
   s.email = 'tim@sharpe.id.au'
