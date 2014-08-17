@@ -5,8 +5,6 @@ class PuppetLint::Data
   include Singleton
 
   class << self
-    attr_reader :tokens
-
     # Internal: Get/Set the full expanded path to the manifest file being
     # checked.
     attr_reader :path, :fullpath, :filename
@@ -20,6 +18,14 @@ class PuppetLint::Data
       @resource_indexes = nil
       @class_indexes = nil
       @defined_type_indexes = nil
+    end
+
+    def tokens
+      if caller[0][/`.*'/][1..-2] == 'check'
+        @tokens.dup
+      else
+        @tokens
+      end
     end
 
     def path=(val)
