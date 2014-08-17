@@ -8,7 +8,7 @@ PuppetLint.new_check(:double_quoted_strings) do
     }.map { |token|
       [token, token.value.gsub(' '*token.column, "\n")]
     }.select { |token, sane_value|
-      sane_value[/(\\\$|\\"|\\'|\r|\t|\\t|\n|\\n)/].nil?
+      sane_value[/(\\\$|\\"|\\'|'|\r|\t|\\t|\n|\\n)/].nil?
     }.each do |token, sane_value|
       notify :warning, {
         :message => 'double quoted string containing no variables',
