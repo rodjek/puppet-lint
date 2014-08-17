@@ -4,6 +4,8 @@ require 'puppet-lint/lexer/token'
 require 'set'
 
 class PuppetLint
+  # Internal: A generic error thrown by the lexer when it encounters something
+  # it can't handle.
   class LexerError < StandardError
     # Internal: Get the Integer line number of the location of the error.
     attr_reader :line_no
@@ -28,6 +30,8 @@ class PuppetLint
     end
   end
 
+  # Internal: The puppet-lint lexer. Converts your manifest into its tokenised
+  # form.
   class Lexer
     # Internal: A Hash whose keys are Strings representing reserved keywords in
     # the Puppet DSL.
