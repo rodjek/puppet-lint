@@ -1,5 +1,7 @@
 class PuppetLint
   class Lexer
+    # Public: Stores a fragment of the manifest and the information about its
+    # location in the manifest.
     class Token
       # Public: Returns the Symbol type of the Token.
       attr_accessor :type
