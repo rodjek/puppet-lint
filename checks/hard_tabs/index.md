@@ -6,6 +6,8 @@ sg: http://docs.puppetlabs.com/guides/style_guide.html#spacing-indentation--whit
 
 # Hard Tabs
 
+---
+
 In order to comply with the style guide, manifests must not use hard tab
 characters (\t) in the whitespace ([style guide]({{ page.sg }})).
 

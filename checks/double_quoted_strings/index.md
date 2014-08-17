@@ -6,6 +6,8 @@ sg: http://docs.puppetlabs.com/guides/style_guide.html#quoting
 
 # Double Quoted Strings
 
+---
+
 All strings that do not contain variables or escape characters like `\n` or
 `\t` should be enclosed in single quotes ([style guide]({{ page.sg }})).
 

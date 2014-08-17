@@ -6,6 +6,8 @@ sg: http://docs.puppetlabs.com/guides/style_guide.html#attribute-ordering
 
 # Attribute Ordering
 
+---
+
 If a resource declaration includes an `ensure` parameter, it should be the
 first parameter specified ([style guide]({{ page.sg }})).
 

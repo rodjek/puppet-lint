@@ -6,6 +6,8 @@ sg: http://docs.puppetlabs.com/guides/style_guide.html#spacing-indentation--whit
 
 # Arrow Alignment
 
+---
+
 Arrows (`=>`) within blocks of attributes (like resource declarations,
 selectors, hashes, etc) should be aligned with the other arrows in that block
 ([style guide]({{ page.sg }})).

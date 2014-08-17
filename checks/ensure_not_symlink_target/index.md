@@ -6,6 +6,8 @@ sg: http://docs.puppetlabs.com/guides/style_guide.html#symbolic-links
 
 # Ensure Parameter Not A Symlink Target
 
+---
+
 In the interest of clarity, symbolic links should be declared by using an
 ensure value of `ensure => link` and explicitly specifying a value for the
 `target` attribute.  Using a path to the target as the ensure value is not

@@ -6,6 +6,8 @@ sg: http://docs.puppetlabs.com/guides/style_guide.html#quoting
 
 # Only Variable String
 
+---
+
 Variables standing by themselves should not be quoted.  To put it another way,
 strings should not contain just a single variable
 ([style guide]({{ page.sg }})).

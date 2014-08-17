@@ -6,6 +6,8 @@ sg: http://docs.puppetlabs.com/guides/style_guide.html#puppet-doc
 
 # Documentation
 
+---
+
 All Puppet classes and defines should be documented via comments directly above
 the start of the code ([style guide]({{ page.sg }})).
 

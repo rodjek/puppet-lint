@@ -6,6 +6,8 @@ sg: http://docs.puppetlabs.com/guides/style_guide.html#variable-format
 
 # Variable Format
 
+---
+
 When defining variables you should only use letters, numbers and underscores.
 You should specifically not make use of dashes ([style guide]({{ page.sg }})).
 

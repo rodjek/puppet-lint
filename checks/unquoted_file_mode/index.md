@@ -6,6 +6,8 @@ sg: http://docs.puppetlabs.com/guides/style_guide.html#file-modes
 
 # Unquoted File Modes
 
+---
+
 File modes should be specified as single-quoted strings instead of
 bare word numbers ([style guide]({{ page.sg }})).
 

@@ -6,6 +6,8 @@ sg: http://docs.puppetlabs.com/guides/style_guide.html#comments
 
 # Slash-asterisk comments
 
+---
+
 Although the Puppet language allows you to use `/* */` style multiline
 comments, it is recommended that you use multiple `#` style comments instead
 ([style guide]({{ page.sg }})).
