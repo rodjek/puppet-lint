@@ -4,7 +4,16 @@ require 'rake'
 require 'rake/tasklib'
 
 class PuppetLint
+  # Public: A Rake task that can be loaded and used with everything you need.
+  #
+  # Examples
+  #
+  #   require 'puppet-lint'
+  #   PuppetLint::RakeTask.new
   class RakeTask < ::Rake::TaskLib
+    # Public: Initialise a new PuppetLint::RakeTask.
+    #
+    # args - Not used.
     def initialize(*args)
       desc 'Run puppet-lint'
 
