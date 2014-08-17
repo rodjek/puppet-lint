@@ -112,4 +112,26 @@ describe 'variable_scope' do
       expect(problems).to have(0).problems
     end
   end
+
+  context 'future parser blocks' do
+    let(:code) { "
+      class foo() {
+        $foo = [1,2]
+        $foo.each |$a, $b| {
+          $a
+          $c
+        }
+        $b
+      }
+    " }
+
+    it 'should only detect a single problem' do
+      expect(problems).to have(2).problem
+    end
+
+    it 'should create two warnings' do
+      expect(problems).to contain_warning(msg).on_line(8).in_column(9)
+      expect(problems).to contain_warning(msg).on_line(6).in_column(11)
+    end
+  end
 end

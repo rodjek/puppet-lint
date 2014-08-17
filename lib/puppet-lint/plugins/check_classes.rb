@@ -207,18 +207,55 @@ PuppetLint.new_check(:variable_scope) do
         end
       end
 
+      future_parser_scopes = {}
+      in_pipe = false
+      temp_scope_vars = []
+
       object_tokens.each do |token|
         if token.type == :VARIABLE
-          if token.next_code_token.type == :EQUALS
-            variables_in_scope << token.value
+          if in_pipe
+            temp_scope_vars << token.value
           else
-            referenced_variables << token
+            if token.next_code_token.type == :EQUALS
+              variables_in_scope << token.value
+            else
+              referenced_variables << token
+            end
+          end
+        elsif token.type == :PIPE
+          in_pipe = !in_pipe
+
+          if in_pipe
+            temp_scope_vars = []
+          else
+            start_idx = tokens.find_index(token)
+            end_token = nil
+            brace_depth = 0
+
+            tokens[start_idx..-1].each do |sub_token|
+              case sub_token.type
+              when :LBRACE
+                brace_depth += 1
+              when :RBRACE
+                brace_depth -= 1
+                if brace_depth == 0
+                  end_token = sub_token
+                  break
+                end
+              end
+            end
+
+            future_parser_scopes.merge!(Hash[(token.line..end_token.line).to_a.map { |i| [i, temp_scope_vars] }])
           end
         end
       end
 
       msg = "top-scope variable being used without an explicit namespace"
       referenced_variables.each do |token|
+        unless future_parser_scopes[token.line].nil?
+          next if future_parser_scopes[token.line].include?(token.value)
+        end
+
         unless token.value.include? '::'
           unless variables_in_scope.include? token.value
             unless token.value =~ /\A\d+\Z/
