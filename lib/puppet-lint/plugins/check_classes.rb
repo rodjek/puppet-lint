@@ -19,7 +19,6 @@ PuppetLint.new_check(:autoloader_layout) do
   def check
     unless fullpath.nil? || fullpath == ''
       (class_indexes + defined_type_indexes).each do |class_idx|
-        class_tokens = class_idx[:tokens]
         title_token = class_idx[:name_token]
         split_title = title_token.value.split('::')
         mod = split_title.first
