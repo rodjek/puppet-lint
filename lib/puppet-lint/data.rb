@@ -33,7 +33,7 @@ class PuppetLint::Data
       end
     end
 
-    # Internal: Retrieve a list of tokens that represent resource titels
+    # Internal: Retrieve a list of tokens that represent resource titles
     #
     # Returns an Array of PuppetLint::Lexer::Token objects.
     def title_tokens
