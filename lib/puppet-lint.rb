@@ -180,9 +180,18 @@ class PuppetLint
 
   # Public: Define a new check.
   #
-  # name  - A unique name for the check as a Symbol
+  # name  - A unique name for the check as a Symbol.
   # block - The check logic. This must contain a `check` method and optionally
   #         a `fix` method.
+  #
+  # Returns nothing.
+  #
+  # Examples
+  #
+  #   PuppetLint.new_check(:foo) do
+  #     def check
+  #     end
+  #   end
   def self.new_check(name, &block)
     class_name = name.to_s.split('_').map(&:capitalize).join
     klass = PuppetLint.const_set("Check#{class_name}", Class.new(PuppetLint::CheckPlugin))
