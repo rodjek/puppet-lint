@@ -20,6 +20,10 @@ class PuppetLint::OptParser
         PuppetLint.configuration.display_version = true
       end
 
+      opts.on('-c', '--config FILE', 'Load puppet-lint options from file.') do |file|
+        opts.load(file)
+      end
+
       opts.on('--with-context', 'Show where in the manifest the problem is.') do
         PuppetLint.configuration.with_context = true
       end
