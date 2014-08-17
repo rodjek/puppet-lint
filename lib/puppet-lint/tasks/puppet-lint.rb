@@ -14,6 +14,10 @@ class PuppetLint
     # Public: Initialise a new PuppetLint::RakeTask.
     #
     # args - Not used.
+    #
+    # Example
+    #
+    #   PuppetLint::RakeTask.new
     def initialize(*args)
       desc 'Run puppet-lint'
 
