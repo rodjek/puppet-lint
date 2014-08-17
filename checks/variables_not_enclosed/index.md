@@ -6,6 +6,8 @@ sg: http://docs.puppetlabs.com/guides/style_guide.html#quoting
 
 # Variables Not Enclosed
 
+---
+
 All variables should be enclosed in in braces (`{}`) when being interpolated in
 a string ([style guide]({{ page.sg }})).
 

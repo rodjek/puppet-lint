@@ -3,6 +3,8 @@ layout: default
 ---
 # PuppetLint::Lexer::Token
 
+---
+
 ### #new
 
 Creates a new `PuppetLint::Lexer::Token` object. Takes 4 arguments:

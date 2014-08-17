@@ -6,6 +6,8 @@ sg: http://docs.puppetlabs.com/guides/style_guide.html#spacing-indentation--whit
 
 # 80 character line limit
 
+---
+
 Your manifests should not contain any lines longer than 80 characters
 ([style guide]({{ page.sg }})).
 

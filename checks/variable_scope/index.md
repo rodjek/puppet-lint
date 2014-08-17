@@ -6,6 +6,8 @@ sg: http://docs.puppetlabs.com/guides/style_guide.html#namespacing-variables
 
 # Namespacing Variables
 
+---
+
 When using top-scope variables, including facts, Puppet modules should
 explicitly specify the empty namespace to prevent accidental scoping issues.
 ([style guide]({{ page.sg }})).

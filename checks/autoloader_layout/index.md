@@ -6,6 +6,8 @@ sg: http://docs.puppetlabs.com/guides/style_guide.html#separate-files
 
 # Manifest Files In The Proper Layout
 
+---
+
 All classes and resource type definitions must be in separate files in the
 manifests directory of their module.  This is functionally identical to
 declaring all classes and defines in init.pp, but highlights the structure of

@@ -6,6 +6,8 @@ sg: http://docs.puppetlabs.com/guides/style_guide.html#relationship-declarations
 
 # Right To Left Relationship
 
+---
+
 Relationship declarations with the chaining syntax should only be used in the
 “left to right” direction ([style guide]({{ page.sg }})).
 

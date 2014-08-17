@@ -5,6 +5,8 @@ title: duplicate_params
 
 # Duplicate Parameters
 
+---
+
 You really shouldn't have duplicate parameters in a resource declaration, it is
 going to lead to strangness.
 

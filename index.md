@@ -13,9 +13,9 @@ $ gem install puppet-lint
 ### Run It!
 
 {% highlight console %}
-$ puppet-lint --with-filename /etc/puppet/modules
-foo/manifests/bar.pp: trailing whitespace found on line 1
-apache/manifests/server.pp: variable not enclosed in {} on line 56
+$ puppet-lint /etc/puppet/modules
+foo/manifests/bar.pp - ERROR: trailing whitespace found on line 1
+apache/manifests/server.pp - WARNING: variable not enclosed in {} on line 56
 ...
 {% endhighlight %}
 

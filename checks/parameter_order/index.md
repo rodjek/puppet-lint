@@ -6,6 +6,8 @@ sg: http://docs.puppetlabs.com/guides/style_guide.html#display-order-of-class-pa
 
 # Display Order Of Parameters
 
+---
+
 In parameterized class and defined resource type declarations, parameters that
 are required should be listed before optional parameters (i.e. parameters with
 defaults) ([style guide]({{ page.sg }})).

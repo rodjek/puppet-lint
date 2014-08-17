@@ -6,6 +6,8 @@ sg: http://docs.puppetlabs.com/guides/style_guide.html#class-inheritance
 
 # Class Inheritance
 
+---
+
 Inheritance may be used within a module, but must not be used across module
 namespaces. Cross-module dependencies should be satisfied in a more portable
 way that doesn’t violate the concept of modularity, such as with include

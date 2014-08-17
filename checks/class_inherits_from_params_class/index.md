@@ -6,6 +6,8 @@ sg: http://docs.puppetlabs.com/guides/style_guide.html#class-parameter-defaults
 
 # Parameterised class inheritings from 'params' class
 
+---
+
 The following popular method SHOULD NOT be used because it is not
 compatible with Puppet 2.6.2 and earlier.
 

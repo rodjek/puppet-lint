@@ -6,6 +6,8 @@ sg: http://docs.puppetlabs.com/guides/style_guide.html#classes-and-defined-resou
 
 # Nested Classes Or Defines
 
+---
+
 Classes and defined resource types must not be defined within other classes
 ([style guide]({{ page.sg }})).
 

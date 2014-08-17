@@ -6,6 +6,8 @@ sg: http://docs.puppetlabs.com/guides/style_guide.html#file-modes
 
 # File Modes
 
+---
+
 File modes should be represented as 4 digits rather than 3, to explicitly show
 that they are octal values.  File modes can also be represented symbolically
 e.g. `u=rw,g=r` ([style guide]({{ page.sg }})).

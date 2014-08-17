@@ -5,6 +5,8 @@ title: single_quote_string_with_variables
 
 # Single Quoted String Containing Variables
 
+---
+
 Single quoted strings do not get interpolated, so you should not attempt to
 embed variables in one.  This is not a style issue, rather a common mistake.
 

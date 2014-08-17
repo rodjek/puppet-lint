@@ -6,6 +6,8 @@ sg: http://docs.puppetlabs.com/guides/style_guide.html#spacing-indentation--whit
 
 # Trailing whitespace
 
+---
+
 Your manifests must not contain any trailing whitespace on any line
 ([style guide]({{ page.sg }})).
 

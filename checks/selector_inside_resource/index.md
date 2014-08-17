@@ -6,6 +6,8 @@ sg: http://docs.puppetlabs.com/guides/style_guide.html#keep-resource-declaration
 
 # Selector Inside A Resource
 
+---
+
 You should not intermingle conditionals with resource declarations. When using
 conditionals for data assignment, you should separate conditional code from the
 resource declarations ([style guide]({{ page.sg }})).

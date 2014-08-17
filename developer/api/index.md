@@ -3,6 +3,8 @@ layout: default
 ---
 # Check API
 
+---
+
 ## What you need to implement
 
 To define a new check, you need to create a new `PuppetLint::CheckPlugin`

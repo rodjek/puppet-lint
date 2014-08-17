@@ -3,6 +3,8 @@ layout: default
 ---
 # Writing your own puppet-lint check
 
+---
+
 You've got a great idea for a new puppet-lint check? Brilliant! Let's go and
 turn it into code.
 

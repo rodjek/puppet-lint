@@ -4,6 +4,8 @@ layout: default
 
 # Checks
 
+---
+
 Click on any of the following error messages to learn more about the check and
 how to resolve it.
 

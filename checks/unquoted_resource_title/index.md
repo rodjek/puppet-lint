@@ -6,6 +6,8 @@ sg: http://docs.puppetlabs.com/guides/style_guide.html#resource-names
 
 # Unquoted Resource Titles
 
+---
+
 All resource titles should be quoted ([style guide]({{ page.sg }})).
 
 #### What you have done

@@ -6,6 +6,8 @@ sg: http://docs.puppetlabs.com/guides/style_guide.html#comments
 
 # Slash comments
 
+---
+
 Although the Puppet language allows you to use `//` style comments, it is
 recommended that you use `#` style comments ([style guide]({{ page.sg }})).
 

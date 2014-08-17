@@ -6,6 +6,8 @@ sg: http://docs.puppetlabs.com/guides/style_guide.html#spacing-indentation--whit
 
 # 2 Space Soft Tabs
 
+---
+
 In order to comply with the style guide, manifests must use 2 space characters
 when indenting ([style guide]({{ page.sg }})).
 

@@ -6,6 +6,8 @@ sg: http://docs.puppetlabs.com/guides/style_guide.html#defaults-for-case-stateme
 
 # Case Without A Default Option
 
+---
+
 Case statements should have default cases. Additionally, the default case
 should fail the catalog compilation when the resulting behavior cannot be
 predicted on the majority of platforms the module will be used on. If you want

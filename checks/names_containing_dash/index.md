@@ -5,6 +5,8 @@ title: names_containing_dash
 
 # Module Names Containing A Dash
 
+---
+
 Support for dashes in class and defined type names differs depending on the
 release of Puppet you're running.  To ensure compatibility on all versions, you
 should avoid using dashes.
