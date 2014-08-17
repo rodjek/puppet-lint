@@ -10,6 +10,7 @@ require 'puppet-lint/monkeypatches'
 class PuppetLint::NoCodeError < StandardError; end
 class PuppetLint::NoFix < StandardError; end
 
+# Public: The public interface to puppet-lint.
 class PuppetLint
   # Public: Gets/Sets the String manifest code to be checked.
   attr_accessor :code
