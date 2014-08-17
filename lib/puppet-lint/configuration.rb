@@ -38,7 +38,9 @@ class PuppetLint
     # Public: Catch situations where options are being set for the first time
     # and create the necessary methods to get & set the option in the future.
     #
-    # args[0] - The value to set the option to.
+    # args   - An Array of values to set the option to.
+    # method - The String name of the option.
+    # block  - Unused.
     #
     # Returns nothing.
     #
