@@ -7,6 +7,10 @@ class PuppetLint::Bin
   #
   # args - An Array of command line argument Strings to be passed to the option
   #        parser.
+  #
+  # Examples
+  #
+  #   PuppetLint::Bin.new(ARGV).run
   def initialize(args)
     @args = args
   end
