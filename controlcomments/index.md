@@ -27,7 +27,7 @@ $this_line_has_a_really_long_name_and_value = "[snip]" # lint:ignore:80chars
 
 Telling puppet-lint to ignore certain problems won't prevent them from being
 detected, they just won't be displayed (or fixed) by default.  If you want to
-see which problems puppet-lint is ignoring, you can add `--show-ignored to your
+see which problems puppet-lint is ignoring, you can add `--show-ignored` to your
 puppet-lint invocation.
 
 {% highlight console %}
