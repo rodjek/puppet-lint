@@ -6,6 +6,62 @@ layout: default
 
 ---
 
+### 1.0.0
+
+[View Diff](https://github.com/rodjek/puppet-lint/compare/0.3.2...1.0.0)
+
+#### New features
+
+ * Support for using control comments to disable arbitrary tests.
+ * Support for automatically fixing many common problems found with
+   `puppet-lint`.
+ * Added `puppet_url_without_modules` check to warn when `puppet://` URLs are
+   used without the path starting with `modules/`.
+ * Rake task now reads puppet-lint configuration from `puppet-lint.rc` files.
+ * Added `unquoted_node_name` check to warn when unquoted `node` names are
+   found.
+ * Added `-c`/`--config` option to specify a custom path to `puppet-lint.rc`.
+ * `puppet-lint` will now automatically add the filename to the output if
+   multiple files are being linted.
+ * Added support for the future parsers loop syntax.  Variables defined and
+   used inside a loop-local scope will no longer throw `variable_scope`
+   warnings.
+ * Like URLs, long `template()` lines will no longer throw `80chars` warnings.
+ * Added support to `puppet-lint` to specify certain checks to run, rather than
+   having to disable all the checks but the desired ones.
+ * The `arrow_alignment` check now throws a warning if the arrows aren't
+   aligned as close to the parameter name as possible.
+ * Added `--relative` flag which will have the `autoloader_layout` check ignore
+   the top-most directory (good for cases where the module hosted publicly in
+   a `puppet-<foo>` directory).
+
+#### Removed features
+
+ * Removed the `class_parameter_defaults` check.
+ * `%{linenumber}` has been deprecated in the output format string and will be
+   removed in the next major release.  You should use `%{line}` instead.
+
+#### Bug fixes
+
+ * Added support for more recognised escape characters (`\$`, `\"`, `\'`,
+   `\r`) to the `double_quoted_strings` check.
+ * Fixed bug where running with `--with-context` would occasionally throw a nil
+   offset error.
+ * Added support to the lexer for the modulo (`%`) character.
+ * Fixed bug where a class or defined type argument with a default value of
+   a Hash would throw a false `variable_scope` warning.
+ * Fixed bug where auditing a `file` mode would throw false `file_mode`
+   warning.
+ * Fixed bug where line endings containing a carriage return (the default for
+   most non Unix-like systems) would throw a syntax error.
+ * Fixed bug where a double quoted string containing a single quoted string
+   would throw a false `double_quoted_string` warning.
+ * `puppet-lint` will no longer throw `only_variable_string` warnings when
+   using quoted variables as Hash keys.
+ * Rake task now exits cleanly when errors have been found.
+
+---
+
 ### 0.3.2
 
 [View Diff](https://github.com/rodjek/puppet-lint/compare/0.3.1...0.3.2)

@@ -29,6 +29,7 @@ how to resolve it.
  * ["string containing only a variable"](/checks/only_variable_string/)
  * ["single quoted string containing a variable found"](/checks/single_quote_string_with_variables/)
  * ["quoted boolean value found"](/checks/quoted_booleans/)
+ * ["puppet:// URL without modules/ found"](/checks/puppet_url_without_modules/)
 
 ### Resources
 
@@ -55,9 +56,12 @@ how to resolve it.
  * ["variable contains a dash"](/checks/variable_contains_dash/)
  * ["optional parameter listed before required parameter"](/checks/parameter_order/)
  * ["class inheriting from params class"](/checks/class_inherits_from_params_class/)
- * ["parameterised class parameter without a default value"](/checks/class_parameter_defaults/)
  * ["foo::bar-baz contains a dash"](/checks/names_containing_dash/)
 
 ### Documentation
 
  * ["foo::bar not documented"](/checks/documentation/)
+
+### Nodes
+
+ * ["unquoted node name found"](/checks/unquoted_node_name/)
