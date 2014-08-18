@@ -16,20 +16,20 @@ turn it into code.
   * Familiarity with the rspec testing framework
 
 ## Setup
-First, lets get a skeleton project set up. In this tutorial we're going to
-write a new check that ensures that manifest files end with a newline, so the
-first thing we need to do is create a folder for our project. For convention's
-sake, I recommend going with `puppet-lint-<something descriptive>-check`.
+First, get a skeleton project set up. In this tutorial, you will 
+write a new check that ensures that manifest files end with a newline. The
+first thing you need to do is create a folder for our project. For convention's
+sake, you should use `puppet-lint-<something descriptive>-check`.
 
 {% highlight console %}
 $ mkdir puppet-lint-trailing_newline-check
 {% endhighlight %}
 
-Now, you should be using some sort of version control to manage this project,
-I prefer git so that's what I'm going to show in this tutorial. If you're
-making the check public, I recommend publishing the repository on
-[GitHub](https://github.com). If you don't have an account, go and create one
-now (it's free for open source projects).
+You should be using some sort of version control to manage this project,
+This tutorial will use git as it's version control. If you're
+making the check public, you should consider publishing the repository on
+[GitHub](https://github.com). If you don't have an account, [go and create one
+now (it's free for open source projects).](https://github.com/join)
 
 {% highlight console %}
 $ cd puppet-lint-trailing_newline-check
@@ -39,19 +39,15 @@ $ git remote add origin [url for your project]
 {% endhighlight %}
 
 As puppet-lint plugins are just Ruby gems, the rest of this setup might be
-familiar to you, so just bear with me.
+familiar to you.
 
 ### README.md
-Every project needs a README file. I like to write mine in Markdown so they
-render nicely in web views while still being readable in plain text.
-
-I'll leave this to your artistic judgement.
+Every project needs a README file. 
 
 ### LICENSE
 If you're not familiar with the various licenses commonly used on open source
 projects, visit [Choose A License](http://choosealicense.com/) to have a look
-at some options. When you find one you're happy with (I usually use the MIT
-license), drop it in a file called `LICENSE` in the root of your project.
+at some options. When you find one you're happy with (the MIT license is highly recommended), drop it in a file called `LICENSE` in the root of your project.
 
 ### puppet-lint-trailing_newline-check.gemspec
 {% highlight ruby %}
@@ -85,7 +81,7 @@ end
 As puppet-lint plugins are distributed as Ruby Gems, you need to have
 a `gemspec` file which holds all the metadata about your Gem and is used when
 packaging it up. The contents of this file are pretty self-explanitory however
-if there is anything above that doesn't make sense, you can look it up in
+if there is anything above that doesn't make sense, check the
 [RubyGems Specification
 Reference](http://guides.rubygems.org/specification-reference/).
 
@@ -114,8 +110,8 @@ task :default => :spec
 {% endhighlight %}
 
 `rake` is an ersatz `make` written in Ruby and is the standard method of
-automating tasks in Ruby projects. In this case, we're going to use it to
-easily run our test suite.
+automating tasks in Ruby projects. In this case, you are going to use it to
+easily run the test suite.
 
 Line 1
 : Require the default task definition shipped with rspec.
@@ -124,7 +120,7 @@ Line 3
 : Create an instance of the rspec rake task called 'spec' (`rake spec`).
 
 Line 5
-: Set the default task to our spec task so that we can just run `rake` without
+: Set the default task to our spec task so that you can just run `rake` without
 any arguments.
 
 ### spec/spec_helper.rb
@@ -138,13 +134,13 @@ PuppetLint::Plugins.load_spec_helper
 requirements your tests may have.
 
 Line 1
-: Require puppet-lint. As we're writing a puppet-lint plugin, all of our tests
+: Require puppet-lint. As you are writing a puppet-lint plugin, all of the tests
 will require puppet-lint so we can require it once here instead of in each spec
-file. We also need it for the next line.
+file. 
 
 Line 3
 : puppet-lint's `spec_helper.rb` includes a number of helpful matchers that
-make it very easy to test plugins, so we're going to make them available to our
+make it very easy to test plugins, so you should make them available to our
 plugin too.
 
 ### Gemfile
@@ -164,8 +160,8 @@ Line 3
 : Bundler should get a list of the projects dependencies from the project's
 `gemspec` file, saving us from having to define them all twice.
 
-Now that our `Gemfile` is in place, we can tell bundler to install everything
-we need to write our plugin.
+Now that our `Gemfile` is in place, tell bundler to install everything
+needed to write our plugin.
 
 {% highlight console %}
 $ bundle install --path vendor/gems
@@ -185,7 +181,7 @@ Your bundle is complete!
 It was installed into ./vendor/gems
 {% endhighlight %}
 
-I manually specify a path for bundler to install the gems into rather than
+Author's Note: I manually specify a path for bundler to install the gems into rather than
 using the default behaviour which is to install them into `$BUNDLE_PATH` or
 `$GEM_HOME`. This way everything is contained nicely in my project directory.
 
@@ -196,7 +192,7 @@ using the default behaviour which is to install them into `$BUNDLE_PATH` or
 /Gemfile.lock
 {% endhighlight %}
 
-At this point you should have a lot of files in your project directory, but we
+At this point you should have a lot of files in your project directory, but you
 don't want to commit all these into the repository.
 
 /.bundle/
@@ -213,42 +209,42 @@ is generally not committed when writing libraries.
 At this point, your code should look like [this.](https://github.com/rodjek/puppet-lint-tutorial-check/tree/step-1)
 
 ## Finding the problems in the manifest
-Now that all the setup work is done, we can start actually writing some code.
-We're going to develop this module in a test driven manner, meaning we write
-our tests to describe what our check should find before we dive into the fun
+Now that all the setup work is done, you can start actually writing some code.
+You're going to develop this module in a test driven manner, meaning you write
+tests to describe what the check should find before diving into the fun
 stuff.
 
 ### Write the tests
 
 #### Getting started
-First, lets create the folder where our tests will live
+First, create the folder where the tests will live
 
 {% highlight console %}
 $ mkdir -p spec/puppet-lint/plugins
 {% endhighlight %}
 
-This directory structure is important as the magic that we imported from
-puppet-lint's spec\_helper.rb into our spec\_helper.rb is only activated for
+This directory structure is important as the magic that you imported from
+puppet-lint's spec\_helper.rb into the spec\_helper.rb is only activated for
 files under this path.
 
-Now, for our first tests. Our check name is going to be `trailing_newline`, so
-our tests will go in `spec/puppet-lint/plugins/check_trailing_newline_spec.rb`.
+Now, for the first tests. The check name is going to be `trailing_newline`, so
+tests will go in `spec/puppet-lint/plugins/check_trailing_newline_spec.rb`.
 
-The first thing we do in any test file is require our `spec_helper.rb` file.
+The first thing to do in any test file is require our `spec_helper.rb` file.
 
 {% highlight ruby %}
 require 'spec_helper'
 
 describe 'trailing_newline' do
-  # our tests will go here
+  # tests will go here
 end
 {% endhighlight %}
 
-On line 3, you'll note that we're telling rspec which check we will be testing.
+On line 3, you'll note that we're telling rspec which check to test.
 It's important that this string matches the name of check or rspec will have no
 idea which check it should be running.
 
-#### Our first spec, testing that valid code doesn't raise any problems
+#### The first spec: testing that valid code doesn't raise any problems
 Fortunately, this check only needs two test cases: what should happen when the
 code ends with a newline and what happens when it doesn't.
 
@@ -269,36 +265,34 @@ end
 {% endhighlight %}
 
 Line 2
-: We define our expected warning/error message here once so that we don't have
+: Define the expected warning/error message here once so that you don't have
 to retype it in each test. It's not necessary but it'll save a bit of time.
 
 Line 4
 : puppet-lint has two main modes, detecting problems and fixing problems. At
-the moment, we're only going to be dealing with detecting problems so we'll
-wrap our tests in a context where we specify that `--fix` mode is disabled.
+the moment, you're only going to be dealing with detecting problems so you'll
+wrap the tests in a context where we specify that `--fix` mode is disabled.
 
 Line 5
-: Here we state the conditions in which our tests are running. In this case,
-we're running our check against some Puppet DSL code that ends with a newline.
+: Here you state the conditions in which our tests are running. In this case,
+you're running our check against some Puppet DSL code that ends with a newline.
 
 Line 6
-: Our Puppet manifest code that we're going to run the check against.
+: The Puppet manifest code that you're going to run the check against.
 
 Lines 8 - 10
-: This is the actual test. On line 8 we describe the expected result of the
-test and on line 9 we have the actual check. Here's where some of the magic
-happens. Inside the `it` block, rspec takes the check named on line 1, runs the
-code specified on line 6 through it and presents the results back to you as
-a hash called `problems`. This all happens automatically for you so that all
-you have to do is use the [various
-matchers](https://www.relishapp.com/rspec/rspec-expectations/v/2-14/docs/built-in-matchers)
-to check the results are what you want. In this case, we're using the [have
+: This is the actual test. On line 8 you describe the expected result of the
+test and on line 9 is the actual check. Inside the `it` block, rspec takes the  
+check named on line 1, runs the code specified on line 6 through it and presents
+the results back to you as a hash called `problems`.
+This all happens automatically for you so that all you have to do is use the [various matchers](https://www.relishapp.com/rspec/rspec-expectations/v/2-14/docs/built-in-matchers)
+to check the results are what you want. In this case, you are using the [have
 matcher](https://www.relishapp.com/rspec/rspec-expectations/v/2-14/docs/built-in-matchers/have-n-items-matcher)
-to check that our check didn't return any results.
+to check that the test didn't return any results.
 
-#### Our next check, testing that bad code does raise a problem
+#### The next check: testing that bad code does raise a problem
 Testing that valid code doesn't passes without errors is all well and good, but
-we really want to test that our check can also detect problems.
+you really want to test that the check can also detect problems.
 
 {% highlight ruby %}
 context 'code not ending with a newline' do
@@ -322,8 +316,8 @@ defined this in the "Getting Started" section above. In addition, it also has
 two methods that you can chain on the end to test the line (`on_line`) and
 column (`in_column`) that your check thinks the problem is on.
 
-#### Our complete (for now) tests
-At this point, our test file should look like this.
+#### The complete (for now) tests
+At this point, the test file should look like this.
 
 {% highlight ruby %}
 require 'spec_helper'
@@ -356,7 +350,7 @@ end
 {% endhighlight %}
 
 If you run your tests right now, you should see a nasty block of errors because
-our check doesn't actually exist yet.
+the check doesn't actually exist yet.
 
 {% highlight console %}
 $ bundle exec rake
@@ -391,9 +385,9 @@ At this point, your code should look like [this.](https://github.com/rodjek/pupp
 ### Write the logic
 
 #### Getting started
-Now for the fun bit, actually writing our check code!
+Now for the fun bit, actually writing the check code!
 
-First, let's create the directory where our check will live (you'll note it's
+First, create the directory where our check will live (you'll note it's
 exactly the same as where we put our tests, but under `lib/` instead of
 `spec/`).
 
@@ -401,7 +395,7 @@ exactly the same as where we put our tests, but under `lib/` instead of
 $ mkdir -p lib/puppet-lint/plugins
 {% endhighlight %}
 
-Next, we define our new check (in
+Next, define our new check (in
 `lib/puppet-lint/plugins/check_trailing_newline.rb`)
 
 {% highlight ruby %}
@@ -436,8 +430,8 @@ Finished in 0.00292 seconds
 3 examples, 2 failures
 {% endhighlight %}
 
-The first thing our check needs to do is grab the last token in the file and
-check if it is a newline. We can do this by accessing the `tokens` array,
+The first thing the check needs to do is grab the last token in the file and
+check if it is a newline. You can do this by accessing the `tokens` array,
 which is an array of PuppetLint::Lexer::Token objects representing the
 tokenised contents of the manifest.
 
@@ -450,7 +444,7 @@ def check
 end
 {% endhighlight %}
 
-Now we need to create a warning if the last token is not a newline.
+Now create a warning if the last token is not a newline.
 
 {% highlight ruby %}
 def check
@@ -488,7 +482,7 @@ At this point, your code should look like [this.](https://github.com/rodjek/pupp
 
 ### Write the tests
 
-As with the check logic, we're going to start by writing our tests.
+As with the check logic, you should start by writing tests.
 
 Add a new context to the `describe` block in your spec file and some `before`
 and `after` hooks to enable and disable the fix functionality.
@@ -505,7 +499,7 @@ context 'with fix enabled' do
 end
 {% endhighlight %}
 
-Next, we'll add some specs.
+Next, add some specs.
 
 {% highlight ruby %}
 context 'code not ending in a newline' do
@@ -541,7 +535,7 @@ These specs should look pretty familiar to you.  The only new thing introduced
 here is the `manifest` helper which contains the rendered puppet manifest after
 it has gone through the fixing process.
 
-If we run the tests now, we should have a few new failures.
+If you run the tests now, you should have a few new failures.
 
 {% highlight console %}
 $ bundle exec rake
@@ -574,7 +568,7 @@ At this point, your code should look like [this.](https://github.com/rodjek/pupp
 
 ### Write the logic
 
-The first thing we need to do is define a `fix` method in
+The first thing you need to do is define a `fix` method in
 `lib/puppet-lint/plugins/check_trailing_newlines.rb` which will be passed the
 problem hash generated by `notify` in your `check` method.
 
@@ -583,8 +577,8 @@ def fix(problem)
 end
 {% endhighlight %}
 
-Inside this method, we can modify the `tokens` array to fix whatever problems
-we need to. In this case, all we need to do is append a newline token to the
+Inside this method, you can modify the `tokens` array to fix problems
+as necessary. In this case, all you need to do is append a newline token to the
 array.
 
 {% highlight ruby %}
