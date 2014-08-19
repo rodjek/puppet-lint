@@ -31,6 +31,37 @@ describe 'variable_scope' do
     end
   end
 
+  context 'class with no variables declared accessing local array index' do
+    let(:code) { "
+      class foo {
+        $bar = ['one', 'two', 'three']
+        $baz = $bar[1]
+      }"
+    }
+
+    it 'should not detect any problems' do
+      expect(problems).to have(0).problems
+    end
+  end
+
+  context 'class with no variables declared accessing local hash key' do
+    let(:code) { "
+      class foo {
+        $bar = {
+          'one'   => 1,
+          'two'   => 2,
+          'three' => 3,
+        }
+        $baz = $bar['two']
+      }"
+    }
+
+    it 'should not detect any problems' do
+      expect(problems).to have(0).problems
+    end
+  end
+
+
   context 'class with variables declared accessing local scope' do
     let(:code) { "
       class foo {
