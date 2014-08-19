@@ -236,6 +236,20 @@ describe 'arrow_alignment' do
         expect(problems).to contain_warning(msg).on_line(4).in_column(19)
       end
     end
+
+    context 'resource with multiple params where one is an empty hash' do
+      let(:code) { "
+        foo { 'foo':
+          a => true,
+          b => {
+          }
+        }
+      "}
+
+      it 'should not detect any problems' do
+        expect(problems).to have(0).problems
+      end
+    end
   end
 
   context 'with fix enabled' do
