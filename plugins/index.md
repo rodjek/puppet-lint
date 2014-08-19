@@ -10,7 +10,17 @@ layout: default
 > Checks to ensure that your manifest files end with a trailing newline.
 
 | **URL**     | <https://github.com/rodjek/puppet-lint-trailing_newline-check> |
-| **Bundler** | `gem 'puppet-lint-trailing_newline-check'`                     |
+| **Install** | `gem install puppet-lint-trailing_newline-check`               |
+{: .table .table-condensed }
+
+---
+
+### variable_contains_upcase
+
+> Extends puppet-lint to ensure that your variables are all lower case
+
+| **URL**     | <https://github.com/fiddyspence/puppetlint-variablecase> |
+| **Install** | `gem install puppet-lint-variable_contains_upcase`       |
 {: .table .table-condensed }
 
 ---
