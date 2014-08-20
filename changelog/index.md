@@ -6,6 +6,20 @@ layout: default
 
 ---
 
+### 1.0.1
+
+[View Diff](https://github.com/rodjek/puppet-lint/compare/1.0.0...1.0.1)
+
+#### Bug fixes
+
+ * Fixed bug where array/hash access would cause a `top_scope_variable` false
+   positive.
+ * Fixed bug where `puppet-lint` would throw an exception when running the
+   `arrow_alignment` check over a resource with more than one parameter and one
+   of the parameters has an empty hash as its value.
+
+---
+
 ### 1.0.0
 
 [View Diff](https://github.com/rodjek/puppet-lint/compare/0.3.2...1.0.0)
