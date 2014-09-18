@@ -13,27 +13,31 @@ describe PuppetLint::Lexer do
 
   context '#new_token' do
     it 'should calculate the line number for an empty string' do
-      token = @lexer.new_token(:TEST, 'test', :chunk => '')
+      token = @lexer.new_token(:TEST, 'test', 4)
       expect(token.line).to eq(1)
     end
 
     it 'should calculate the line number for a multi line string' do
-      token = @lexer.new_token(:TEST, 'test', :chunk => "foo\nbar")
+      @lexer.instance_variable_set('@line_no', 2)
+      token = @lexer.new_token(:TEST, 'test', 4)
       expect(token.line).to eq(2)
     end
 
     it 'should calculate the column number for an empty string' do
-      token = @lexer.new_token(:TEST, 'test', :chunk => '')
+      token = @lexer.new_token(:TEST, 'test', 4)
       expect(token.column).to eq(1)
     end
 
     it 'should calculate the column number for a single line string' do
-      token = @lexer.new_token(:TEST, 'test', :chunk => 'this is a test')
+      @lexer.instance_variable_set('@column', 'this is a test'.size)
+      token = @lexer.new_token(:TEST, 'test', 4)
       expect(token.column).to eq(14)
     end
 
     it 'should calculate the column number for a multi line string' do
-      token = @lexer.new_token(:TEST, 'test', :chunk => "foo\nbar\nbaz\ngronk")
+      @lexer.instance_variable_set('@line_no', 4)
+      @lexer.instance_variable_set('@column', "gronk".size)
+      token = @lexer.new_token(:TEST, 'test', 4)
       expect(token.column).to eq(5)
     end
   end
