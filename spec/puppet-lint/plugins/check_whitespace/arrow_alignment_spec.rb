@@ -399,5 +399,33 @@ describe 'arrow_alignment' do
         expect(manifest).to eq(fixed)
       end
     end
+
+    context 'resource with unaligned => and no whitespace between param and =>' do
+      let(:code) { "
+        user { 'test':
+          param1 => 'foo',
+          param2=> 'bar',
+        }
+      " }
+
+      let(:fixed) { "
+        user { 'test':
+          param1 => 'foo',
+          param2 => 'bar',
+        }
+      " }
+
+      it 'should detect 1 problem' do
+        expect(problems).to have(1).problem
+      end
+
+      it 'should fix the problem' do
+        expect(problems).to contain_fixed(msg).on_line(4).in_column(17)
+      end
+
+      it 'should add whitespace between the param and the arrow' do
+        expect(manifest).to eq(fixed)
+      end
+    end
   end
 end
