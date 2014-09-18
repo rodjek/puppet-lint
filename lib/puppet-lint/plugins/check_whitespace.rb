@@ -142,7 +142,13 @@ PuppetLint.new_check(:arrow_alignment) do
   end
 
   def fix(problem)
-    new_indent = ' ' * (problem[:indent_depth] - problem[:token].prev_token.column)
-    problem[:token].prev_token.value = new_indent
+    if problem[:token].prev_token.type == :WHITESPACE
+      new_indent = ' ' * (problem[:indent_depth] - problem[:token].prev_token.column)
+      problem[:token].prev_token.value = new_indent
+    else
+      index = tokens.index(problem[:token].prev_token)
+      whitespace = ' ' * (problem[:indent_depth] - problem[:token].column)
+      tokens.insert(index + 1, PuppetLint::Lexer::Token.new(:WHITESPACE, whitespace, 0, 0))
+    end
   end
 end
