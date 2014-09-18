@@ -250,6 +250,24 @@ describe 'arrow_alignment' do
         expect(problems).to have(0).problems
       end
     end
+
+    context 'multiline resource with multiple params on a line' do
+      let(:code) { "
+        user { 'test':
+          a => 'foo', bb => 'bar',
+          ccc => 'baz',
+        }
+      " }
+
+      it 'should detect 2 problems' do
+        expect(problems).to have(2).problems
+      end
+
+      it 'should create 2 warnings' do
+        expect(problems).to contain_warning(msg).on_line(3).in_column(13)
+        expect(problems).to contain_warning(msg).on_line(3).in_column(26)
+      end
+    end
   end
 
   context 'with fix enabled' do
