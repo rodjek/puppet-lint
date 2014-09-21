@@ -186,6 +186,17 @@ PuppetLint.new_check(:variable_scope) do
     'serverip',
     'serverversion',
     'caller_module_name',
+    'alias',
+    'audit',
+    'before',
+    'loglevel',
+    'noop',
+    'notify',
+    'require',
+    'schedule',
+    'stage',
+    'subscribe',
+    'tag',
   ]
   POST_VAR_TOKENS = Set[:COMMA, :EQUALS, :RPAREN]
 
