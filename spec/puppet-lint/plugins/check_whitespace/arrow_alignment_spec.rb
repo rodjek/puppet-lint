@@ -445,5 +445,66 @@ describe 'arrow_alignment' do
         expect(manifest).to eq(fixed)
       end
     end
+
+    context 'multiline resource with multiple params on a line' do
+      let(:code) { "
+        user { 'test':
+          a => 'foo', bb => 'bar',
+          ccc => 'baz',
+        }
+      " }
+
+      let(:fixed) { "
+        user { 'test':
+          a   => 'foo',
+          bb  => 'bar',
+          ccc => 'baz',
+        }
+      " }
+
+      it 'should detect 2 problems' do
+        expect(problems).to have(2).problems
+      end
+
+      it 'should fix 2 problems' do
+        expect(problems).to contain_fixed(msg).on_line(3).in_column(13)
+        expect(problems).to contain_fixed(msg).on_line(3).in_column(26)
+      end
+
+      it 'should move the extra param onto its own line and realign' do
+        expect(manifest).to eq(fixed)
+      end
+    end
+
+    context 'multiline resource with multiple params on a line, extra one longer' do
+      let(:code) { "
+        user { 'test':
+          a => 'foo', bbccc => 'bar',
+          ccc => 'baz',
+        }
+      " }
+
+      let(:fixed) { "
+        user { 'test':
+          a     => 'foo',
+          bbccc => 'bar',
+          ccc   => 'baz',
+        }
+      " }
+
+      it 'should detect 2 problems' do
+        expect(problems).to have(3).problems
+      end
+
+      it 'should fix 2 problems' do
+        expect(problems).to contain_fixed(msg).on_line(3).in_column(13)
+        expect(problems).to contain_fixed(msg).on_line(3).in_column(29)
+        expect(problems).to contain_fixed(msg).on_line(4).in_column(15)
+      end
+
+      it 'should move the extra param onto its own line and realign' do
+        expect(manifest).to eq(fixed)
+      end
+    end
   end
 end
