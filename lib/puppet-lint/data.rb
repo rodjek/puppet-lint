@@ -255,6 +255,9 @@ class PuppetLint::Data
             rparen_idx = i
             break
           end
+        elsif token.type == :LBRACE && depth == 0
+          # no parameters
+          break
         end
       end
 
