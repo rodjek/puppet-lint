@@ -165,4 +165,18 @@ describe 'variable_scope' do
       expect(problems).to contain_warning(msg).on_line(6).in_column(11)
     end
   end
+
+  %w{alias audit before loglevel noop notify require schedule stage subscribe tag}.each do |metaparam|
+    context "referencing #{metaparam} metaparam value as a variable" do
+      let(:code) { "
+        class foo() {
+          $#{metaparam}
+        }
+      " }
+
+      it 'should not detect any problems' do
+        expect(problems).to have(0).problems
+      end
+    end
+  end
 end
