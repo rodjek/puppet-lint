@@ -111,7 +111,8 @@ PuppetLint.new_check(:arrow_alignment) do
       resource_tokens.each_with_index do |token, idx|
         if token.type == :FARROW
           (level_tokens[indent_depth_idx] ||= []) << token
-          indent_length = token.prev_token.column + 1
+          prev_indent_token = resource_tokens[0..idx].rindex { |t| t.type == :INDENT }
+          indent_length = resource_tokens[prev_indent_token].to_manifest.length + token.prev_code_token.to_manifest.length + 2
 
           if indent_depth[indent_depth_idx] < indent_length
             indent_depth[indent_depth_idx] = indent_length
