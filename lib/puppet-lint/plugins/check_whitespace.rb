@@ -111,7 +111,8 @@ PuppetLint.new_check(:arrow_alignment) do
       resource_tokens.each_with_index do |token, idx|
         if token.type == :FARROW
           (level_tokens[indent_depth_idx] ||= []) << token
-          indent_length = token.prev_token.column + 1
+          prev_indent_token = resource_tokens[0..idx].rindex { |t| t.type == :INDENT }
+          indent_length = resource_tokens[prev_indent_token].to_manifest.length + token.prev_code_token.to_manifest.length + 2
 
           if indent_depth[indent_depth_idx] < indent_length
             indent_depth[indent_depth_idx] = indent_length
@@ -124,12 +125,15 @@ PuppetLint.new_check(:arrow_alignment) do
         elsif token.type == :RBRACE
           level_tokens[indent_depth_idx].each do |arrow_tok|
             unless arrow_tok.column == indent_depth[indent_depth_idx]
+              arrows_on_line = level_tokens[indent_depth_idx].select { |t| t.line == arrow_tok.line }
               notify :warning, {
-                :message      => 'indentation of => is not properly aligned',
-                :line         => arrow_tok.line,
-                :column       => arrow_tok.column,
-                :token        => arrow_tok,
-                :indent_depth => indent_depth[indent_depth_idx],
+                :message        => 'indentation of => is not properly aligned',
+                :line           => arrow_tok.line,
+                :column         => arrow_tok.column,
+                :token          => arrow_tok,
+                :indent_depth   => indent_depth[indent_depth_idx],
+                :newline        => !(arrows_on_line.index(arrow_tok) == 0),
+                :newline_indent => arrows_on_line.first.prev_code_token.prev_token.value,
               }
             end
           end
@@ -142,13 +146,24 @@ PuppetLint.new_check(:arrow_alignment) do
   end
 
   def fix(problem)
+    new_ws_len = (problem[:indent_depth] - (problem[:newline_indent].length + problem[:token].prev_code_token.to_manifest.length + 1))
+    new_ws = ' ' * new_ws_len
+    if problem[:newline]
+      index = tokens.index(problem[:token].prev_code_token.prev_token)
+
+      #insert newline
+      tokens.insert(index, PuppetLint::Lexer::Token.new(:NEWLINE, "\n", 0, 0))
+
+      # indent the parameter to the correct depth
+      problem[:token].prev_code_token.prev_token.type = :INDENT
+      problem[:token].prev_code_token.prev_token.value = problem[:newline_indent].dup
+    end
+
     if problem[:token].prev_token.type == :WHITESPACE
-      new_indent = ' ' * (problem[:indent_depth] - problem[:token].prev_token.column)
-      problem[:token].prev_token.value = new_indent
+      problem[:token].prev_token.value = new_ws
     else
       index = tokens.index(problem[:token].prev_token)
-      whitespace = ' ' * (problem[:indent_depth] - problem[:token].column)
-      tokens.insert(index + 1, PuppetLint::Lexer::Token.new(:WHITESPACE, whitespace, 0, 0))
+      tokens.insert(index + 1, PuppetLint::Lexer::Token.new(:WHITESPACE, new_ws, 0, 0))
     end
   end
 end
