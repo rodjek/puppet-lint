@@ -27,6 +27,40 @@ If you want to test your entire Puppet manifest directory, you can add
 
     rake lint
 
+If you want to modify the default behaviour of the rake task, you can modify
+the PuppetLint configuration by defining the task yourself.
+
+    PuppetLint::RakeTask.new :lint do |config|
+      # Pattern of files to check, defaults to `**/*.pp`
+      config.pattern = 'modules'
+
+      # Pattern of files to ignore
+      config.ignore_paths = ['modules/apt', 'modules/stdlib']
+
+      # List of checks to disable
+      config.disable_checks = ['documentation', '80chars']
+
+      # Should puppet-lint prefix it's output with the file being checked,
+      # defaults to true
+      config.with_filename = false
+
+      # Should the task fail if there were any warnings, defaults to false
+      config.fail_on_warnings = true
+
+      # Format string for puppet-lint's output (see the puppet-lint help output
+      # for details
+      config.log_format = '%{filename} - %{message}'
+
+      # Print out the context for the problem, defaults to false
+      config.with_context = true
+
+      # Enable automatic fixing of problems, defaults to false
+      config.fix = true
+
+      # Show ignored problems in the output, defaults to false
+      config.show_ignored = true
+    end
+
 ## Implemented tests
 
 At the moment, the following tests have been implemented:
