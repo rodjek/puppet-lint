@@ -2,17 +2,22 @@
 # each instance found.
 PuppetLint.new_check(:unquoted_node_name) do
   def check
-    tokens.select { |r|
-      r.type == :NODE && r.next_code_token.type == :NAME
-    }.each do |token|
-      value_token = token.next_code_token
-      unless value_token.value == 'default'
-        notify :warning, {
-          :message => 'unquoted node name found',
-          :line    => value_token.line,
-          :column  => value_token.column,
-          :token   => value_token,
-        }
+    node_tokens = tokens.select { |token| token.type == :NODE }
+    node_tokens.each do |node|
+      node_token_idx = tokens.index(node)
+      node_lbrace_idx = tokens.index(tokens.find { |token| token.type == :LBRACE })
+
+      tokens[node_token_idx..node_lbrace_idx].select { |token|
+        token.type == :NAME
+      }.each do |token|
+        unless token.value == 'default'
+          notify :warning, {
+            :message => 'unquoted node name found',
+            :line    => token.line,
+            :column  => token.column,
+            :token   => token,
+          }
+        end
       end
     end
   end
