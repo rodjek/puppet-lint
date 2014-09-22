@@ -292,6 +292,7 @@ class PuppetLint::Data
     # Returns nothing.
     def parse_control_comments
       @ignore_overrides.each_key { |check| @ignore_overrides[check].clear }
+      control_re = /\A(lint:\S+)(\s+lint:\S+)*(.*)/
 
       comment_token_types = Set[:COMMENT, :MLCOMMENT, :SLASH_COMMENT]
 
@@ -304,28 +305,37 @@ class PuppetLint::Data
 
       stack = []
       control_comment_tokens.each do |token|
-        control, reason = token.value.strip.split(' ', 2)
-        split_control = control.split(':')
-        command = split_control[1]
+        comment_data = control_re.match(token.value.strip).to_a[1..-1].compact.map(&:strip)
+        if comment_data.last =~ /\Alint:(ignore|endignore)/
+          comment_data << ''
+        end
+        reason = comment_data.pop
+        stack_add = []
+        comment_data.each do |control|
+          split_control = control.split(':')
+          command = split_control[1]
 
-        if command == 'ignore'
-          check = split_control[2].to_sym
+          if command == 'ignore'
+            check = split_control[2].to_sym
 
-          if token.prev_token && !Set[:NEWLINE, :INDENT].include?(token.prev_token.type)
-            # control comment at the end of the line, override applies to
-            # a single line only
-            (ignore_overrides[check] ||= {})[token.line] = reason
+            if token.prev_token && !Set[:NEWLINE, :INDENT].include?(token.prev_token.type)
+              # control comment at the end of the line, override applies to
+              # a single line only
+              (ignore_overrides[check] ||= {})[token.line] = reason
+            else
+              stack_add << [token.line, reason, check]
+            end
           else
-            stack << [token.line, reason, check]
-          end
-        else
-          start = stack.pop
-          unless start.nil?
-            (start[0]..token.line).each do |i|
-              (ignore_overrides[start[2]] ||= {})[i] = start[1]
+            stack.pop.each do |start|
+              unless start.nil?
+                (start[0]..token.line).each do |i|
+                  (ignore_overrides[start[2]] ||= {})[i] = start[1]
+                end
+              end
             end
           end
         end
+        stack << stack_add unless stack_add.empty?
       end
     end
   end
