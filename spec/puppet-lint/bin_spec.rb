@@ -306,4 +306,21 @@ describe PuppetLint::Bin do
       "  for a good reason",
     ].join("\n")) }
   end
+
+  context 'ignoring multiple checks on a line' do
+    let(:args) { [
+      'spec/fixtures/test/manifests/ignore_multiple_line.pp',
+    ] }
+
+    its(:exitstatus) { is_expected.to eq(0) }
+  end
+
+  context 'ignoring multiple checks in a block' do
+    let(:args) { [
+      'spec/fixtures/test/manifests/ignore_multiple_block.pp',
+    ] }
+
+    its(:exitstatus) { is_expected.to eq(0) }
+    its(:stdout) { is_expected.to match(/^.*line 6$/) }
+  end
 end
