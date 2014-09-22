@@ -53,12 +53,14 @@ class PuppetLint
         PuppetLint::OptParser.build
         PuppetLint.configuration.with_filename = @with_filename
 
-        @disable_checks.each do |check|
+        Array(@disable_checks).each do |check|
           PuppetLint.configuration.send("disable_#{check}")
         end
 
         %w{with_filename fail_on_warnings error_level log_format with_context fix show_ignored}.each do |config|
-          PuppetLint.configuration.send(config.to_sym, instance_variable_get("@#{config}"))
+          unless instance_variable_get("@#{config}").nil?
+            PuppetLint.configuration.send(config.to_sym, instance_variable_get("@#{config}"))
+          end
         end
 
         RakeFileUtils.send(:verbose, true) do
