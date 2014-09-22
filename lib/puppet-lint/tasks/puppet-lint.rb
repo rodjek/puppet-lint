@@ -51,7 +51,6 @@ class PuppetLint
 
       task @name do
         PuppetLint::OptParser.build
-        PuppetLint.configuration.with_filename = @with_filename
 
         Array(@disable_checks).each do |check|
           PuppetLint.configuration.send("disable_#{check}")
