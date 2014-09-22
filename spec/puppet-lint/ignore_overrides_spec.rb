@@ -94,4 +94,16 @@ describe 'quoted_booleans', :type => :lint do
       expect(problems).to contain_ignored(msg).on_line(5).in_column(7).with_reason('another reason')
     end
   end
+
+  context 'disable multiple checks on a line with a reason' do
+    let(:code) { '"true" # lint:ignore:quoted_booleans lint:ignore:double_quoted_string a reason' }
+
+    it 'should detect 1 problems' do
+      expect(problems).to have(1).problems
+    end
+
+    it 'should have one ignored problems' do
+      expect(problems).to contain_ignored(msg).on_line(1).in_column(1).with_reason('a reason')
+    end
+  end
 end
