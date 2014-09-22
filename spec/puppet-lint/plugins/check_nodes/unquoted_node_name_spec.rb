@@ -39,6 +39,33 @@ describe 'unquoted_node_name' do
         expect(problems).to have(0).problems
       end
     end
+
+    context 'multiple bare node names' do
+      let(:code) { "node foo, bar, baz { }" }
+
+      it 'should detect 3 problems' do
+        expect(problems).to have(3).problems
+      end
+
+      it 'should create 3 warnings' do
+        expect(problems).to contain_warning(msg).on_line(1).in_column(6)
+        expect(problems).to contain_warning(msg).on_line(1).in_column(11)
+        expect(problems).to contain_warning(msg).on_line(1).in_column(16)
+      end
+    end
+
+    context 'mixed node name types' do
+      let(:code) { "node foo, 'bar', baz { }" }
+
+      it 'should detect 2 problems' do
+        expect(problems).to have(2).problems
+      end
+
+      it 'should create 2 warnings' do
+        expect(problems).to contain_warning(msg).on_line(1).in_column(6)
+        expect(problems).to contain_warning(msg).on_line(1).in_column(18)
+      end
+    end
   end
 
   context 'with fix enabled' do
@@ -63,6 +90,43 @@ describe 'unquoted_node_name' do
 
       it 'should quote the node name' do
         expect(manifest).to eq("node 'foo' { }")
+      end
+    end
+
+    context 'multiple bare node names' do
+      let(:code) { "node foo, bar, baz { }" }
+      let(:fixed) { "node 'foo', 'bar', 'baz' { }" }
+
+      it 'should detect 3 problems' do
+        expect(problems).to have(3).problems
+      end
+
+      it 'should fix the 3 problems' do
+        expect(problems).to contain_fixed(msg).on_line(1).in_column(6)
+        expect(problems).to contain_fixed(msg).on_line(1).in_column(11)
+        expect(problems).to contain_fixed(msg).on_line(1).in_column(16)
+      end
+
+      it 'should quote all three node names' do
+        expect(manifest).to eq(fixed)
+      end
+    end
+
+    context 'mixed node name types' do
+      let(:code) { "node foo, 'bar', baz { }" }
+      let(:fixed) { "node 'foo', 'bar', 'baz' { }" }
+
+      it 'should detect 2 problems' do
+        expect(problems).to have(2).problems
+      end
+
+      it 'should fix the 2 problems' do
+        expect(problems).to contain_fixed(msg).on_line(1).in_column(6)
+        expect(problems).to contain_fixed(msg).on_line(1).in_column(18)
+      end
+
+      it 'should quote the 2 unquoted node names' do
+        expect(manifest).to eq(fixed)
       end
     end
   end
