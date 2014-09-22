@@ -11,6 +11,22 @@ class PuppetLint
   #   require 'puppet-lint'
   #   PuppetLint::RakeTask.new
   class RakeTask < ::Rake::TaskLib
+    include ::Rake::DSL if defined?(::Rake::DSL)
+
+    DEFAULT_PATTERN = '**/*.pp'
+
+    attr_accessor :name
+    attr_accessor :pattern
+    attr_accessor :ignore_paths
+    attr_accessor :with_filename
+    attr_accessor :disable_checks
+    attr_accessor :fail_on_warnings
+    attr_accessor :error_level
+    attr_accessor :log_format
+    attr_accessor :with_context
+    attr_accessor :fix
+    attr_accessor :show_ignored
+
     # Public: Initialise a new PuppetLint::RakeTask.
     #
     # args - Not used.
@@ -18,20 +34,38 @@ class PuppetLint
     # Example
     #
     #   PuppetLint::RakeTask.new
-    def initialize(*args)
+    def initialize(*args, &task_block)
+      @name = args.shift || :lint
+      @pattern = DEFAULT_PATTERN
+      @with_filename = true
+      @disable_checks = []
+      @ignore_paths = []
+
+      define(args, &task_block)
+    end
+
+    def define(args, &task_block)
       desc 'Run puppet-lint'
 
-      task :lint do
-        PuppetLint.configuration.with_filename = true
+      task_block.call(*[self, args].slice(0, task_block.arity)) if task_block
+
+      task @name do
         PuppetLint::OptParser.build
+        PuppetLint.configuration.with_filename = @with_filename
+
+        @disable_checks.each do |check|
+          PuppetLint.configuration.send("disable_#{check}")
+        end
+
+        %w{with_filename fail_on_warnings error_level log_format with_context fix show_ignored}.each do |config|
+          PuppetLint.configuration.send(config.to_sym, instance_variable_get("@#{config}"))
+        end
 
         RakeFileUtils.send(:verbose, true) do
           linter = PuppetLint.new
-          matched_files = FileList['**/*.pp']
+          matched_files = FileList[@pattern]
 
-          if ignore_paths = PuppetLint.configuration.ignore_paths
-            matched_files = matched_files.exclude(*ignore_paths)
-          end
+          matched_files = matched_files.exclude(*@ignore_paths)
 
           matched_files.to_a.each do |puppet_file|
             linter.file = puppet_file
