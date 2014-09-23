@@ -24,3 +24,13 @@ layout: default
 {: .table .table-condensed }
 
 ---
+
+### parameter_documentation
+
+> Check to validate that all class parameters are documented.
+
+| **URL**     | <https://github.com/domcleal/puppet-lint-param-docs> |
+| **Install** | `gem install puppet-lint-param-docs`                 |
+{: .table .table-condensed }
+
+---
