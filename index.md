@@ -6,6 +6,15 @@ layout: default
 
 ### Install It!
 
+{% highlight puppet %}
+package { 'puppet-lint':
+  ensure   => '1.1.0',
+  provider => 'gem',
+}
+{% endhighlight %}
+
+Or, if you really must:
+
 {% highlight console %}
 $ gem install puppet-lint
 {% endhighlight %}
