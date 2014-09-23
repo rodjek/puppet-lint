@@ -57,9 +57,8 @@ class PuppetLint
         end
 
         %w{with_filename fail_on_warnings error_level log_format with_context fix show_ignored}.each do |config|
-          unless instance_variable_get("@#{config}").nil?
-            PuppetLint.configuration.send(config.to_sym, instance_variable_get("@#{config}"))
-          end
+          value = instance_variable_get("@#{config}")
+          PuppetLint.configuration.send("#{config}=".to_sym, value) unless value.nil?
         end
 
         RakeFileUtils.send(:verbose, true) do
