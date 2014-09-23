@@ -6,6 +6,33 @@ layout: default
 
 ---
 
+### 1.1.0
+
+[View Diff](https://github.com/rodjek/puppet-lint/compare/1.0.1...1.1.0)
+
+#### New features
+
+ * puppet-lint configuration can now be set in the Rake task definition, so you
+   no longer have to remember arcane `PuppetLint.configuration` options.
+ * Multiple checks can now be disabled in a single control comment.
+ * The performance of the parser has been significantly improved, most
+   noticably when checking large manifest files.
+
+#### Bug fixes
+
+ * `unquoted_node_name` check now supports multiple node names in a comma
+   separated list in a single `node` block.
+ * `arrow_alignment` check now will now put parameters on their own line if it
+   encounters a multiline resource with multiple parameters on a line.
+ * `variable_scope` check no longer throws false positive results when using
+   the automatically created variables from metaparameters.
+ * `arrow_alignment` check no longer destroys the parameter name when it
+   encounters a parameter followed by an arrow with no whitespace between them.
+ * puppet-lint no longer parses the body of the class when searching for the
+   parameter tokens of an unparameterised class.
+
+---
+
 ### 1.0.1
 
 [View Diff](https://github.com/rodjek/puppet-lint/compare/1.0.0...1.0.1)
