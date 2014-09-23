@@ -25,6 +25,16 @@ name>` comment to the line
 $this_line_has_a_really_long_name_and_value = "[snip]" # lint:ignore:80chars
 {% endhighlight %}
 
+Multiple checks can be ignored in one comment by listing them with whitespace
+separators
+
+{% highlight puppet %}
+# lint:ignore:double_quoted_strings lint:ignore:slash_comments
+$baz = "baz"
+// my awesome comment
+# lint:endignore
+{% endhighlight %}
+
 Telling puppet-lint to ignore certain problems won't prevent them from being
 detected, they just won't be displayed (or fixed) by default.  If you want to
 see which problems puppet-lint is ignoring, you can add `--show-ignored` to your
