@@ -16,7 +16,7 @@ turn it into code.
   * Familiarity with the rspec testing framework
 
 ## Setup
-First, get a skeleton project set up. In this tutorial, you will 
+First, get a skeleton project set up. In this tutorial, you will
 write a new check that ensures that manifest files end with a newline. The
 first thing you need to do is create a folder for our project. For convention's
 sake, you should use `puppet-lint-<something descriptive>-check`.
@@ -42,7 +42,7 @@ As puppet-lint plugins are just Ruby gems, the rest of this setup might be
 familiar to you.
 
 ### README.md
-Every project needs a README file. 
+Every project needs a README file.
 
 ### LICENSE
 If you're not familiar with the various licenses commonly used on open source
