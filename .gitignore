@@ -6,3 +6,4 @@ Gemfile.lock
 vendor/gems
 coverage/
 *.swp
+/_site/
