@@ -98,7 +98,12 @@ class PuppetLint::OptParser
       end
 
       opts.load('/etc/puppet-lint.rc')
-      opts.load(File.expand_path('~/.puppet-lint.rc')) if ENV['HOME']
+      begin
+        opts.load(File.expand_path('~/.puppet-lint.rc')) if ENV['HOME']
+      rescue Errno::EACCES
+        # silently skip loading this file if HOME is set to a directory that
+        # the user doesn't have read access to.
+      end
       opts.load('.puppet-lint.rc')
     end
   end
