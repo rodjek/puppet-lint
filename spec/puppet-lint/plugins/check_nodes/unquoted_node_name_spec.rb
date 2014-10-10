@@ -66,6 +66,19 @@ describe 'unquoted_node_name' do
         expect(problems).to contain_warning(msg).on_line(1).in_column(18)
       end
     end
+
+    context 'multiple node blocks' do
+      let(:code) { "node foo { } node bar { }" }
+
+      it 'should detect 2 problems' do
+        expect(problems).to have(2).problems
+      end
+
+      it 'should create 2 warnings' do
+        expect(problems).to contain_warning(msg).on_line(1).in_column(6)
+        expect(problems).to contain_warning(msg).on_line(1).in_column(19)
+      end
+    end
   end
 
   context 'with fix enabled' do
