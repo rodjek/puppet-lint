@@ -89,4 +89,12 @@ describe 'duplicate_params' do
       expect(problems).to have(0).problems
     end
   end
+
+  context 'colon as last token in file' do
+    let(:code) { "}:" }
+
+    it 'should not detect any problems' do
+      expect(problems).to have(0).problems
+    end
+  end
 end
