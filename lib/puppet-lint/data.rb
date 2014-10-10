@@ -100,7 +100,7 @@ class PuppetLint::Data
           if tokens[token_idx].type == :COLON
             next_token = tokens[token_idx].next_code_token
             depth = 1
-            if next_token.type != :LBRACE
+            if next_token && next_token.type != :LBRACE
               tokens[(token_idx + 1)..-1].each_index do |idx|
                 real_idx = token_idx + idx + 1
                 if tokens[real_idx].type == :LBRACE
