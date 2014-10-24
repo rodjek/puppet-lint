@@ -34,3 +34,13 @@ layout: default
 {: .table .table-condensed }
 
 ---
+
+### roles
+
+> Check that a role manifest does not have any param and only includes profiles.
+
+| **URL**     | <https://github.com/mcanevet/puppet-lint-roles-check> |
+| **Install** | `gem install puppet-lint-roles`                       |
+{: .table .table-condensed }
+
+---
