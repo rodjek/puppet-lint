@@ -34,3 +34,13 @@ layout: default
 {: .table .table-condensed }
 
 ---
+
+### roles_and_profiles
+
+> Check to validate that your code matches to Roles&Profiles paradigm.
+
+| **URL**     | <https://github.com/mcanevet/puppet-lint-roles_and_profiles-check> |
+| **Install** | `gem install puppet-lint-roles_and_profiles-check`                 |
+{: .table .table-condensed }
+
+---
