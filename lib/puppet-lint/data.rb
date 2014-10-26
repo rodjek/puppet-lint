@@ -179,6 +179,20 @@ class PuppetLint::Data
       @defined_type_indexes ||= definition_indexes(:DEFINE)
     end
 
+    # Internal: Calculate the positions of all node definitions within the
+    # `tokens` Array.
+    #
+    # Returns an Array of Hashes, each containing:
+    #   :start  - An Integer position in the `tokens` Array pointing to the
+    #             first Token of a defined type definition.
+    #   :end    - An Integer position in the `tokens` Array pointing to the last
+    #             Token of a defined type definition.
+    #   :tokens - An Array consisting of all the Token objects that make up the
+    #             defined type.
+    def node_indexes
+      @node_indexes ||= definition_indexes(:NODE)
+    end
+
     # Internal: Calculate the positions of all the specified defintion types
     # within the `tokens` Array.
     #

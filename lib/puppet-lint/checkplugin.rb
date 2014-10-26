@@ -90,6 +90,14 @@ class PuppetLint::CheckPlugin
     PuppetLint::Data.defined_type_indexes
   end
 
+  # Public: Provides positional information for any node definitions in the
+  # tokens array to the check plugins.
+  #
+  # Returns an Array of Hashes containing the position information.
+  def node_indexes
+    PuppetLint::Data.node_indexes
+  end
+
   # Public: Provides the expanded path of the file being analysed to check
   # plugins.
   #
