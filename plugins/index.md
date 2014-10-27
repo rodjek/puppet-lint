@@ -44,3 +44,13 @@ layout: default
 {: .table .table-condensed }
 
 ---
+
+### absolute_template_path
+
+> Check that template paths are relative not absolute.
+
+| **URL**     | <https://github.com/deanwilson/puppet-lint-absolute_template_path-check> |
+| **Install** | `gem install puppet-lint-absolute_template_path`                         |
+{: .table .table-condensed }
+
+---
