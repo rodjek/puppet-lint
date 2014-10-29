@@ -83,5 +83,3 @@ class PuppetLint
     end
   end
 end
-
-PuppetLint::RakeTask.new
