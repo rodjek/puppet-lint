@@ -46,8 +46,12 @@ PuppetLint.new_check(:case_without_default) do
       end
     end
 
-    case_indexes.each do |kase|
+    case_indexes.each_with_index do |kase,kase_index|
       case_tokens = tokens[kase[:start]..kase[:end]]
+
+      case_indexes[(kase_index + 1)..-1].each do |successor_kase|
+	case_tokens -= tokens[successor_kase[:start]..successor_kase[:end]]
+      end
 
       unless case_tokens.index { |r| r.type == :DEFAULT }
         notify :warning, {
