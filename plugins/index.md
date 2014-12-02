@@ -54,3 +54,11 @@ layout: default
 {: .table .table-condensed }
 
 ---
+
+### strict_indent
+
+> Check that manifests follow a strict indent pattern
+
+| **URL**     | <https://github.com/relud/puppet-lint-strict_indent-check> |
+| **Install** | `gem install puppet-lint-strict_indent-check`              |
+{: .table .table-condensed }
