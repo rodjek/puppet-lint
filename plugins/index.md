@@ -62,3 +62,13 @@ layout: default
 | **URL**     | <https://github.com/relud/puppet-lint-strict_indent-check> |
 | **Install** | `gem install puppet-lint-strict_indent-check`              |
 {: .table .table-condensed }
+
+---
+
+### unquoted_string
+
+> Check that selectors and case statements cases are quoted
+
+| **URL**     | <https://github.com/mcanevet/puppet-lint-unquoted_string-check> |
+| **Install** | `gem install puppet-lint-unquoted_string-check`                 |
+{: .table .table-condensed }
