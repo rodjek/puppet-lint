@@ -179,4 +179,18 @@ describe 'variable_scope' do
       end
     end
   end
+
+  context 'support the use of facts and trusted facts for Puppet 3.5 onwards' do
+    let(:code) { "
+      class foo() {
+        if $facts['osfamily'] == 'redhat' or $trusted['osfamily'] == 'redhat' {
+         $redhat = true
+        }
+      }
+    " }
+
+    it 'should not detect any problems' do
+      expect(problems).to have(0).problems
+    end
+  end
 end
