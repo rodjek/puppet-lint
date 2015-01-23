@@ -51,7 +51,7 @@ class PuppetLint
       task_block.call(*[self, args].slice(0, task_block.arity)) if task_block
 
       # clear any (auto-)pre-existing task
-      Rake::Task[@name].clear
+      Rake::Task[@name].clear if Rake::Task.task_defined?(@name)
       task @name do
         PuppetLint::OptParser.build
 
