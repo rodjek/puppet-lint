@@ -198,7 +198,6 @@ class PuppetLint
             mlcomment.sub!(/\A\/\* ?/, '')
             mlcomment.sub!(/ ?\*\/\Z/, '')
             mlcomment.gsub!(/ *\* ?/, '')
-            mlcomment.strip!
             tokens << new_token(:MLCOMMENT, mlcomment, length)
 
           elsif chunk.match(/\A\/.*?\//) && possible_regex?
