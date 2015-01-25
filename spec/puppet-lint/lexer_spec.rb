@@ -687,7 +687,7 @@ describe PuppetLint::Lexer do
     it 'should match comments on multiple lines' do
       token = @lexer.tokenise("/* foo\n * bar\n*/").first
       expect(token.type).to eq(:MLCOMMENT)
-      expect(token.value).to eq("foo\nbar\n")
+      expect(token.value).to eq("foo\n bar\n")
     end
   end
 

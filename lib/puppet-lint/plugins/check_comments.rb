@@ -36,7 +36,7 @@ PuppetLint.new_check(:star_comments) do
   end
 
   def fix(problem)
-    comment_lines = problem[:token].value.strip.split("\n")
+    comment_lines = problem[:token].value.strip.split("\n").map(&:strip)
     first_line = comment_lines.shift
     problem[:token].type = :COMMENT
     problem[:token].value = " #{first_line}"
