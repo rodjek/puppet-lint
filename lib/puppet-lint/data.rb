@@ -31,7 +31,13 @@ class PuppetLint::Data
     #
     # Returns an Array of PuppetLint::Lexer::Token objects.
     def tokens
-      if caller[0][/`.*'/][1..-2] == 'check'
+      calling_method = begin
+        caller[0][/`.*'/][1..-2]
+      rescue NoMethodError
+        caller[1][/`.*'/][1..-2]
+      end
+
+      if calling_method == 'check'
         @tokens.dup
       else
         @tokens
