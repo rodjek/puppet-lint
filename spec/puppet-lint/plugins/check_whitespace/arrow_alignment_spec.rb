@@ -268,6 +268,20 @@ describe 'arrow_alignment' do
         expect(problems).to contain_warning(msg).on_line(3).in_column(26)
       end
     end
+
+    context 'resource param containing a single-element same-line hash' do
+      let(:code) { "
+        foo { 'foo':
+          a => true,
+          b => { 'a' => 'b' }
+        }
+      "}
+
+      it 'should not detect any problems' do
+        expect(problems).to have(0).problems
+      end
+    end
+
   end
 
   context 'with fix enabled' do
