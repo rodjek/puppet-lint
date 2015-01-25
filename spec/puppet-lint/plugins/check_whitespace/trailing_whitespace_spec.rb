@@ -4,7 +4,7 @@ describe 'trailing_whitespace' do
   let(:msg) { 'trailing whitespace found' }
 
   context 'with fix disabled' do
-    context 'line with trailing whitespace' do
+    context 'line with code and trailing whitespace' do
       let(:code) { "foo " }
 
       it 'should only detect a single problem' do
@@ -13,6 +13,18 @@ describe 'trailing_whitespace' do
 
       it 'should create an error' do
         expect(problems).to contain_error(msg).on_line(1).in_column(4)
+      end
+    end
+
+    context 'line without code and trailing whitespace' do
+      let(:code) { " " }
+
+      it 'should only detect a single problem' do
+        expect(problems).to have(1).problem
+      end
+
+      it 'should create an error' do
+        expect(problems).to contain_error(msg).on_line(1).in_column(1)
       end
     end
   end

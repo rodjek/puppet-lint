@@ -25,26 +25,15 @@ end
 # an error for each instance found.
 PuppetLint.new_check(:trailing_whitespace) do
   def check
-    tokens.select { |token|
-      token.type == :WHITESPACE
-    }.select { |token|
-      token.next_token.nil? || token.next_token.type == :NEWLINE
-    }.each do |token|
-      notify :error, {
-        :message => 'trailing whitespace found',
-        :line    => token.line,
-        :column  => token.column,
-        :token   => token,
-      }
+    manifest_lines.each_with_index do |line, idx|
+      if line =~ / $/
+        notify :error, {
+          :message => 'trailing whitespace found',
+          :line    => idx + 1,
+          :column  => line.size,
+        }
+      end
     end
-  end
-
-  def fix(problem)
-    prev_token = problem[:token].prev_token
-    next_token = problem[:token].next_token
-    prev_token.next_token = next_token
-    next_token.prev_token = prev_token unless next_token.nil?
-    tokens.delete(problem[:token])
   end
 end
 
