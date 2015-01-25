@@ -195,11 +195,12 @@ class PuppetLint
 
           elsif mlcomment = chunk[/\A(\/\*.*?\*\/)/m, 1]
             length = mlcomment.size
+            mlcomment_raw = mlcomment.dup
             mlcomment.sub!(/\A\/\* ?/, '')
             mlcomment.sub!(/ ?\*\/\Z/, '')
-            mlcomment.gsub!(/ *\* ?/, '')
-            mlcomment.strip!
+            mlcomment.gsub!(/^ *\*/, '')
             tokens << new_token(:MLCOMMENT, mlcomment, length)
+            tokens.last.raw = mlcomment_raw
 
           elsif chunk.match(/\A\/.*?\//) && possible_regex?
             str_content = StringScanner.new(code[i+1..-1]).scan_until(/(\A|[^\\])(\\\\)*\//m)

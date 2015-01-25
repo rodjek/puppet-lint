@@ -9,6 +9,9 @@ class PuppetLint
       # Public: Returns the String value of the Token.
       attr_accessor :value
 
+      # Public: Returns the raw value of the Token.
+      attr_accessor :raw
+
       # Public: Returns the Integer line number of the manifest text where
       # the Token can be found.
       attr_reader :line
@@ -87,6 +90,8 @@ class PuppetLint
           "##{@value}"
         when :REGEX
           "/#{@value}/"
+        when :MLCOMMENT
+          @raw
         else
           @value
         end
