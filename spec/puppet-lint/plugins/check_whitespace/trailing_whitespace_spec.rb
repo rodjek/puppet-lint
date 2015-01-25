@@ -15,6 +15,22 @@ describe 'trailing_whitespace' do
         expect(problems).to contain_error(msg).on_line(1).in_column(4)
       end
     end
+
+    context 'line without code and trailing whitespace' do
+      let(:code) { "
+class {
+  
+}
+" }
+
+      it 'should only detect a single problem' do
+        expect(problems).to have(1).problem
+      end
+
+      it 'should create an error' do
+        expect(problems).to contain_error(msg).on_line(3).in_column(1)
+      end
+    end
   end
 
   context 'with fix enabled' do
@@ -55,6 +71,30 @@ describe 'trailing_whitespace' do
 
       it 'should remove the trailing whitespace' do
         expect(manifest).to eq("foo\nbar")
+      end
+    end
+
+    context 'line without code and trailing whitespace' do
+      let(:code) { "
+class foo {
+  
+}
+" }
+      let(:fixed) { "
+class foo {
+
+}
+" }
+      it 'should only detect a single problem' do
+        expect(problems).to have(1).problem
+      end
+
+      it 'should create an error' do
+        expect(problems).to contain_fixed(msg).on_line(3).in_column(1)
+      end
+
+      it 'should remove the trailing whitespace' do
+        expect(manifest).to eq(fixed)
       end
     end
   end
