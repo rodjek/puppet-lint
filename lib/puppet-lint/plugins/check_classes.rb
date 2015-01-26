@@ -44,22 +44,32 @@ PuppetLint.new_check(:autoloader_layout) do
   end
 end
 
-# Public: Check the manifest tokens for any classes or defined types that
-# have a dash in their name and record a warning for each instance found.
-PuppetLint.new_check(:names_containing_dash) do
+# Public: Check the manifest tokens for any classes that
+# have a dash in their name and record an error for each instance found.
+PuppetLint.new_check(:class_names_containing_dash) do
   def check
-    (class_indexes + defined_type_indexes).each do |class_idx|
+    (class_indexes).each do |class_idx|
       if class_idx[:name_token].value.include? '-'
-        if class_idx[:type] == :CLASS
-          obj_type = 'class'
-        else
-          obj_type = 'defined type'
-        end
-
-        notify :warning, {
-          :message => "#{obj_type} name containing a dash",
+        notify :error, {
+          :message => "class name containing a dash",
           :line    => class_idx[:name_token].line,
           :column  => class_idx[:name_token].column,
+        }
+      end
+    end
+  end
+end
+
+# Public: Check the manifest tokens for any defined types that
+# have a dash in their name and record a warning for each instance found.
+PuppetLint.new_check(:defined_type_names_containing_dash) do
+  def check
+    (defined_type_indexes).each do |class_idx|
+      if class_idx[:name_token].value.include? '-'
+        notify :warning, {
+            :message => "defined type name containing a dash",
+            :line    => class_idx[:name_token].line,
+            :column  => class_idx[:name_token].column,
         }
       end
     end
