@@ -25,6 +25,7 @@ class PuppetLint::Data
       @resource_indexes = nil
       @class_indexes = nil
       @defined_type_indexes = nil
+      @function_indexes = nil
     end
 
     # Public: Get the tokenised manifest.
@@ -250,6 +251,54 @@ class PuppetLint::Data
         end
       end
       result
+    end
+
+    # Internal: Calculate the positions of all function calls within
+    # `tokens` Array.
+    #
+    # Returns an Array of Hashes, each containing:
+    #   :start  - An Integer position in the `tokens` Array pointing to the
+    #             first Token of a function call
+    #   :end    - An Integer position in the `tokens` Array pointing to the last
+    #             Token of a function call
+    #   :tokens - An Array consisting of all the Token objects that make up the
+    #             function call.
+    def function_indexes
+      @function_indexes ||= Proc.new do
+        functions = []
+        tokens.each_with_index do |token, token_idx|
+          if token.type == :NAME && \
+            (token_idx == 0 || (token_idx == 1 && tokens[0].type == :WHITESPACE) || token.prev_token.type == :NEWLINE || token.prev_token.type == :INDENT || \
+              # function in a function
+              (token.prev_code_token && token.prev_code_token.type == :LPAREN))
+
+              # Hash key
+              next if token.next_code_token && token.next_code_token.type == :FARROW
+
+              level = 0
+              real_idx = 0
+              in_paren = false
+              tokens[token_idx+1..-1].each_with_index do |cur_token, cur_token_idx|
+                break if level == 0 && in_paren
+                break if level == 0 && cur_token.type == :NEWLINE
+
+                if cur_token.type == :LPAREN
+                  level += 1
+                  in_paren = true
+                end
+                level -= 1 if cur_token.type == :RPAREN
+                real_idx = token_idx + 1 + cur_token_idx
+              end
+
+              functions << {
+                :start  => token_idx,
+                :end    => real_idx,
+                :tokens => tokens[token_idx..real_idx],
+              }         
+          end
+        end
+        functions
+      end.call
     end
 
     # Internal: Finds all the tokens that make up the defined type or class
