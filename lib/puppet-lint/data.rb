@@ -26,6 +26,7 @@ class PuppetLint::Data
       @class_indexes = nil
       @defined_type_indexes = nil
       @function_indexes = nil
+      @array_indexes = nil
     end
 
     # Public: Get the tokenised manifest.
@@ -298,6 +299,38 @@ class PuppetLint::Data
           end
         end
         functions
+      end.call
+    end
+
+    # Internal: Calculate the positions of all array values within
+    # `tokens` Array.
+    #
+    # Returns an Array of Hashes, each containing:
+    #   :start  - An Integer position in the `tokens` Array pointing to the
+    #             first Token of an array value
+    #   :end    - An Integer position in the `tokens` Array pointing to the last
+    #             Token of an array value
+    #   :tokens - An Array consisting of all the Token objects that make up the
+    #             array value.
+    def array_indexes
+      @array_indexes ||= Proc.new do
+        arrays = []
+        tokens.each_with_index do |token, token_idx|
+          if token.type == :LBRACK
+            real_idx = 0
+            tokens[token_idx+1..-1].each_with_index do |cur_token, cur_token_idx|
+              real_idx = token_idx + 1 + cur_token_idx
+              break if cur_token.type == :RBRACK
+            end
+
+            arrays << {
+              :start  => token_idx,
+              :end    => real_idx,
+              :tokens => tokens[token_idx..real_idx],
+            }
+          end
+        end
+        arrays
       end.call
     end
 
