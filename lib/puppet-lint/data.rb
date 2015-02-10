@@ -27,6 +27,7 @@ class PuppetLint::Data
       @defined_type_indexes = nil
       @function_indexes = nil
       @array_indexes = nil
+      @hash_indexes = nil
       @defaults_indexes = nil
     end
 
@@ -332,6 +333,44 @@ class PuppetLint::Data
           end
         end
         arrays
+      end.call
+    end
+
+    # Internal: Calculate the positions of all hash values within
+    # `tokens` Array.
+    #
+    # Returns an Array of Hashes, each containing:
+    #   :start  - An Integer position in the `tokens` Array pointing to the
+    #             first Token of an hash value
+    #   :end    - An Integer position in the `tokens` Array pointing to the last
+    #             Token of an hash value
+    #   :tokens - An Array consisting of all the Token objects that make up the
+    #             hash value.
+    def hash_indexes
+      @hash_indexes ||= Proc.new do
+        hashes = []
+        tokens.each_with_index do |token, token_idx|
+          next unless token.prev_code_token
+          next unless [:EQUALS, :ISEQUAL, :FARROW, :LPAREN].include? token.prev_code_token.type
+          if token.type == :LBRACE
+            level = 0
+            real_idx = 0
+            tokens[token_idx+1..-1].each_with_index do |cur_token, cur_token_idx|
+              real_idx = token_idx + 1 + cur_token_idx
+
+              level += 1 if cur_token.type == :LBRACE
+              level -= 1 if cur_token.type == :RBRACE
+              break if level < 0
+            end
+
+            hashes << {
+              :start  => token_idx,
+              :end    => real_idx,
+              :tokens => tokens[token_idx..real_idx],
+            }
+          end
+        end
+        hashes
       end.call
     end
 
