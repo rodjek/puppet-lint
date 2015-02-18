@@ -325,6 +325,9 @@ class PuppetLint::Data
               break if cur_token.type == :RBRACK
             end
 
+            # Ignore resource references
+            next if token.prev_code_token && \
+              token.prev_code_token.type == :CLASSREF
             arrays << {
               :start  => token_idx,
               :end    => real_idx,
