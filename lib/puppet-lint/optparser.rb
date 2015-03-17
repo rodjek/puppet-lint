@@ -58,6 +58,14 @@ class PuppetLint::OptParser
         load f
       end
 
+      opts.on('--load-from-puppet MODULEPATH', 'Load plugins from the given Puppet module path.') do |path|
+        path.split(':').each do |p|
+          Dir["#{p}/*/lib/puppet-lint/plugins/*.rb"].each do |file|
+            load file
+          end
+        end
+      end
+
       opts.on('-f', '--fix', 'Attempt to automatically fix errors') do
         PuppetLint.configuration.fix = true
       end
