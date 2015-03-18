@@ -50,6 +50,10 @@ class PuppetLint::OptParser
         PuppetLint.configuration.show_ignored = true
       end
 
+      opts.on('--scope-variables SCOPES', Array, 'Add extra default scope variables to ignore') do |scopes|
+        PuppetLint.configuration.scope_variables = scopes
+      end
+
       opts.on('--relative', 'Compare module layout relative to the module root') do
         PuppetLint.configuration.relative = true
       end

@@ -148,6 +148,7 @@ class PuppetLint
       self.with_context = false
       self.fix = false
       self.show_ignored = false
+      self.scope_variables = []
     end
   end
 end
