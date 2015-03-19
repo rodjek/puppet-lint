@@ -146,6 +146,7 @@ class PuppetLint
       self.error_level = :all
       self.log_format = ''
       self.with_context = false
+      self.file_server_conf = false
       self.fix = false
       self.show_ignored = false
     end
