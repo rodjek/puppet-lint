@@ -159,7 +159,7 @@ PuppetLint.new_check(:puppet_url_without_modules) do
       # Get the bracketed fileserver name and strip comments
       url_strings = fs_lines.select { |lines| !lines.match(/#/) && lines.match(/\[(\w+)\]/) }
       url_strings.map! { |url| url.match(/\[(\w+)\]/); $1 } # Capture the string itself
-      url_msg = " or #{url_strings.join(',')} "
+      url_msg = " or #{url_strings.join(', or ')} "
     else
       url_strings = []
       url_msg = " "
