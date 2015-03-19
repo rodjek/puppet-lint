@@ -26,7 +26,7 @@ describe 'puppet_url_without_modules' do
   context 'double string wrapped puppet:// urls' do
     let(:code) { File.read('spec/fixtures/test/manifests/url_interpolation.pp') }
 
-    it 'should only detect a single problem' do
+    it 'should detect several problems' do
       expect(problems).to have(4).problem
     end
 
