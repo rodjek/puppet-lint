@@ -60,6 +60,9 @@ the PuppetLint configuration by defining the task yourself.
       # Show ignored problems in the output, defaults to false
       config.show_ignored = true
 
+      # Add custom fileserver URLs
+      config.file_server_conf = 'modules/puppet/files/fileserver.conf'
+
       # Compare module layout relative to the module root
       config.relative = true
     end

@@ -46,6 +46,10 @@ class PuppetLint::OptParser
         PuppetLint.configuration.error_level = el
       end
 
+      opts.on('--file-server-conf FILE', 'Take a standard fileserver.conf and pull out the puppet:// url strings') do |file|
+        PuppetLint.configuration.file_server_conf = file
+      end
+
       opts.on('--show-ignored', 'Show problems that have been ignored by control comments') do
         PuppetLint.configuration.show_ignored = true
       end

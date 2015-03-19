@@ -150,14 +150,22 @@ PuppetLint.new_check(:quoted_booleans) do
 end
 
 # Public: Check the manifest tokens for any puppet:// URL strings where the
-# path section doesn't start with modules/ and record a warning for each
-# instance found.
+# path section doesn't start with modules/ or any other configured urls and
+# record a warning for each instance found.
 PuppetLint.new_check(:puppet_url_without_modules) do
   def check
+    if PuppetLint.configuration.file_server_conf
+      fs_lines = File.readlines(PuppetLint.configuration.file_server_conf)
+      # Get the bracketed fileserver name and strip comments
+      url_strings = fs_lines.select { |lines| !lines.match(/#/) && lines.match(/\[(\w+)\]/) }
+      url_strings.map! { |url| url.match(/\[(\w+)\]/); $1 } # Capture the string itself
+    else
+      url_strings = []
+    end
     tokens.select { |token|
       token.type == :SSTRING && token.value.start_with?('puppet://')
     }.reject { |token|
-      token.value[/puppet:\/\/.*?\/(.+)/, 1].start_with?('modules/')
+      token.value[/puppet:\/\/.*?\/(.+)/, 1].start_with?('modules/', *url_strings) # Splat out the array as arguments
     }.each do |token|
       notify :warning, {
         :message => 'puppet:// URL without modules/ found',
