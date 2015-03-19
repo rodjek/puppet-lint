@@ -47,6 +47,7 @@ describe PuppetLint::Configuration do
       'with_filename' => false,
       'fail_on_warnings' => false,
       'error_level' => :all,
+      'file_server_conf' => false,
       'log_format' => '',
       'with_context' => false,
       'fix' => false,
