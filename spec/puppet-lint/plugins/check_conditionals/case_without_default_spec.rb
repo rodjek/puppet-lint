@@ -32,6 +32,48 @@ describe 'case_without_default' do
       expect(problems).to contain_warning(msg).on_line(2).in_column(7)
     end
   end
+  
+  context 'nested case statements without a default case on the outermost' do
+    let(:code) { "
+      case $foo {
+        case $foop {
+	  bar: {}
+	  default: {}
+	}
+      }"
+    }
+
+    it 'should only detect a single problem' do
+      expect(problems).to have(1).problem
+    end
+
+    it 'should create a warning' do
+      expect(problems).to contain_warning(msg)
+    end
+  end
+
+  context 'three nested case statements with two missing default cases' do
+    let(:code) { "
+      case $foo {
+        case $foop {
+	  bar: {}
+	  case $woop {
+	    baz: {}
+	  }
+	  default: {}
+	}
+      }"
+    }
+
+    it 'should detect two problems' do
+      expect(problems).to have(2).problems
+    end
+
+    it 'should create two warnings' do
+      expect(problems).to contain_warning(msg).on_line(2).in_column(7)
+      expect(problems).to contain_warning(msg).on_line(5).in_column(4)
+    end
+  end
 
   context 'issue-117' do
     let(:code) { "
