@@ -82,7 +82,7 @@ not a formatting token (whitespace and command tokens, see the tables below).
 | :LBRACE         | `{`   |
 | :RBRACE         | `}`   |
 | :LPAREN         | `(`   |
-| :RBRACE         | `)`   |
+| :RPAREN         | `)`   |
 | :ISEQUAL        | `==`  |
 | :MATCH          | `=~`  |
 | :FARROW         | `=>`  |
