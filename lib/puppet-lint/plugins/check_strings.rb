@@ -155,9 +155,9 @@ end
 PuppetLint.new_check(:puppet_url_without_modules) do
   def check
     tokens.select { |token|
-      token.type == :SSTRING && token.value.start_with?('puppet://')
+      (token.type == :SSTRING || token.type == :STRING || token.type == :DQPRE) && token.value.start_with?('puppet://')
     }.reject { |token|
-      token.value[/puppet:\/\/.*?\/(.+)/, 1].start_with?('modules/')
+      token.value[/puppet:\/\/.*?\/(.+)/, 1].start_with?('modules/') unless token.value[/puppet:\/\/.*?\/(.+)/, 1].nil?
     }.each do |token|
       notify :warning, {
         :message => 'puppet:// URL without modules/ found',

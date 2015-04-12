@@ -22,4 +22,13 @@ describe 'puppet_url_without_modules' do
       expect(problems).to contain_warning(msg).on_line(1).in_column(1)
     end
   end
+  
+  context 'double string wrapped puppet:// urls' do
+    let(:code) { File.read('spec/fixtures/test/manifests/url_interpolation.pp') }
+
+    it 'should detect several problems' do
+      expect(problems).to have(4).problem
+    end
+
+  end
 end
