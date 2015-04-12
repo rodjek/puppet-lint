@@ -164,6 +164,12 @@ class PuppetLint
       raise PuppetLint::NoCodeError
     end
 
+    if @code.empty?
+      @problems = []
+      @manifest = []
+      return
+    end
+
     linter = PuppetLint::Checks.new
     @problems = linter.run(@path, @code)
     @problems.each { |problem| @statistics[problem[:kind]] += 1 }
