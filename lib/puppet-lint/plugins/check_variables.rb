@@ -17,3 +17,21 @@ PuppetLint.new_check(:variable_contains_dash) do
     end
   end
 end
+
+PuppetLint.new_check(:variable_is_lowercase) do
+  VARIABLE_TYPES = Set[:VARIABLE, :UNENC_VARIABLE]
+
+  def check
+    tokens.select { |r|
+      VARIABLE_TYPES.include? r.type
+    }.each do |token|
+      if token.value.gsub(/\[.+?\]/, '').match(/[A-Z]/)
+        notify :warning, {
+          :message => 'variable contains an uppercase letter',
+          :line    => token.line,
+          :column  => token.column,
+        }
+      end
+    end
+  end
+end
