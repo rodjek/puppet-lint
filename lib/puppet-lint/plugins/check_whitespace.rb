@@ -48,19 +48,19 @@ PuppetLint.new_check(:trailing_whitespace) do
   end
 end
 
-# Public: Test the raw manifest string for lines containing more than 80
+# Public: Test the raw manifest string for lines containing more than 140
 # characters and record a warning for each instance found.  The only exceptions
 # to this rule are lines containing URLs and template() calls which would hurt
 # readability if split.
-PuppetLint.new_check(:'80chars') do
+PuppetLint.new_check(:'140chars') do
   def check
     manifest_lines.each_with_index do |line, idx|
       unless line =~ /:\/\// || line =~ /template\(/
-        if line.scan(/./mu).size > 80
+        if line.scan(/./mu).size > 140
           notify :warning, {
-            :message => 'line has more than 80 characters',
+            :message => 'line has more than 140 characters',
             :line    => idx + 1,
-            :column  => 80,
+            :column  => 140,
           }
         end
       end
