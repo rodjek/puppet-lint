@@ -4,15 +4,15 @@
 Status](https://secure.travis-ci.org/rodjek/puppet-lint.png)](http://travis-ci.org/rodjek/puppet-lint)
 [![Inline docs](http://inch-ci.org/github/rodjek/puppet-lint.png?branch=master)](http://inch-ci.org/github/rodjek/puppet-lint)
 
-The goal of this project is to implement as many of the recommended Puppet
+Puppet Lint will test modules and manifests against the recommended Puppet
 style guidelines from the [Puppet Labs style
-guide](http://docs.puppetlabs.com/guides/style_guide.html) as practical. It is not meant to validate syntax. Please use `puppet parser validate` for that.
+guide](http://docs.puppetlabs.com/guides/style_guide.html) as closely as practical. It is not meant to validate syntax. Please use `puppet parser validate` for that.
 
 ## Installation
 
     gem install puppet-lint
 
-## Testing your manifests
+## Usage
 
 ### By hand
 
@@ -20,7 +20,17 @@ You can test a single manifest file by running
 
     puppet-lint <path to file>
 
-### Rake task
+Puppet Lint has a large number of options to modify which checks should be run.
+
+You can disable any of the checks when running the `puppet-lint` command by
+adding a `--no-<check name>-check` flag to the command.  For example, if you
+wanted to skip the 80 character check, you would run
+```  
+    puppet-lint --no-80chars-check <path to file>
+```
+See puppet-lint --help for a full list of options.
+
+### Rake
 
 If you want to test your entire Puppet manifest directory, you can add
 `require 'puppet-lint/tasks/puppet-lint'` to your Rakefile and then run
@@ -64,7 +74,18 @@ the PuppetLint configuration by defining the task yourself.
       config.relative = true
     end
 
-## Implemented tests
+### Settings
+
+puppet-lint will also check for a `.puppet-lint.rc` file in the current
+directory and your home directory and read in flags from there, so if you
+wanted to always skip the hard tab character check, you could create
+`~/.puppet-lint.rc` containing
+
+```
+--no-hard_tabs-check
+```
+
+## Implemented Tests
 
 At the moment, the following tests have been implemented:
 
@@ -87,6 +108,9 @@ At the moment, the following tests have been implemented:
  * All strings that contain variables must be enclosed in double quotes.
  * All variables should be enclosed in braces when interpolated in a string.
  * Variables standing by themselves should not be quoted.
+
+### Capitalization
+ * All variables should be in lowercase
 
 ### Resources
 
@@ -167,6 +191,7 @@ from being linted:
 ``` ruby
 PuppetLint.configuration.ignore_paths = ["vendor/**/*.pp"]
 ```
+=======
 
 ## Reporting bugs or incorrect results
 
