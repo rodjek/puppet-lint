@@ -51,6 +51,7 @@ describe PuppetLint::Configuration do
       'with_context' => false,
       'fix' => false,
       'show_ignored' => false,
+      'json' => false,
     })
   end
 end
