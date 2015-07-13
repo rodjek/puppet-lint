@@ -89,7 +89,7 @@ end
 # parameters listed before required parameters.
 PuppetLint.new_check(:parameter_order) do
   def check
-    defined_type_indexes.each do |class_idx|
+    (class_indexes + defined_type_indexes).each do |class_idx|
       unless class_idx[:param_tokens].nil?
         paren_stack = []
         class_idx[:param_tokens].each_with_index do |token, i|
