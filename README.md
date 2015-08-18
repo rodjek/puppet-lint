@@ -38,7 +38,7 @@ the PuppetLint configuration by defining the task yourself.
       config.ignore_paths = ['modules/apt', 'modules/stdlib']
 
       # List of checks to disable
-      config.disable_checks = ['documentation', '80chars']
+      config.disable_checks = ['documentation', '140chars']
 
       # Should puppet-lint prefix it's output with the file being checked,
       # defaults to true
@@ -73,7 +73,7 @@ At the moment, the following tests have been implemented:
  * Must use two-space soft tabs.
  * Must not use literal tab characters.
  * Must not contain trailing white space.
- * Should not exceed an 80 character line width
+ * Should not exceed an 140 character line width
    * An exception has been made for `source => 'puppet://...'` lines as
      splitting these over multiple lines decreases the readability of the
      manifests.
