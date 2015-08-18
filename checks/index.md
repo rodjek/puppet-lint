@@ -14,7 +14,7 @@ how to resolve it.
  * ["two-space soft tabs not used"](/checks/2sp_soft_tabs/)
  * ["tab character found"](/checks/hard_tabs/)
  * ["trailing whitespace found"](/checks/trailing_whitespace/)
- * ["line has more than 80 characters"](/checks/80chars/)
+ * ["line has more than 140 characters"](/checks/140chars/)
  * ["=> is not properly aligned"](/checks/arrow_alignment/)
 
 ### Comments

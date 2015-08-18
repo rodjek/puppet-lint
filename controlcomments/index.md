@@ -22,7 +22,7 @@ You can also ignore just a single line by adding a trailing `lint:ignore:<check
 name>` comment to the line
 
 {% highlight puppet %}
-$this_line_has_a_really_long_name_and_value = "[snip]" # lint:ignore:80chars
+$this_line_has_a_really_long_name_and_value = "[snip]" # lint:ignore:140chars
 {% endhighlight %}
 
 Multiple checks can be ignored in one comment by listing them with whitespace
@@ -42,7 +42,7 @@ puppet-lint invocation.
 
 {% highlight console %}
 $ puppet-lint --show-ignored
-foo/manifests/bar.pp - IGNORED: line has more than 80 characters on line 1
+foo/manifests/bar.pp - IGNORED: line has more than 140 characters on line 1
 {% endhighlight %}
 
 For the sake of your memory (and your coworkers), any text in your comment
@@ -51,6 +51,6 @@ check and will be displayed when showing ignored problems.
 
 {% highlight console %}
 $ puppet-lint --show-ignored
-foo/manifests/bar.pp - IGNORED: line has more than 80 characters on line 1
+foo/manifests/bar.pp - IGNORED: line has more than 140 characters on line 1
   there is a good reason for this
 {% endhighlight %}

@@ -1,14 +1,14 @@
 ---
 layout: default
-title: 80chars
-sg: http://docs.puppetlabs.com/guides/style_guide.html#spacing-indentation--whitespace
+title: 140chars
+sg: http://docs.puppetlabs.com/guides/style_guide.html#spacing-indentation-and-whitespace
 ---
 
-# 80 character line limit
+# 140 character line limit
 
 ---
 
-Your manifests should not contain any lines longer than 80 characters
+Your manifests should not contain any lines longer than 140 characters
 ([style guide]({{ page.sg }})).
 
 ## Disabling the check
