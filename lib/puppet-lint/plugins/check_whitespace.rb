@@ -148,6 +148,14 @@ PuppetLint.new_check(:arrow_alignment) do
 
   def fix(problem)
     new_ws_len = (problem[:indent_depth] - (problem[:newline_indent].length + problem[:token].prev_code_token.to_manifest.length + 1))
+    if new_ws_len < 0
+      notify :error, {
+        :message => 'Unable to automatically correct whitespace issue, manual intervention needed',
+        :line    => problem[:line],
+        :column  => problem[:column],
+      }
+      return
+    end
     new_ws = ' ' * new_ws_len
     if problem[:newline]
       index = tokens.index(problem[:token].prev_code_token.prev_token)
