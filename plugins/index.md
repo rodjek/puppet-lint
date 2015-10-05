@@ -72,3 +72,13 @@ layout: default
 | **URL**     | <https://github.com/mcanevet/puppet-lint-unquoted_string-check> |
 | **Install** | `gem install puppet-lint-unquoted_string-check`                 |
 {: .table .table-condensed }
+
+---
+
+### reference syntax
+
+> Check that resource references do not contain whitespace and title does not start with capital letter.
+
+| **URL**     | <https://github.com/tuxmea/puppet-lint-resource_reference_syntax> |
+| **Install** | `gem install puppet-lint-resource_reference_syntax-check`                 |
+{: .table .table-condensed }
