@@ -147,22 +147,24 @@ describe 'variable_scope' do
   context 'future parser blocks' do
     let(:code) { "
       class foo() {
-        $foo = [1,2]
-        $foo.each |$a, $b, $d| {
-          $a
-          $c
-          $d[1]
+        $foo = {1=>2, 3=>4}
+        $foo.each |$a, $b| {
+          $a    # should cause no warnings
+          $c    # top-scope variable warning
         }
-        $b
+        $b      # top-scope variable warning
+        $foo.each |$d| {
+          $d[1] # should cause no warnings
+        }
       }
     " }
 
-    it 'should only detect a single problem' do
+    it 'should only detect two problems' do
       expect(problems).to have(2).problem
     end
 
     it 'should create two warnings' do
-      expect(problems).to contain_warning(msg).on_line(9).in_column(9)
+      expect(problems).to contain_warning(msg).on_line(8).in_column(9)
       expect(problems).to contain_warning(msg).on_line(6).in_column(11)
     end
   end
