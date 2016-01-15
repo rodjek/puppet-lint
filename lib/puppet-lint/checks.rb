@@ -20,7 +20,7 @@ class PuppetLint::Checks
   def load_data(path, content)
     lexer = PuppetLint::Lexer.new
     PuppetLint::Data.path = path
-    PuppetLint::Data.manifest_lines = content.split("\n", -1)
+    PuppetLint::Data.manifest_lines = content.force_encoding("ISO-8859-1").encode("utf-8", replace: nil).split("\n", -1)
     begin
       PuppetLint::Data.tokens = lexer.tokenise(content)
       PuppetLint::Data.parse_control_comments

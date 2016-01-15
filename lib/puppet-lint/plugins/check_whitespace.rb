@@ -112,6 +112,9 @@ PuppetLint.new_check(:arrow_alignment) do
         if token.type == :FARROW
           (level_tokens[indent_depth_idx] ||= []) << token
           prev_indent_token = resource_tokens[0..idx].rindex { |t| t.type == :INDENT }
+          if not prev_indent_token
+            next
+          end
           indent_token_length = prev_indent_token.nil? ? 0 : resource_tokens[prev_indent_token].to_manifest.length
           indent_length = indent_token_length + token.prev_code_token.to_manifest.length + 2
 
