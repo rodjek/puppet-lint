@@ -150,7 +150,7 @@ class PuppetLint
         found = false
 
         KNOWN_TOKENS.each do |type, regex|
-          if value = chunk[regex, 1] ? chunk[regex, 1] : 0
+          if value = chunk[regex, 1].nil? ? 0 : chunk[regex, 1]
             length = value.size
             if type == :NAME
               if KEYWORDS.include? value
