@@ -38,7 +38,7 @@ the PuppetLint configuration by defining the task yourself.
       config.ignore_paths = ['modules/apt', 'modules/stdlib']
 
       # List of checks to disable
-      config.disable_checks = ['documentation', '80chars']
+      config.disable_checks = ['documentation', '140chars']
 
       # Should puppet-lint prefix it's output with the file being checked,
       # defaults to true
@@ -73,7 +73,7 @@ At the moment, the following tests have been implemented:
  * Must use two-space soft tabs.
  * Must not use literal tab characters.
  * Must not contain trailing white space.
- * Should not exceed an 80 character line width
+ * Should not exceed an 140 character line width
    * An exception has been made for `source => 'puppet://...'` lines as
      splitting these over multiple lines decreases the readability of the
      manifests.
@@ -124,10 +124,10 @@ At the moment, the following tests have been implemented:
 
 You can disable any of the checks when running the `puppet-lint` command by
 adding a `--no-<check name>-check` flag to the command.  For example, if you
-wanted to skip the 80 character check, you would run
+wanted to skip the 140 character check, you would run
 
 ```
-puppet-lint --no-80chars-check /path/to/my/manifest.pp
+puppet-lint --no-140chars-check /path/to/my/manifest.pp
 ```
 
 puppet-lint will also check for a `.puppet-lint.rc` file in the current
@@ -155,10 +155,10 @@ task.  Simply add the following line after the `require` statement in your
 PuppetLint.configuration.send("disable_<check name>")
 ```
 
-So, to disable the 80 character check, you would add:
+So, to disable the 140 character check, you would add:
 
 ``` ruby
-PuppetLint.configuration.send("disable_80chars")
+PuppetLint.configuration.send("disable_140chars")
 ```
 
 The Rake task also supports ignoring certain paths
