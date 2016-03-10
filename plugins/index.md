@@ -72,3 +72,13 @@ layout: default
 | **URL**     | <https://github.com/mcanevet/puppet-lint-unquoted_string-check> |
 | **Install** | `gem install puppet-lint-unquoted_string-check`                 |
 {: .table .table-condensed }
+
+---
+
+### package_ensure
+
+> Check for packages with ensure set to latest.
+
+| **URL**     | <https://github.com/danzilio/puppet-lint-package_ensure-check>
+| **Install** | `gem install puppet-lint-package_ensure-check`                 
+{: .table .table-condensed }
