@@ -78,6 +78,10 @@ class PuppetLint
             linter.file = puppet_file
             linter.run
             linter.print_problems
+
+            if PuppetLint.configuration.fix && !linter.problems.empty?
+              IO.write(puppet_file, linter.manifest)
+            end
           end
           abort if linter.errors? || (
             linter.warnings? && PuppetLint.configuration.fail_on_warnings
