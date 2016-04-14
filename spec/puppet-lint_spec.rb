@@ -17,4 +17,10 @@ describe PuppetLint do
     string = 'replace %s %s' % ['get','replaced']
     expect(string).to match('replace get replaced')
   end
+
+  it 'should return empty manifest when empty one given as the input' do
+    subject.code = ''
+    subject.run
+    expect(subject.manifest).to eq ''
+  end
 end

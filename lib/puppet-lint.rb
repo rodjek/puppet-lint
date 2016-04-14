@@ -166,7 +166,7 @@ class PuppetLint
 
     if @code.empty?
       @problems = []
-      @manifest = []
+      @manifest = ''
       return
     end
 
