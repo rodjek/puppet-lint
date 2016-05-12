@@ -7,3 +7,4 @@ vendor/gems
 coverage/
 *.swp
 /_site/
+.idea
