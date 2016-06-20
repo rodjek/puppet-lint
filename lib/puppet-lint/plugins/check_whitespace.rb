@@ -123,7 +123,7 @@ PuppetLint.new_check(:arrow_alignment) do
           indent_depth_idx += 1
           indent_depth << 0
           level_tokens[indent_depth_idx] ||= []
-        elsif token.type == :RBRACE
+        elsif token.type == :RBRACE || token.type == :SEMIC
           level_tokens[indent_depth_idx].each do |arrow_tok|
             unless arrow_tok.column == indent_depth[indent_depth_idx] || level_tokens[indent_depth_idx].size == 1
               arrows_on_line = level_tokens[indent_depth_idx].select { |t| t.line == arrow_tok.line }
