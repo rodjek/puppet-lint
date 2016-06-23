@@ -362,7 +362,7 @@ class PuppetLint
             lexer.tokens.each do |token|
               tok_col = column + token.column + (ss.pos - contents.size - 1)
               tok_line = token.line + line - 1
-              tokens << new_token(token.type, token.value, token.value.size, :line => tok_line, :column => tok_col)
+              tokens << new_token(token.type, token.value, token.value.size + 3, :line => tok_line, :column => tok_col)
             end
           end
         end
