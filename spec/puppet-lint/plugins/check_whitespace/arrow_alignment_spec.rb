@@ -570,5 +570,73 @@ describe 'arrow_alignment' do
         expect(manifest).to eq(fixed)
       end
     end
+
+    context 'nested hashes with correct indentation and interpolated variable' do
+      let(:code) { "
+        class example (
+          $external_ip_base,
+        ) {
+        
+          bar { 'xxxxxxxxxxx':
+            inputs => {
+              'ny' => {
+                \"${external_ip_base}.16:443\"  => 'foo',
+                'veryveryverylongstring8:443' => 'foo',
+              },
+            },
+          }
+        }"
+      }
+
+      it 'should not detect any problems' do
+        expect(problems).to have(0).problems
+      end
+    end
+
+    context 'nested hashes with incorrect indentation and interpolated variable' do
+      let(:code) { "
+        class example (
+          $external_ip_base,
+        ) {
+        
+          bar { 'xxxxxxxxxxx':
+            inputs => {
+              'ny' => {
+                \"${external_ip_base}.16:443\"   => 'foo',
+                'veryveryverylongstring8:443' => 'foo',
+              },
+            },
+          }
+        }"
+      }
+
+      let(:fixed) { "
+        class example (
+          $external_ip_base,
+        ) {
+        
+          bar { 'xxxxxxxxxxx':
+            inputs => {
+              'ny' => {
+                \"${external_ip_base}.16:443\"  => 'foo',
+                'veryveryverylongstring8:443' => 'foo',
+              },
+            },
+          }
+        }"
+      }
+
+      it 'should detect 1 problems' do
+        expect(problems).to have(1).problems
+      end
+
+      #it 'should fix the problem' do
+        #expect(problems).to contain_fixed(msg).in_column(48)
+      #end
+
+      #it 'should add whitespace between the param and the arrow' do
+        #expect(manifest).to eq(fixed)
+      #end
+    end
   end
 end
