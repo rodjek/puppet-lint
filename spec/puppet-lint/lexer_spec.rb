@@ -579,6 +579,32 @@ describe PuppetLint::Lexer do
     end
   end
 
+  context ':TYPE' do
+    it 'should match Data Types' do
+      token = @lexer.tokenise('Integer').first
+      expect(token.type).to eq(:TYPE)
+      expect(token.value).to eq('Integer')
+    end
+
+    it 'should match Catalog Types' do
+      token = @lexer.tokenise('Resource').first
+      expect(token.type).to eq(:TYPE)
+      expect(token.value).to eq('Resource')
+    end
+
+    it 'should match Abstract Types' do
+      token = @lexer.tokenise('Collection').first
+      expect(token.type).to eq(:TYPE)
+      expect(token.value).to eq('Collection')
+    end
+
+    it 'should match Platform Types' do
+      token = @lexer.tokenise('Callable').first
+      expect(token.type).to eq(:TYPE)
+      expect(token.value).to eq('Callable')
+    end
+  end
+
   context ':CLASSREF' do
     it 'should match single capitalised alphanumeric term' do
       token = @lexer.tokenise('One').first
