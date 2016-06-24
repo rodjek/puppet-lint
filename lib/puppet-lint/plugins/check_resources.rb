@@ -184,7 +184,7 @@ PuppetLint.new_check(:ensure_not_symlink_target) do
       PuppetLint::Lexer::Token.new(:NEWLINE, "\n", 0, 0),
       PuppetLint::Lexer::Token.new(:INDENT, problem[:param_token].prev_token.value.dup, 0, 0),
       PuppetLint::Lexer::Token.new(:NAME, 'target', 0, 0),
-      PuppetLint::Lexer::Token.new(:WHITESPACE, problem[:param_token].next_token.value.dup, 0, 0),
+      PuppetLint::Lexer::Token.new(:WHITESPACE, ' ', 0, 0),
       PuppetLint::Lexer::Token.new(:FARROW, '=>', 0, 0),
       PuppetLint::Lexer::Token.new(:WHITESPACE, ' ', 0, 0),
     ].reverse.each do |new_token|
