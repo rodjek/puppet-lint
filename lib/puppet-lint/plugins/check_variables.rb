@@ -1,11 +1,11 @@
 # Public: Test the manifest tokens for variables that contain a dash and
 # record a warning for each instance found.
 PuppetLint.new_check(:variable_contains_dash) do
-  VARIABLE_TYPES = Set[:VARIABLE, :UNENC_VARIABLE]
+  VARIABLE_DASH_TYPES = Set[:VARIABLE, :UNENC_VARIABLE]
 
   def check
     tokens.select { |r|
-      VARIABLE_TYPES.include? r.type
+      VARIABLE_DASH_TYPES.include? r.type
     }.each do |token|
       if token.value.gsub(/\[.+?\]/, '').match(/-/)
         notify :warning, {
@@ -19,11 +19,11 @@ PuppetLint.new_check(:variable_contains_dash) do
 end
 
 PuppetLint.new_check(:variable_is_lowercase) do
-  VARIABLE_TYPES = Set[:VARIABLE, :UNENC_VARIABLE]
+  VARIABLE_LOWERCASE_TYPES = Set[:VARIABLE, :UNENC_VARIABLE]
 
   def check
     tokens.select { |r|
-      VARIABLE_TYPES.include? r.type
+      VARIABLE_LOWERCASE_TYPES.include? r.type
     }.each do |token|
       if token.value.gsub(/\[.+?\]/, '').match(/[A-Z]/)
         notify :warning, {
