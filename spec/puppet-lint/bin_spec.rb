@@ -281,7 +281,7 @@ describe PuppetLint::Bin do
       'spec/fixtures/test/manifests/warning.pp',
     ] }
     its(:exitstatus) { is_expected.to eq(0) }
-    its(:stdout) { is_expected.to match(/\[\n  \{/) }
+    its(:stdout) { is_expected.to include_json([{'KIND' => 'WARNING'}]) }
    end
 
   context 'when hiding ignored problems' do
