@@ -77,8 +77,8 @@ layout: default
 
 ### reference syntax
 
-> Check that resource references do not contain whitespace and title does not start with capital letter.
+> Check that resource references do not contain whitespace between resource reference and opening bracket and title does not start with capital letter.
 
-| **URL**     | <https://github.com/tuxmea/puppet-lint-resource_reference_syntax> |
-| **Install** | `gem install puppet-lint-resource_reference_syntax-check`                 |
+| **URL**     | <https://github.com/voxpupuli/puppet-lint-resource_reference_syntax> |
+| **Install** | `gem install puppet-lint-resource_reference_syntax`                 |
 {: .table .table-condensed }
