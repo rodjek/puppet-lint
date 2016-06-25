@@ -1,6 +1,7 @@
 require 'puppet-lint'
 require 'rspec/its'
 require 'rspec/collection_matchers'
+require "rspec/json_expectations"
 
 module RSpec
   module LintExampleGroup
