@@ -79,6 +79,17 @@ layout: default
 
 > Check for packages with ensure set to latest.
 
-| **URL**     | <https://github.com/danzilio/puppet-lint-package_ensure-check>
-| **Install** | `gem install puppet-lint-package_ensure-check`                 
+| **URL**     | <https://github.com/danzilio/puppet-lint-package_ensure-check> |
+| **Install** | `gem install puppet-lint-package_ensure-check`                 |
+{: .table .table-condensed }
+
+---
+
+
+### reference syntax
+
+> Check that resource references do not contain whitespace between resource reference and opening bracket and title does not start with capital letter.
+
+| **URL**     | <https://github.com/voxpupuli/puppet-lint-resource_reference_syntax> |
+| **Install** | `gem install puppet-lint-resource_reference_syntax`                  |
 {: .table .table-condensed }
