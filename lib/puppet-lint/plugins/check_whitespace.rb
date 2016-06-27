@@ -68,6 +68,12 @@ PuppetLint.new_check(:'140chars') do
   end
 end
 
+# Public: Silently ignore deprecated --no-80chars-check parameter
+PuppetLint.new_check(:'80chars') do
+  def check
+  end
+end
+
 # Public: Check the manifest tokens for any indentation not using 2 space soft
 # tabs and record an error for each instance found.
 PuppetLint.new_check(:'2sp_soft_tabs') do
