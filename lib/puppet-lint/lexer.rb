@@ -122,17 +122,14 @@ class PuppetLint
       [:RCOLLECT, /\A(\|>)/],
       [:IN_EDGE, /\A(->)/],
       [:IN_EDGE_SUB, /\A(~>)/],
-      [:MINUS, /\A(-)/],
       [:COMMA, /\A(,)/],
       [:DOT, /\A(\.)/],
       [:COLON, /\A(:)/],
-      [:AT, /\A(@)/],
       [:SEMIC, /\A(;)/],
       [:QMARK, /\A(\?)/],
       [:BACKSLASH, /\A(\\)/],
       [:TIMES, /\A(\*)/],
       [:MODULO, /\A(%)/],
-      [:PIPE, /\A(\|)/],
     ]
 
     # Internal: A Hash whose keys are Symbols representing token types which
@@ -163,6 +160,7 @@ class PuppetLint
     # (usually the result of syntax errors).
     def tokenise(code)
       i = 0
+      heredoc_endtag = ''
 
       while i < code.size
         chunk = code[i..-1]
@@ -245,6 +243,30 @@ class PuppetLint
           elsif chunk.match(/\A\//)
             length = 1
             tokens << new_token(:DIV, '/', length)
+
+          # https://github.com/puppetlabs/puppet-specifications/blob/master/language/lexical_structure.md#heredoc
+          elsif chunk.match(/(@\(([^:\/\r\n\)]+)(?::[:blank:]*([a-z][a-zA-Z0-9_+]+)[:blank:]*)?(?:\/((?:\w|[$])*)[:blank:]*)?\))/)
+            heredoc = $1
+            heredoc_endtag = $2.gsub(/"/, '')
+            type = $3
+            tokens << new_token(:LHEREDOC, heredoc, heredoc.length)
+
+          elsif value = chunk.match(/((\|-|-)(\s+)?(-(\s+)?)?#{heredoc_endtag})/) 
+            length = value.length
+            tokens << new_token(:RHEREDOC, value, length)
+
+          elsif value = chunk.match(/\A(@)/)
+            length = value.length
+            tokens << new_token(:AT, value, length)
+
+
+          elsif value = chunk.match(/\A(\|)/)
+            length = value.length
+            tokens << new_token(:PIPE, value, length)
+
+          elsif value = chunk.match(/\A(-)/)
+            length = value.length
+            tokens << new_token(:MINUS, value, length)
 
           else
             raise PuppetLint::LexerError.new(@line_no, @column)
