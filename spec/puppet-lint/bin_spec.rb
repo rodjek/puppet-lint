@@ -159,8 +159,8 @@ describe PuppetLint::Bin do
   context 'when passed a file that does not exist' do
     let(:args) { 'spec/fixtures/test/manifests/enoent.pp' }
 
-    its(:exitstatus) { is_expected.to eq(1) }
-    its(:stdout) { is_expected.to match(/specified file does not exist/) }
+    its(:exitstatus) { is_expected.to eq(0) }
+    its(:stdout) { is_expected.to match(/does not exist/) }
   end
 
   context 'when passed a directory' do
