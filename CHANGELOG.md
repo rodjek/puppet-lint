@@ -22,8 +22,6 @@ puppet-lint 2.0.0 is a breaking change. Specifically, the renaming of the line l
 PuppetLint.configuration.send('disable_80chars')
 # Line length test is 140 chars in puppet-lint 2.x
 PuppetLint.configuration.send('disable_140chars')
-# Disable all line length checks
-PuppetLint.configuration.send('disable_char_check')
 ```
 
 You may also need to adjust your Gemfile if you are pointing directly at git:
