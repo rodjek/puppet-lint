@@ -25,6 +25,7 @@ end
 PuppetLint.new_check(:ensure_first_param) do
   def check
     resource_indexes.each do |resource|
+      next if [:CLASS].include? resource[:type].type
       ensure_attr_index = resource[:param_tokens].index { |param_token|
         param_token.value == 'ensure'
       }

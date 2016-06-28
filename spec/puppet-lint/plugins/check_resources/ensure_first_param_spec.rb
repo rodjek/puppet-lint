@@ -52,4 +52,23 @@ describe 'ensure_first_param' do
       expect(problems).to have(0).problems
     end
   end
+
+  context 'ensure as a hash key in classes does not need to be first' do
+    let(:code) { "
+      class thing {
+          class {'thang':
+              stuff => {
+                  'stuffing' => {
+                      ensure => 'present',
+                      blah   => 'bleah',
+                  }
+              },
+          }
+      }"
+    }
+
+    it 'should not detect any problems' do
+      expect(problems).to have(0).problems
+    end
+  end
 end
