@@ -68,11 +68,25 @@ PuppetLint.new_check(:'140chars') do
   end
 end
 
-# Public: Silently ignore deprecated --no-80chars-check parameter
+# Public: Test the raw manifest string for lines containing more than 80
+# characters. This is DISABLED by default and behaves like the default
+# 140chars check by excepting URLs and template() calls.
 PuppetLint.new_check(:'80chars') do
   def check
+    manifest_lines.each_with_index do |line, idx|
+      unless line =~ /:\/\// || line =~ /template\(/
+        if line.scan(/./mu).size > 80
+          notify :warning, {
+            :message => 'line has more than 80 characters',
+            :line    => idx + 1,
+            :column  => 80,
+          }
+        end
+      end
+    end
   end
 end
+PuppetLint.configuration.send("disable_80chars")
 
 # Public: Check the manifest tokens for any indentation not using 2 space soft
 # tabs and record an error for each instance found.
