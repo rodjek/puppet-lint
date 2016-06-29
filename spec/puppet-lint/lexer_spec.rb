@@ -773,6 +773,12 @@ describe PuppetLint::Lexer do
       expect(tokens[2].value).to eq('bar')
     end
 
+    it 'should be allowed as a param to an optional data type' do
+      tokens = @lexer.tokenise('Optional[Regexp[/^puppet/]]')
+      expect(tokens[4].type).to eq(:REGEX)
+      expect(tokens[4].value).to eq('^puppet')
+    end
+
     it 'should not match chained division' do
       tokens = @lexer.tokenise('$x = $a/$b/$c')
       expect(tokens.select { |r| r.type == :REGEX }).to be_empty
