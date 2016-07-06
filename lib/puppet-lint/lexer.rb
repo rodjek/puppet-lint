@@ -43,7 +43,6 @@ class PuppetLint
       'else'     => true,
       'elsif'    => true,
       'inherits' => true,
-      'node'     => true,
       'and'      => true,
       'or'       => true,
       'undef'    => true,
