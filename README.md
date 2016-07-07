@@ -174,6 +174,11 @@ If you find a bug in puppet-lint or its results, please create an issue in the
 [repo issues tracker](https://github.com/rodjek/puppet-lint/issues/).  Bonus
 points will be awarded if you also include a patch that fixes the issue.
 
+## Executing puppet-lint tests suite
+
+    bundle exec rspec [spec/puppet-lint/a_single_test.rb]
+
+
 ## Thank You
 
 Many thanks to the following people for contributing to puppet-lint
