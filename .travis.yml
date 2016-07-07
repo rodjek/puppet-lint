@@ -3,6 +3,9 @@ language: ruby
 sudo: false
 cache: bundler
 before_install: gem update --system 2.1.11
+branches:
+  only:
+    - master
 rvm:
   - 1.8.7
   - 1.9.2
