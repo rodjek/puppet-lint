@@ -1,5 +1,5 @@
 ---
-highlighter: pygments
+highlighter: rouge
 exclude: ["vendor"]
 markdown: kramdown
 
