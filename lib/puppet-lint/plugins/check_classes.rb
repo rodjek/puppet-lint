@@ -83,6 +83,7 @@ PuppetLint.new_check(:class_inherits_from_params_class) do
     end
   end
 end
+PuppetLint.configuration.send('disable_class_inherits_from_params_class')
 
 # Public: Test the manifest tokens for any parameterised classes or defined
 # types that take parameters and record a warning if there are any optional
