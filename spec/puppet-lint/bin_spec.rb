@@ -99,7 +99,7 @@ describe PuppetLint::Bin do
 
   context 'when specifying a specific check to run' do
     let(:args) { [
-      '--only-check', 'parameter_order',
+      '--only-checks', 'parameter_order',
       'spec/fixtures/test/manifests/warning.pp',
       'spec/fixtures/test/manifests/fail.pp',
     ] }
