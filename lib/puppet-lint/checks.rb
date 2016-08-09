@@ -58,14 +58,10 @@ class PuppetLint::Checks
       problems = klass.run
 
       if PuppetLint.configuration.fix
-        checks_run << klass
+        @problems.concat(klass.fix_problems)
       else
         @problems.concat(problems)
       end
-    end
-
-    checks_run.each do |check|
-      @problems.concat(check.fix_problems)
     end
 
     @problems
