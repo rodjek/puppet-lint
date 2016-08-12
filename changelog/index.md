@@ -6,6 +6,107 @@ layout: default
 
 ---
 
+### [2.0.0](https://github.com/rodjek/puppet-lint/tree/2.0.0) (2016-06-22)
+[Full Changelog](https://github.com/rodjek/puppet-lint/compare/1.1.0...2.0.0)
+
+puppet-lint 2.0.0 is a breaking change. Specifically, the renaming of the line length test was changed from `80chars` to `140chars`. You may need to adjust your configuration and lint checks. For example:
+```ruby
+# Line length test is 80 chars in puppet-lint 1.1.0
+PuppetLint.configuration.send('disable_80chars')
+# Line length test is 140 chars in puppet-lint 2.x
+PuppetLint.configuration.send('disable_140chars')
+```
+
+You may also need to adjust your Gemfile if you are pointing directly at git:
+```ruby
+# old
+gem 'puppet-lint', :require => false, :git => 'https://github.com/rodjek/puppet-lint.git'
+
+# new
+gem 'puppet-lint', '~> 2.0'
+```
+
+If the additional gems you use for checks are pinned to 1.x, you should pin puppet-lint to `'~> 1.0'` or `'>= 1.0', '< 3.0'` until updated check gems are released.
+
+**Closed issues:**
+
+- Current package [\#471](https://github.com/rodjek/puppet-lint/issues/471)
+- Arrow alignment check not working with semicolons in a \(potential\) multiple resources declaration [\#470](https://github.com/rodjek/puppet-lint/issues/470)
+- puppet-lint --fix ".../puppet-lint/plugins/check\_comments.rb:55:in `block in fix': undefined method `value' for nil:NilClass \(NoMethodError\)" [\#461](https://github.com/rodjek/puppet-lint/issues/461)
+- WARNING: indentation of =\> is not properly aligned [\#447](https://github.com/rodjek/puppet-lint/issues/447)
+- Inheritance check [\#436](https://github.com/rodjek/puppet-lint/issues/436)
+- puppet-lint still checks for lines with more than 80 character [\#425](https://github.com/rodjek/puppet-lint/issues/425)
+- puppet-lint --help does not work [\#423](https://github.com/rodjek/puppet-lint/issues/423)
+- Test that "ensure" non-filename attributes are barewords [\#412](https://github.com/rodjek/puppet-lint/issues/412)
+- crashing puppet-lint 1.1.0 [\#409](https://github.com/rodjek/puppet-lint/issues/409)
+- Small Documentation Typo [\#408](https://github.com/rodjek/puppet-lint/issues/408)
+- Create v1.1.1 [\#401](https://github.com/rodjek/puppet-lint/issues/401)
+- TypeError running on seemingly-sane puppet file [\#399](https://github.com/rodjek/puppet-lint/issues/399)
+- Warning for line-length should be at 140 chars [\#396](https://github.com/rodjek/puppet-lint/issues/396)
+- Add fix for puppet\_url\_without\_modules check [\#390](https://github.com/rodjek/puppet-lint/issues/390)
+- How to disable some fix ? [\#383](https://github.com/rodjek/puppet-lint/issues/383)
+- indentation of =\> is not properly aligned [\#381](https://github.com/rodjek/puppet-lint/issues/381)
+- parser error on modulo operator [\#379](https://github.com/rodjek/puppet-lint/issues/379)
+- Trailing blank lines discarded in PuppetLinter::Data.manifest\_lines [\#378](https://github.com/rodjek/puppet-lint/issues/378)
+- nasty bug leading to --no-star\_comments-check to not being honored with --fix [\#373](https://github.com/rodjek/puppet-lint/issues/373)
+- Puppet-lint for EPEL7 [\#372](https://github.com/rodjek/puppet-lint/issues/372)
+- puppet-lint failure for resource declarations with colons followed by non-whitespaces [\#370](https://github.com/rodjek/puppet-lint/issues/370)
+- Issue with puppet-lint 1.1.0 binary on lucid [\#364](https://github.com/rodjek/puppet-lint/issues/364)
+- Immediate action required: custom Pages domain pointed to a legacy IP address [\#363](https://github.com/rodjek/puppet-lint/issues/363)
+- 1.1.0 ignores trailing white spaces on lines without text [\#359](https://github.com/rodjek/puppet-lint/issues/359)
+- alignment warning on commented code [\#357](https://github.com/rodjek/puppet-lint/issues/357)
+- gem missing when installing with Puppet [\#356](https://github.com/rodjek/puppet-lint/issues/356)
+- --fix ignores control comment\(s\) and fixes anyway [\#347](https://github.com/rodjek/puppet-lint/issues/347)
+- colon after closing of class causing puppet-lint to crash. [\#344](https://github.com/rodjek/puppet-lint/issues/344)
+- New problem in unqouted\_node\_name check in 1.1.0 [\#343](https://github.com/rodjek/puppet-lint/issues/343)
+- whitespace check bug [\#339](https://github.com/rodjek/puppet-lint/issues/339)
+- 57fd065d0c2c116471cb16afec99631803496659 breaks indentation of =\> check [\#338](https://github.com/rodjek/puppet-lint/issues/338)
+- Error in Jenkins [\#337](https://github.com/rodjek/puppet-lint/issues/337)
+- Line numbers in developer tutorial documentation. [\#336](https://github.com/rodjek/puppet-lint/issues/336)
+- '--relative' option doesn't work with new RakeTask format introduced in 1.1.0 [\#335](https://github.com/rodjek/puppet-lint/issues/335)
+- Configuring RakeTask does not work anymore [\#331](https://github.com/rodjek/puppet-lint/issues/331)
+- "indentation of =\> is not properly aligned" for hash inside resource definition [\#327](https://github.com/rodjek/puppet-lint/issues/327)
+- --fix doesn't change "\$var" to single-quotes [\#313](https://github.com/rodjek/puppet-lint/issues/313)
+
+**Merged pull requests:**
+
+- \(GH443\) Release 2.0.0 PR [\#477](https://github.com/rodjek/puppet-lint/pull/477) ([rnelson0](https://github.com/rnelson0))
+- Fix arrow aligment check in multiple resources declaration [\#476](https://github.com/rodjek/puppet-lint/pull/476) ([wybczu](https://github.com/wybczu))
+- Fix issue \#450: block-local variables aren't recognized with subscripts [\#453](https://github.com/rodjek/puppet-lint/pull/453) ([jearls](https://github.com/jearls))
+- Adding package\_ensure plugin [\#448](https://github.com/rodjek/puppet-lint/pull/448) ([danzilio](https://github.com/danzilio))
+- Update documentation for 140chars [\#440](https://github.com/rodjek/puppet-lint/pull/440) ([keeleysam](https://github.com/keeleysam))
+- Changed character width to 140. [\#419](https://github.com/rodjek/puppet-lint/pull/419) ([potto007](https://github.com/potto007))
+- Fix arrow\_alignment check to not raise exception when line isn't indented [\#413](https://github.com/rodjek/puppet-lint/pull/413) ([rodjek](https://github.com/rodjek))
+- Fix puppet:// url check to catch double quoted strings [\#407](https://github.com/rodjek/puppet-lint/pull/407) ([paulgeringer](https://github.com/paulgeringer))
+- Load puppet-lint plugins from Puppet modules [\#404](https://github.com/rodjek/puppet-lint/pull/404) ([raphink](https://github.com/raphink))
+- Get ignore\_paths from the configuration [\#397](https://github.com/rodjek/puppet-lint/pull/397) ([lazyfrosch](https://github.com/lazyfrosch))
+- Skip checks on empty files [\#393](https://github.com/rodjek/puppet-lint/pull/393) ([vStone](https://github.com/vStone))
+- Add the fix functionality to puppet\_url\_without\_modules [\#391](https://github.com/rodjek/puppet-lint/pull/391) ([someword](https://github.com/someword))
+- Add various helper functions [\#389](https://github.com/rodjek/puppet-lint/pull/389) ([raphink](https://github.com/raphink))
+- Support older 1.8.7 patch numbers Kernel\#caller output [\#387](https://github.com/rodjek/puppet-lint/pull/387) ([rodjek](https://github.com/rodjek))
+- Detect trailing whitespace on lines with no code [\#386](https://github.com/rodjek/puppet-lint/pull/386) ([rodjek](https://github.com/rodjek))
+- Save the raw value of MLCOMMENT tokens to use when rendering back to a manifest [\#385](https://github.com/rodjek/puppet-lint/pull/385) ([rodjek](https://github.com/rodjek))
+- Don't suppress nil values in manifest\_lines [\#384](https://github.com/rodjek/puppet-lint/pull/384) ([rodjek](https://github.com/rodjek))
+- Update index.md [\#377](https://github.com/rodjek/puppet-lint/pull/377) ([mcanevet](https://github.com/mcanevet))
+- Only clear task if it's already defined [\#376](https://github.com/rodjek/puppet-lint/pull/376) ([domcleal](https://github.com/domcleal))
+- add strict\_indent check to community plugins [\#371](https://github.com/rodjek/puppet-lint/pull/371) ([relud](https://github.com/relud))
+- Nested cases [\#368](https://github.com/rodjek/puppet-lint/pull/368) ([jonnangle](https://github.com/jonnangle))
+- rpearce: Allow the use of facts\[\] and trusted\[\] as per Puppet 3.5+ [\#362](https://github.com/rodjek/puppet-lint/pull/362) ([rjpearce](https://github.com/rjpearce))
+- plugins: Add absolute template path check [\#353](https://github.com/rodjek/puppet-lint/pull/353) ([3flex](https://github.com/3flex))
+- Update index.md [\#352](https://github.com/rodjek/puppet-lint/pull/352) ([mcanevet](https://github.com/mcanevet))
+- Add node\_indexes method [\#351](https://github.com/rodjek/puppet-lint/pull/351) ([mcanevet](https://github.com/mcanevet))
+- Don't attempt to fix ignored problems [\#349](https://github.com/rodjek/puppet-lint/pull/349) ([rodjek](https://github.com/rodjek))
+- Handle case where a colon is the last token in a file [\#346](https://github.com/rodjek/puppet-lint/pull/346) ([rodjek](https://github.com/rodjek))
+- Fix bug in unquoted\_node\_name to support multiple node blocks [\#345](https://github.com/rodjek/puppet-lint/pull/345) ([rodjek](https://github.com/rodjek))
+- Catch Errno::EACCES when reading a puppet-lint.rc out of HOME [\#342](https://github.com/rodjek/puppet-lint/pull/342) ([rodjek](https://github.com/rodjek))
+- Generate line numbers for the plugin tutorial code examples [\#340](https://github.com/rodjek/puppet-lint/pull/340) ([rodjek](https://github.com/rodjek))
+- Add support for '--relative' option in new Rake::Task format. [\#334](https://github.com/rodjek/puppet-lint/pull/334) ([fatmcgav](https://github.com/fatmcgav))
+- fix \#331 - clear any pre-\(auto-\)existing tasks [\#332](https://github.com/rodjek/puppet-lint/pull/332) ([duritong](https://github.com/duritong))
+- Don't warn for arrow alignment for single-element hashes [\#330](https://github.com/rodjek/puppet-lint/pull/330) ([domcleal](https://github.com/domcleal))
+- Document multiple commands in a single control comment [\#329](https://github.com/rodjek/puppet-lint/pull/329) ([domcleal](https://github.com/domcleal))
+- Add parameter\_documentation/param-docs plugin [\#328](https://github.com/rodjek/puppet-lint/pull/328) ([domcleal](https://github.com/domcleal))
+- Alternative to \#289: :error on either class names and defines [\#290](https://github.com/rodjek/puppet-lint/pull/290) ([ppp0](https://github.com/ppp0))
+
 ### 1.1.0
 
 [View Diff](https://github.com/rodjek/puppet-lint/compare/1.0.1...1.1.0)
