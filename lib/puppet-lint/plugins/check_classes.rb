@@ -198,7 +198,7 @@ PuppetLint.new_check(:variable_scope) do
     'stage',
     'subscribe',
     'tag',
-    'fact',
+    'facts',
     'trusted',
     'server_facts',
   ]
