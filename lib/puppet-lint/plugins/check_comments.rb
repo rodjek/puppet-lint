@@ -37,19 +37,17 @@ PuppetLint.new_check(:star_comments) do
 
   def fix(problem)
     comment_lines = problem[:token].value.strip.split("\n").map(&:strip)
+    
     first_line = comment_lines.shift
     problem[:token].type = :COMMENT
     problem[:token].value = " #{first_line}"
 
-    index = tokens.index(problem[:token].next_token)
+    index = tokens.index(problem[:token].next_token) || 1
     comment_lines.reverse.each do |line|
-      [
-        PuppetLint::Lexer::Token.new(:COMMENT, " #{line}", 0, 0),
-        PuppetLint::Lexer::Token.new(:INDENT, problem[:token].prev_token.value.dup, 0, 0),
-        PuppetLint::Lexer::Token.new(:NEWLINE, "\n", 0, 0),
-      ].each do |new_token|
-        tokens.insert(index, new_token)
-      end
+      indent = problem[:token].prev_token.nil? ? nil : problem[:token].prev_token.value.dup
+      tokens.insert(index, PuppetLint::Lexer::Token.new(:COMMENT, " #{line}", 0, 0))
+      tokens.insert(index, PuppetLint::Lexer::Token.new(:INDENT, indent, 0, 0)) if indent
+      tokens.insert(index, PuppetLint::Lexer::Token.new(:NEWLINE, "\n", 0, 0))
     end
   end
 end
