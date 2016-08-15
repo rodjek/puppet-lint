@@ -92,4 +92,14 @@ layout: default
 
 | **URL**     | <https://github.com/voxpupuli/puppet-lint-resource_reference_syntax> |
 | **Install** | `gem install puppet-lint-resource_reference_syntax`                  |
+
+---
+
+
+### top_scope_facts
+
+> Check that facts are accessed using the $facts hash instead of as top scope variables. e.g use $facts['operatingsystem'] instead of $::operatingsystem
+
+| **URL**     | <https://github.com/mmckinst/puppet-lint-top_scope_facts-check> |
+| **Install** | `gem install puppet-lint-top_scope_facts-check`                 |
 {: .table .table-condensed }
