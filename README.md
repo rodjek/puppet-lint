@@ -192,7 +192,7 @@ As well as the many people who have reported the issues they've had!
 
 ## License
 
-Copyright (c) 2011 Tim Sharpe
+Copyright (c) 2011-2016 Tim Sharpe
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
