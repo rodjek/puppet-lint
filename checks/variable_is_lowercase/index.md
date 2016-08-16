@@ -17,7 +17,7 @@ $packageName
 
 #### What you should have done:
 {% highlight text %}
-$packagename
+$package_name
 {% endhighlight %}
 
 ## Disabling the check
