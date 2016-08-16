@@ -3,6 +3,8 @@
 ## [2.0.1](https://github.com/rodjek/puppet-lint/tree/2.0.1) (2016-08-16)
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/2.0.0...2.0.1)
 
+**Starting with v2.0.1, puppet-lint is deprecating support for Ruby 1.8.7.** Support will be removed in the next major release.
+
 **Closed issues:**
 
 - Changelog on Github pages is out of date [\#520](https://github.com/rodjek/puppet-lint/issues/520)
