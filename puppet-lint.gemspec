@@ -20,7 +20,15 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rspec-collection_matchers', '~> 1.0'
   s.add_development_dependency 'github_changelog_generator'
   s.add_development_dependency 'rack', '~> 1.0'
-  s.add_development_dependency 'json'
+
+  if RUBY_VERSION < '2.0'
+    # json 2.x requires ruby 2.0. Lock to 1.8
+    s.add_development_dependency 'json', '~> 1.8'
+    # json_pure 2.0.2 requires ruby 2.0. Lock to 2.0.1
+    s.add_development_dependency 'json_pure', '= 2.0.1'
+  else
+    s.add_development_dependency 'json'
+  end
 
   s.authors = ['Tim Sharpe']
   s.email = 'tim@sharpe.id.au'
