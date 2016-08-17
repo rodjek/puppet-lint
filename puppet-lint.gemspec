@@ -26,6 +26,8 @@ Gem::Specification.new do |s|
     s.add_development_dependency 'json', '~> 1.8'
     # json_pure 2.0.2 requires ruby 2.0. Lock to 2.0.1
     s.add_development_dependency 'json_pure', '= 2.0.1'
+    # addressable 2.4.0 requires ruby 1.9.0. Lock to 2.3.8.
+    s.add_development_dependency 'addressable', '= 2.3.8'
   else
     s.add_development_dependency 'json'
   end
