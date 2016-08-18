@@ -198,6 +198,9 @@ PuppetLint.new_check(:variable_scope) do
     'stage',
     'subscribe',
     'tag',
+    'facts',
+    'trusted',
+    'server_facts',
   ]
   POST_VAR_TOKENS = Set[:COMMA, :EQUALS, :RPAREN]
 
