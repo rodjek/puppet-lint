@@ -1,17 +1,89 @@
 # Change Log
 
-## [Unreleased](https://github.com/rodjek/puppet-lint/tree/HEAD)
+## [2.0.1](https://github.com/rodjek/puppet-lint/tree/2.0.1) (2016-08-18)
+[Full Changelog](https://github.com/rodjek/puppet-lint/compare/2.0.0...2.0.1)
 
-[Full Changelog](https://github.com/rodjek/puppet-lint/compare/2.0.0...HEAD)
+**Starting with v2.0.1, puppet-lint is deprecating support for Ruby 1.8.7.** Support will be removed in the next major release.
 
 **Closed issues:**
 
+- Changelog on Github pages is out of date [\#520](https://github.com/rodjek/puppet-lint/issues/520)
+- 80char --\> 140char transition incomplete [\#514](https://github.com/rodjek/puppet-lint/issues/514)
+- ensure\_first\_param-check should not consider hashes [\#512](https://github.com/rodjek/puppet-lint/issues/512)
+- RFE: Provide a way to selectively disable checks in puppet source [\#508](https://github.com/rodjek/puppet-lint/issues/508)
+- question: 1.1.0 --\> 2.0.0 new checks [\#499](https://github.com/rodjek/puppet-lint/issues/499)
+- \[\#puppethack\] disable\_char\_check doesn't work [\#493](https://github.com/rodjek/puppet-lint/issues/493)
+- Error fixing indent in possion 0 [\#489](https://github.com/rodjek/puppet-lint/issues/489)
+- Allow specifying the default enable status of a check [\#484](https://github.com/rodjek/puppet-lint/issues/484)
 - Empty lines with trailing whitespace triggers redundant soft tabs error. [\#478](https://github.com/rodjek/puppet-lint/issues/478)
+- Little problem with =\> when variables are used as key [\#472](https://github.com/rodjek/puppet-lint/issues/472)
+- Question: using config file, with custom path [\#466](https://github.com/rodjek/puppet-lint/issues/466)
+- Error: "Variable in single quoted string" or "Double quoted string without variable" - syntax? [\#463](https://github.com/rodjek/puppet-lint/issues/463)
+- Critical error on Atom initialization [\#460](https://github.com/rodjek/puppet-lint/issues/460)
+- print warning for code that will result in logging or backups of secrets [\#455](https://github.com/rodjek/puppet-lint/issues/455)
+- Linter gets upset with Regexp in type [\#452](https://github.com/rodjek/puppet-lint/issues/452)
+- Single whitespace in file replaced with \[\] [\#444](https://github.com/rodjek/puppet-lint/issues/444)
 - Time for a new release! [\#443](https://github.com/rodjek/puppet-lint/issues/443)
+- Bug with --fix and warning "variable not enclosed in {}" [\#442](https://github.com/rodjek/puppet-lint/issues/442)
+- Linter should not warn about inheriting from params class [\#441](https://github.com/rodjek/puppet-lint/issues/441)
+- Variable not enclosed in {} AND single quoted string containing a variable [\#434](https://github.com/rodjek/puppet-lint/issues/434)
+- Quoted string issue due to structured data [\#433](https://github.com/rodjek/puppet-lint/issues/433)
+- allow for arrow alignment with more than one space before [\#432](https://github.com/rodjek/puppet-lint/issues/432)
+- 3 digit modes are incorrectly flagged [\#431](https://github.com/rodjek/puppet-lint/issues/431)
+- url\_without\_modules adding paths? [\#428](https://github.com/rodjek/puppet-lint/issues/428)
+- Check for unbalanced parenthesis [\#427](https://github.com/rodjek/puppet-lint/issues/427)
+- puppet-lint crash [\#422](https://github.com/rodjek/puppet-lint/issues/422)
+- PuppetLint.configuration.ignore\_paths ignored by puppet-lint [\#417](https://github.com/rodjek/puppet-lint/issues/417)
+- Quoted boolean check should only check values [\#415](https://github.com/rodjek/puppet-lint/issues/415)
+- nested ensure misdetected as not coming first. [\#410](https://github.com/rodjek/puppet-lint/issues/410)
+- tabs before code issue [\#402](https://github.com/rodjek/puppet-lint/issues/402)
+- Disabled checks aren't actually disabled, output is merely ignored. [\#400](https://github.com/rodjek/puppet-lint/issues/400)
+- file modes doesn't have to be 4 digit octal [\#394](https://github.com/rodjek/puppet-lint/issues/394)
+- Option to disable top-scope variable warning for $facts and $trusted hashes [\#382](https://github.com/rodjek/puppet-lint/issues/382)
+- top-scope variable check incorrectly warning on second parameter in block [\#380](https://github.com/rodjek/puppet-lint/issues/380)
+- Looking for a tool that shows the output of puppet-lint and rspec-puppet on a screen like jenkins [\#374](https://github.com/rodjek/puppet-lint/issues/374)
+- Puppet lint should warn on semi colon usage when used without compression [\#367](https://github.com/rodjek/puppet-lint/issues/367)
+- "indentation of =\> is not properly aligned" and "ensure found on line but it's not the first attribute" weirdness [\#365](https://github.com/rodjek/puppet-lint/issues/365)
+- Run via jenkins complains about autoload module layout [\#361](https://github.com/rodjek/puppet-lint/issues/361)
+- Installing gems / puppet-lint may break puppet-enterprise [\#358](https://github.com/rodjek/puppet-lint/issues/358)
+- Double arrow after "symlink target specified in ensure attr" fix [\#341](https://github.com/rodjek/puppet-lint/issues/341)
+- "puppet:// URL without modules/" - in the style guide?  Custom mount points? [\#307](https://github.com/rodjek/puppet-lint/issues/307)
+- Autoloader layout test fails inside a \(custom named\) module directory [\#265](https://github.com/rodjek/puppet-lint/issues/265)
+- Check for trailing comma in last line of a attribute/value list [\#237](https://github.com/rodjek/puppet-lint/issues/237)
+- Catch code outside of class or define block. [\#220](https://github.com/rodjek/puppet-lint/issues/220)
+- Catch global code outside of node blocks [\#160](https://github.com/rodjek/puppet-lint/issues/160)
+- Add a warning for resources outside of a class [\#69](https://github.com/rodjek/puppet-lint/issues/69)
 
 **Merged pull requests:**
 
+- Continue supporting Ruby \< 2 [\#529](https://github.com/rodjek/puppet-lint/pull/529) ([ghoneycutt](https://github.com/ghoneycutt))
+- Use underscores instead of CamelCase in example [\#527](https://github.com/rodjek/puppet-lint/pull/527) ([ghoneycutt](https://github.com/ghoneycutt))
+- new linter for top\_scope\_facts [\#526](https://github.com/rodjek/puppet-lint/pull/526) ([mmckinst](https://github.com/mmckinst))
+- \(GH462\) Multi-line comments can now be fixed. [\#525](https://github.com/rodjek/puppet-lint/pull/525) ([rnelson0](https://github.com/rnelson0))
+- New additions of protected variables [\#524](https://github.com/rodjek/puppet-lint/pull/524) ([rnelson0](https://github.com/rnelson0))
+- Document new checks in puppet-lint 2.0.0+ [\#523](https://github.com/rodjek/puppet-lint/pull/523) ([rnelson0](https://github.com/rnelson0))
+- Remove github pages changelog [\#522](https://github.com/rodjek/puppet-lint/pull/522) ([3flex](https://github.com/3flex))
+- \(GH366\) Arrow Alignment fix crashes with tabs [\#515](https://github.com/rodjek/puppet-lint/pull/515) ([rnelson0](https://github.com/rnelson0))
+- Make params disabled [\#511](https://github.com/rodjek/puppet-lint/pull/511) ([binford2k](https://github.com/binford2k))
+- Removing params class check  [\#510](https://github.com/rodjek/puppet-lint/pull/510) ([cvquesty](https://github.com/cvquesty))
+- Tweak travis a bit for better patterns. [\#505](https://github.com/rodjek/puppet-lint/pull/505) ([rnelson0](https://github.com/rnelson0))
+- Bugfix: properly handling $gronk-$grouik with --fix \(fix \#442\) [\#500](https://github.com/rodjek/puppet-lint/pull/500) ([Lucas-C](https://github.com/Lucas-C))
+- Improve look of rspec [\#496](https://github.com/rodjek/puppet-lint/pull/496) ([rnelson0](https://github.com/rnelson0))
+- This adds a disabled-by-default 80chars check [\#495](https://github.com/rodjek/puppet-lint/pull/495) ([binford2k](https://github.com/binford2k))
+- Add better description of the problem in arrow\_alignment check [\#492](https://github.com/rodjek/puppet-lint/pull/492) ([rnelson0](https://github.com/rnelson0))
+- \(GH410\) Limit ensure\_first\_param check to certain resources [\#490](https://github.com/rodjek/puppet-lint/pull/490) ([rnelson0](https://github.com/rnelson0))
+- add lint test for resource references [\#486](https://github.com/rodjek/puppet-lint/pull/486) ([tuxmea](https://github.com/tuxmea))
+- Regression from 418: duplicate constant [\#483](https://github.com/rodjek/puppet-lint/pull/483) ([rnelson0](https://github.com/rnelson0))
+- Add fully-detailed CHANGELOG [\#481](https://github.com/rodjek/puppet-lint/pull/481) ([petems](https://github.com/petems))
 - Add a CHANGELOG [\#480](https://github.com/rodjek/puppet-lint/pull/480) ([rnelson0](https://github.com/rnelson0))
+- Add file mode checks for concat module [\#473](https://github.com/rodjek/puppet-lint/pull/473) ([danieljamesscott](https://github.com/danieljamesscott))
+- Fix handling of empty code [\#469](https://github.com/rodjek/puppet-lint/pull/469) ([hanazuki](https://github.com/hanazuki))
+- Allow regex params for puppet data types [\#468](https://github.com/rodjek/puppet-lint/pull/468) ([thejandroman](https://github.com/thejandroman))
+- Support automatic fixing in Rake task as described in README [\#465](https://github.com/rodjek/puppet-lint/pull/465) ([hanazuki](https://github.com/hanazuki))
+- Fix double arrow issue when adding target to ensure symlink [\#454](https://github.com/rodjek/puppet-lint/pull/454) ([mterzo](https://github.com/mterzo))
+- Add future parser's Puppet Types token type [\#435](https://github.com/rodjek/puppet-lint/pull/435) ([mcanevet](https://github.com/mcanevet))
+- Parameters ordering was only checked on defined types [\#429](https://github.com/rodjek/puppet-lint/pull/429) ([ctoa](https://github.com/ctoa))
+- Check that variables are lowercase [\#418](https://github.com/rodjek/puppet-lint/pull/418) ([rothsa](https://github.com/rothsa))
 
 ## [2.0.0](https://github.com/rodjek/puppet-lint/tree/2.0.0) (2016-06-22)
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/1.1.0...2.0.0)
@@ -147,13 +219,10 @@ If the additional gems you use for checks are pinned to 1.x, you should pin pupp
 ## [1.0.1](https://github.com/rodjek/puppet-lint/tree/1.0.1) (2014-08-20)
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/1.0.0...1.0.1)
 
-**Fixed bugs:**
-
-- Exception with PE 3.0 [\#231](https://github.com/rodjek/puppet-lint/issues/231)
-
 **Closed issues:**
 
 - Cut a new release. [\#259](https://github.com/rodjek/puppet-lint/issues/259)
+- Exception with PE 3.0 [\#231](https://github.com/rodjek/puppet-lint/issues/231)
 - Puppet-lint should warn on files that do not end with a trailing newline [\#188](https://github.com/rodjek/puppet-lint/issues/188)
 - Breaks if ressource collector is present [\#301](https://github.com/rodjek/puppet-lint/issues/301)
 - puppet-lint issues scope warnings for array/hash access [\#291](https://github.com/rodjek/puppet-lint/issues/291)
@@ -167,10 +236,6 @@ If the additional gems you use for checks are pinned to 1.x, you should pin pupp
 
 ## [1.0.0](https://github.com/rodjek/puppet-lint/tree/1.0.0) (2014-08-18)
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/0.4.0.pre1...1.0.0)
-
-**Fixed bugs:**
-
-- puppet-lint -f makes a mess of double-quoted strings that contain single quotes [\#248](https://github.com/rodjek/puppet-lint/issues/248)
 
 **Closed issues:**
 
@@ -208,6 +273,7 @@ If the additional gems you use for checks are pinned to 1.x, you should pin pupp
 - puppet-lint should not warn "string containing only a variable" when it's used to create a hash [\#261](https://github.com/rodjek/puppet-lint/issues/261)
 - ERROR: Syntax error \(try running `puppet parser validate \<file\>`\) on line 15 [\#258](https://github.com/rodjek/puppet-lint/issues/258)
 - Variables in each incorrectly idenentified as top scope.  [\#249](https://github.com/rodjek/puppet-lint/issues/249)
+- puppet-lint -f makes a mess of double-quoted strings that contain single quotes [\#248](https://github.com/rodjek/puppet-lint/issues/248)
 - Need a way to ignore a lint check for a particular line [\#247](https://github.com/rodjek/puppet-lint/issues/247)
 - Puppetlint should ignore template lines \> 80 characters [\#233](https://github.com/rodjek/puppet-lint/issues/233)
 - Syntax error when parser future features used [\#232](https://github.com/rodjek/puppet-lint/issues/232)
@@ -329,10 +395,6 @@ If the additional gems you use for checks are pinned to 1.x, you should pin pupp
 ## [0.3.0](https://github.com/rodjek/puppet-lint/tree/0.3.0) (2012-09-25)
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/0.2.1...0.3.0)
 
-**Fixed bugs:**
-
-- --no-class\_parameter\_defaults-check [\#139](https://github.com/rodjek/puppet-lint/issues/139)
-
 **Closed issues:**
 
 - False positive unquoted resource title for colons in resource parameters [\#146](https://github.com/rodjek/puppet-lint/issues/146)
@@ -341,6 +403,7 @@ If the additional gems you use for checks are pinned to 1.x, you should pin pupp
 - False positive on duplicate parameter checks [\#145](https://github.com/rodjek/puppet-lint/issues/145)
 - Crash on \\ at end of single quoted string [\#144](https://github.com/rodjek/puppet-lint/issues/144)
 - Strings ending in backslash cause exceptions [\#142](https://github.com/rodjek/puppet-lint/issues/142)
+- --no-class\_parameter\_defaults-check [\#139](https://github.com/rodjek/puppet-lint/issues/139)
 - Provide context for the problems [\#130](https://github.com/rodjek/puppet-lint/issues/130)
 
 **Merged pull requests:**
@@ -353,22 +416,13 @@ If the additional gems you use for checks are pinned to 1.x, you should pin pupp
 ## [0.2.1](https://github.com/rodjek/puppet-lint/tree/0.2.1) (2012-08-27)
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/0.2.0...0.2.1)
 
-**Fixed bugs:**
+**Closed issues:**
 
 - Rake task breaks in 0.2.0 [\#138](https://github.com/rodjek/puppet-lint/issues/138)
 - False warning : parameterised class parameter without a default value [\#137](https://github.com/rodjek/puppet-lint/issues/137)
 
 ## [0.2.0](https://github.com/rodjek/puppet-lint/tree/0.2.0) (2012-08-23)
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/0.2.0.pre1...0.2.0)
-
-**Fixed bugs:**
-
-- False positive when using function call for parameter default [\#132](https://github.com/rodjek/puppet-lint/issues/132)
-- False positive unquoted resource title in case statements [\#128](https://github.com/rodjek/puppet-lint/issues/128)
-- Crash on arrow alignment check [\#127](https://github.com/rodjek/puppet-lint/issues/127)
-- :lint rake tasks should not print "Evaluating" lines [\#114](https://github.com/rodjek/puppet-lint/issues/114)
-- when content is specified directly, double quotes are needed to get newlines [\#109](https://github.com/rodjek/puppet-lint/issues/109)
-- Multiline string should not be checked for double quotes [\#51](https://github.com/rodjek/puppet-lint/issues/51)
 
 **Closed issues:**
 
@@ -379,13 +433,18 @@ If the additional gems you use for checks are pinned to 1.x, you should pin pupp
 - Didn't pick up $ipaddress\_bond0 as a fact [\#61](https://github.com/rodjek/puppet-lint/issues/61)
 - Variables standing by themselves should not be quoted [\#20](https://github.com/rodjek/puppet-lint/issues/20)
 - write class\_parameter\_defaults check [\#134](https://github.com/rodjek/puppet-lint/issues/134)
+- False positive when using function call for parameter default [\#132](https://github.com/rodjek/puppet-lint/issues/132)
 - Fix up the website [\#131](https://github.com/rodjek/puppet-lint/issues/131)
 - Linked list style functionality for tokens [\#129](https://github.com/rodjek/puppet-lint/issues/129)
+- False positive unquoted resource title in case statements [\#128](https://github.com/rodjek/puppet-lint/issues/128)
+- Crash on arrow alignment check [\#127](https://github.com/rodjek/puppet-lint/issues/127)
 - duplicate parameter detection [\#122](https://github.com/rodjek/puppet-lint/issues/122)
 - Does not work on ruby 1.9.3 [\#120](https://github.com/rodjek/puppet-lint/issues/120)
 - Bad class format causes exception [\#118](https://github.com/rodjek/puppet-lint/issues/118)
 - case statement in inline\_template false warning [\#117](https://github.com/rodjek/puppet-lint/issues/117)
 - False warning with puppet-lint-0.2 [\#116](https://github.com/rodjek/puppet-lint/issues/116)
+- :lint rake tasks should not print "Evaluating" lines [\#114](https://github.com/rodjek/puppet-lint/issues/114)
+- when content is specified directly, double quotes are needed to get newlines [\#109](https://github.com/rodjek/puppet-lint/issues/109)
 - Incorrect variable count in string parsing [\#104](https://github.com/rodjek/puppet-lint/issues/104)
 - misparses empty hash in defined resource prototype [\#101](https://github.com/rodjek/puppet-lint/issues/101)
 - Allow file modes to be 'undef' [\#100](https://github.com/rodjek/puppet-lint/issues/100)
@@ -393,6 +452,7 @@ If the additional gems you use for checks are pinned to 1.x, you should pin pupp
 - Ignore commented lines for arrow alignment [\#77](https://github.com/rodjek/puppet-lint/issues/77)
 - /etc/puppet-lint.rc please! [\#71](https://github.com/rodjek/puppet-lint/issues/71)
 - checking of correct docs format [\#59](https://github.com/rodjek/puppet-lint/issues/59)
+- Multiline string should not be checked for double quotes [\#51](https://github.com/rodjek/puppet-lint/issues/51)
 
 ## [0.2.0.pre1](https://github.com/rodjek/puppet-lint/tree/0.2.0.pre1) (2012-07-11)
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/0.1.13...0.2.0.pre1)
@@ -538,10 +598,6 @@ If the additional gems you use for checks are pinned to 1.x, you should pin pupp
 ## [0.1.0](https://github.com/rodjek/puppet-lint/tree/0.1.0) (2011-08-23)
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/0.0.7...0.1.0)
 
-**Fixed bugs:**
-
-- =\> alignment warnings in selectors is broken [\#11](https://github.com/rodjek/puppet-lint/issues/11)
-
 **Closed issues:**
 
 - display order of class/define parameters [\#19](https://github.com/rodjek/puppet-lint/issues/19)
@@ -550,6 +606,7 @@ If the additional gems you use for checks are pinned to 1.x, you should pin pupp
 - relationship declarations [\#16](https://github.com/rodjek/puppet-lint/issues/16)
 - defaults for case statements and selectors [\#15](https://github.com/rodjek/puppet-lint/issues/15)
 - namespacing variables [\#14](https://github.com/rodjek/puppet-lint/issues/14)
+- =\> alignment warnings in selectors is broken [\#11](https://github.com/rodjek/puppet-lint/issues/11)
 
 ## [0.0.7](https://github.com/rodjek/puppet-lint/tree/0.0.7) (2011-08-21)
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/0.0.6...0.0.7)
