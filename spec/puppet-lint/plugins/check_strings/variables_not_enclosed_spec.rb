@@ -39,10 +39,10 @@ describe 'variables_not_enclosed' do
     end
 
     context 'variable not enclosed in {}' do
-      let(:code) { '" $gronk-$grouik"' }
+      let(:code) { '" $gronk"' }
 
       it 'should only detect a single problem' do
-        expect(problems).to have(2).problem
+        expect(problems).to have(1).problem
       end
 
       it 'should fix the manifest' do
@@ -50,7 +50,7 @@ describe 'variables_not_enclosed' do
       end
 
       it 'should enclose the variable in braces' do
-        expect(manifest).to eq('" ${gronk}-${grouik}"')
+        expect(manifest).to eq('" ${gronk}"')
       end
     end
 
