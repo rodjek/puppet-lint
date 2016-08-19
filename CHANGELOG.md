@@ -1,5 +1,19 @@
 # Change Log
 
+## [2.0.2](https://github.com/rodjek/puppet-lint/tree/2.0.2) (2016-08-19)
+[Full Changelog](https://github.com/rodjek/puppet-lint/compare/2.0.1...2.0.2)
+
+**Closed issues:**
+
+- Start a CHANGELOG, make updates part of the build workflow [\#479](https://github.com/rodjek/puppet-lint/issues/479)
+- Nested future scope blocks lose local variables from parent scopes. [\#456](https://github.com/rodjek/puppet-lint/issues/456)
+- block-local variables \(|$x|\) don't properly get recognized when used as arrays or hashes [\#450](https://github.com/rodjek/puppet-lint/issues/450)
+- Option to choose version of the puppet style guide [\#190](https://github.com/rodjek/puppet-lint/issues/190)
+
+**Merged pull requests:**
+
+- Revert "Bugfix: properly handling $gronk-$grouik with --fix \(fix \#442\)" [\#535](https://github.com/rodjek/puppet-lint/pull/535) ([rnelson0](https://github.com/rnelson0))
+
 ## [2.0.1](https://github.com/rodjek/puppet-lint/tree/2.0.1) (2016-08-18)
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/2.0.0...2.0.1)
 
@@ -53,10 +67,13 @@
 - Catch code outside of class or define block. [\#220](https://github.com/rodjek/puppet-lint/issues/220)
 - Catch global code outside of node blocks [\#160](https://github.com/rodjek/puppet-lint/issues/160)
 - Add a warning for resources outside of a class [\#69](https://github.com/rodjek/puppet-lint/issues/69)
+- Release a new build, 2.0.1 [\#519](https://github.com/rodjek/puppet-lint/issues/519)
+- Puppet-Lint 1.1.0 unhandled issue causing exit during -f [\#366](https://github.com/rodjek/puppet-lint/issues/366)
 
 **Merged pull requests:**
 
 - Continue supporting Ruby \< 2 [\#529](https://github.com/rodjek/puppet-lint/pull/529) ([ghoneycutt](https://github.com/ghoneycutt))
+- Release 2.0.1 [\#528](https://github.com/rodjek/puppet-lint/pull/528) ([rnelson0](https://github.com/rnelson0))
 - Use underscores instead of CamelCase in example [\#527](https://github.com/rodjek/puppet-lint/pull/527) ([ghoneycutt](https://github.com/ghoneycutt))
 - new linter for top\_scope\_facts [\#526](https://github.com/rodjek/puppet-lint/pull/526) ([mmckinst](https://github.com/mmckinst))
 - \(GH462\) Multi-line comments can now be fixed. [\#525](https://github.com/rodjek/puppet-lint/pull/525) ([rnelson0](https://github.com/rnelson0))
