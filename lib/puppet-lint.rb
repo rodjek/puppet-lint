@@ -131,7 +131,6 @@ class PuppetLint
       next if message[:kind] == :ignored && !PuppetLint.configuration.show_ignored
 
       message[:KIND] = message[:kind].to_s.upcase
-      message[:linenumber] = message[:line]
 
       if message[:kind] == :fixed || [message[:kind], :all].include?(configuration.error_level)
         format_message message
