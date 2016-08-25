@@ -103,3 +103,12 @@ layout: default
 | **URL**     | <https://github.com/mmckinst/puppet-lint-top_scope_facts-check> |
 | **Install** | `gem install puppet-lint-top_scope_facts-check`                 |
 {: .table .table-condensed }
+
+
+### legacy_facts
+
+> Ensure facts are accessed using new structured facts. e.g use $facts['os']['name'] instead of $facts['operatingsystem']
+
+| **URL**     | <https://github.com/mmckinst/puppet-lint-legacy_facts-check> |
+| **Install** | `gem install puppet-lint-legacy_facts-check`                 |
+{: .table .table-condensed }
