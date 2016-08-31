@@ -24,9 +24,9 @@ Puppet Lint has a large number of options to modify which checks should be run.
 
 You can disable any of the checks when running the `puppet-lint` command by
 adding a `--no-<check name>-check` flag to the command.  For example, if you
-wanted to skip the 80 character check, you would run
+wanted to skip the 140 character check, you would run
 ```  
-    puppet-lint --no-80chars-check <path to file>
+    puppet-lint --no-140chars-check <path to file>
 ```
 See puppet-lint --help for a full list of options.
 
@@ -191,7 +191,6 @@ from being linted:
 ``` ruby
 PuppetLint.configuration.ignore_paths = ["vendor/**/*.pp"]
 ```
-=======
 
 ## Reporting bugs or incorrect results
 
