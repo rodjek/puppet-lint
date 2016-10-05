@@ -170,6 +170,24 @@ PuppetLint.new_check(:nested_classes_or_defines) do
   end
 end
 
+# Public: Test that no code is outside of a class or define scope.
+PuppetLint.new_check(:code_on_top_scope) do
+  def check
+    class_scope = (class_indexes + defined_type_indexes).map { |e| tokens[e[:start]..e[:end]] }.flatten
+    top_scope   = tokens - class_scope
+
+    top_scope.each do |token|
+      unless formatting_tokens.include? token.type
+        notify :warning, {
+          :message => "code outside of class or define block - #{token.value}",
+          :line    => token.line,
+          :column  => token.column
+        }
+      end
+    end
+  end
+end
+
 # Public: Test the manifest tokens for any variables that are referenced in
 # the manifest.  If the variables are not fully qualified or one of the
 # variables automatically created in the scope, check that they have been
