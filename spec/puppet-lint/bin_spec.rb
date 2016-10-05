@@ -213,17 +213,6 @@ describe PuppetLint::Bin do
       }
     end
 
-    context 'to print %{linenumber}' do
-      let(:args) { [
-        '--log-format', '%{linenumber}',
-        'spec/fixtures/test/manifests/fail.pp'
-      ] }
-
-      its(:exitstatus) { is_expected.to eq(1) }
-      its(:stdout) { is_expected.to eq('2') }
-      its(:stderr) { is_expected.to eq('DEPRECATION: Please use %{line} instead of %{linenumber}') }
-    end
-
     context 'to print %{line}' do
       let(:args) { [
         '--log-format', '%{line}',
