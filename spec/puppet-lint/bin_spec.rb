@@ -302,7 +302,7 @@ describe PuppetLint::Bin do
 
     its(:exitstatus) { is_expected.to eq(0) }
     its(:stdout) { is_expected.to eq([
-      "IGNORED: double quoted string containing no variables on line 1",
+      "IGNORED: double quoted string containing no variables on line 3",
       "  for a good reason",
     ].join("\n")) }
   end
