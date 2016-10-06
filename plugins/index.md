@@ -112,3 +112,104 @@ layout: default
 | **URL**     | <https://github.com/mmckinst/puppet-lint-legacy_facts-check> |
 | **Install** | `gem install puppet-lint-legacy_facts-check`                 |
 {: .table .table-condensed }
+
+---
+
+
+### concatenated_template_files
+
+> Ensure all template functions expand a file, rather than concatenating multiple templates string together.
+
+| **URL**     | <https://github.com/deanwilson/puppet-lint-concatenated_template_files-check> |
+| **Install** | `gem install puppet-lint-concatenated_template_files-check`                   |
+{: .table .table-condensed }
+
+---
+
+
+### duplicate_class_parameters
+
+> Ensures class parameter names are unique.
+
+| **URL**     | <https://github.com/deanwilson/puppet-lint_duplicate_class_parameters-check> |
+| **Install** | `gem install puppet-lint_duplicate_class_parameters-check`                   |
+{: .table .table-condensed }
+
+---
+
+
+### yumrepo_gpgcheck_enabled
+
+> Ensure gpgcheck is enabled on yumrepo resources
+
+| **URL**     | <https://github.com/deanwilson/puppet-lint-yumrepo_gpgcheck_enabled-check> |
+| **Install** | `gem install puppet-lint-yumrepo_gpgcheck_enabled-check`                   |
+{: .table .table-condensed }
+
+---
+
+
+### no_cron_resources
+
+> Ensure no cron resources are contained in the catalog.
+
+| **URL**     | <https://github.com/deanwilson/puppet-lint-no_cron_resources-check> |
+| **Install** | `gem install puppet-lint-no_cron_resources-check`                   |
+{: .table .table-condensed }
+
+---
+
+
+###  world_writable_files
+
+> Ensure file resources are not world writable.
+
+| **URL**     | <https://github.com/deanwilson/puppet-lint-world_writable_files-check> |
+| **Install** | `gem install puppet-lint-world_writable_files-check`                   |
+{: .table .table-condensed }
+
+---
+
+
+### no_symbolic_file_modes
+
+> Ensure all file resource modes are defined as octal values and not symbolic ones.
+
+| **URL**     | <https://github.com/deanwilson/puppet-lint-no_symbolic_file_modes-check> |
+| **Install** | `gem install puppet-lint-no_symbolic_file_modes-check`                   |
+{: .table .table-condensed }
+
+---
+
+
+### no_erb_template
+
+> Ensure there are no calls to the template() or inline_template() function as
+> an aid to migrating to epp templates.
+
+| **URL**     | <https://github.com/deanwilson/puppet-lint-no_erb_template-check> |
+| **Install** | `gem install puppet-lint-no_erb_template-check`                   |
+{: .table .table-condensed }
+
+---
+
+
+### no_file_path_attribute
+
+> Ensure file resources do not have a path attribute.
+
+| **URL**     | <https://github.com/deanwilson/puppet-lint-no_file_path_attribute-check> |
+| **Install** | `gem install puppet-lint-no_file_path_attribute-check`                   |
+{: .table .table-condensed }
+
+---
+
+
+### non_erb_template_filename
+
+> Ensure all file names used in template functions end with the string '.erb'.
+
+| **URL**     | <https://github.com/deanwilson/puppet-lint-non_erb_template_filename-check> |
+| **Install** | `gem install puppet-lint-non_erb_template_filename-check`   |
+{: .table .table-condensed }
+
