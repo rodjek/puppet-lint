@@ -28,6 +28,17 @@ wanted to skip the 140 character check, you would run
 ```  
     puppet-lint --no-140chars-check <path to file>
 ```
+
+You can also instruct puppet-lint to automatically fix issues it detects with the `--fix` flag.
+```
+    puppet-lint --fix /modules
+```
+
+Note that this can be combined with the `--only-checks` option to help avoid enormous patch sets.
+```
+    puppet-lint --only-checks trailing_whitespace --fix modules/
+```
+
 See puppet-lint --help for a full list of options.
 
 ### Rake
