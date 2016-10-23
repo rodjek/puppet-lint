@@ -1,5 +1,7 @@
 # Public: Check the manifest tokens for any resource titles / namevars that
 # are not quoted and record a warning for each instance found.
+#
+# https://docs.puppet.com/guides/style_guide.html#resource-names
 PuppetLint.new_check(:unquoted_resource_title) do
   def check
     title_tokens.each do |token|
@@ -22,6 +24,8 @@ end
 # Public: Check the tokens of each resource instance for an ensure parameter
 # and if found, check that it is the first parameter listed.  If it is not
 # the first parameter, record a warning.
+#
+# https://docs.puppet.com/guides/style_guide.html#attribute-ordering
 PuppetLint.new_check(:ensure_first_param) do
   def check
     resource_indexes.each do |resource|
@@ -111,6 +115,8 @@ end
 
 # Public: Check the tokens of each resource instance for any duplicate
 # parameters and record a warning for each instance found.
+#
+# No style guide reference
 PuppetLint.new_check(:duplicate_params) do
   def check
     resource_indexes.each do |resource|
@@ -148,6 +154,8 @@ end
 # Public: Check the tokens of each File resource instance for a mode
 # parameter and if found, record a warning if the value of that parameter is
 # not a quoted string.
+#
+# https://docs.puppet.com/guides/style_guide.html#file-modes
 PuppetLint.new_check(:unquoted_file_mode) do
   TOKEN_TYPES = Set[:NAME, :NUMBER]
 
@@ -178,6 +186,8 @@ end
 # Public: Check the tokens of each File resource instance for a mode
 # parameter and if found, record a warning if the value of that parameter is
 # not a 4 digit octal value (0755) or a symbolic mode ('o=rwx,g+r').
+#
+# https://docs.puppet.com/guides/style_guide.html#file-modes
 PuppetLint.new_check(:file_mode) do
   MSG = 'mode should be represented as a 4 digit octal value or symbolic mode'
   SYM_RE = "([ugoa]*[-=+][-=+rstwxXugo]*)(,[ugoa]*[-=+][-=+rstwxXugo]*)*"
@@ -219,6 +229,8 @@ end
 # Public: Check the tokens of each File resource instance for an ensure
 # parameter and record a warning if the value of that parameter looks like
 # a symlink target (starts with a '/').
+#
+# https://docs.puppet.com/guides/style_guide.html#symbolic-links
 PuppetLint.new_check(:ensure_not_symlink_target) do
   def check
     resource_indexes.each do |resource|
