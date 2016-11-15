@@ -1,5 +1,7 @@
 # Public: Check the manifest for unquoted node names and record a warning for
 # each instance found.
+#
+# No style guide reference
 PuppetLint.new_check(:unquoted_node_name) do
   def check
     node_tokens = tokens.select { |token| token.type == :NODE }

@@ -1,5 +1,7 @@
 # Public: Check the manifest tokens for any comments started with slashes
 # (//) and record a warning for each instance found.
+#
+# https://docs.puppet.com/guides/style_guide.html#comments
 PuppetLint.new_check(:slash_comments) do
   def check
     tokens.select { |token|
@@ -21,6 +23,8 @@ end
 
 # Public: Check the manifest tokens for any comments encapsulated with
 # slash-asterisks (/* */) and record a warning for each instance found.
+#
+# https://docs.puppet.com/guides/style_guide.html#comments
 PuppetLint.new_check(:star_comments) do
   def check
     tokens.select { |token|

@@ -1,5 +1,7 @@
 # Public: Test the manifest tokens for any selectors embedded within resource
 # declarations and record a warning for each instance found.
+#
+# https://docs.puppet.com/guides/style_guide.html#keep-resource-declarations-simple
 PuppetLint.new_check(:selector_inside_resource) do
   def check
     resource_indexes.each do |resource|
@@ -24,6 +26,8 @@ end
 
 # Public: Test the manifest tokens for any case statements that do not
 # contain a "default" case and record a warning for each instance found.
+#
+# https://docs.puppet.com/guides/style_guide.html#defaults-for-case-statements-and-selectors
 PuppetLint.new_check(:case_without_default) do
   def check
     case_indexes = []

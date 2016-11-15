@@ -1,5 +1,7 @@
 # Public: Test the manifest tokens for any right-to-left (<-) chaining
 # operators and record a warning for each instance found.
+#
+# https://docs.puppet.com/guides/style_guide.html#chaining-arrow-syntax
 PuppetLint.new_check(:right_to_left_relationship) do
   def check
     tokens.select { |r| r.type == :OUT_EDGE }.each do |token|
@@ -15,6 +17,8 @@ end
 # Public: Test the manifest tokens for any classes or defined types that are
 # not in an appropriately named file for the autoloader to detect and record
 # an error of each instance found.
+#
+# https://docs.puppet.com/guides/style_guide.html#separate-files
 PuppetLint.new_check(:autoloader_layout) do
   def check
     unless fullpath.nil? || fullpath == ''
@@ -46,6 +50,8 @@ end
 
 # Public: Check the manifest tokens for any classes or defined types that
 # have a dash in their name and record an error for each instance found.
+#
+# No style guide reference
 PuppetLint.new_check(:names_containing_dash) do
   def check
     (class_indexes + defined_type_indexes).each do |class_idx|
@@ -68,6 +74,8 @@ end
 
 # Public: Check the manifest tokens for any classes that inherit a params
 # subclass and record a warning for each instance found.
+#
+# No style guide reference
 PuppetLint.new_check(:class_inherits_from_params_class) do
   def check
     class_indexes.each do |class_idx|
@@ -88,6 +96,8 @@ PuppetLint.configuration.send('disable_class_inherits_from_params_class')
 # Public: Test the manifest tokens for any parameterised classes or defined
 # types that take parameters and record a warning if there are any optional
 # parameters listed before required parameters.
+#
+# https://docs.puppet.com/guides/style_guide.html#display-order-of-parameters
 PuppetLint.new_check(:parameter_order) do
   def check
     (class_indexes + defined_type_indexes).each do |class_idx|
@@ -124,6 +134,8 @@ end
 
 # Public: Test the manifest tokens for any classes that inherit across
 # namespaces and record a warning for each instance found.
+#
+# https://docs.puppet.com/guides/style_guide.html#class-inheritance
 PuppetLint.new_check(:inherits_across_namespaces) do
   def check
     class_indexes.each do |class_idx|
@@ -145,6 +157,8 @@ end
 
 # Public: Test the manifest tokens for any classes or defined types that are
 # defined inside another class.
+#
+# https://docs.puppet.com/guides/style_guide.html#nested-classes-or-defined-types
 PuppetLint.new_check(:nested_classes_or_defines) do
   TOKENS = Set[:CLASS, :DEFINE]
 
@@ -171,6 +185,7 @@ PuppetLint.new_check(:nested_classes_or_defines) do
 end
 
 # Public: Find and warn about module names with illegal uppercase characters.
+#
 # https://docs.puppet.com/puppet/latest/reference/modules_fundamentals.html#allowed-module-names
 # Provides a fix. [puppet-lint #554]
 PuppetLint.new_check(:names_containing_uppercase) do
@@ -199,6 +214,8 @@ PuppetLint.new_check(:names_containing_uppercase) do
 end
 
 # Public: Test that no code is outside of a class or define scope.
+#
+# No style guide reference
 PuppetLint.new_check(:code_on_top_scope) do
   def check
     class_scope = (class_indexes + defined_type_indexes).map { |e| tokens[e[:start]..e[:end]] }.flatten
@@ -221,6 +238,8 @@ end
 # variables automatically created in the scope, check that they have been
 # defined in the local scope and record a warning for each variable that has
 # not.
+#
+# https://docs.puppet.com/guides/style_guide.html#namespacing-variables
 PuppetLint.new_check(:variable_scope) do
   DEFAULT_SCOPE_VARS = Set[
     'name',

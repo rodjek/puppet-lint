@@ -1,5 +1,7 @@
 # Public: Check the raw manifest string for lines containing hard tab
 # characters and record an error for each instance found.
+#
+# https://docs.puppet.com/guides/style_guide.html#spacing-indentation-and-whitespace
 PuppetLint.new_check(:hard_tabs) do
   WHITESPACE_TYPES = Set[:INDENT, :WHITESPACE]
 
@@ -23,6 +25,8 @@ end
 
 # Public: Check the manifest tokens for lines ending with whitespace and record
 # an error for each instance found.
+#
+# https://docs.puppet.com/guides/style_guide.html#spacing-indentation-and-whitespace
 PuppetLint.new_check(:trailing_whitespace) do
   def check
     tokens.select { |token|
@@ -52,6 +56,8 @@ end
 # characters and record a warning for each instance found.  The only exceptions
 # to this rule are lines containing URLs and template() calls which would hurt
 # readability if split.
+#
+# https://docs.puppet.com/guides/style_guide.html#spacing-indentation-and-whitespace
 PuppetLint.new_check(:'140chars') do
   def check
     manifest_lines.each_with_index do |line, idx|
@@ -71,6 +77,8 @@ end
 # Public: Test the raw manifest string for lines containing more than 80
 # characters. This is DISABLED by default and behaves like the default
 # 140chars check by excepting URLs and template() calls.
+#
+# https://docs.puppet.com/guides/style_guide.html#spacing-indentation-and-whitespace (older version)
 PuppetLint.new_check(:'80chars') do
   def check
     manifest_lines.each_with_index do |line, idx|
@@ -90,6 +98,8 @@ PuppetLint.configuration.send("disable_80chars")
 
 # Public: Check the manifest tokens for any indentation not using 2 space soft
 # tabs and record an error for each instance found.
+#
+# https://docs.puppet.com/guides/style_guide.html#spacing-indentation-and-whitespace
 PuppetLint.new_check(:'2sp_soft_tabs') do
   def check
     tokens.select { |r|
@@ -108,6 +118,8 @@ end
 
 # Public: Check the manifest tokens for any arrows (=>) in a grouping ({}) that
 # are not aligned with other arrows in that grouping.
+#
+# https://docs.puppet.com/guides/style_guide.html#spacing-indentation-and-whitespace
 PuppetLint.new_check(:arrow_alignment) do
   COMMENT_TYPES = Set[:COMMENT, :SLASH_COMMENT, :MLCOMMENT]
 

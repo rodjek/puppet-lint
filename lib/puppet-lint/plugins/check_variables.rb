@@ -1,5 +1,7 @@
 # Public: Test the manifest tokens for variables that contain a dash and
 # record a warning for each instance found.
+#
+# No style guide reference
 PuppetLint.new_check(:variable_contains_dash) do
   VARIABLE_DASH_TYPES = Set[:VARIABLE, :UNENC_VARIABLE]
 
@@ -18,6 +20,10 @@ PuppetLint.new_check(:variable_contains_dash) do
   end
 end
 
+# Public: Test the manifest tokens for variables that contain an uppercase
+# letter and record a warning for each instance found.
+#
+# No style guide reference
 PuppetLint.new_check(:variable_is_lowercase) do
   VARIABLE_LOWERCASE_TYPES = Set[:VARIABLE, :UNENC_VARIABLE]
 
