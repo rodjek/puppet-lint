@@ -33,24 +33,42 @@ class PuppetLint
 
     # Internal: A Hash whose keys are Strings representing reserved keywords in
     # the Puppet DSL.
+    # From https://github.com/puppetlabs/puppet/blob/master/lib/puppet/pops/parser/lexer2.rb#L116-L137
+    # or thereabouts
     KEYWORDS = {
-      'class'    => true,
       'case'     => true,
+      'class'    => true,
       'default'  => true,
       'define'   => true,
       'import'   => true,
       'if'       => true,
-      'else'     => true,
       'elsif'    => true,
+      'else'     => true,
       'inherits' => true,
       'node'     => true,
       'and'      => true,
       'or'       => true,
       'undef'    => true,
-      'true'     => true,
       'false'    => true,
+      'true'     => true,
       'in'       => true,
       'unless'   => true,
+      'function' => true,
+      'type'     => true,
+      'attr'     => true,
+      'private'  => true,
+    }
+    
+    # Internal: A Hash whose keys are Strings representing reserved keywords in
+    # the Puppet DSL when Application Management is enabled
+    # From https://github.com/puppetlabs/puppet/blob/master/lib/puppet/pops/parser/lexer2.rb#L142-L159
+    # or therabouts
+    # Currently unused
+    APP_MANAGEMENT_TOKENS = {
+      'application' => true,
+      'consumes'    => true,
+      'produces'    => true,
+      'site'        => true,
     }
 
     # Internal: A Hash whose keys are Symbols representing token types which
