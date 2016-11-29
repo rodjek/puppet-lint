@@ -71,6 +71,7 @@ PuppetLint.new_check(:names_containing_dash) do
     end
   end
 end
+PuppetLint.configuration.send('names_containing_dash')
 
 # Public: Check the manifest tokens for any classes that inherit a params
 # subclass and record a warning for each instance found.
@@ -216,6 +217,7 @@ end
 # Public: Test that no code is outside of a class or define scope.
 #
 # No style guide reference
+# Closest match: https://docs.puppet.com/guides/style_guide.html#separate-files
 PuppetLint.new_check(:code_on_top_scope) do
   def check
     class_scope = (class_indexes + defined_type_indexes).map { |e| tokens[e[:start]..e[:end]] }.flatten

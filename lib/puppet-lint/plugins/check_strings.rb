@@ -89,6 +89,7 @@ PuppetLint.new_check(:only_variable_string) do
     var_token.prev_token = prev_token
   end
 end
+PuppetLint.configuration.send('only_variable_string')
 
 # Public: Check the manifest tokens for any variables in a string that have
 # not been enclosed by braces ({}) and record a warning for each instance
@@ -184,3 +185,4 @@ PuppetLint.new_check(:puppet_url_without_modules) do
     problem[:token].value.gsub!(/(puppet:\/\/.*?\/)/, '\1modules/')
   end
 end
+PuppetLint.configuration.send('puppet_url_without_modules')
