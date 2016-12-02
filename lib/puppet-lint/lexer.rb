@@ -311,6 +311,11 @@ class PuppetLint
         @line_no += 1
         @column = 1
       end
+      if type == :SSTRING and /(?:\r\n|\r|\n)/.match(value)
+        lines = value.split(/(?:\r\n|\r|\n)/)
+        @line_no += lines.length-1
+        @column = lines.last.length
+      end
 
       token
     end

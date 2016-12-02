@@ -18,7 +18,7 @@ describe PuppetLint::Lexer do
     end
 
     it 'should calculate the line number for a multi line string' do
-      @lexer.instance_variable_set('@line_no', 2)
+      token = @lexer.new_token(:SSTRING, "test\ntest", 4)
       token = @lexer.new_token(:TEST, 'test', 4)
       expect(token.line).to eq(2)
     end
@@ -37,8 +37,9 @@ describe PuppetLint::Lexer do
     it 'should calculate the column number for a multi line string' do
       @lexer.instance_variable_set('@line_no', 4)
       @lexer.instance_variable_set('@column', "gronk".size)
+      token = @lexer.new_token(:SSTRING, "test\ntest", 9)
       token = @lexer.new_token(:TEST, 'test', 4)
-      expect(token.column).to eq(5)
+      expect(token.column).to eq(4)
     end
   end
 
