@@ -25,6 +25,7 @@ class PuppetLint::Data
       @resource_indexes = nil
       @class_indexes = nil
       @defined_type_indexes = nil
+      @node_indexes = nil
       @function_indexes = nil
       @array_indexes = nil
       @hash_indexes = nil
