@@ -188,7 +188,7 @@ class PuppetLint
         end
 
         unless found
-          if var_name = chunk[/\A\$((::)?([\w-]+::)*[\w-]+(\[.+?\])*)/, 1]
+          if var_name = chunk[/\A\$((::)?(\w+(-\w+)*::)*\w+(-\w+)*(\[.+?\])*)/, 1]
             length = var_name.size + 1
             tokens << new_token(:VARIABLE, var_name, length)
 
@@ -364,7 +364,7 @@ class PuppetLint
             tokens << new_token(:DQMID, value, value.size, :line => line, :column => token_column)
           end
           if ss.scan(/\{/).nil?
-            var_name = ss.scan(/(::)?([\w-]+::)*[\w-]+/)
+            var_name = ss.scan(/(::)?(\w+(-\w+)*::)*\w+(-\w+)*/)
             if var_name.nil?
               token_column = column + ss.pos - 1
               tokens << new_token(:DQMID, "$", 1, :line => line, :column => token_column)
