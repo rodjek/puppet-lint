@@ -629,6 +629,12 @@ describe PuppetLint::Lexer do
       expect(token.type).to eq(:CLASSREF)
       expect(token.value).to eq('::One')
     end
+
+    it 'should match terms that start with Types' do
+      token = @lexer.tokenise('Regexp_foo').first
+      expect(token.type).to eq(:CLASSREF)
+      expect(token.value).to eq('Regexp_foo')
+    end
   end
 
   context ':NAME' do
