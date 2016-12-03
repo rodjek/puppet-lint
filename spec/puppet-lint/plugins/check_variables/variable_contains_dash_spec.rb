@@ -34,4 +34,12 @@ describe 'variable_contains_dash' do
       expect(problems).to be_empty
     end
   end
+
+  context 'enclosed variable in a string followed by a dash' do
+    let(:code) { '"${variable}-is-ok"' }
+
+    it 'should not detect any problems' do
+      expect(problems).to be_empty
+    end
+  end
 end
