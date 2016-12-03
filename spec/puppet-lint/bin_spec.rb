@@ -312,4 +312,13 @@ describe PuppetLint::Bin do
     its(:exitstatus) { is_expected.to eq(0) }
     its(:stdout) { is_expected.to match(/^.*line 6$/) }
   end
+
+  context 'when an lint:endignore control comment exists with no opening lint:ignore comment' do
+    let(:args) { [
+      'spec/fixtures/test/manifests/mismatched_control_comment.pp',
+    ] }
+
+    its(:exitstatus) { is_expected.to eq(0) }
+    its(:stdout) { is_expected.to match(/WARNING: lint:endignore comment with no opening lint:ignore:<check> comment found on line 1/) }
+  end
 end
