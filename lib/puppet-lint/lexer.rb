@@ -312,7 +312,7 @@ class PuppetLint
         @column = 1
       end
       if [:MLCOMMENT, :SSTRING, :STRING].include? type and /(?:\r\n|\r|\n)/.match(value)
-        lines = value.split(/(?:\r\n|\r|\n)/)
+        lines = value.split(/(?:\r\n|\r|\n)/, -1)
         @line_no += lines.length-1
         @column = lines.last.length
       end
