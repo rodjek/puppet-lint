@@ -798,6 +798,12 @@ describe PuppetLint::Lexer do
       expect(token.type).to eq(:SSTRING)
       expect(token.value).to eq(%{foo\\\\})
     end
+
+    it "should match single quoted string containing a line break" do
+      token = @lexer.tokenise("'\n'").first
+      expect(token.type).to eq(:SSTRING)
+      expect(token.value).to eq("\n")
+    end
   end
 
   context ':REGEX' do
@@ -841,6 +847,12 @@ describe PuppetLint::Lexer do
       expect {
         @lexer.tokenise("exec { \"/bin/echo \\\\\\\"${environment}\\\\\\\"\": }")
       }.to_not raise_error
+    end
+
+    it "should match double quoted string containing a line break" do
+      token = @lexer.tokenise(%Q{"\n"}).first
+      expect(token.type).to eq(:STRING)
+      expect(token.value).to eq("\n")
     end
   end
 end
