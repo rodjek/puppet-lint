@@ -1,6 +1,6 @@
 # lint:ignore:double_quoted_strings lint:ignore:quoted_booleans
-"true"
-"false"
+$x = "true"
+$y = "false"
 # lint:endignore
 
-"true"
+$z = "true"
