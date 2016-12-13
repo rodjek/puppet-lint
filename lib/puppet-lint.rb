@@ -115,9 +115,13 @@ class PuppetLint
     return if message[:check] == 'documentation'
     return if message[:kind] == :fixed
     line = PuppetLint::Data.manifest_lines[message[:line] - 1]
-    offset = line.index(/\S/) || 1
-    puts "\n  #{line.strip}"
-    printf "%#{message[:column] + 2 - offset}s\n\n", '^'
+    if line.nil?
+      printf "\n%#{2}s\n\n", '^'
+    else
+      offset = line.index(/\S/) || 1
+      puts "\n  #{line.strip}"
+      printf "%#{message[:column] + 2 - offset}s\n\n", '^'
+    end
   end
 
   # Internal: Print the reported problems with a manifest to stdout.
