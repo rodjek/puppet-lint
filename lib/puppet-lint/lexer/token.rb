@@ -56,6 +56,7 @@ class PuppetLint
           end
           unless val.nil?
             val.__next_token = self
+            val.__prev_token = t
           end
         end
       end
