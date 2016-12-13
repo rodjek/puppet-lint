@@ -35,6 +35,12 @@ describe PuppetLint::Lexer do
       expect(token.line).to eq(2)
     end
 
+    it 'should calculate line number for string that ends with newline' do
+      token = @lexer.new_token(:SSTRING, "test\n", 5)
+      token = @lexer.new_token(:TEST, 'test', 4)
+      expect(token.line).to eq(2)
+    end
+
     it 'should calculate the column number for an empty string' do
       token = @lexer.new_token(:TEST, 'test', 4)
       expect(token.column).to eq(1)
