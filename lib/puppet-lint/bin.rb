@@ -75,5 +75,10 @@ class PuppetLint::Bin
       puts "puppet-lint: try 'puppet-lint --help' for more information"
       return 1
     end
+
+    rescue PuppetLint::InvalidCodeError
+      puts "puppet-lint: the manifest code cannot be validated by `puppet parser validate`"
+      puts "puppet-lint: try again once the code is valid"
+      return 1
   end
 end
