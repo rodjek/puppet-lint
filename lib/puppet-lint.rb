@@ -164,13 +164,16 @@ class PuppetLint
       return
     end
 
-    Puppet.settings[:app_management] = true if Gem::Version.new(Puppet.version) >= Gem::Version.new('4.3.2')
-    parser = Puppet::Pops::Parser::EvaluatingParser.singleton
-    result = parser.parser.parse_string(code, 'test.pp')
-    result = result.model
-    acceptor = parser.validate(result)
-    
-    acceptor.error_count.zero?
+    begin
+      Puppet.settings[:app_management] = true if Gem::Version.new(Puppet.version) >= Gem::Version.new('4.3.2')
+      parser = Puppet::Pops::Parser::EvaluatingParser.singleton
+      result = parser.parser.parse_string(code, 'test.pp')
+      result = result.model
+      acceptor = parser.validate(result)
+
+      acceptor.error_count.zero?
+    rescue => detail
+    end
   end
 
   # Public: Run the loaded manifest code through the lint checks and print the
