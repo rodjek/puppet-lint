@@ -122,7 +122,7 @@ class PuppetLint
       end
 
       def whitespace?
-        return PuppetLint::Lexer.FORMATTING_TOKENS.fetch(@type, false)
+        return PuppetLint::Lexer::FORMATTING_TOKENS.fetch(@type, false)
       end
     end
   end
