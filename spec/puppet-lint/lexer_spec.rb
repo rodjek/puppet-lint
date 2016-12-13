@@ -23,6 +23,12 @@ describe PuppetLint::Lexer do
       expect(token.line).to eq(2)
     end
 
+    it 'should get correct line number after a multi line comment' do
+      token = @lexer.new_token(:MLCOMMENT, "test\ntest", 9)
+      token = @lexer.new_token(:TEST, 'test', 4)
+      expect(token.line).to eq(2)
+    end
+
     it 'should calculate the line number for a multi line string' do
       token = @lexer.new_token(:SSTRING, "test\ntest", 9)
       token = @lexer.new_token(:TEST, 'test', 4)
