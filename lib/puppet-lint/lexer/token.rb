@@ -22,13 +22,20 @@ class PuppetLint
       # Public: Gets/sets the next token in the manifest.
       attr_reader :next_token
 
+      def __next_token=(val)
+        @next_token = val
+      end
+
       def next_token=(val)
         if(val != @next_token) then
           t = @next_token
           @next_token = val
           unless val.nil?
-            val.prev_token = self
-            val.next_token = t
+            val.__prev_token = self
+            val.__next_token = t
+          end
+          unless t.nil?
+            t.__prev_token = val
           end
         end
       end
@@ -36,14 +43,19 @@ class PuppetLint
       # Public: Gets/sets the previous token in the manifest.
       attr_reader :prev_token
 
+      def __prev_token=(val)
+        @prev_token = val
+      end
+
       def prev_token=(val)
         if(val != @prev_token)
           t = @prev_token
           @prev_token = val
-          if not t.nil?
-            t.next_token = val
-          else
-            val.next_token = self
+          unless t.nil?
+            t.__next_token = val
+          end
+          unless val.nil?
+            val.__next_token = self
           end
         end
       end
