@@ -86,8 +86,6 @@ PuppetLint.new_check(:ensure_first_param) do
     ensure_param_name_token.prev_token = prev_token
 
     prev_code_token = first_param_name_token.prev_code_token
-    first_param_name_token.prev_code_token = ensure_param_name_token.prev_code_token
-    ensure_param_name_token.prev_code_token = prev_code_token
 
     next_token = first_param_comma_token.next_token
     first_param_comma_token = ensure_param_comma_token.next_token
