@@ -95,7 +95,6 @@ PuppetLint.new_check(:ensure_first_param) do
 
     next_code_token = first_param_comma_token.next_code_token
     first_param_comma_code_token = ensure_param_comma_token.next_code_token
-    ensure_param_comma_token.next_code_token = next_code_token
 
     # Update index
     ensure_tmp = tokens.slice!(ensure_param_name_idx..ensure_param_comma_idx-1)

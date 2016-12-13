@@ -75,13 +75,9 @@ PuppetLint.new_check(:only_variable_string) do
     tokens.delete(problem[:end_token])
 
     prev_token.next_token = var_token unless prev_token.nil?
-    prev_code_token.next_code_token = var_token unless prev_code_token.nil?
-    next_code_token.prev_code_token = var_token unless next_code_token.nil?
     next_token.prev_token = var_token unless next_token.nil?
     var_token.type = :VARIABLE
     var_token.next_token = next_token
-    var_token.next_code_token = next_code_token
-    var_token.prev_code_token = prev_code_token
     var_token.prev_token = prev_token
   end
 end
