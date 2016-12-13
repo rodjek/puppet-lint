@@ -26,8 +26,10 @@ class PuppetLint
         if(val != @next_token) then
           t = @next_token
           @next_token = val
-          val.prev_token = self
-          val.next_token = t
+          unless val.nil?
+            val.prev_token = self
+            val.next_token = t
+          end
         end
       end
 
@@ -38,7 +40,11 @@ class PuppetLint
         if(val != @prev_token)
           t = @prev_token
           @prev_token = val
-          t.next_token = val
+          if not t.nil?
+            t.next_token = val
+          else
+            val.next_token = self
+          end
         end
       end
 
