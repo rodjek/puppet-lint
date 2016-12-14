@@ -120,7 +120,7 @@ class PuppetLint
         when :DQPOST
           "#{@value}\""
         when :VARIABLE
-          if !@prev_code_token.nil? && [:DQPRE, :DQMID].include?(@prev_code_token.type)
+          if !prev_code_token.nil? && [:DQPRE, :DQMID].include?(prev_code_token.type)
             "${#{@value}}"
           else
             "$#{@value}"

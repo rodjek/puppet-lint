@@ -12,7 +12,7 @@ class PuppetLint::Data
     attr_reader :path, :fullpath, :filename
 
     # Internal: Get/Set the raw manifest data, split by \n.
-    attr_accessor :manifest_lines
+    attr_accessor :manifest_lines, :lexer
 
     # Internal: Store the tokenised manifest.
     #

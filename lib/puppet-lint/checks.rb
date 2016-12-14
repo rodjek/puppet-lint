@@ -22,6 +22,7 @@ class PuppetLint::Checks
     PuppetLint::Data.path = path
     PuppetLint::Data.manifest_lines = content.split("\n", -1)
     begin
+      PuppetLint::Data.lexer = lexer
       PuppetLint::Data.tokens = lexer.tokenise(content)
       PuppetLint::Data.parse_control_comments
     rescue PuppetLint::LexerError => e

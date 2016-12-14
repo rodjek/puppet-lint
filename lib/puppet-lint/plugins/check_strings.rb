@@ -65,8 +65,8 @@ PuppetLint.new_check(:only_variable_string) do
   end
 
   def fix(problem)
-    delete_token(problem[:start_token])
-    delete_token(problem[:end_token])
+    lexer.delete_token(problem[:start_token])
+    lexer.delete_token(problem[:end_token])
 
     var_token = problem[:var_token]
     var_token.type = :VARIABLE

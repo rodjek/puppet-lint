@@ -59,6 +59,14 @@ class PuppetLint::CheckPlugin
     PuppetLint::Data.tokens
   end
 
+  def tokens=(val)
+    PuppetLint::Data.tokens = val
+  end
+
+  def lexer
+    PuppetLint::Data.lexer
+  end
+  
   # Public: Provides the resource titles to the check plugins.
   #
   # Returns an Array of PuppetLint::Lexer::Token objects.

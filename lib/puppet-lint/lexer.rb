@@ -304,6 +304,14 @@ class PuppetLint
       tokens.delete_at(idx)
     end
 
+    def enforce_array
+      tokens.each_with_index do |t, idx|
+        if idx > 1 then
+          tokens[idx-1].next_token = t
+        end
+      end
+    end
+
     # Internal: Split a string on multiple terminators, excluding escaped
     # terminators.
     #

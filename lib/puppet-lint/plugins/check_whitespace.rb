@@ -40,7 +40,7 @@ PuppetLint.new_check(:trailing_whitespace) do
   end
 
   def fix(problem)
-    delete_token(problem[:token])
+    lexer.delete_token(problem[:token])
   end
 end
 
@@ -169,7 +169,7 @@ PuppetLint.new_check(:arrow_alignment) do
       index = tokens.index(problem[:token].prev_code_token.prev_token)
 
       #insert newline
-      insert_token(index, PuppetLint::Lexer::Token.new(:NEWLINE, "\n", 0, 0))
+      lexer.insert_token(index, PuppetLint::Lexer::Token.new(:NEWLINE, "\n", 0, 0))
 
       # indent the parameter to the correct depth
       problem[:token].prev_code_token.prev_token.type = :INDENT
@@ -180,7 +180,7 @@ PuppetLint.new_check(:arrow_alignment) do
       problem[:token].prev_token.value = new_ws
     else
       index = tokens.index(problem[:token].prev_token)
-      insert_token(index + 1, PuppetLint::Lexer::Token.new(:WHITESPACE, new_ws, 0, 0))
+      lexer.insert_token(index + 1, PuppetLint::Lexer::Token.new(:WHITESPACE, new_ws, 0, 0))
     end
   end
 end
