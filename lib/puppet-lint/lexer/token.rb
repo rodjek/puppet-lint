@@ -13,17 +13,33 @@ class PuppetLint
       attr_accessor :raw
 
       # Public: Returns the Integer line number of the manifest text where the Token can be found.
-      attr_reader :line
+      attr_accessor :line
 
       # Public: Returns the Integer column number of the line of the manifest text where the Token
       # can be found.
-      attr_reader :column
+      attr_accessor :column
 
       # Public: Gets/sets the next token in the manifest.
       attr_reader :next_token
 
       def __next_token=(val)
         @next_token = val
+
+
+        # Walk to the right, updating line and column info
+        prev = self
+        until val.nil? do
+          nl = prev.line + prev.value.lines.length
+          nc = prev.column + prev.value.length
+          if nl == val.line and nc == val.column then
+            break
+          else
+            val.line = nl
+            val.column = nc
+            prev = val
+            val = val.next_token
+          end
+        end
       end
 
       def next_token=(val)
@@ -45,6 +61,11 @@ class PuppetLint
 
       def __prev_token=(val)
         @prev_token = val
+        unless val.nil?
+          @line = val.line + val.value.lines.length
+          @column = val.column + val.value.length
+          self.__next_token = @next_token # to force line/pos recomputation
+        end
       end
 
       def prev_token=(val)
