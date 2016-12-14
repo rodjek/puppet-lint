@@ -98,10 +98,10 @@ PuppetLint.new_check(:ensure_first_param) do
     ensure_tmp = tokens.slice!(ensure_param_name_idx..ensure_param_comma_idx-1)
     first_tmp = tokens.slice!(first_param_name_idx..first_param_comma_idx-1)
     ensure_tmp.reverse_each do |item|
-      tokens.insert(first_param_name_idx, item)
+      PuppetLint::Lexer.insert_token(first_param_name_idx, item)
     end
     first_tmp.reverse_each do |item|
-      tokens.insert(ensure_param_name_idx + ensure_tmp.length - first_tmp.length, item)
+      PuppetLint::Lexer.insert_token(ensure_param_name_idx + ensure_tmp.length - first_tmp.length, item)
     end
   end
 end
@@ -251,7 +251,7 @@ PuppetLint.new_check(:ensure_not_symlink_target) do
       PuppetLint::Lexer::Token.new(:FARROW, '=>', 0, 0),
       PuppetLint::Lexer::Token.new(:WHITESPACE, ' ', 0, 0),
     ].reverse.each do |new_token|
-      tokens.insert(index, new_token)
+      PuppetLint::Lexer.insert_token(index, new_token)
     end
   end
 end
