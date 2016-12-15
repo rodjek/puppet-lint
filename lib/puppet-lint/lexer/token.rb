@@ -29,7 +29,7 @@ class PuppetLint
         # Walk to the right, updating line and column info
         prev = self
         until val.nil? do
-          nl = prev.line + prev.value.lines.length
+          nl = prev.line + (prev.value.lines.length - 1)
           nc = prev.column + prev.value.length
           if nl == val.line and nc == val.column then
             break
@@ -62,7 +62,7 @@ class PuppetLint
       def __prev_token=(val)
         @prev_token = val
         unless val.nil?
-          @line = val.line + val.value.lines.length
+          @line = val.line + (val.value.lines.length - 1)
           @column = val.column + val.value.length
           self.__next_token = @next_token # to force line/pos recomputation
         end
