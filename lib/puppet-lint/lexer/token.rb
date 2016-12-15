@@ -3,6 +3,8 @@ class PuppetLint
     # Public: Stores a fragment of the manifest and the information about its location in the
     # manifest.
     class Token
+      class AssertionError < RuntimeError
+      end
       # Public: Returns the Symbol type of the Token.
       attr_accessor :type
 
@@ -98,6 +100,62 @@ class PuppetLint
           t = t.prev_token
         end
         return t
+      end
+
+      # Public: Takes a token which is farther down the chain to the right (this is covered by an
+      # assert), and unlinks the sublist between this token and the given end token from the
+      # list. The list is correctly spliced so that the preceding and following tokens are now
+      # sequential.
+      def slice_to(other)
+        cur = self
+        while not cur.nil? and cur != other do
+          cur = cur.next_token
+        end
+        if cur.nil? then
+          raise AssertionError
+        end
+
+        self.prev_token.next_token = nil
+        other.next_token.prev_token = @prev_token
+        @prev_token = nil
+        other.next_token = nil
+        return self
+      end
+
+      # Public: Inserts a new sublist being whatever is between the argument start and end tokens
+      # _after_ the current token in the tokens list.
+      def splice_in(start_t, end_t)
+        @next_token.prev_token = end_t
+        start_t.prev_token = self
+      end
+
+      # Public: Returns the array form of the entire token chain to the right of this token.
+      #
+      # Users should prefer the above linked list slice and splice operations to manipulating arrays
+      # of tokens.
+      def to_array
+        arr = []
+        cur = self
+        while not cur.nil?
+          arr << cur
+          cur = cur.next_token
+        end
+        return arr
+      end
+
+      # Public: Builds the token chain from an array of tokens.
+      #
+      # Users should prefer the above linked list slice and splice operations to manipulating arrays
+      # of tokens.
+      class << self
+        def from_array(arr)
+          prev = nil
+          arr.each do |e|
+            e.prev_token = prev
+            prev = e
+          end
+          return arr.first
+        end
       end
 
       # Public: Initialise a new Token object.
