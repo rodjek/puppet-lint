@@ -24,15 +24,28 @@ class PuppetLint
       # Public: Gets/sets the next token in the manifest.
       attr_reader :next_token
 
+      def width
+        return @value.length
+      end
+
+      def height
+        if @type == :NEWLINE then
+          return 1
+        elsif [:WHITESPACE, :COMMENT, :SLASH_COMMENT, :MLCOMMENT, :INDENT].include?(@type) then
+          return @value.lines.length - 1
+        else
+          return 0
+        end
+      end
+
       def __next_token=(val)
         @next_token = val
-
 
         # Walk to the right, updating line and column info
         prev = self
         until val.nil? do
-          nl = prev.line + (prev.value.lines.length - 1)
-          nc = prev.column + prev.value.length
+          nl = prev.line + prev.height
+          nc = prev.type == :NEWLINE ? 1 : prev.column + prev.width
           if nl == val.line and nc == val.column then
             break
           else
@@ -64,8 +77,8 @@ class PuppetLint
       def __prev_token=(val)
         @prev_token = val
         unless val.nil?
-          @line = val.line + (val.value.lines.length - 1)
-          @column = val.column + val.value.length
+          @line = val.line + val.height
+          @column = val.type == :NEWLINE ? 1 : val.column + val.width
           self.__next_token = @next_token # to force line/pos recomputation
         end
       end
