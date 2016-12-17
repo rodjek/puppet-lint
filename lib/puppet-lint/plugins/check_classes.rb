@@ -103,12 +103,18 @@ PuppetLint.new_check(:parameter_order) do
     (class_indexes + defined_type_indexes).each do |class_idx|
       unless class_idx[:param_tokens].nil?
         paren_stack = []
+        hash_stack = []
         class_idx[:param_tokens].each_with_index do |token, i|
           if token.type == :LPAREN
             paren_stack.push(true)
           elsif token.type == :RPAREN
             paren_stack.pop
+          elsif token.type == :LBRACE
+            hash_stack.push(true)
+          elsif token.type == :RBRACE
+            hash_stack.pop
           end
+          next if (! hash_stack.empty?)
           next unless paren_stack.empty?
 
           if token.type == :VARIABLE
