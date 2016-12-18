@@ -74,11 +74,11 @@ describe 'parameter_order' do
       end
     end
 
-    context 'mandatory parameter w/a hash containing a variable and no optional parameters' do
+    context "#{type} parameter w/a hash containing a variable and no optional parameters" do
       let(:code) { "
         $var1 = 'test'
         
-        class test (
+        #{type} test (
           $entries = {
             '200 xxx' => {
               param1 => $var1,
@@ -87,19 +87,17 @@ describe 'parameter_order' do
             }
           },
           $mandatory => undef,
-        ) {
-          notice $entries
-        }
+        ) { }
       "}
 
       it { expect(problems).to have(0).problem }
     end
 
-    context 'mandatory parameter w/a hash containing a variable followed by an optional parameter' do
+    context "#{type} parameter w/a hash containing a variable followed by an optional parameter" do
       let(:code) { "
         $var1 = 'test'
         
-        class test (
+        #{type} test (
           $entries = {
             '200 xxx' => {
               param1 => $var1,
@@ -109,12 +107,20 @@ describe 'parameter_order' do
           },
           $optional,
           $mandatory => undef,
-        ) {
-          notice $entries
-        }
+        ) { }
       "}
 
       it { expect(problems).to contain_warning(msg).on_line(12).in_column(11) }
+    end
+
+    context "#{type} parameter w/array containing a variable" do
+      let(:code) {"
+        #{type} test (
+          $var1 = [$::hostname, 'host'],
+        ) { }
+      "}
+
+      it { expect(problems).to have(0).problem }
     end
   end
 end
