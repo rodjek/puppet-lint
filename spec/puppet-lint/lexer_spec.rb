@@ -680,6 +680,12 @@ describe PuppetLint::Lexer do
       expect(token.type).to eq(:NAME)
       expect(token.value).to eq('::1one::2two::3three')
     end
+
+    it 'should match barewords beginning with an underscore' do
+      token = @lexer.tokenise('_bareword').first
+      expect(token.type).to eq(:NAME)
+      expect(token.value).to eq('_bareword')
+    end
   end
 
   context ':NUMBER' do
