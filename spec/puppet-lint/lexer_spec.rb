@@ -840,6 +840,17 @@ describe PuppetLint::Lexer do
       tokens = @lexer.tokenise('$x = $a/$b/$c')
       expect(tokens.select { |r| r.type == :REGEX }).to be_empty
     end
+
+    it 'should properly parse when regex follows an if' do
+      tokens = @lexer.tokenise('if /^icinga_service_icon_.*/ in $location_info { }')
+      expect(tokens[2].type).to eq(:REGEX)
+    end
+
+    it 'should properly parse when a regex follows an elsif' do
+      tokens = @lexer.tokenise('if /a/ in $location_info { } elsif /b/ in $location_info { }')
+      expect(tokens[2].type).to eq(:REGEX)
+      expect(tokens[14].type).to eq(:REGEX)
+    end
   end
 
   context ':STRING' do
