@@ -159,6 +159,7 @@ PuppetLint.new_check(:quoted_booleans) do
     problem[:token].type = problem[:token].value.upcase.to_sym
   end
 end
+PuppetLint.configuration.send('disable_quoted_booleans')
 
 # Public: Check the manifest tokens for any puppet:// URL strings where the
 # path section doesn't start with modules/ and record a warning for each

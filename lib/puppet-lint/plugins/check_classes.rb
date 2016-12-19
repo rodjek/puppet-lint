@@ -71,7 +71,7 @@ PuppetLint.new_check(:names_containing_dash) do
     end
   end
 end
-PuppetLint.configuration.send('names_containing_dash')
+PuppetLint.configuration.send('disable_names_containing_dash')
 
 # Public: Check the manifest tokens for any classes that inherit a params
 # subclass and record a warning for each instance found.
