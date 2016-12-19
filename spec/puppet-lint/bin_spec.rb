@@ -321,4 +321,13 @@ describe PuppetLint::Bin do
     its(:exitstatus) { is_expected.to eq(0) }
     its(:stdout) { is_expected.to match(/WARNING: lint:endignore comment with no opening lint:ignore:<check> comment found on line 1/) }
   end
+
+  context 'when a non-UTF-8 file is provided as an argument' do
+    let(:args) { [
+      'spec/fixtures/test/manifests/non_utf_8.pp',
+    ] }
+
+    its(:exitstatus) { is_expected.to eq(1) }
+    its(:stdout) { is_expected.to match(/A non-UTF-8 file was detected, exiting/) }
+  end
 end
