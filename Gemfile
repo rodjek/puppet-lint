@@ -7,6 +7,7 @@ group :test do
   gem 'rspec', '~> 3.0'
   gem 'rspec-its', '~> 1.0'
   gem 'rspec-collection_matchers', '~> 1.0'
+  gem 'rspec-json_expectations', '~> 1.3'
   gem 'rack', '~> 1.0'
 
   if RUBY_VERSION < '2.0'

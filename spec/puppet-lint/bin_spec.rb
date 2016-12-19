@@ -264,6 +264,21 @@ describe PuppetLint::Bin do
     end
   end
 
+  context 'when displaying results as json' do
+    let(:args) { [
+      '--json',
+      'spec/fixtures/test/manifests/warning.pp',
+    ] }
+    its(:exitstatus) { is_expected.to eq(0) }
+    its(:stdout) do
+      if respond_to?(:include_json)
+        is_expected.to include_json([{'KIND' => 'WARNING'}])
+      else
+        is_expected.to match(/\[\n  \{/)
+      end
+    end
+  end
+
   context 'when hiding ignored problems' do
     let(:args) { [
       'spec/fixtures/test/manifests/ignore.pp'

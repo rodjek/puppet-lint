@@ -15,6 +15,11 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   s.add_development_dependency 'github_changelog_generator'
+  s.add_development_dependency 'rake', '~> 10.0'
+  s.add_development_dependency 'rspec', '~> 3.0'
+  s.add_development_dependency 'rspec-its', '~> 1.0'
+  s.add_development_dependency 'rspec-collection_matchers', '~> 1.0'
+  s.add_development_dependency 'rspec-json_expectations', '~> 1.3'
 
   s.authors = ['Tim Sharpe']
   s.email = 'tim@sharpe.id.au'

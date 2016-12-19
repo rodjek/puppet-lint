@@ -147,6 +147,7 @@ class PuppetLint
       self.log_format = ''
       self.with_context = false
       self.fix = false
+      self.json = false
       self.show_ignored = false
     end
   end
