@@ -277,6 +277,7 @@ PuppetLint.new_check(:variable_scope) do
 
   def check
     variables_in_scope = DEFAULT_SCOPE_VARS.clone
+    variables_in_scope.merge(PuppetLint.configuration.scope_variables)
 
     (class_indexes + defined_type_indexes).each do |idx|
       referenced_variables = Set[]

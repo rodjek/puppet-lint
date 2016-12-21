@@ -99,6 +99,9 @@ the PuppetLint configuration by defining the task yourself.
 
       # Compare module layout relative to the module root
       config.relative = true
+
+      # Add in extra variables you've added that are in the default scope
+      config.scope_variables = ['serverenv','serverrole','servertype']
     end
 
 ### Settings

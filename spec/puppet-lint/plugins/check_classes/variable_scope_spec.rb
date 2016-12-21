@@ -103,6 +103,26 @@ describe 'variable_scope' do
     end
   end
 
+  context 'defined type with no variables declared accessing top scope' do
+    before(:all) do
+      PuppetLint.configuration.scope_variables = ['fqdn']
+    end
+
+    after(:all) do
+      PuppetLint.configuration.scope_variables = []
+    end
+
+    let(:code) { "
+      define foo() {
+        $bar = $fqdn
+      }"
+    }
+
+    it 'should not detect any problems' do
+      expect(problems).to have(0).problems
+    end
+  end
+
   context 'defined type with no variables declared accessing top scope explicitly' do
     let(:code) { "
       define foo() {
