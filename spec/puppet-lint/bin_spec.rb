@@ -99,7 +99,7 @@ describe PuppetLint::Bin do
 
   context 'when specifying a specific check to run' do
     let(:args) { [
-      '--only-check', 'parameter_order',
+      '--only-checks', 'parameter_order',
       'spec/fixtures/test/manifests/warning.pp',
       'spec/fixtures/test/manifests/fail.pp',
     ] }
@@ -213,17 +213,6 @@ describe PuppetLint::Bin do
       }
     end
 
-    context 'to print %{linenumber}' do
-      let(:args) { [
-        '--log-format', '%{linenumber}',
-        'spec/fixtures/test/manifests/fail.pp'
-      ] }
-
-      its(:exitstatus) { is_expected.to eq(1) }
-      its(:stdout) { is_expected.to eq('2') }
-      its(:stderr) { is_expected.to eq('DEPRECATION: Please use %{line} instead of %{linenumber}') }
-    end
-
     context 'to print %{line}' do
       let(:args) { [
         '--log-format', '%{line}',
@@ -317,7 +306,7 @@ describe PuppetLint::Bin do
 
     its(:exitstatus) { is_expected.to eq(0) }
     its(:stdout) { is_expected.to eq([
-      "IGNORED: double quoted string containing no variables on line 1",
+      "IGNORED: double quoted string containing no variables on line 3",
       "  for a good reason",
     ].join("\n")) }
   end
@@ -337,5 +326,14 @@ describe PuppetLint::Bin do
 
     its(:exitstatus) { is_expected.to eq(0) }
     its(:stdout) { is_expected.to match(/^.*line 6$/) }
+  end
+
+  context 'when an lint:endignore control comment exists with no opening lint:ignore comment' do
+    let(:args) { [
+      'spec/fixtures/test/manifests/mismatched_control_comment.pp',
+    ] }
+
+    its(:exitstatus) { is_expected.to eq(0) }
+    its(:stdout) { is_expected.to match(/WARNING: lint:endignore comment with no opening lint:ignore:<check> comment found on line 1/) }
   end
 end

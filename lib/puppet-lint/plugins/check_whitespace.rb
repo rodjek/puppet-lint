@@ -1,5 +1,7 @@
 # Public: Check the raw manifest string for lines containing hard tab
 # characters and record an error for each instance found.
+#
+# https://docs.puppet.com/guides/style_guide.html#spacing-indentation-and-whitespace
 PuppetLint.new_check(:hard_tabs) do
   WHITESPACE_TYPES = Set[:INDENT, :WHITESPACE]
 
@@ -23,6 +25,8 @@ end
 
 # Public: Check the manifest tokens for lines ending with whitespace and record
 # an error for each instance found.
+#
+# https://docs.puppet.com/guides/style_guide.html#spacing-indentation-and-whitespace
 PuppetLint.new_check(:trailing_whitespace) do
   def check
     tokens.select { |token|
@@ -48,10 +52,33 @@ PuppetLint.new_check(:trailing_whitespace) do
   end
 end
 
-# Public: Test the raw manifest string for lines containing more than 80
+# Public: Test the raw manifest string for lines containing more than 140
 # characters and record a warning for each instance found.  The only exceptions
 # to this rule are lines containing URLs and template() calls which would hurt
 # readability if split.
+#
+# https://docs.puppet.com/guides/style_guide.html#spacing-indentation-and-whitespace
+PuppetLint.new_check(:'140chars') do
+  def check
+    manifest_lines.each_with_index do |line, idx|
+      unless line =~ /:\/\// || line =~ /template\(/
+        if line.scan(/./mu).size > 140
+          notify :warning, {
+            :message => 'line has more than 140 characters',
+            :line    => idx + 1,
+            :column  => 140,
+          }
+        end
+      end
+    end
+  end
+end
+
+# Public: Test the raw manifest string for lines containing more than 80
+# characters. This is DISABLED by default and behaves like the default
+# 140chars check by excepting URLs and template() calls.
+#
+# https://docs.puppet.com/guides/style_guide.html#spacing-indentation-and-whitespace (older version)
 PuppetLint.new_check(:'80chars') do
   def check
     manifest_lines.each_with_index do |line, idx|
@@ -67,9 +94,12 @@ PuppetLint.new_check(:'80chars') do
     end
   end
 end
+PuppetLint.configuration.send("disable_80chars")
 
 # Public: Check the manifest tokens for any indentation not using 2 space soft
 # tabs and record an error for each instance found.
+#
+# https://docs.puppet.com/guides/style_guide.html#spacing-indentation-and-whitespace
 PuppetLint.new_check(:'2sp_soft_tabs') do
   def check
     tokens.select { |r|
@@ -88,6 +118,8 @@ end
 
 # Public: Check the manifest tokens for any arrows (=>) in a grouping ({}) that
 # are not aligned with other arrows in that grouping.
+#
+# https://docs.puppet.com/guides/style_guide.html#spacing-indentation-and-whitespace
 PuppetLint.new_check(:arrow_alignment) do
   COMMENT_TYPES = Set[:COMMENT, :SLASH_COMMENT, :MLCOMMENT]
 
@@ -123,12 +155,12 @@ PuppetLint.new_check(:arrow_alignment) do
           indent_depth_idx += 1
           indent_depth << 0
           level_tokens[indent_depth_idx] ||= []
-        elsif token.type == :RBRACE
+        elsif token.type == :RBRACE || token.type == :SEMIC
           level_tokens[indent_depth_idx].each do |arrow_tok|
             unless arrow_tok.column == indent_depth[indent_depth_idx] || level_tokens[indent_depth_idx].size == 1
               arrows_on_line = level_tokens[indent_depth_idx].select { |t| t.line == arrow_tok.line }
               notify :warning, {
-                :message        => 'indentation of => is not properly aligned',
+                :message        => "indentation of => is not properly aligned (expected in column #{indent_depth[indent_depth_idx]}, but found it in column #{arrow_tok.column})",
                 :line           => arrow_tok.line,
                 :column         => arrow_tok.column,
                 :token          => arrow_tok,

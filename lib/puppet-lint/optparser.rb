@@ -83,9 +83,6 @@ class PuppetLint::OptParser
               '%{check}    - The name of the check.',
               '%{message}  - The message.'
       ) do |format|
-        if format.include?('%{linenumber}')
-          $stderr.puts "DEPRECATION: Please use %{line} instead of %{linenumber}"
-        end
         PuppetLint.configuration.log_format = format
       end
 
@@ -98,14 +95,23 @@ class PuppetLint::OptParser
 
       opts.on('--only-checks CHECKS', 'A comma separated list of checks that should be run') do |checks|
         enable_checks = checks.split(',').map(&:to_sym)
-        (PuppetLint.configuration.checks - enable_checks).each do |check|
-          PuppetLint.configuration.send("disable_#{check}")
+        (PuppetLint.configuration.checks).each do |check|
+          if enable_checks.include? check
+            PuppetLint.configuration.send("enable_#{check}")
+          else
+            PuppetLint.configuration.send("disable_#{check}")
+          end
         end
       end
 
       PuppetLint.configuration.checks.each do |check|
         opts.on("--no-#{check}-check", "Skip the #{check} check.") do
           PuppetLint.configuration.send("disable_#{check}")
+        end
+        unless PuppetLint.configuration.send("#{check}_enabled?")
+          opts.on("--#{check}-check", "Enable the #{check} check.") do
+            PuppetLint.configuration.send("enable_#{check}")
+          end
         end
       end
 

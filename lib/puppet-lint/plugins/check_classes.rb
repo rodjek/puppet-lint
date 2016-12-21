@@ -1,5 +1,7 @@
 # Public: Test the manifest tokens for any right-to-left (<-) chaining
 # operators and record a warning for each instance found.
+#
+# https://docs.puppet.com/guides/style_guide.html#chaining-arrow-syntax
 PuppetLint.new_check(:right_to_left_relationship) do
   def check
     tokens.select { |r| r.type == :OUT_EDGE }.each do |token|
@@ -15,6 +17,8 @@ end
 # Public: Test the manifest tokens for any classes or defined types that are
 # not in an appropriately named file for the autoloader to detect and record
 # an error of each instance found.
+#
+# https://docs.puppet.com/guides/style_guide.html#separate-files
 PuppetLint.new_check(:autoloader_layout) do
   def check
     unless fullpath.nil? || fullpath == ''
@@ -46,6 +50,8 @@ end
 
 # Public: Check the manifest tokens for any classes or defined types that
 # have a dash in their name and record an error for each instance found.
+#
+# No style guide reference
 PuppetLint.new_check(:names_containing_dash) do
   def check
     (class_indexes + defined_type_indexes).each do |class_idx|
@@ -68,6 +74,8 @@ end
 
 # Public: Check the manifest tokens for any classes that inherit a params
 # subclass and record a warning for each instance found.
+#
+# No style guide reference
 PuppetLint.new_check(:class_inherits_from_params_class) do
   def check
     class_indexes.each do |class_idx|
@@ -83,21 +91,30 @@ PuppetLint.new_check(:class_inherits_from_params_class) do
     end
   end
 end
+PuppetLint.configuration.send('disable_class_inherits_from_params_class')
 
 # Public: Test the manifest tokens for any parameterised classes or defined
 # types that take parameters and record a warning if there are any optional
 # parameters listed before required parameters.
+#
+# https://docs.puppet.com/guides/style_guide.html#display-order-of-parameters
 PuppetLint.new_check(:parameter_order) do
   def check
-    defined_type_indexes.each do |class_idx|
+    (class_indexes + defined_type_indexes).each do |class_idx|
       unless class_idx[:param_tokens].nil?
         paren_stack = []
+        hash_or_array_stack = []
         class_idx[:param_tokens].each_with_index do |token, i|
           if token.type == :LPAREN
             paren_stack.push(true)
           elsif token.type == :RPAREN
             paren_stack.pop
+          elsif token.type == :LBRACE || token.type == :LBRACK
+            hash_or_array_stack.push(true)
+          elsif token.type == :RBRACE || token.type == :RBRACK
+            hash_or_array_stack.pop
           end
+          next if (! hash_or_array_stack.empty?)
           next unless paren_stack.empty?
 
           if token.type == :VARIABLE
@@ -123,6 +140,8 @@ end
 
 # Public: Test the manifest tokens for any classes that inherit across
 # namespaces and record a warning for each instance found.
+#
+# https://docs.puppet.com/guides/style_guide.html#class-inheritance
 PuppetLint.new_check(:inherits_across_namespaces) do
   def check
     class_indexes.each do |class_idx|
@@ -144,6 +163,8 @@ end
 
 # Public: Test the manifest tokens for any classes or defined types that are
 # defined inside another class.
+#
+# https://docs.puppet.com/guides/style_guide.html#nested-classes-or-defined-types
 PuppetLint.new_check(:nested_classes_or_defines) do
   TOKENS = Set[:CLASS, :DEFINE]
 
@@ -169,11 +190,62 @@ PuppetLint.new_check(:nested_classes_or_defines) do
   end
 end
 
+# Public: Find and warn about module names with illegal uppercase characters.
+#
+# https://docs.puppet.com/puppet/latest/reference/modules_fundamentals.html#allowed-module-names
+# Provides a fix. [puppet-lint #554]
+PuppetLint.new_check(:names_containing_uppercase) do
+  def check
+    (class_indexes + defined_type_indexes).each do |class_idx|
+      if class_idx[:name_token].value =~ /[A-Z]/
+        if class_idx[:type] == :CLASS
+          obj_type = 'class'
+        else
+          obj_type = 'defined type'
+        end
+
+        notify :error, {
+          :message => "#{obj_type} '#{class_idx[:name_token].value}' contains illegal uppercase",
+          :line    => class_idx[:name_token].line,
+          :column  => class_idx[:name_token].column,
+          :token   => class_idx[:name_token],
+        }
+      end
+    end
+  end
+
+  def fix(problem)
+    problem[:token].value.downcase!
+  end
+end
+
+# Public: Test that no code is outside of a class or define scope.
+#
+# No style guide reference
+PuppetLint.new_check(:code_on_top_scope) do
+  def check
+    class_scope = (class_indexes + defined_type_indexes).map { |e| tokens[e[:start]..e[:end]] }.flatten
+    top_scope   = tokens - class_scope
+
+    top_scope.each do |token|
+      unless formatting_tokens.include? token.type
+        notify :warning, {
+          :message => "code outside of class or define block - #{token.value}",
+          :line    => token.line,
+          :column  => token.column
+        }
+      end
+    end
+  end
+end
+
 # Public: Test the manifest tokens for any variables that are referenced in
 # the manifest.  If the variables are not fully qualified or one of the
 # variables automatically created in the scope, check that they have been
 # defined in the local scope and record a warning for each variable that has
 # not.
+#
+# https://docs.puppet.com/guides/style_guide.html#namespacing-variables
 PuppetLint.new_check(:variable_scope) do
   DEFAULT_SCOPE_VARS = Set[
     'name',
@@ -197,6 +269,9 @@ PuppetLint.new_check(:variable_scope) do
     'stage',
     'subscribe',
     'tag',
+    'facts',
+    'trusted',
+    'server_facts',
   ]
   POST_VAR_TOKENS = Set[:COMMA, :EQUALS, :RPAREN]
 
@@ -263,7 +338,7 @@ PuppetLint.new_check(:variable_scope) do
       msg = "top-scope variable being used without an explicit namespace"
       referenced_variables.each do |token|
         unless future_parser_scopes[token.line].nil?
-          next if future_parser_scopes[token.line].include?(token.value)
+          next if future_parser_scopes[token.line].include?(token.value.gsub(/\[.+\]\Z/, ''))
         end
 
         unless token.value.include? '::'
@@ -283,3 +358,4 @@ PuppetLint.new_check(:variable_scope) do
     end
   end
 end
+

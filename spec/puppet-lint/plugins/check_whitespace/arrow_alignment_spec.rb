@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'arrow_alignment' do
-  let(:msg) { 'indentation of => is not properly aligned' }
+  let(:msg) { 'indentation of => is not properly aligned (expected in column %d, but found it in column %d)' }
 
   context 'with fix disabled' do
     context 'selectors inside a resource' do
@@ -119,13 +119,35 @@ describe 'arrow_alignment' do
       end
 
       it 'should create four warnings' do
-        expect(problems).to contain_warning(msg).on_line(3).in_column(15)
-        expect(problems).to contain_warning(msg).on_line(4).in_column(15)
-        expect(problems).to contain_warning(msg).on_line(6).in_column(16)
-        expect(problems).to contain_warning(msg).on_line(7).in_column(15)
+        expect(problems).to contain_warning(sprintf(msg,17,15)).on_line(3).in_column(15)
+        expect(problems).to contain_warning(sprintf(msg,17,15)).on_line(4).in_column(15)
+        expect(problems).to contain_warning(sprintf(msg,17,16)).on_line(6).in_column(16)
+        expect(problems).to contain_warning(sprintf(msg,17,15)).on_line(7).in_column(15)
       end
     end
 
+    context 'single resource with a misaligned => and semicolon at the end' do
+      let(:code) { "
+        file { '/tmp/bar':
+          foo => 1,
+          bar => 2,
+          gronk => 3,
+          baz  => 4,
+          meh => 5;
+        }"
+      }
+
+      it 'should detect four problems' do
+        expect(problems).to have(4).problems
+      end
+
+      it 'should create four warnings' do
+        expect(problems).to contain_warning(sprintf(msg,17,15)).on_line(3).in_column(15)
+        expect(problems).to contain_warning(sprintf(msg,17,15)).on_line(4).in_column(15)
+        expect(problems).to contain_warning(sprintf(msg,17,16)).on_line(6).in_column(16)
+        expect(problems).to contain_warning(sprintf(msg,17,15)).on_line(7).in_column(15)
+      end
+    end
     context 'complex resource with a misaligned =>' do
       let(:code) { "
         file { '/tmp/foo':
@@ -144,9 +166,9 @@ describe 'arrow_alignment' do
       end
 
       it 'should create three warnings' do
-        expect(problems).to contain_warning(msg).on_line(3).in_column(15)
-        expect(problems).to contain_warning(msg).on_line(6).in_column(17)
-        expect(problems).to contain_warning(msg).on_line(9).in_column(15)
+        expect(problems).to contain_warning(sprintf(msg,16,15)).on_line(3).in_column(15)
+        expect(problems).to contain_warning(sprintf(msg,19,17)).on_line(6).in_column(17)
+        expect(problems).to contain_warning(sprintf(msg,16,15)).on_line(9).in_column(15)
       end
     end
 
@@ -167,7 +189,35 @@ describe 'arrow_alignment' do
       end
 
       it 'should create a warning' do
-        expect(problems).to contain_warning(msg).on_line(8).in_column(17)
+        expect(problems).to contain_warning(sprintf(msg,19,17)).on_line(8).in_column(17)
+      end
+    end
+
+    context 'multi-resource with a misaligned => and semicolons' do
+      let(:code) { "
+        file {
+          '/tmp/foo':
+            ensure => 'directory',
+            owner => 'root',
+            mode => '0755';
+          '/tmp/bar':
+            ensure => 'directory';
+          '/tmp/baz':
+            ensure => 'directory',
+            owner => 'root',
+            mode => '0755';
+        }"
+      }
+
+      it 'should only detect a single problem' do
+        expect(problems).to have(4).problem
+      end
+
+      it 'should create a warning' do
+        expect(problems).to contain_warning(sprintf(msg,20,19)).on_line(5).in_column(19)
+        expect(problems).to contain_warning(sprintf(msg,20,18)).on_line(6).in_column(18)
+        expect(problems).to contain_warning(sprintf(msg,20,19)).on_line(11).in_column(19)
+        expect(problems).to contain_warning(sprintf(msg,20,18)).on_line(12).in_column(18)
       end
     end
 
@@ -232,8 +282,8 @@ describe 'arrow_alignment' do
       end
 
       it 'should create 2 warnings' do
-        expect(problems).to contain_warning(msg).on_line(3).in_column(19)
-        expect(problems).to contain_warning(msg).on_line(4).in_column(19)
+        expect(problems).to contain_warning(sprintf(msg,18,19)).on_line(3).in_column(19)
+        expect(problems).to contain_warning(sprintf(msg,18,19)).on_line(4).in_column(19)
       end
     end
 
@@ -264,8 +314,8 @@ describe 'arrow_alignment' do
       end
 
       it 'should create 2 warnings' do
-        expect(problems).to contain_warning(msg).on_line(3).in_column(13)
-        expect(problems).to contain_warning(msg).on_line(3).in_column(26)
+        expect(problems).to contain_warning(sprintf(msg,15,13)).on_line(3).in_column(13)
+        expect(problems).to contain_warning(sprintf(msg,15,26)).on_line(3).in_column(26)
       end
     end
 
@@ -318,10 +368,10 @@ describe 'arrow_alignment' do
       end
 
       it 'should fix the manifest' do
-        expect(problems).to contain_fixed(msg).on_line(3).in_column(15)
-        expect(problems).to contain_fixed(msg).on_line(4).in_column(15)
-        expect(problems).to contain_fixed(msg).on_line(6).in_column(16)
-        expect(problems).to contain_fixed(msg).on_line(7).in_column(15)
+        expect(problems).to contain_fixed(sprintf(msg,17,15)).on_line(3).in_column(15)
+        expect(problems).to contain_fixed(sprintf(msg,17,15)).on_line(4).in_column(15)
+        expect(problems).to contain_fixed(sprintf(msg,17,16)).on_line(6).in_column(16)
+        expect(problems).to contain_fixed(sprintf(msg,17,15)).on_line(7).in_column(15)
       end
 
       it 'should align the arrows' do
@@ -358,9 +408,9 @@ describe 'arrow_alignment' do
       end
 
       it 'should fix the manifest' do
-        expect(problems).to contain_fixed(msg).on_line(3).in_column(15)
-        expect(problems).to contain_fixed(msg).on_line(6).in_column(17)
-        expect(problems).to contain_fixed(msg).on_line(9).in_column(15)
+        expect(problems).to contain_fixed(sprintf(msg,16,15)).on_line(3).in_column(15)
+        expect(problems).to contain_fixed(sprintf(msg,19,17)).on_line(6).in_column(17)
+        expect(problems).to contain_fixed(sprintf(msg,16,15)).on_line(9).in_column(15)
       end
 
       it 'should align the arrows' do
@@ -395,7 +445,7 @@ describe 'arrow_alignment' do
       end
 
       it 'should fix the manifest' do
-        expect(problems).to contain_fixed(msg).on_line(8).in_column(17)
+        expect(problems).to contain_fixed(sprintf(msg,19,17)).on_line(8).in_column(17)
       end
 
       it 'should align the arrows' do
@@ -423,8 +473,8 @@ describe 'arrow_alignment' do
       end
 
       it 'should create 2 warnings' do
-        expect(problems).to contain_fixed(msg).on_line(3).in_column(19)
-        expect(problems).to contain_fixed(msg).on_line(4).in_column(19)
+        expect(problems).to contain_fixed(sprintf(msg,18,19)).on_line(3).in_column(19)
+        expect(problems).to contain_fixed(sprintf(msg,18,19)).on_line(4).in_column(19)
       end
 
       it 'should realign the arrows with the minimum whitespace' do
@@ -452,7 +502,7 @@ describe 'arrow_alignment' do
       end
 
       it 'should fix the problem' do
-        expect(problems).to contain_fixed(msg).on_line(4).in_column(17)
+        expect(problems).to contain_fixed(sprintf(msg,18,17)).on_line(4).in_column(17)
       end
 
       it 'should add whitespace between the param and the arrow' do
@@ -481,8 +531,8 @@ describe 'arrow_alignment' do
       end
 
       it 'should fix 2 problems' do
-        expect(problems).to contain_fixed(msg).on_line(3).in_column(13)
-        expect(problems).to contain_fixed(msg).on_line(3).in_column(26)
+        expect(problems).to contain_fixed(sprintf(msg,15,13)).on_line(3).in_column(13)
+        expect(problems).to contain_fixed(sprintf(msg,15,26)).on_line(3).in_column(26)
       end
 
       it 'should move the extra param onto its own line and realign' do
@@ -511,9 +561,9 @@ describe 'arrow_alignment' do
       end
 
       it 'should fix 2 problems' do
-        expect(problems).to contain_fixed(msg).on_line(3).in_column(13)
-        expect(problems).to contain_fixed(msg).on_line(3).in_column(29)
-        expect(problems).to contain_fixed(msg).on_line(4).in_column(15)
+        expect(problems).to contain_fixed(sprintf(msg,17,13)).on_line(3).in_column(13)
+        expect(problems).to contain_fixed(sprintf(msg,17,29)).on_line(3).in_column(29)
+        expect(problems).to contain_fixed(sprintf(msg,17,15)).on_line(4).in_column(15)
       end
 
       it 'should move the extra param onto its own line and realign' do

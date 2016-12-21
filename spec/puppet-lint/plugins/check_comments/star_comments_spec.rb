@@ -29,6 +29,28 @@ describe 'star_comments' do
       PuppetLint.configuration.fix = false
     end
 
+    context 'multiline comment w/ no indents' do
+      let(:code) { "/* foo *
+ *     *
+ * bar */"}
+
+      let(:fixed) { "# foo *
+# *
+# bar"}
+
+      it 'should only detect a single problem' do
+        expect(problems).to have(1).problem
+      end
+
+      it 'should create a warning' do
+        expect(problems).to contain_fixed(msg).on_line(1).in_column(1)
+      end
+
+      it 'should convert the multiline comment' do
+        expect(manifest).to eq(fixed)
+      end
+    end
+ 
     context 'multiline comment w/ one line of content' do
       let(:code) { "
         /* foo

@@ -33,24 +33,42 @@ class PuppetLint
 
     # Internal: A Hash whose keys are Strings representing reserved keywords in
     # the Puppet DSL.
+    # From https://github.com/puppetlabs/puppet/blob/master/lib/puppet/pops/parser/lexer2.rb#L116-L137
+    # or thereabouts
     KEYWORDS = {
-      'class'    => true,
       'case'     => true,
+      'class'    => true,
       'default'  => true,
       'define'   => true,
       'import'   => true,
       'if'       => true,
-      'else'     => true,
       'elsif'    => true,
+      'else'     => true,
       'inherits' => true,
       'node'     => true,
       'and'      => true,
       'or'       => true,
       'undef'    => true,
-      'true'     => true,
       'false'    => true,
+      'true'     => true,
       'in'       => true,
       'unless'   => true,
+      'function' => true,
+      'type'     => true,
+      'attr'     => true,
+      'private'  => true,
+    }
+    
+    # Internal: A Hash whose keys are Strings representing reserved keywords in
+    # the Puppet DSL when Application Management is enabled
+    # From https://github.com/puppetlabs/puppet/blob/master/lib/puppet/pops/parser/lexer2.rb#L142-L159
+    # or therabouts
+    # Currently unused
+    APP_MANAGEMENT_TOKENS = {
+      'application' => true,
+      'consumes'    => true,
+      'produces'    => true,
+      'site'        => true,
     }
 
     # Internal: A Hash whose keys are Symbols representing token types which
@@ -62,6 +80,7 @@ class PuppetLint
       :MATCH   => true,
       :NOMATCH => true,
       :COMMA   => true,
+      :LBRACK  => true,
     }
 
     # Internal: An Array of Arrays containing tokens that can be described by
@@ -69,9 +88,10 @@ class PuppetLint
     # name of the token as a Symbol and a regular expression describing the
     # value of the token.
     KNOWN_TOKENS = [
+      [:TYPE, /\A(Integer|Float|Boolean|Regexp|String|Array|Hash|Resource|Class|Collection|Scalar|Numeric|CatalogEntry|Data|Tuple|Struct|Optional|NotUndef|Variant|Enum|Pattern|Any|Callable|Type|Runtime|Undef|Default)\b/],
       [:CLASSREF, /\A(((::){0,1}[A-Z][-\w]*)+)/],
       [:NUMBER, /\A\b((?:0[xX][0-9A-Fa-f]+|0?\d+(?:\.\d+)?(?:[eE]-?\d+)?))\b/],
-      [:NAME, /\A(((::)?[a-z0-9][-\w]*)(::[a-z0-9][-\w]*)*)/],
+      [:NAME, /\A(((::)?[_a-z0-9][-\w]*)(::[a-z0-9][-\w]*)*)/],
       [:LBRACK, /\A(\[)/],
       [:RBRACK, /\A(\])/],
       [:LBRACE, /\A(\{)/],
@@ -168,7 +188,7 @@ class PuppetLint
         end
 
         unless found
-          if var_name = chunk[/\A\$((::)?([\w-]+::)*[\w-]+(\[.+?\])*)/, 1]
+          if var_name = chunk[/\A\$((::)?(\w+(-\w+)*::)*\w+(-\w+)*(\[.+?\])*)/, 1]
             length = var_name.size + 1
             tokens << new_token(:VARIABLE, var_name, length)
 
@@ -291,6 +311,11 @@ class PuppetLint
         @line_no += 1
         @column = 1
       end
+      if [:MLCOMMENT, :SSTRING, :STRING].include? type and /(?:\r\n|\r|\n)/.match(value)
+        lines = value.split(/(?:\r\n|\r|\n)/, -1)
+        @line_no += lines.length-1
+        @column = lines.last.length
+      end
 
       token
     end
@@ -344,7 +369,7 @@ class PuppetLint
             tokens << new_token(:DQMID, value, value.size, :line => line, :column => token_column)
           end
           if ss.scan(/\{/).nil?
-            var_name = ss.scan(/(::)?([\w-]+::)*[\w-]+/)
+            var_name = ss.scan(/(::)?(\w+(-\w+)*::)*\w+(-\w+)*/)
             if var_name.nil?
               token_column = column + ss.pos - 1
               tokens << new_token(:DQMID, "$", 1, :line => line, :column => token_column)

@@ -69,5 +69,22 @@ describe 'variables_not_enclosed' do
         expect(manifest).to eq(("'groovy'\n" * 20) + '" ${gronk}"')
       end
     end
+
+    context 'variables not enclosed in {}, delimited by -' do
+      let(:code) { '"$foo-$bar"' }
+
+      it 'should only detect two problems' do
+        expect(problems).to have(2).problems
+      end
+
+      it 'should fix the manifest' do
+        expect(problems).to contain_fixed(msg).on_line(1).in_column(2)
+        expect(problems).to contain_fixed(msg).on_line(1).in_column(7)
+      end
+
+      it 'should enclose both variables in braces' do
+        expect(manifest).to eq('"${foo}-${bar}"')
+      end
+    end
   end
 end
