@@ -1,4 +1,5 @@
 require 'set'
+require 'json'
 require 'puppet-lint/version'
 require 'puppet-lint/lexer'
 require 'puppet-lint/configuration'
@@ -105,6 +106,16 @@ class PuppetLint
     end
   end
 
+  # Internal: Get the line of the manifest on which the problem was found
+  #
+  # message - A Hash containing all the information about a problem.
+  #
+  # Returns the problematic line as a string.
+  def get_context(message)
+    line = PuppetLint::Data.manifest_lines[message[:line] - 1]
+    return line.strip
+  end
+
   # Internal: Print out the line of the manifest on which the problem was found
   # as well as a marker pointing to the location on the line.
   #
@@ -114,7 +125,7 @@ class PuppetLint
   def print_context(message)
     return if message[:check] == 'documentation'
     return if message[:kind] == :fixed
-    line = PuppetLint::Data.manifest_lines[message[:line] - 1]
+    line = get_context(message)
     offset = line.index(/\S/) || 1
     puts "\n  #{line.strip}"
     printf "%#{message[:column] + 2 - offset}s\n\n", '^'
@@ -127,16 +138,23 @@ class PuppetLint
   #
   # Returns nothing.
   def report(problems)
+    json = []
     problems.each do |message|
       next if message[:kind] == :ignored && !PuppetLint.configuration.show_ignored
 
       message[:KIND] = message[:kind].to_s.upcase
 
       if message[:kind] == :fixed || [message[:kind], :all].include?(configuration.error_level)
-        format_message message
-        print_context(message) if configuration.with_context
+        if configuration.json
+          message['context'] = get_context(message) if configuration.with_context
+          json << message
+        else
+          format_message message
+          print_context(message) if configuration.with_context
+        end
       end
     end
+    puts JSON.pretty_generate(json) if configuration.json
   end
 
   # Public: Determine if PuppetLint found any errors in the manifest.

@@ -1,6 +1,11 @@
 require 'puppet-lint'
 require 'rspec/its'
 require 'rspec/collection_matchers'
+begin
+  require 'rspec/json_expectations'
+rescue SyntaxError
+  puts 'rspec/json_expectations is not available'
+end
 
 module RSpec
   module LintExampleGroup
