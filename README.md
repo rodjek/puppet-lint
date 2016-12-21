@@ -39,6 +39,22 @@ Note that this can be combined with the `--only-checks` option to help avoid eno
     puppet-lint --only-checks trailing_whitespace --fix modules/
 ```
 
+You can also use [control comments](http://puppet-lint.com/controlcomments/) to disable checks
+within puppet code on a per line or per block basis using `#lint:ignore:<check_name>`:
+```
+    class foo {
+      $bar = 'bar'
+      # This ignores the double_quoted_strings check over multiple lines
+      # lint:ignore:double_quoted_strings
+      $baz = "baz"
+      $gronk = "gronk"
+      # lint:endignore
+
+      # This ignores the 140chars check on a single line
+      $this_line_has_a_really_long_name_and_value_that_is_much_longer_than_the_style_guide_recommends = "I mean, a really, really long line like you can't believe" # lint:ignore:140chars
+    }
+```
+
 See puppet-lint --help for a full list of options.
 
 ### Rake
