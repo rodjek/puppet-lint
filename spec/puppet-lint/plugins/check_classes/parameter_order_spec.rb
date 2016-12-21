@@ -73,5 +73,54 @@ describe 'parameter_order' do
         expect(problems).to have(0).problems
       end
     end
+
+    context "#{type} parameter w/a hash containing a variable and no optional parameters" do
+      let(:code) { "
+        $var1 = 'test'
+        
+        #{type} test (
+          $entries = {
+            '200 xxx' => {
+              param1 => $var1,
+              param2 => 'value2',
+              param3 => 'value3',
+            }
+          },
+          $mandatory => undef,
+        ) { }
+      "}
+
+      it { expect(problems).to have(0).problem }
+    end
+
+    context "#{type} parameter w/a hash containing a variable followed by an optional parameter" do
+      let(:code) { "
+        $var1 = 'test'
+        
+        #{type} test (
+          $entries = {
+            '200 xxx' => {
+              param1 => $var1,
+              param2 => 'value2',
+              param3 => 'value3',
+            }
+          },
+          $optional,
+          $mandatory => undef,
+        ) { }
+      "}
+
+      it { expect(problems).to contain_warning(msg).on_line(12).in_column(11) }
+    end
+
+    context "#{type} parameter w/array containing a variable" do
+      let(:code) {"
+        #{type} test (
+          $var1 = [$::hostname, 'host'],
+        ) { }
+      "}
+
+      it { expect(problems).to have(0).problem }
+    end
   end
 end
