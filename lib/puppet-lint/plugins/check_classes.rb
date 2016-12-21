@@ -238,6 +238,7 @@ PuppetLint.new_check(:code_on_top_scope) do
     end
   end
 end
+PuppetLint.configuration.send("disable_code_on_top_scope")
 
 # Public: Test the manifest tokens for any variables that are referenced in
 # the manifest.  If the variables are not fully qualified or one of the
