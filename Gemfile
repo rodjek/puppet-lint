@@ -12,8 +12,8 @@ group :test do
   if RUBY_VERSION < '2.0'
     # json 2.x requires ruby 2.0. Lock to 1.8
     gem 'json', '= 1.8'
-    # json_pure 2.0.2 requires ruby 2.0, and 2.0.1 requires ruby 1.9.
-    gem 'json_pure', '<= 2.0.1'
+    # json_pure 2.0.2 requires ruby 2.0, and 2.0.1 requires ruby 1.9. Lock to 1.8.3.
+    gem 'json_pure', '= 1.8.3'
     # addressable 2.4.0 requires ruby 1.9.0. Lock to 2.3.8.
     gem 'addressable', '= 2.3.8'
   else
