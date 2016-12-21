@@ -7,7 +7,6 @@ group :test do
   gem 'rspec', '~> 3.0'
   gem 'rspec-its', '~> 1.0'
   gem 'rspec-collection_matchers', '~> 1.0'
-  gem 'rack', '~> 1.0'
 
   if RUBY_VERSION < '2.0'
     # json 2.x requires ruby 2.0. Lock to 1.8
@@ -24,4 +23,11 @@ group :test do
     # requires ruby 1.9+, on 1.8 we'll fall back to the old regex parsing
     gem 'rspec-json_expectations', '~> 1.4'
   end
+end
+
+group :development do
+  # For Changelog generation
+  gem 'github_changelog_generator',                                 :require => false if RUBY_VERSION >= '2.2.2'
+  gem 'github_changelog_generator', '~> 1.13.0',                    :require => false if RUBY_VERSION < '2.2.2'
+  gem 'rack', '~> 1.0',                                             :require => false if RUBY_VERSION < '2.2.2'
 end
