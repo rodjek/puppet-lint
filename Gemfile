@@ -18,6 +18,9 @@ group :test do
     gem 'addressable', '= 2.3.8'
   else
     gem 'json'
+  end
+  
+  if RUBY_VERSION > '1.8'
     # requires ruby 1.9+, on 1.8 we'll fall back to the old regex parsing
     gem 'rspec-json_expectations', '~> 1.4'
   end
