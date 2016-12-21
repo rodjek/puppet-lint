@@ -132,7 +132,7 @@ layout: default
 > Ensures class parameter names are unique.
 
 | **URL**     | <https://github.com/deanwilson/puppet-lint_duplicate_class_parameters-check> |
-| **Install** | `gem install puppet-lint_duplicate_class_parameters-check`                   |
+| **Install** | `gem install puppet-lint-duplicate_class_parameters-check`                   |
 {: .table .table-condensed }
 
 ---
