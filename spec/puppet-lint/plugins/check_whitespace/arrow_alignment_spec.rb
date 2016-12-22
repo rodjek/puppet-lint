@@ -332,6 +332,20 @@ describe 'arrow_alignment' do
       end
     end
 
+    context 'multiline hash with opening brace on same line as first pair' do
+      let(:code) { "
+        foo { 'foo':
+          bar => [
+            { aa => bb,
+              c  => d},
+          ],
+        }
+      " }
+
+      it 'should not detect any problems' do
+        expect(problems).to have(0).problems
+      end
+    end
   end
 
   context 'with fix enabled' do
