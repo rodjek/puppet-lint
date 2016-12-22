@@ -81,6 +81,8 @@ class PuppetLint
       :NOMATCH => true,
       :COMMA   => true,
       :LBRACK  => true,
+      :IF      => true,
+      :ELSIF   => true,
     }
 
     # Internal: An Array of Arrays containing tokens that can be described by
