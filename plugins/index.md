@@ -92,6 +92,7 @@ layout: default
 
 | **URL**     | <https://github.com/voxpupuli/puppet-lint-resource_reference_syntax> |
 | **Install** | `gem install puppet-lint-resource_reference_syntax`                  |
+{: .table .table-condensed }
 
 ---
 
