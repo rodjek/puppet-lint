@@ -112,6 +112,10 @@ wanted to always skip the hard tab character check, you could create
 --no-hard_tabs-check
 ```
 
+## Compatibility Warning
+
+Release 2.1.0 of puppet-lint is the last planned version with support for Puppet 3 and Ruby 1.8.7. Future versions will drop support for these versions.
+
 ## Implemented Tests
 
 At the moment, the following tests have been implemented:

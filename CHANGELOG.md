@@ -1,5 +1,59 @@
 # Change Log
 
+## [2.1.0](https://github.com/rodjek/puppet-lint/tree/2.1.0) (2016-12-30)
+[Full Changelog](https://github.com/rodjek/puppet-lint/compare/2.0.2...2.1.0)
+
+**Closed issues:**
+
+- No documentation on how to use plugins [\#602](https://github.com/rodjek/puppet-lint/issues/602)
+- Excessive number of warnings from code\_on\_top\_scope [\#579](https://github.com/rodjek/puppet-lint/issues/579)
+- Syntax error for references starting with Regexp [\#566](https://github.com/rodjek/puppet-lint/issues/566)
+- --fix flag discoverability is low [\#556](https://github.com/rodjek/puppet-lint/issues/556)
+- Module names must only contain lowercase letters [\#554](https://github.com/rodjek/puppet-lint/issues/554)
+- incorrect error on inline template [\#545](https://github.com/rodjek/puppet-lint/issues/545)
+- parameter\_order check does not work default hash is added in parameter [\#544](https://github.com/rodjek/puppet-lint/issues/544)
+- Remove formatting with `linenumber` [\#539](https://github.com/rodjek/puppet-lint/issues/539)
+- Incorrect warning of required parameter when using array that includes variable. [\#537](https://github.com/rodjek/puppet-lint/issues/537)
+- names\_containing\_dash is broken and unignorable [\#534](https://github.com/rodjek/puppet-lint/issues/534)
+- Puppet-lint 2.0 fails on unquoted string starting with underscore. [\#531](https://github.com/rodjek/puppet-lint/issues/531)
+- syntax error on valid file when: if /regex/ in array [\#517](https://github.com/rodjek/puppet-lint/issues/517)
+- crashes if there is a \# line:endignore with no begining. [\#509](https://github.com/rodjek/puppet-lint/issues/509)
+- Wrong behaviour of variable\_contains\_dash [\#504](https://github.com/rodjek/puppet-lint/issues/504)
+- puppet-lint reports incorrect line numbers [\#403](https://github.com/rodjek/puppet-lint/issues/403)
+- lint ignore comments feature not documented [\#369](https://github.com/rodjek/puppet-lint/issues/369)
+
+**Merged pull requests:**
+
+- Documentation on plugin usage. [\#611](https://github.com/rodjek/puppet-lint/pull/611) ([rnelson0](https://github.com/rnelson0))
+- Puppet-lint version bump to 2.1.0.pre [\#608](https://github.com/rodjek/puppet-lint/pull/608) ([rnelson0](https://github.com/rnelson0))
+- \(\#369\) Document existence of control comments [\#600](https://github.com/rodjek/puppet-lint/pull/600) ([rnelson0](https://github.com/rnelson0))
+- Ignore \*.pp files at the top level [\#597](https://github.com/rodjek/puppet-lint/pull/597) ([rnelson0](https://github.com/rnelson0))
+- Show logs in rspec tests [\#596](https://github.com/rodjek/puppet-lint/pull/596) ([ghoneycutt](https://github.com/ghoneycutt))
+- \(\#517\) Update the allowed tokens prior to a regex [\#594](https://github.com/rodjek/puppet-lint/pull/594) ([rnelson0](https://github.com/rnelson0))
+- \(\#531\) Treat barewords beginning with an underscore as :NAME tokens [\#593](https://github.com/rodjek/puppet-lint/pull/593) ([rnelson0](https://github.com/rnelson0))
+- \(\#544, \#537\) Skip hash contents when checking optional parameters [\#592](https://github.com/rodjek/puppet-lint/pull/592) ([rnelson0](https://github.com/rnelson0))
+- \(\#545\) Exempt inline\_epp and inline\_template from single quoted strin… [\#591](https://github.com/rodjek/puppet-lint/pull/591) ([rnelson0](https://github.com/rnelson0))
+- Disable code\_on\_top\_scope by default until the noise can be reduced \(… [\#590](https://github.com/rodjek/puppet-lint/pull/590) ([rnelson0](https://github.com/rnelson0))
+- Changelog generator task [\#589](https://github.com/rodjek/puppet-lint/pull/589) ([rnelson0](https://github.com/rnelson0))
+- Count lines in comments and double quoted strings [\#577](https://github.com/rodjek/puppet-lint/pull/577) ([paran1](https://github.com/paran1))
+- Handle mismatched control comments gracefully [\#573](https://github.com/rodjek/puppet-lint/pull/573) ([rodjek](https://github.com/rodjek))
+- Reimplementation of --fix support for unenclosed variables delimited by dashes [\#572](https://github.com/rodjek/puppet-lint/pull/572) ([rodjek](https://github.com/rodjek))
+- Anchor the end of the :TYPE token regexp [\#571](https://github.com/rodjek/puppet-lint/pull/571) ([rodjek](https://github.com/rodjek))
+- Multi line strings [\#570](https://github.com/rodjek/puppet-lint/pull/570) ([jiuka](https://github.com/jiuka))
+- @node\_indexes should be reset too. [\#569](https://github.com/rodjek/puppet-lint/pull/569) ([jiuka](https://github.com/jiuka))
+- True up reserved keywords [\#564](https://github.com/rodjek/puppet-lint/pull/564) ([rnelson0](https://github.com/rnelson0))
+- \[561\] Provide style guide references for each check [\#562](https://github.com/rodjek/puppet-lint/pull/562) ([rnelson0](https://github.com/rnelson0))
+- Add names\_containing\_uppercase docs [\#559](https://github.com/rodjek/puppet-lint/pull/559) ([arrdem](https://github.com/arrdem))
+- Implement a linter for uppercase class names [\#558](https://github.com/rodjek/puppet-lint/pull/558) ([arrdem](https://github.com/arrdem))
+- Include --fix usage instructions [\#557](https://github.com/rodjek/puppet-lint/pull/557) ([QuinnyPig](https://github.com/QuinnyPig))
+- Add puppet-lint plugins from deanwilson to plugins page [\#553](https://github.com/rodjek/puppet-lint/pull/553) ([deanwilson](https://github.com/deanwilson))
+- Updates PR for \#223 [\#552](https://github.com/rodjek/puppet-lint/pull/552) ([binford2k](https://github.com/binford2k))
+- add legacy\_facts [\#543](https://github.com/rodjek/puppet-lint/pull/543) ([mmckinst](https://github.com/mmckinst))
+- Remove formatting with `linenumber` [\#540](https://github.com/rodjek/puppet-lint/pull/540) ([rski](https://github.com/rski))
+- Adding support for logging to STDOUT as JSON [\#487](https://github.com/rodjek/puppet-lint/pull/487) ([binford2k](https://github.com/binford2k))
+- Potential README changes [\#420](https://github.com/rodjek/puppet-lint/pull/420) ([rothsa](https://github.com/rothsa))
+- Add fix to "ensure found on line but it's not the first attribute" [\#375](https://github.com/rodjek/puppet-lint/pull/375) ([sathieu](https://github.com/sathieu))
+
 ## [2.0.2](https://github.com/rodjek/puppet-lint/tree/2.0.2) (2016-08-19)
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/2.0.1...2.0.2)
 
@@ -12,6 +66,7 @@
 
 **Merged pull requests:**
 
+- Release 2.0.2 [\#536](https://github.com/rodjek/puppet-lint/pull/536) ([rnelson0](https://github.com/rnelson0))
 - Revert "Bugfix: properly handling $gronk-$grouik with --fix \(fix \#442\)" [\#535](https://github.com/rodjek/puppet-lint/pull/535) ([rnelson0](https://github.com/rnelson0))
 
 ## [2.0.1](https://github.com/rodjek/puppet-lint/tree/2.0.1) (2016-08-18)
@@ -311,6 +366,7 @@ If the additional gems you use for checks are pinned to 1.x, you should pin pupp
 
 **Merged pull requests:**
 
+- Checks for code outside class/define block [\#223](https://github.com/rodjek/puppet-lint/pull/223) ([dLobatog](https://github.com/dLobatog))
 - explains in README that puppet-lint is not for checking syntax [\#186](https://github.com/rodjek/puppet-lint/pull/186) ([ghoneycutt](https://github.com/ghoneycutt))
 - Use the current workdir as reference to calculate the expanded\_path of a filename [\#175](https://github.com/rodjek/puppet-lint/pull/175) ([vStone](https://github.com/vStone))
 - Update code documentation [\#298](https://github.com/rodjek/puppet-lint/pull/298) ([rodjek](https://github.com/rodjek))
