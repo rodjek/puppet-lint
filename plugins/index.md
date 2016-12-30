@@ -3,6 +3,16 @@ layout: default
 ---
 # Community Plugins
 
+To use plugins, add them to your `Gemfile` or install them at the system level. You can then enable/disable checks using the `PuppetLint.configuration.send('<enable|disable>_<check_name>')` syntax in your `Rakefile`. Most checks are enabled by default.
+
+    # Gemfile
+    gem 'puppet-lint-roles_and_profiles-check'
+
+    # Rakefile
+    PuppetLint.configuration.send('disable_roles_resource_declaration')
+
+Check the plugin's URL for more information on use of its check(s).
+
 ---
 
 ### trailing_newlines
@@ -92,6 +102,7 @@ layout: default
 
 | **URL**     | <https://github.com/voxpupuli/puppet-lint-resource_reference_syntax> |
 | **Install** | `gem install puppet-lint-resource_reference_syntax`                  |
+{: .table .table-condensed }
 
 ---
 
