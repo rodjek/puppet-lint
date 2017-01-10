@@ -270,3 +270,26 @@ PuppetLint.new_check(:ensure_not_symlink_target) do
     end
   end
 end
+
+# Public: check each File resource to confirm ensure is set to
+# absent, file, directory or link
+PuppetLint.new_check(:file_valid_ensure_value) do
+  def check
+    resource_indexes.each do |resource|
+      if resource[:type].value == "file"
+        resource[:param_tokens].select { |param_token|
+          param_token.value == 'ensure'
+        }.each do |ensure_token|
+          value_token = ensure_token.next_code_token.next_code_token
+          if value_token.value != 'absent' && value_token.value != 'file' && value_token.value != 'directory' && value_token.value != 'link'
+            notify :warning, {
+              :message => 'ensure attr for file resource should be absent, file, directory or link',
+              :line    => value_token.line,
+              :column  => value_token.column,
+            }
+          end
+        end
+      end
+    end
+  end
+end
