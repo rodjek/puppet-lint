@@ -168,6 +168,7 @@ class PuppetLint
 
       while i < code.size
         chunk = code[i..-1]
+        chunk = chunk.force_encoding("ISO-8859-1").encode("utf-8", replace: nil)
 
         found = false
 
