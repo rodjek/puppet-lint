@@ -298,17 +298,27 @@ PuppetLint.new_check(:variable_scope) do
       temp_scope_vars = []
 
       object_tokens.each do |token|
-        if token.type == :VARIABLE
+        case token.type
+        when :EQUALS
+          if token.prev_code_token.type == :VARIABLE
+            variables_in_scope << token.prev_code_token.value
+          elsif token.prev_code_token.type == :RBRACK
+            temp_token = token.prev_code_token
+
+            until temp_token.type == :LBRACK do
+              if temp_token.type == :VARIABLE
+                variables_in_scope << temp_token.value
+              end
+              temp_token = temp_token.prev_code_token
+            end
+          end
+        when :VARIABLE
           if in_pipe
             temp_scope_vars << token.value
           else
-            if token.next_code_token.type == :EQUALS
-              variables_in_scope << token.value
-            else
-              referenced_variables << token
-            end
+            referenced_variables << token
           end
-        elsif token.type == :PIPE
+        when :PIPE
           in_pipe = !in_pipe
 
           if in_pipe
