@@ -196,4 +196,16 @@ describe 'variable_scope' do
       expect(problems).to have(0).problems
     end
   end
+
+  context 'multiple left hand variable assign' do
+    let(:code) { "
+      class test {
+        [$foo, $bar] = something()
+      }
+    " }
+
+    it 'should not detect any problems' do
+      expect(problems).to have(0).problems
+    end
+  end
 end
