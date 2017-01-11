@@ -346,6 +346,25 @@ describe 'arrow_alignment' do
         expect(problems).to have(0).problems
       end
     end
+
+    context 'unaligned multiline hash with opening brace on the same line as the first pair' do
+      let(:code) { "
+        foo { 'foo':
+          bar => [
+            { aa => bb,
+              c => d},
+          ],
+        }
+      " }
+
+      it 'should detect one problem' do
+        expect(problems).to have(1).problem
+      end
+
+      it 'should create one warning' do
+        expect(problems).to contain_warning(sprintf(msg,18,17)).on_line(5).in_column(17)
+      end
+    end
   end
 
   context 'with fix enabled' do
