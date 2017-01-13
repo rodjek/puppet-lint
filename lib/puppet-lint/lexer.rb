@@ -309,6 +309,16 @@ class PuppetLint
       end
 
       @column += length
+
+      # If creating a :VARIABLE token inside a double quoted string, add 3 to
+      # the column state in order to account for the ${} characters when
+      # rendering out to manifest.
+      if token.type == :VARIABLE
+        if !token.prev_code_token.nil? && [:DQPRE, :DQMID].include?(token.prev_code_token.type)
+          @column += 3
+        end
+      end
+
       if type == :NEWLINE
         @line_no += 1
         @column = 1
