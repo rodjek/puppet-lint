@@ -201,7 +201,19 @@ PuppetLint.new_check(:arrow_alignment) do
   end
 
   def fix(problem)
-    new_ws_len = (problem[:indent_depth] - (problem[:newline_indent] + problem[:token].prev_code_token.to_manifest.length + 1))
+    param_token = problem[:token].prev_code_token
+    if param_token.type == :DQPOST
+      param_length = 0
+      iter_token = param_token
+      while iter_token.type != :DQPRE do
+        param_length += iter_token.to_manifest.length
+        iter_token = iter_token.prev_token
+      end
+      param_length += iter_token.to_manifest.length
+    else
+      param_length = param_token.to_manifest.length
+    end
+    new_ws_len = (problem[:indent_depth] - (problem[:newline_indent] + param_length + 1))
     new_ws = ' ' * new_ws_len
     if problem[:newline]
       index = tokens.index(problem[:token].prev_code_token.prev_token)

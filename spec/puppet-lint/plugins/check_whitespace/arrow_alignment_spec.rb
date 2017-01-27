@@ -640,5 +640,40 @@ describe 'arrow_alignment' do
         expect(manifest).to eq(fixed)
       end
     end
+    
+    context 'hash with strings containing variables as keys incorrectly aligned' do
+      let(:code) { '
+        foo { foo:
+          param => {
+            a => 1
+            "${aoeu}" => 2,
+            b     => 3,
+          },
+        }
+      ' }
+      let(:fixed) { '
+        foo { foo:
+          param => {
+            a         => 1
+            "${aoeu}" => 2,
+            b         => 3,
+          },
+        }
+      ' }
+
+
+      it 'should detect 2 problems' do
+        expect(problems).to have(2).problems
+      end
+
+      it 'should fix 2 problems' do
+        expect(problems).to contain_fixed(sprintf(msg,23,15)).on_line(4).in_column(15)
+        expect(problems).to contain_fixed(sprintf(msg,23,19)).on_line(6).in_column(19)
+      end
+
+      it 'should align the hash rockets' do
+        expect(manifest).to eq(fixed)
+      end
+    end
   end
 end
