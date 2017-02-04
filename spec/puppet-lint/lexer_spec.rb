@@ -516,6 +516,12 @@ describe PuppetLint::Lexer do
       expect(tokens[2].line).to eq(1)
       expect(tokens[2].column).to eq(6)
     end
+
+    it 'should calculate the column number correctly after an enclosed variable' do
+      token = @lexer.tokenise('  "${foo}" =>').last
+      expect(token.type).to eq(:FARROW)
+      expect(token.column).to eq(12)
+    end
   end
 
   [

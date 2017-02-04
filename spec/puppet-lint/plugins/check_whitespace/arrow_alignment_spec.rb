@@ -365,6 +365,43 @@ describe 'arrow_alignment' do
         expect(problems).to contain_warning(sprintf(msg,18,17)).on_line(5).in_column(17)
       end
     end
+
+    context 'hash with strings containing variables as keys properly aligned' do
+      let(:code) { '
+        foo { foo:
+          param => {
+            a         => 1
+            "${aoeu}" => 2,
+            b         => 3,
+          },
+        }
+      ' }
+
+      it 'should not detect any problems' do
+        expect(problems).to have(0).problems
+      end
+    end
+
+    context 'hash with strings containing variables as keys incorrectly aligned' do
+      let(:code) { '
+        foo { foo:
+          param => {
+            a => 1
+            "${aoeu}" => 2,
+            b     => 3,
+          },
+        }
+      ' }
+
+      it 'should detect 2 problems' do
+        expect(problems).to have(2).problems
+      end
+
+      it 'should create 2 warnings' do
+        expect(problems).to contain_warning(sprintf(msg,23,15)).on_line(4).in_column(15)
+        expect(problems).to contain_warning(sprintf(msg,23,19)).on_line(6).in_column(19)
+      end
+    end
   end
 
   context 'with fix enabled' do
@@ -600,6 +637,41 @@ describe 'arrow_alignment' do
       end
 
       it 'should move the extra param onto its own line and realign' do
+        expect(manifest).to eq(fixed)
+      end
+    end
+    
+    context 'hash with strings containing variables as keys incorrectly aligned' do
+      let(:code) { '
+        foo { foo:
+          param => {
+            a => 1
+            "${aoeu}" => 2,
+            b     => 3,
+          },
+        }
+      ' }
+      let(:fixed) { '
+        foo { foo:
+          param => {
+            a         => 1
+            "${aoeu}" => 2,
+            b         => 3,
+          },
+        }
+      ' }
+
+
+      it 'should detect 2 problems' do
+        expect(problems).to have(2).problems
+      end
+
+      it 'should fix 2 problems' do
+        expect(problems).to contain_fixed(sprintf(msg,23,15)).on_line(4).in_column(15)
+        expect(problems).to contain_fixed(sprintf(msg,23,19)).on_line(6).in_column(19)
+      end
+
+      it 'should align the hash rockets' do
         expect(manifest).to eq(fixed)
       end
     end
