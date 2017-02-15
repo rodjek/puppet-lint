@@ -3,7 +3,7 @@ require 'rspec/its'
 require 'rspec/collection_matchers'
 begin
   require 'rspec/json_expectations'
-rescue SyntaxError
+rescue LoadError, SyntaxError
   puts 'rspec/json_expectations is not available'
 end
 
