@@ -240,6 +240,18 @@ describe 'variable_scope' do
     end
   end
 
+  context 'nested variable assignment' do
+    let(:code) { "
+      class test {
+        [$foo, [[$bar, $baz], $qux]] = something()
+      }
+    " }
+
+    it 'should not detect any problems' do
+      expect(problems).to have(0).problems
+    end
+  end
+
   context 'function calls inside string interpolation' do
     let(:code) { "
       class test {
