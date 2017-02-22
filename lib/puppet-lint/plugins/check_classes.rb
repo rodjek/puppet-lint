@@ -303,13 +303,23 @@ PuppetLint.new_check(:variable_scope) do
           if token.prev_code_token.type == :VARIABLE
             variables_in_scope << token.prev_code_token.value
           elsif token.prev_code_token.type == :RBRACK
-            temp_token = token.prev_code_token
+            temp_token = token
 
-            until temp_token.type == :LBRACK do
-              if temp_token.type == :VARIABLE
+            brack_depth = 0
+            while temp_token = temp_token.prev_code_token
+              case temp_token.type
+              when :VARIABLE
                 variables_in_scope << temp_token.value
+              when :RBRACK
+                brack_depth += 1
+              when :LBRACK
+                brack_depth -= 1
+                break if brack_depth == 0
+              when :COMMA
+                # ignore
+              else  # unexpected
+                break
               end
-              temp_token = temp_token.prev_code_token
             end
           end
         when :VARIABLE
