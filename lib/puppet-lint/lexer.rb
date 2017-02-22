@@ -391,7 +391,7 @@ class PuppetLint
             end
           else
             contents = ss.scan_until(/\}/)[0..-2]
-            if contents.match(/\A(::)?([\w-]+::)*[\w-]+(\[.+?\])*/)
+            if contents.match(/\A(::)?([\w-]+::)*[\w-]+(\[.+?\])*/) && !contents.match(/\A\w+\(/)
               contents = "$#{contents}"
             end
             lexer = PuppetLint::Lexer.new
