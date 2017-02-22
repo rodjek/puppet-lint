@@ -208,4 +208,34 @@ describe 'variable_scope' do
       expect(problems).to have(0).problems
     end
   end
+
+  context 'function calls inside string interpolation' do
+    let(:code) { "
+      class test {
+        \"${split('1,2,3', ',')}\"  # split is a function
+        \"${lookup('foo::bar')}\"  # lookup is a function
+      }
+    " }
+
+    it 'should not detect any problems' do
+      expect(problems).to have(0).problems
+    end
+  end
+
+  context 'variables in string interpolation' do
+    let(:code) { "
+      class test {
+        \"${foo.split(',')}\"  # foo is a top-scope variable
+        \"${::bar.split(',')}\"
+      }
+    " }
+
+    it 'should only detect one problem' do
+      expect(problems).to have(1).problems
+    end
+
+    it 'should create one warning' do
+      expect(problems).to contain_warning(msg).on_line(3).in_column(11)
+    end
+  end
 end
