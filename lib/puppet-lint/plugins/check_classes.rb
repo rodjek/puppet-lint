@@ -295,7 +295,7 @@ PuppetLint.new_check(:variable_scope) do
 
       future_parser_scopes = {}
       in_pipe = false
-      temp_scope_vars = []
+      block_params_stack = []
 
       object_tokens.each do |token|
         case token.type
@@ -314,7 +314,7 @@ PuppetLint.new_check(:variable_scope) do
           end
         when :VARIABLE
           if in_pipe
-            temp_scope_vars << token.value
+            block_params_stack[-1] << token.value
           else
             referenced_variables << token
           end
@@ -322,7 +322,7 @@ PuppetLint.new_check(:variable_scope) do
           in_pipe = !in_pipe
 
           if in_pipe
-            temp_scope_vars = []
+            block_params_stack << []
           else
             start_idx = tokens.find_index(token)
             end_token = nil
@@ -341,7 +341,11 @@ PuppetLint.new_check(:variable_scope) do
               end
             end
 
-            future_parser_scopes.merge!(Hash[(token.line..end_token.line).to_a.map { |i| [i, temp_scope_vars] }])
+            params = block_params_stack.pop
+            (token.line..end_token.line).each do |line|
+              future_parser_scopes[line] ||= []
+              future_parser_scopes[line].concat(params)
+            end
           end
         end
       end
