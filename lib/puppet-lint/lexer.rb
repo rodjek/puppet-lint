@@ -89,11 +89,13 @@ class PuppetLint
     # a single regular expression.  Each sub-Array contains 2 elements, the
     # name of the token as a Symbol and a regular expression describing the
     # value of the token.
+    NAME_RE = /\A(((::)?[_a-z0-9][-\w]*)(::[a-z0-9][-\w]*)*)/
     KNOWN_TOKENS = [
       [:TYPE, /\A(Integer|Float|Boolean|Regexp|String|Array|Hash|Resource|Class|Collection|Scalar|Numeric|CatalogEntry|Data|Tuple|Struct|Optional|NotUndef|Variant|Enum|Pattern|Any|Callable|Type|Runtime|Undef|Default)\b/],
       [:CLASSREF, /\A(((::){0,1}[A-Z][-\w]*)+)/],
       [:NUMBER, /\A\b((?:0[xX][0-9A-Fa-f]+|0?\d+(?:\.\d+)?(?:[eE]-?\d+)?))\b/],
-      [:NAME, /\A(((::)?[_a-z0-9][-\w]*)(::[a-z0-9][-\w]*)*)/],
+      [:FUNCTION_NAME, /#{NAME_RE}\(/],
+      [:NAME, NAME_RE],
       [:LBRACK, /\A(\[)/],
       [:RBRACK, /\A(\])/],
       [:LBRACE, /\A(\{)/],

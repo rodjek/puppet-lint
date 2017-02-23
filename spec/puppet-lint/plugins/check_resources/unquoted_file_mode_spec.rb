@@ -27,6 +27,14 @@ describe 'unquoted_file_mode' do
         expect(problems).to contain_warning(msg).on_line(1).in_column(25)
       end
     end
+
+    context 'file mode from a function rvalue' do
+      let(:code) { "file { 'foo': mode => lookup('bar'), }" }
+
+      it 'should not detect any problems' do
+        expect(problems).to have(0).problems
+      end
+    end
   end
 
   context 'with fix enabled' do
@@ -67,6 +75,18 @@ describe 'unquoted_file_mode' do
 
       it 'should single quote the file mode' do
         expect(manifest).to eq("concat { 'foo': mode => '0777' }")
+      end
+    end
+
+    context 'file mode from a function rvalue' do
+      let(:code) { "file { 'foo': mode => lookup('bar'), }" }
+
+      it 'should not detect any problems' do
+        expect(problems).to have(0).problems
+      end
+
+      it 'should not change the manifest' do
+        expect(manifest).to eq(code)
       end
     end
   end
