@@ -19,6 +19,7 @@ PuppetLint.new_check(:variable_contains_dash) do
     end
   end
 end
+PuppetLint.configuration.send('variable_contains_dash')
 
 # Public: Test the manifest tokens for variables that contain an uppercase
 # letter and record a warning for each instance found.
@@ -41,3 +42,4 @@ PuppetLint.new_check(:variable_is_lowercase) do
     end
   end
 end
+PuppetLint.configuration.send('variable_is_lowercase')
