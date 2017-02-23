@@ -694,6 +694,14 @@ describe PuppetLint::Lexer do
     end
   end
 
+  context ':FUNCTION_NAME' do
+    it 'should match when a :NAME is followed by a :LPAREN' do
+      token = @lexer.tokenise('my_function(').first
+      expect(token.type).to eq(:FUNCTION_NAME)
+      expect(token.value).to eq('my_function')
+    end
+  end
+
   context ':NUMBER' do
     it 'should match numeric terms' do
       token = @lexer.tokenise('1234567890').first
