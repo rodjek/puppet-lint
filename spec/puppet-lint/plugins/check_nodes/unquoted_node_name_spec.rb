@@ -79,6 +79,18 @@ describe 'unquoted_node_name' do
         expect(problems).to contain_warning(msg).on_line(1).in_column(19)
       end
     end
+
+    context 'incomplete node block' do
+      let(:code) { 'node foo' }
+
+      it 'should detect a problem' do
+        expect(problems).to have(1).problem
+      end
+
+      it 'should create 1 error' do
+        expect(problems).to contain_error('Syntax error (try running `puppet parser validate <file>`)').on_line(1).in_column(1)
+      end
+    end
   end
 
   context 'with fix enabled' do
