@@ -35,7 +35,7 @@ class PuppetLint::CheckPlugin
   #
   # Returns an Array of problem Hashes.
   def fix_problems
-    @problems.reject { |problem| problem[:kind] == :ignored }.each do |problem|
+    @problems.reject { |problem| problem[:kind] == :ignored || problem[:check] == :syntax }.each do |problem|
       if self.respond_to?(:fix)
         begin
           fix(problem)
