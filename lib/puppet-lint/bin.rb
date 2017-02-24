@@ -56,7 +56,13 @@ class PuppetLint::Bin
       path.each do |f|
         l = PuppetLint.new
         l.file = f
-        l.run
+        begin
+          l.run
+        rescue PuppetLint::InvalidCodeError
+          puts "#{f}: ERROR: cannot be validated by `puppet parser validate`."
+          return_val = 1
+          next
+        end
         l.print_problems
         if l.errors? or (l.warnings? and PuppetLint.configuration.fail_on_warnings)
           return_val = 1
@@ -75,10 +81,5 @@ class PuppetLint::Bin
       puts "puppet-lint: try 'puppet-lint --help' for more information"
       return 1
     end
-
-    rescue PuppetLint::InvalidCodeError
-      puts "puppet-lint: the manifest code cannot be validated by `puppet parser validate`"
-      puts "puppet-lint: try again once the code is valid"
-      return 1
   end
 end

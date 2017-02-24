@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'rspec/mocks'
 require 'optparse'
 
-invalid_code_error = "puppet-lint: the manifest code cannot be validated by `puppet parser validate`\npuppet-lint: try again once the code is valid"
+invalid_code_error = "cannot be validated by `puppet parser validate`."
 
 class CommandRun
   attr_accessor :stdout, :stderr, :exitstatus
@@ -73,8 +73,20 @@ describe PuppetLint::Bin do
     let(:args) { 'spec/fixtures/test/manifests/malformed.pp' }
 
     its(:exitstatus) { is_expected.to eq(1) }
-    its(:stdout) { is_expected.to eq(invalid_code_error) }
+    its(:stdout) { is_expected.to match(/#{invalid_code_error}/) }
+    its(:stdout) { is_expected.to match(/ERROR/) }
   end
+
+  context 'when passed a malformed and a valid file' do
+    let(:args) { [
+      'spec/fixtures/test/manifests/malformed.pp',
+      'spec/fixtures/test/manifests/warning.pp',
+    ] }
+
+    its(:exitstatus) { is_expected.to eq(1) }
+    its(:stdout) { is_expected.to match(/WARNING/) }
+    its(:stdout) { is_expected.to match(/ERROR/) }
+  end         
 
   context 'when limited to errors only' do
     let(:args) { [
