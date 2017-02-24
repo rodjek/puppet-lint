@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.description = 'Checks your Puppet manifests against the Puppetlabs
   style guide and alerts you to any discrepancies.'
 
-  s.files = `git ls-files`.split("\n")
+  s.files = `git ls-files`.split("\n").reject { |r| r.start_with?('docs/') }
   s.test_files = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
