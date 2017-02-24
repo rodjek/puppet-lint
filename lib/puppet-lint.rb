@@ -6,8 +6,10 @@ require 'puppet-lint/data'
 require 'puppet-lint/checks'
 require 'puppet-lint/bin'
 require 'puppet-lint/monkeypatches'
+require 'puppet'
 
 class PuppetLint::NoCodeError < StandardError; end
+class PuppetLint::InvalidCodeError < StandardError; end
 class PuppetLint::NoFix < StandardError; end
 
 # Public: The public interface to puppet-lint.
@@ -153,11 +155,33 @@ class PuppetLint
     @statistics[:warning] != 0
   end
 
+  # Public: Determine if the puppet code validates properly.
+  #
+  # Returns true if the code is valid, otherwise returns false.
+  def valid? (code)
+    minimum_puppet_version = '4.0.0'
+    if Gem::Version.new(Puppet::PUPPETVERSION) < Gem::Version.new(minimum_puppet_version)
+      return
+    end
+
+    begin
+      Puppet.settings[:app_management] = true if Gem::Version.new(Puppet.version) >= Gem::Version.new('4.3.2')
+      parser = Puppet::Pops::Parser::EvaluatingParser.singleton
+      result = parser.parser.parse_string(code, 'test.pp')
+      result = result.model
+      acceptor = parser.validate(result)
+
+      acceptor.error_count.zero?
+    rescue => detail
+    end
+  end
+
   # Public: Run the loaded manifest code through the lint checks and print the
   # results of the checks to stdout.
   #
   # Returns nothing.
   # Raises PuppetLint::NoCodeError if no manifest code has been loaded.
+  # Raises PuppetLint::InvalidCodeError if the manifest code cannot be validate by puppet
   def run
     if @code.nil?
       raise PuppetLint::NoCodeError
@@ -167,6 +191,10 @@ class PuppetLint
       @problems = []
       @manifest = ''
       return
+    end
+
+    unless valid?(@code)
+      raise PuppetLint::InvalidCodeError
     end
 
     linter = PuppetLint::Checks.new

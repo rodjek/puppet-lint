@@ -16,6 +16,8 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency 'github_changelog_generator'
 
+  s.add_dependency 'puppet'
+
   s.authors = ['Tim Sharpe']
   s.email = 'tim@sharpe.id.au'
 end
