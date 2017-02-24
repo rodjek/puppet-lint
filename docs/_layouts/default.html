@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>puppet-lint</title>
+
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/simple-sidebar.css">
+    <link rel="stylesheet" href="/css/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  </head>
+  <body>
+    <div id="wrapper">
+      <div id="sidebar-wrapper">
+        <ul class="sidebar-nav">
+          <li class="sidebar-brand">
+            <a href="/">puppet-lint</a>
+          </li>
+          <li>
+            <a href="/checks/">Checks</a>
+          </li>
+          <li>
+            <a href="/controlcomments/">Control Comments</a>
+          </li>
+          <li>
+            <a href="#">Developer</a>
+            <ul>
+              <li>
+                <a href="/developer/tutorial/">Tutorial</a>
+              </li>
+              <li>
+                <a href="/developer/api/">API Reference</a>
+              </li>
+              <li>
+                <a href="/developer/tokens/">Token Reference</a>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <a href="/plugins/">Community Plugins</a>
+          </li>
+          <li>
+            <a href="https://github.com/rodjek/puppet-lint/blob/master/CHANGELOG.md">Changelog</a>
+          </li>
+          <li>
+            <a href="https://github.com/rodjek/puppet-lint/issues">Issues</a>
+          </li>
+        </ul>
+      </div>
+
+      <div id="page-content-wrapper">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-lg-12">
+              {{ content }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="/js/jquery-1.11.0.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+  </body>
+</html>

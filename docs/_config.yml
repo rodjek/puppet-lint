@@ -1,0 +1,7 @@
+---
+highlighter: rouge
+exclude: ["vendor"]
+markdown: kramdown
+
+redcarpet:
+  extensions: ["table"]
