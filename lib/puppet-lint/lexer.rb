@@ -297,17 +297,7 @@ class PuppetLint
 
       token = Token.new(type, value, line_no, column)
       unless tokens.last.nil?
-        token.prev_token = tokens.last
-        tokens.last.next_token = token
-
-        unless FORMATTING_TOKENS.include?(token.type)
-          prev_nf_idx = tokens.rindex { |r| ! FORMATTING_TOKENS.include? r.type }
-          unless prev_nf_idx.nil?
-            prev_nf_token = tokens[prev_nf_idx]
-            prev_nf_token.next_code_token = token
-            token.prev_code_token = prev_nf_token
-          end
-        end
+        tokens.last.next_token = token # next_token= links back
       end
 
       @column += length
@@ -332,6 +322,31 @@ class PuppetLint
       end
 
       token
+    end
+
+    def insert_token(idx, token)
+      unless tokens[idx-1].nil?
+        tokens[idx-1].next_token = token
+      end
+      unless tokens[idx].nil?
+        tokens[idx].prev_token = token
+      end
+      tokens.insert(idx, token)
+    end
+
+    def delete_token(token)
+      idx = tokens.index(token)
+      prev_token = tokens[idx-1]
+      prev_token.next_token = tokens[idx+1]
+      tokens.delete_at(idx)
+    end
+
+    def enforce_array
+      tokens.each_with_index do |t, idx|
+        if idx > 1 then
+          tokens[idx-1].next_token = t
+        end
+      end
     end
 
     # Internal: Split a string on multiple terminators, excluding escaped

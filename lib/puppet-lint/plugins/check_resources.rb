@@ -73,7 +73,7 @@ PuppetLint.new_check(:ensure_first_param) do
           ensure_param_name_token = token
           ensure_param_name_idx = problem[:resource][:start] + token_idx
         end
-      elsif ensure_param_comma_token.nil?
+      elsif !ensure_param_name_token.nil? and ensure_param_comma_token.nil?
         if token.type == :COMMA or token.type == :SEMIC
           ensure_param_comma_token = token
           ensure_param_comma_idx = problem[:resource][:start] + token_idx
@@ -84,32 +84,22 @@ PuppetLint.new_check(:ensure_first_param) do
     if first_param_name_token.nil? or first_param_comma_token.nil? or ensure_param_name_token.nil? or ensure_param_comma_token.nil?
       raise PuppetLint::NoFix
     end
-    # Flip params
-    prev_token = first_param_name_token.prev_token
-    first_param_name_token.prev_token = ensure_param_name_token.prev_token
-    ensure_param_name_token.prev_token = prev_token
+    head = tokens[0..first_param_name_idx-1]
+    namec = tokens[first_param_name_idx..first_param_comma_idx]
+    middle = tokens[(first_param_comma_idx+1)..(ensure_param_name_idx-1)]
+    ensurec = tokens[ensure_param_name_idx..ensure_param_comma_idx]
+    tail = tokens[(ensure_param_comma_idx+1)..-1]
+    
+    ntokens = head + ensurec + middle + namec + tail
 
-    prev_code_token = first_param_name_token.prev_code_token
-    first_param_name_token.prev_code_token = ensure_param_name_token.prev_code_token
-    ensure_param_name_token.prev_code_token = prev_code_token
-
-    next_token = first_param_comma_token.next_token
-    first_param_comma_token = ensure_param_comma_token.next_token
-    ensure_param_comma_token.next_token = next_token
-
-    next_code_token = first_param_comma_token.next_code_token
-    first_param_comma_code_token = ensure_param_comma_token.next_code_token
-    ensure_param_comma_token.next_code_token = next_code_token
-
-    # Update index
-    ensure_tmp = tokens.slice!(ensure_param_name_idx..ensure_param_comma_idx-1)
-    first_tmp = tokens.slice!(first_param_name_idx..first_param_comma_idx-1)
-    ensure_tmp.reverse_each do |item|
-      tokens.insert(first_param_name_idx, item)
+    ntokens.each_with_index do |t, i|
+      tokens[i] = t
     end
-    first_tmp.reverse_each do |item|
-      tokens.insert(ensure_param_name_idx + ensure_tmp.length - first_tmp.length, item)
-    end
+    
+    head.last.next_token = ensurec.first
+    ensurec.last.next_token = namec.first
+    namec.last.next_token = middle.first
+    middle.last.next_token = tail.first
   end
 end
 
@@ -267,7 +257,7 @@ PuppetLint.new_check(:ensure_not_symlink_target) do
       PuppetLint::Lexer::Token.new(:FARROW, '=>', 0, 0),
       PuppetLint::Lexer::Token.new(:WHITESPACE, ' ', 0, 0),
     ].reverse.each do |new_token|
-      tokens.insert(index, new_token)
+      lexer.insert_token(index, new_token)
     end
   end
 end
