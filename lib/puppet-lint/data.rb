@@ -497,7 +497,6 @@ class PuppetLint::Data
 
           if command == 'ignore'
             check = split_control[2].to_sym
-
             if token.prev_token && !Set[:NEWLINE, :INDENT].include?(token.prev_token.type)
               # control comment at the end of the line, override applies to
               # a single line only
@@ -523,6 +522,10 @@ class PuppetLint::Data
           end
         end
         stack << stack_add unless stack_add.empty?
+      end
+
+      stack.each do |control|
+        puts "WARNING: lint:ignore:#{control[0][2]} comment on line #{control[0][0]} with no closing lint:endignore comment"
       end
     end
   end

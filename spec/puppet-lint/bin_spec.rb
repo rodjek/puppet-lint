@@ -336,4 +336,12 @@ describe PuppetLint::Bin do
     its(:exitstatus) { is_expected.to eq(0) }
     its(:stdout) { is_expected.to match(/WARNING: lint:endignore comment with no opening lint:ignore:<check> comment found on line 1/) }
   end
+
+  context 'when a lint:ignore control comment block is not terminated properly' do
+    let(:args) { [
+      'spec/fixtures/test/manifests/unterminated_control_comment.pp',
+    ] }
+
+    its(:stdout) { is_expected.to match(/WARNING: lint:ignore:140chars comment on line 2 with no closing lint:endignore comment/) }
+  end
 end
