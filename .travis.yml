@@ -13,9 +13,6 @@ rvm:
   - 2.1.9
   - 2.3.1
   - 2.4.0
-matrix:
-  allow_failures:
-  - rvm: 1.8.7
 notifications:
   email:
     - tim@bombasticmonkey.com
