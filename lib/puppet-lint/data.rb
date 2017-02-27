@@ -25,6 +25,7 @@ class PuppetLint::Data
       @resource_indexes = nil
       @class_indexes = nil
       @defined_type_indexes = nil
+      @node_indexes = nil
       @function_indexes = nil
       @array_indexes = nil
       @hash_indexes = nil
@@ -505,10 +506,17 @@ class PuppetLint::Data
               stack_add << [token.line, reason, check]
             end
           else
-            stack.pop.each do |start|
-              unless start.nil?
-                (start[0]..token.line).each do |i|
-                  (ignore_overrides[start[2]] ||= {})[i] = start[1]
+            top_override = stack.pop
+            if top_override.nil?
+              # TODO: refactor to provide a way to expose problems from
+              # PuppetLint::Data via the normal problem reporting mechanism.
+              puts "WARNING: lint:endignore comment with no opening lint:ignore:<check> comment found on line #{token.line}"
+            else
+              top_override.each do |start|
+                unless start.nil?
+                  (start[0]..token.line).each do |i|
+                    (ignore_overrides[start[2]] ||= {})[i] = start[1]
+                  end
                 end
               end
             end

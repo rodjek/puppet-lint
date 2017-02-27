@@ -1,3 +1,3 @@
 class PuppetLint
-  VERSION = '2.0.2'
+  VERSION = '2.1.2.pre'
 end

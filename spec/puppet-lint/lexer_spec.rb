@@ -17,8 +17,26 @@ describe PuppetLint::Lexer do
       expect(token.line).to eq(1)
     end
 
+    it 'should get correct line number after double quoted multi line string' do
+      token = @lexer.new_token(:STRING, "test\ntest", 9)
+      token = @lexer.new_token(:TEST, 'test', 4)
+      expect(token.line).to eq(2)
+    end
+
+    it 'should get correct line number after a multi line comment' do
+      token = @lexer.new_token(:MLCOMMENT, "test\ntest", 9)
+      token = @lexer.new_token(:TEST, 'test', 4)
+      expect(token.line).to eq(2)
+    end
+
     it 'should calculate the line number for a multi line string' do
-      @lexer.instance_variable_set('@line_no', 2)
+      token = @lexer.new_token(:SSTRING, "test\ntest", 9)
+      token = @lexer.new_token(:TEST, 'test', 4)
+      expect(token.line).to eq(2)
+    end
+
+    it 'should calculate line number for string that ends with newline' do
+      token = @lexer.new_token(:SSTRING, "test\n", 5)
       token = @lexer.new_token(:TEST, 'test', 4)
       expect(token.line).to eq(2)
     end
@@ -37,8 +55,9 @@ describe PuppetLint::Lexer do
     it 'should calculate the column number for a multi line string' do
       @lexer.instance_variable_set('@line_no', 4)
       @lexer.instance_variable_set('@column', "gronk".size)
+      token = @lexer.new_token(:SSTRING, "test\ntest", 9)
       token = @lexer.new_token(:TEST, 'test', 4)
-      expect(token.column).to eq(5)
+      expect(token.column).to eq(4)
     end
   end
 
@@ -497,6 +516,12 @@ describe PuppetLint::Lexer do
       expect(tokens[2].line).to eq(1)
       expect(tokens[2].column).to eq(6)
     end
+
+    it 'should calculate the column number correctly after an enclosed variable' do
+      token = @lexer.tokenise('  "${foo}" =>').last
+      expect(token.type).to eq(:FARROW)
+      expect(token.column).to eq(12)
+    end
   end
 
   [
@@ -629,6 +654,12 @@ describe PuppetLint::Lexer do
       expect(token.type).to eq(:CLASSREF)
       expect(token.value).to eq('::One')
     end
+
+    it 'should match terms that start with Types' do
+      token = @lexer.tokenise('Regexp_foo').first
+      expect(token.type).to eq(:CLASSREF)
+      expect(token.value).to eq('Regexp_foo')
+    end
   end
 
   context ':NAME' do
@@ -654,6 +685,20 @@ describe PuppetLint::Lexer do
       token = @lexer.tokenise('::1one::2two::3three').first
       expect(token.type).to eq(:NAME)
       expect(token.value).to eq('::1one::2two::3three')
+    end
+
+    it 'should match barewords beginning with an underscore' do
+      token = @lexer.tokenise('_bareword').first
+      expect(token.type).to eq(:NAME)
+      expect(token.value).to eq('_bareword')
+    end
+  end
+
+  context ':FUNCTION_NAME' do
+    it 'should match when a :NAME is followed by a :LPAREN' do
+      token = @lexer.tokenise('my_function(').first
+      expect(token.type).to eq(:FUNCTION_NAME)
+      expect(token.value).to eq('my_function')
     end
   end
 
@@ -773,6 +818,12 @@ describe PuppetLint::Lexer do
       expect(token.type).to eq(:SSTRING)
       expect(token.value).to eq(%{foo\\\\})
     end
+
+    it "should match single quoted string containing a line break" do
+      token = @lexer.tokenise("'\n'").first
+      expect(token.type).to eq(:SSTRING)
+      expect(token.value).to eq("\n")
+    end
   end
 
   context ':REGEX' do
@@ -809,6 +860,17 @@ describe PuppetLint::Lexer do
       tokens = @lexer.tokenise('$x = $a/$b/$c')
       expect(tokens.select { |r| r.type == :REGEX }).to be_empty
     end
+
+    it 'should properly parse when regex follows an if' do
+      tokens = @lexer.tokenise('if /^icinga_service_icon_.*/ in $location_info { }')
+      expect(tokens[2].type).to eq(:REGEX)
+    end
+
+    it 'should properly parse when a regex follows an elsif' do
+      tokens = @lexer.tokenise('if /a/ in $location_info { } elsif /b/ in $location_info { }')
+      expect(tokens[2].type).to eq(:REGEX)
+      expect(tokens[14].type).to eq(:REGEX)
+    end
   end
 
   context ':STRING' do
@@ -816,6 +878,12 @@ describe PuppetLint::Lexer do
       expect {
         @lexer.tokenise("exec { \"/bin/echo \\\\\\\"${environment}\\\\\\\"\": }")
       }.to_not raise_error
+    end
+
+    it "should match double quoted string containing a line break" do
+      token = @lexer.tokenise(%Q{"\n"}).first
+      expect(token.type).to eq(:STRING)
+      expect(token.value).to eq("\n")
     end
   end
 end

@@ -131,6 +131,14 @@ describe 'file_mode' do
         expect(problems).to have(0).problems
       end
     end
+
+    context 'mode as a function return value' do
+      let(:code) { "file { 'foo': mode => lookup('bar'), }" }
+
+      it 'should not detect any problems' do
+        expect(problems).to have(0).problems
+      end
+    end
   end
 
   context 'with fix enabled' do
@@ -202,6 +210,18 @@ describe 'file_mode' do
       end
 
       it 'should not modify the original manifest' do
+        expect(manifest).to eq(code)
+      end
+    end
+
+    context 'mode as a function return value' do
+      let(:code) { "file { 'foo': mode => lookup('bar'), }" }
+
+      it 'should not detect any problems' do
+        expect(problems).to have(0).problems
+      end
+
+      it 'should not change the manifest' do
         expect(manifest).to eq(code)
       end
     end

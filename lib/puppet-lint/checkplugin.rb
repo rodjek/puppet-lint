@@ -21,7 +21,7 @@ class PuppetLint::CheckPlugin
     check
 
     @problems.each do |problem|
-      if PuppetLint::Data.ignore_overrides[problem[:check]].has_key?(problem[:line])
+      if problem[:check] != :syntax && PuppetLint::Data.ignore_overrides[problem[:check]].has_key?(problem[:line])
         problem[:kind] = :ignored
         problem[:reason] = PuppetLint::Data.ignore_overrides[problem[:check]][problem[:line]]
         next
@@ -35,7 +35,7 @@ class PuppetLint::CheckPlugin
   #
   # Returns an Array of problem Hashes.
   def fix_problems
-    @problems.reject { |problem| problem[:kind] == :ignored }.each do |problem|
+    @problems.reject { |problem| problem[:kind] == :ignored || problem[:check] == :syntax }.each do |problem|
       if self.respond_to?(:fix)
         begin
           fix(problem)

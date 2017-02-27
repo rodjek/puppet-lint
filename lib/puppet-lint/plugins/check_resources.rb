@@ -192,7 +192,7 @@ end
 PuppetLint.new_check(:file_mode) do
   MSG = 'mode should be represented as a 4 digit octal value or symbolic mode'
   SYM_RE = "([ugoa]*[-=+][-=+rstwxXugo]*)(,[ugoa]*[-=+][-=+rstwxXugo]*)*"
-  IGNORE_TYPES = Set[:VARIABLE, :UNDEF]
+  IGNORE_TYPES = Set[:VARIABLE, :UNDEF, :FUNCTION_NAME]
   MODE_RE = Regexp.new(/\A([0-7]{4}|#{SYM_RE})\Z/)
 
   def check

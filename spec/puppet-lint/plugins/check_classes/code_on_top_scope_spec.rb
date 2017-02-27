@@ -22,6 +22,7 @@ describe 'code_on_top_scope' do
 
     its(:problems) { should be_empty }
   end
+
   describe 'code outside class block' do
     let(:code) { "
       include('something')

@@ -86,6 +86,10 @@ class PuppetLint::OptParser
         PuppetLint.configuration.log_format = format
       end
 
+      opts.on('--json', 'Log output as JSON') do
+        PuppetLint.configuration.json = true
+      end
+
       opts.separator ''
       opts.separator '    Checks:'
 

@@ -99,6 +99,7 @@ describe 'double_quoted_strings' do
         $string4 = "this string contains \\"escaped \\" double quotes"
         $string5 = "this string contains \\'escaped \\' single quotes"
         $string6 = "this string contains \r line return"
+        $string7 = "this string contains \\\\ an escaped backslash"
         }}
 
       it 'should not detect any problems' do

@@ -169,6 +169,37 @@ describe 'variable_scope' do
     end
   end
 
+  context 'nested future parser blocks' do
+    let(:code) { "
+      class foo() {
+        $foo = {1=>2, 3=>4}
+        $bar = [1, 2, 3]
+        $foo.each |$k ,$v| {
+          $k
+          $v
+          $x  # top-scope warning
+          $bar.each |$x| {
+            $k
+            $v
+            $x
+            $p  # top-scope warning
+          }
+          $x  # top-scope warning
+        }
+      }
+    " }
+
+    it 'should only detect three problems' do
+      expect(problems).to have(3).problem
+    end
+
+    it 'should create three warnings' do
+      expect(problems).to contain_warning(msg).on_line(8).in_column(11)
+      expect(problems).to contain_warning(msg).on_line(13).in_column(13)
+      expect(problems).to contain_warning(msg).on_line(15).in_column(11)
+    end
+  end
+
   %w{alias audit before loglevel noop notify require schedule stage subscribe tag}.each do |metaparam|
     context "referencing #{metaparam} metaparam value as a variable" do
       let(:code) { "
@@ -194,6 +225,60 @@ describe 'variable_scope' do
 
     it 'should not detect any problems' do
       expect(problems).to have(0).problems
+    end
+  end
+
+  context 'multiple left hand variable assign' do
+    let(:code) { "
+      class test {
+        [$foo, $bar] = something()
+      }
+    " }
+
+    it 'should not detect any problems' do
+      expect(problems).to have(0).problems
+    end
+  end
+
+  context 'nested variable assignment' do
+    let(:code) { "
+      class test {
+        [$foo, [[$bar, $baz], $qux]] = something()
+      }
+    " }
+
+    it 'should not detect any problems' do
+      expect(problems).to have(0).problems
+    end
+  end
+
+  context 'function calls inside string interpolation' do
+    let(:code) { "
+      class test {
+        \"${split('1,2,3', ',')}\"  # split is a function
+        \"${lookup('foo::bar')}\"  # lookup is a function
+      }
+    " }
+
+    it 'should not detect any problems' do
+      expect(problems).to have(0).problems
+    end
+  end
+
+  context 'variables in string interpolation' do
+    let(:code) { "
+      class test {
+        \"${foo.split(',')}\"  # foo is a top-scope variable
+        \"${::bar.split(',')}\"
+      }
+    " }
+
+    it 'should only detect one problem' do
+      expect(problems).to have(1).problems
+    end
+
+    it 'should create one warning' do
+      expect(problems).to contain_warning(msg).on_line(3).in_column(11)
     end
   end
 end

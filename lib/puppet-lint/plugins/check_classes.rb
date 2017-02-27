@@ -104,12 +104,18 @@ PuppetLint.new_check(:parameter_order) do
     (class_indexes + defined_type_indexes).each do |class_idx|
       unless class_idx[:param_tokens].nil?
         paren_stack = []
+        hash_or_array_stack = []
         class_idx[:param_tokens].each_with_index do |token, i|
           if token.type == :LPAREN
             paren_stack.push(true)
           elsif token.type == :RPAREN
             paren_stack.pop
+          elsif token.type == :LBRACE || token.type == :LBRACK
+            hash_or_array_stack.push(true)
+          elsif token.type == :RBRACE || token.type == :RBRACK
+            hash_or_array_stack.pop
           end
+          next if (! hash_or_array_stack.empty?)
           next unless paren_stack.empty?
 
           if token.type == :VARIABLE
@@ -234,6 +240,7 @@ PuppetLint.new_check(:code_on_top_scope) do
     end
   end
 end
+PuppetLint.configuration.send("disable_code_on_top_scope")
 
 # Public: Test the manifest tokens for any variables that are referenced in
 # the manifest.  If the variables are not fully qualified or one of the
@@ -290,24 +297,44 @@ PuppetLint.new_check(:variable_scope) do
 
       future_parser_scopes = {}
       in_pipe = false
-      temp_scope_vars = []
+      block_params_stack = []
 
       object_tokens.each do |token|
-        if token.type == :VARIABLE
-          if in_pipe
-            temp_scope_vars << token.value
-          else
-            if token.next_code_token.type == :EQUALS
-              variables_in_scope << token.value
-            else
-              referenced_variables << token
+        case token.type
+        when :EQUALS
+          if token.prev_code_token.type == :VARIABLE
+            variables_in_scope << token.prev_code_token.value
+          elsif token.prev_code_token.type == :RBRACK
+            temp_token = token
+
+            brack_depth = 0
+            while temp_token = temp_token.prev_code_token
+              case temp_token.type
+              when :VARIABLE
+                variables_in_scope << temp_token.value
+              when :RBRACK
+                brack_depth += 1
+              when :LBRACK
+                brack_depth -= 1
+                break if brack_depth == 0
+              when :COMMA
+                # ignore
+              else  # unexpected
+                break
+              end
             end
           end
-        elsif token.type == :PIPE
+        when :VARIABLE
+          if in_pipe
+            block_params_stack[-1] << token.value
+          else
+            referenced_variables << token
+          end
+        when :PIPE
           in_pipe = !in_pipe
 
           if in_pipe
-            temp_scope_vars = []
+            block_params_stack << []
           else
             start_idx = tokens.find_index(token)
             end_token = nil
@@ -326,7 +353,11 @@ PuppetLint.new_check(:variable_scope) do
               end
             end
 
-            future_parser_scopes.merge!(Hash[(token.line..end_token.line).to_a.map { |i| [i, temp_scope_vars] }])
+            params = block_params_stack.pop
+            (token.line..end_token.line).each do |line|
+              future_parser_scopes[line] ||= []
+              future_parser_scopes[line].concat(params)
+            end
           end
         end
       end

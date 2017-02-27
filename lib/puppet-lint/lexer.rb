@@ -81,17 +81,21 @@ class PuppetLint
       :NOMATCH => true,
       :COMMA   => true,
       :LBRACK  => true,
+      :IF      => true,
+      :ELSIF   => true,
     }
 
     # Internal: An Array of Arrays containing tokens that can be described by
     # a single regular expression.  Each sub-Array contains 2 elements, the
     # name of the token as a Symbol and a regular expression describing the
     # value of the token.
+    NAME_RE = /\A(((::)?[_a-z0-9][-\w]*)(::[a-z0-9][-\w]*)*)/
     KNOWN_TOKENS = [
-      [:TYPE, /\A(Integer|Float|Boolean|Regexp|String|Array|Hash|Resource|Class|Collection|Scalar|Numeric|CatalogEntry|Data|Tuple|Struct|Optional|NotUndef|Variant|Enum|Pattern|Any|Callable|Type|Runtime|Undef|Default)/],
+      [:TYPE, /\A(Integer|Float|Boolean|Regexp|String|Array|Hash|Resource|Class|Collection|Scalar|Numeric|CatalogEntry|Data|Tuple|Struct|Optional|NotUndef|Variant|Enum|Pattern|Any|Callable|Type|Runtime|Undef|Default)\b/],
       [:CLASSREF, /\A(((::){0,1}[A-Z][-\w]*)+)/],
       [:NUMBER, /\A\b((?:0[xX][0-9A-Fa-f]+|0?\d+(?:\.\d+)?(?:[eE]-?\d+)?))\b/],
-      [:NAME, /\A(((::)?[a-z0-9][-\w]*)(::[a-z0-9][-\w]*)*)/],
+      [:FUNCTION_NAME, /#{NAME_RE}\(/],
+      [:NAME, NAME_RE],
       [:LBRACK, /\A(\[)/],
       [:RBRACK, /\A(\])/],
       [:LBRACE, /\A(\{)/],
@@ -188,7 +192,7 @@ class PuppetLint
         end
 
         unless found
-          if var_name = chunk[/\A\$((::)?([\w-]+::)*[\w-]+(\[.+?\])*)/, 1]
+          if var_name = chunk[/\A\$((::)?(\w+(-\w+)*::)*\w+(-\w+)*(\[.+?\])*)/, 1]
             length = var_name.size + 1
             tokens << new_token(:VARIABLE, var_name, length)
 
@@ -307,9 +311,24 @@ class PuppetLint
       end
 
       @column += length
+
+      # If creating a :VARIABLE token inside a double quoted string, add 3 to
+      # the column state in order to account for the ${} characters when
+      # rendering out to manifest.
+      if token.type == :VARIABLE
+        if !token.prev_code_token.nil? && [:DQPRE, :DQMID].include?(token.prev_code_token.type)
+          @column += 3
+        end
+      end
+
       if type == :NEWLINE
         @line_no += 1
         @column = 1
+      end
+      if [:MLCOMMENT, :SSTRING, :STRING].include? type and /(?:\r\n|\r|\n)/.match(value)
+        lines = value.split(/(?:\r\n|\r|\n)/, -1)
+        @line_no += lines.length-1
+        @column = lines.last.length
       end
 
       token
@@ -364,7 +383,7 @@ class PuppetLint
             tokens << new_token(:DQMID, value, value.size, :line => line, :column => token_column)
           end
           if ss.scan(/\{/).nil?
-            var_name = ss.scan(/(::)?([\w-]+::)*[\w-]+/)
+            var_name = ss.scan(/(::)?(\w+(-\w+)*::)*\w+(-\w+)*/)
             if var_name.nil?
               token_column = column + ss.pos - 1
               tokens << new_token(:DQMID, "$", 1, :line => line, :column => token_column)
@@ -374,7 +393,7 @@ class PuppetLint
             end
           else
             contents = ss.scan_until(/\}/)[0..-2]
-            if contents.match(/\A(::)?([\w-]+::)*[\w-]+(\[.+?\])*/)
+            if contents.match(/\A(::)?([\w-]+::)*[\w-]+(\[.+?\])*/) && !contents.match(/\A\w+\(/)
               contents = "$#{contents}"
             end
             lexer = PuppetLint::Lexer.new

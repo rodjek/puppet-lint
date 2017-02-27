@@ -10,7 +10,7 @@ PuppetLint.new_check(:double_quoted_strings) do
     }.map { |token|
       [token, token.value.gsub(' '*token.column, "\n")]
     }.select { |token, sane_value|
-      sane_value[/(\\\$|\\"|\\'|'|\r|\t|\\t|\n|\\n)/].nil?
+      sane_value[/(\\\$|\\"|\\'|'|\r|\t|\\t|\n|\\n|\\\\)/].nil?
     }.each do |token, sane_value|
       notify :warning, {
         :message => 'double quoted string containing no variables',
@@ -122,7 +122,7 @@ end
 PuppetLint.new_check(:single_quote_string_with_variables) do
   def check
     tokens.select { |r|
-      r.type == :SSTRING && r.value.include?('${')
+      r.type == :SSTRING && r.value.include?('${') && (! r.prev_token.prev_token.value.match(%r{inline_(epp|template)}) )
     }.each do |token|
       notify :error, {
         :message => 'single quoted string containing a variable found',
