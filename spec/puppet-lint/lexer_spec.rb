@@ -698,6 +698,39 @@ describe PuppetLint::Lexer do
       expect(tokens[6].value).to eq("  SOMETHING\n  ELSE\n  :\n  ")
       expect(tokens[6].raw).to eq("  SOMETHING\n  ELSE\n  :\n  |-myheredoc")
     end
+
+    it 'should parse a heredoc with interpolated values' do
+      manifest = <<-END.gsub(/^ {6}/, '')
+      $str = @("myheredoc"/)
+        SOMETHING
+        ${else}
+        AND :
+        $another
+        THING
+        | myheredoc
+      END
+
+      tokens = @lexer.tokenise(manifest)
+
+      expect(tokens[0].type).to eq(:VARIABLE)
+      expect(tokens[1].type).to eq(:WHITESPACE)
+      expect(tokens[2].type).to eq(:EQUALS)
+      expect(tokens[3].type).to eq(:WHITESPACE)
+      expect(tokens[4].type).to eq(:HEREDOC_OPEN)
+      expect(tokens[4].value).to eq('"myheredoc"/')
+      expect(tokens[5].type).to eq(:NEWLINE)
+      expect(tokens[6].type).to eq(:HEREDOC_PRE)
+      expect(tokens[6].value).to eq("  SOMETHING\n  ")
+      expect(tokens[7].type).to eq(:VARIABLE)
+      expect(tokens[7].value).to eq("else")
+      expect(tokens[8].type).to eq(:HEREDOC_MID)
+      expect(tokens[8].value).to eq("\n  AND :\n  ")
+      expect(tokens[9].type).to eq(:UNENC_VARIABLE)
+      expect(tokens[9].value).to eq("another")
+      expect(tokens[10].type).to eq(:HEREDOC_POST)
+      expect(tokens[10].value).to eq("\n  THING\n  ")
+      expect(tokens[10].raw).to eq("\n  THING\n  | myheredoc")
+    end
   end
 
   context ':CLASSREF' do
