@@ -96,6 +96,8 @@ class PuppetLint
           "@(#{@value})"
         when :HEREDOC
           @raw
+        when :HEREDOC_POST
+          @raw
         else
           @value
         end
