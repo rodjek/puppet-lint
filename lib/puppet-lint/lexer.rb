@@ -440,7 +440,7 @@ class PuppetLint
 
     def interpolate_heredoc(string, name, line, column)
       ss = StringScanner.new(string)
-      eos_text = name[/\A"?(.+)"?\/?/, 1]
+      eos_text = name[/\A"?(.+?)"?(\/.*)?\Z/, 1]
       first = true
       interpolate = name.start_with?('"')
       value, terminator = get_heredoc_segment(ss, eos_text, interpolate)
