@@ -92,6 +92,10 @@ class PuppetLint
           "/#{@value}/"
         when :MLCOMMENT
           @raw
+        when :HEREDOC_OPEN
+          "@(#{@value})"
+        when :HEREDOC
+          @raw
         else
           @value
         end

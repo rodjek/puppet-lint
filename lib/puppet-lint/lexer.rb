@@ -130,7 +130,6 @@ class PuppetLint
       [:COMMA, /\A(,)/],
       [:DOT, /\A(\.)/],
       [:COLON, /\A(:)/],
-      [:AT, /\A(@)/],
       [:SEMIC, /\A(;)/],
       [:QMARK, /\A(\?)/],
       [:BACKSLASH, /\A(\\)/],
@@ -167,6 +166,7 @@ class PuppetLint
     # (usually the result of syntax errors).
     def tokenise(code)
       i = 0
+      in_heredoc = nil
 
       while i < code.size
         chunk = code[i..-1]
@@ -207,6 +207,11 @@ class PuppetLint
             interpolate_string(str_contents, _.count, _.last.length)
             length = str_contents.size + 1
 
+          elsif heredoc_name = chunk[/\A@\(("?.+"?(\/.*)?)\)/, 1]
+            in_heredoc = heredoc_name
+            tokens << new_token(:HEREDOC_OPEN, heredoc_name, heredoc_name.size + 3)
+            length += heredoc_name.size + 2
+
           elsif comment = chunk[/\A(#.*)/, 1]
             length = comment.size
             comment.sub!(/#/, '')
@@ -233,10 +238,21 @@ class PuppetLint
 
           elsif eolindent = chunk[/\A((\r\n|\r|\n)[ \t]+)/m, 1]
             eol = eolindent[/\A([\r\n]+)/m, 1]
-            indent = eolindent[/\A[\r\n]+([ \t]+)/m, 1]
             tokens << new_token(:NEWLINE, eol, eol.size)
-            tokens << new_token(:INDENT, indent, indent.size)
-            length = indent.size + eol.size
+            length = eol.size
+
+            if in_heredoc.nil?
+              indent = eolindent[/\A[\r\n]+([ \t]+)/m, 1]
+              tokens << new_token(:INDENT, indent, indent.size)
+              length += indent.size
+            else
+              heredoc_name = in_heredoc[/\A"?(.+?)"?(\/.*)?\Z/, 1]
+              str_contents = StringScanner.new(code[i+1..-1]).scan_until(/\|?\s*-?\s*#{heredoc_name}/)
+              _ = code[0..i].split("\n")
+              interpolate_heredoc(str_contents, in_heredoc, _.count, _.last.length)
+              length += str_contents.size + 1
+              in_heredoc = nil
+            end
 
           elsif whitespace = chunk[/\A([ \t]+)/, 1]
             length = whitespace.size
@@ -246,9 +262,22 @@ class PuppetLint
             length = eol.size
             tokens << new_token(:NEWLINE, eol, length)
 
+            unless in_heredoc.nil?
+              heredoc_name = in_heredoc[/\A"?(.+?)"?(\/.*)?\Z/, 1]
+              str_contents = StringScanner.new(code[i+1..-1]).scan_until(/\|?\s*-?\s*#{heredoc_name}/)
+              _ = code[0..i].split("\n")
+              interpolate_heredoc(str_contents, in_heredoc, _.count, _.last.length)
+              length += str_contents.size + 1
+              in_heredoc = nil
+            end
+
           elsif chunk.match(/\A\//)
             length = 1
             tokens << new_token(:DIV, '/', length)
+
+          elsif chunk.match(/\A@/)
+            length = 1
+            tokens << new_token(:AT, '@', length)
 
           else
             raise PuppetLint::LexerError.new(@line_no, @column)
@@ -406,6 +435,73 @@ class PuppetLint
           end
         end
         value, terminator = get_string_segment(ss, '"$')
+      end
+    end
+
+    def interpolate_heredoc(string, name, line, column)
+      ss = StringScanner.new(string)
+      eos_text = name[/\A"?(.+)"?\/?/, 1]
+      first = true
+      value, terminator = get_heredoc_segment(ss, eos_text)
+      until value.nil?
+        if terminator =~ /\A\|?\s*-?\s*#{eos_text}/
+          if first
+            tokens << new_token(:HEREDOC, value, value.size + name.size + 3 + terminator.size, :line => line, :column => column)
+            tokens.last.raw = "#{value}#{terminator}"
+            first = false
+          else
+            line += value.scan(/(\r\n|\r|\n)/).size
+            token_column = column + (ss.pos - value.size)
+            tokens << new_token(:HEREDOC_POST, value, value.size + terminator.size, :line => line, :column => token_column)
+            tokens.last.raw = "#{value}#{terminator}"
+          end
+        else
+          if first
+            tokens << new_token(:HEREDOC_PRE, value, value.size + name.size + 3, :line => line, :column => column)
+            first = false
+          else
+            line += value.scan(/(\r\n|\r|\n)/).size
+            token_column = column + (ss.pos - value.size)
+            tokens << new_token(:HEREDOC_MID, value, value.size, :line => line, :column => token_column)
+          end
+          if ss.scan(/\{/).nil?
+            var_name = ss.scan(/(::)?(\w+(-\w+)*::)*\w+(-\w+)*/)
+            if var_name.nil?
+              token_column = column + ss.pos - 1
+              tokens << new_token(:HEREDOC_MID, "$", 1, :line => line, :column => token_column)
+            else
+              token_column = column + (ss.pos - var_name.size)
+              tokens << new_token(:UNENC_VARIABLE, var_name, var_name.size, :line => line, :column => token_column)
+            end
+          else
+            contents = ss.scan_until(/\}/)[0..-2]
+            if contents.match(/\A(::)?([\w-]+::)*[\w-]|(\[.+?\])*/) && !contents.match(/\A\w+\(/)
+              contents = "$#{contents}"
+            end
+
+            lexer = PuppetLint::Lexer.new
+            lexer.tokenise(contents)
+            lexer.tokens.each do |token|
+              tok_col = column + token.column + (ss.pos - contents.size - 1)
+              tok_line = token.line + line - 1
+              tokens << new_token(token.type, token.value, token.value.size, :line => tok_line, :column => tok_col)
+            end
+          end
+        end
+        value, terminator = get_heredoc_segment(ss, eos_text)
+      end
+    end
+
+    def get_heredoc_segment(string, eos_text)
+      regexp = /(([^\\]|^|[^\\])([\\]{2})*[$]+|\|?\s*-?#{eos_text})/
+      str = string.scan_until(regexp)
+      begin
+        str =~ /\A(.*?)([$]+|\|?\s*-?#{eos_text})/m
+        value = $1
+        terminator = $2
+        [value, terminator]
+      rescue
+        [nil, nil]
       end
     end
   end

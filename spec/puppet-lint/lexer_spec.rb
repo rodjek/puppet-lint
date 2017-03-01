@@ -630,6 +630,26 @@ describe PuppetLint::Lexer do
     end
   end
 
+  context ':HEREDOC' do
+    it 'should parse a simple heredoc' do
+      manifest = <<-END.gsub(/^ {6}/, '')
+      $str = @(myheredoc)
+        SOMETHING
+        ELSE
+        :
+        |-myheredoc
+      END
+      tokens = @lexer.tokenise(manifest)
+
+      expect(tokens[4].type).to eq(:HEREDOC_OPEN)
+      expect(tokens[4].value).to eq('myheredoc')
+
+      expect(tokens[6].type).to eq(:HEREDOC)
+      expect(tokens[6].value).to eq("  SOMETHING\n  ELSE\n  :\n  ")
+      expect(tokens[6].raw).to eq("  SOMETHING\n  ELSE\n  :\n  |-myheredoc")
+    end
+  end
+
   context ':CLASSREF' do
     it 'should match single capitalised alphanumeric term' do
       token = @lexer.tokenise('One').first
