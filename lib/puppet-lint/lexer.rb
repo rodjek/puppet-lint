@@ -442,7 +442,8 @@ class PuppetLint
       ss = StringScanner.new(string)
       eos_text = name[/\A"?(.+)"?\/?/, 1]
       first = true
-      value, terminator = get_heredoc_segment(ss, eos_text)
+      interpolate = name.start_with?('"')
+      value, terminator = get_heredoc_segment(ss, eos_text, interpolate)
       until value.nil?
         if terminator =~ /\A\|?\s*-?\s*#{eos_text}/
           if first
@@ -488,15 +489,20 @@ class PuppetLint
             end
           end
         end
-        value, terminator = get_heredoc_segment(ss, eos_text)
+        value, terminator = get_heredoc_segment(ss, eos_text, interpolate)
       end
     end
 
-    def get_heredoc_segment(string, eos_text)
-      regexp = /(([^\\]|^|[^\\])([\\]{2})*[$]+|\|?\s*-?#{eos_text})/
+    def get_heredoc_segment(string, eos_text, interpolate=true)
+      if interpolate
+        regexp = /(([^\\]|^|[^\\])([\\]{2})*[$]+|\|?\s*-?#{eos_text})/
+      else
+        regexp = /\|?\s*-?#{eos_text}/
+      end
+
       str = string.scan_until(regexp)
       begin
-        str =~ /\A(.*?)([$]+|\|?\s*-?#{eos_text})/m
+        str =~ /\A(.*?)([$]+|\|?\s*-?#{eos_text})\Z/m
         value = $1
         terminator = $2
         [value, terminator]
