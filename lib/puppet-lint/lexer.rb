@@ -248,8 +248,8 @@ class PuppetLint
             else
               heredoc_tag = @@heredoc_queue.shift
               heredoc_name = heredoc_tag[/\A"?(.+?)"?(:.+?)?(\/.*)?\Z/, 1]
-              str_contents = StringScanner.new(code[i+1..-1]).scan_until(/\|?\s*-?\s*#{heredoc_name}/)
-              _ = code[0..i].split("\n")
+              str_contents = StringScanner.new(code[i+length..-1]).scan_until(/\|?\s*-?\s*#{heredoc_name}/)
+              _ = code[0..i+length].split("\n")
               interpolate_heredoc(str_contents, heredoc_tag, _.count, _.last.length)
               length += str_contents.size
             end
@@ -265,8 +265,8 @@ class PuppetLint
             unless @@heredoc_queue.empty?
               heredoc_tag = @@heredoc_queue.shift
               heredoc_name = heredoc_tag[/\A"?(.+?)"?(:.+?)?(\/.*)?\Z/, 1]
-              str_contents = StringScanner.new(code[i+1..-1]).scan_until(/\|?\s*-?\s*#{heredoc_name}/)
-              _ = code[0..i].split("\n")
+              str_contents = StringScanner.new(code[i+length..-1]).scan_until(/\|?\s*-?\s*#{heredoc_name}/)
+              _ = code[0..i+length].split("\n")
               interpolate_heredoc(str_contents, heredoc_tag, _.count, _.last.length)
               length += str_contents.size
             end
@@ -339,25 +339,46 @@ class PuppetLint
         end
       end
 
+      if opts[:raw]
+        token.raw = opts[:raw]
+      end
+
       @column += length
 
       # If creating a :VARIABLE token inside a double quoted string, add 3 to
       # the column state in order to account for the ${} characters when
       # rendering out to manifest.
-      if token.type == :VARIABLE
-        if !token.prev_code_token.nil? && [:DQPRE, :DQMID].include?(token.prev_code_token.type)
-          @column += 3
-        end
+      #if token.type == :VARIABLE
+      #  if !token.prev_code_token.nil? && [:DQPRE, :DQMID, :HEREDOC_PRE, :HEREDOC_MID].include?(token.prev_code_token.type)
+      #    @column += 3
+      #  end
+      #end
+      case type
+      when :DQPRE
+        @column += 2
+      when :DQMID
+        @column += 3
+      when :DQPOST
+        @column += 1
       end
 
       if type == :NEWLINE
         @line_no += 1
         @column = 1
       end
-      if [:MLCOMMENT, :SSTRING, :STRING].include? type and /(?:\r\n|\r|\n)/.match(value)
+
+      if [:MLCOMMENT, :SSTRING, :STRING, :HEREDOC_PRE, :HEREDOC_MID].include? type and /(?:\r\n|\r|\n)/.match(value)
         lines = value.split(/(?:\r\n|\r|\n)/, -1)
         @line_no += lines.length-1
         @column = lines.last.length
+      end
+
+      if opts[:raw]
+        if[:HEREDOC, :HEREDOC_POST].include?(type) && /(?:\r\n|\r|\n)/.match(opts[:raw])
+          lines = opts[:raw].split(/(?:\r\n|\r|\n)/, -1)
+          @line_no += lines.length - 1
+          @column = lines.last.length + 1
+        end
       end
 
       token
@@ -401,6 +422,8 @@ class PuppetLint
             line += value.scan(/(\r\n|\r|\n)/).size
             token_column = column + (ss.pos - value.size)
             tokens << new_token(:DQPOST, value, value.size + 1, :line => line, :column => token_column)
+            @column = token_column + 1
+            @line_no = line
           end
         else
           if first
@@ -447,18 +470,17 @@ class PuppetLint
       until value.nil?
         if terminator =~ /\A\|?\s*-?\s*#{Regexp.escape(eos_text)}/
           if first
-            tokens << new_token(:HEREDOC, value, value.size + name.size + 3 + terminator.size, :line => line, :column => column)
-            tokens.last.raw = "#{value}#{terminator}"
+            tokens << new_token(:HEREDOC, value, value.size + terminator.size, :line => line, :column => column, :raw => "#{value}#{terminator}")
             first = false
           else
             line += value.scan(/(\r\n|\r|\n)/).size
             token_column = column + (ss.pos - value.size)
-            tokens << new_token(:HEREDOC_POST, value, value.size + terminator.size, :line => line, :column => token_column)
-            tokens.last.raw = "#{value}#{terminator}"
+            tokens << new_token(:HEREDOC_POST, value, value.size + terminator.size, :line => line, :column => token_column, :raw => "#{value}#{terminator}")
           end
         else
           if first
-            tokens << new_token(:HEREDOC_PRE, value, value.size + name.size + 3, :line => line, :column => column)
+            tokens << new_token(:HEREDOC_PRE, value, value.size, :line => line, :column => column)
+            line += value.scan(/(\r\n|\r|\n)/).size
             first = false
           else
             line += value.scan(/(\r\n|\r|\n)/).size
