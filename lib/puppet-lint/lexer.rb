@@ -207,7 +207,7 @@ class PuppetLint
             interpolate_string(str_contents, _.count, _.last.length)
             length = str_contents.size + 1
 
-          elsif heredoc_name = chunk[/\A@\(("?.+?"?(\/.*?)?)\)/, 1]
+          elsif heredoc_name = chunk[/\A@\(("?.+?"?(:.+?)?(\/.*?)?)\)/, 1]
             @@heredoc_queue << heredoc_name
             tokens << new_token(:HEREDOC_OPEN, heredoc_name, heredoc_name.size + 3)
             length = heredoc_name.size + 3
@@ -247,7 +247,7 @@ class PuppetLint
               length += indent.size
             else
               heredoc_tag = @@heredoc_queue.shift
-              heredoc_name = heredoc_tag[/\A"?(.+?)"?(\/.*)?\Z/, 1]
+              heredoc_name = heredoc_tag[/\A"?(.+?)"?(:.+?)?(\/.*)?\Z/, 1]
               str_contents = StringScanner.new(code[i+1..-1]).scan_until(/\|?\s*-?\s*#{heredoc_name}/)
               _ = code[0..i].split("\n")
               interpolate_heredoc(str_contents, heredoc_tag, _.count, _.last.length)
@@ -264,7 +264,7 @@ class PuppetLint
 
             unless @@heredoc_queue.empty?
               heredoc_tag = @@heredoc_queue.shift
-              heredoc_name = heredoc_tag[/\A"?(.+?)"?(\/.*)?\Z/, 1]
+              heredoc_name = heredoc_tag[/\A"?(.+?)"?(:.+?)?(\/.*)?\Z/, 1]
               str_contents = StringScanner.new(code[i+1..-1]).scan_until(/\|?\s*-?\s*#{heredoc_name}/)
               _ = code[0..i].split("\n")
               interpolate_heredoc(str_contents, heredoc_tag, _.count, _.last.length)
@@ -440,12 +440,12 @@ class PuppetLint
 
     def interpolate_heredoc(string, name, line, column)
       ss = StringScanner.new(string)
-      eos_text = name[/\A"?(.+?)"?(\/.*)?\Z/, 1]
+      eos_text = name[/\A"?(.+?)"?(:.+?)?(\/.*)?\Z/, 1]
       first = true
       interpolate = name.start_with?('"')
       value, terminator = get_heredoc_segment(ss, eos_text, interpolate)
       until value.nil?
-        if terminator =~ /\A\|?\s*-?\s*#{eos_text}/
+        if terminator =~ /\A\|?\s*-?\s*#{Regexp.escape(eos_text)}/
           if first
             tokens << new_token(:HEREDOC, value, value.size + name.size + 3 + terminator.size, :line => line, :column => column)
             tokens.last.raw = "#{value}#{terminator}"
@@ -495,14 +495,14 @@ class PuppetLint
 
     def get_heredoc_segment(string, eos_text, interpolate=true)
       if interpolate
-        regexp = /(([^\\]|^|[^\\])([\\]{2})*[$]+|\|?\s*-?#{eos_text})/
+        regexp = /(([^\\]|^|[^\\])([\\]{2})*[$]+|\|?\s*-?#{Regexp.escape(eos_text)})/
       else
-        regexp = /\|?\s*-?#{eos_text}/
+        regexp = /\|?\s*-?#{Regexp.escape(eos_text)}/
       end
 
       str = string.scan_until(regexp)
       begin
-        str =~ /\A(.*?)([$]+|\|?\s*-?#{eos_text})\Z/m
+        str =~ /\A(.*?)([$]+|\|?\s*-?#{Regexp.escape(eos_text)})\Z/m
         value = $1
         terminator = $2
         [value, terminator]

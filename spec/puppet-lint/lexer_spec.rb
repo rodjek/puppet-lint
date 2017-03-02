@@ -713,6 +713,31 @@ describe PuppetLint::Lexer do
       expect(tokens[12].raw).to eq("  bar\n  |-end2")
       expect(tokens[13].type).to eq(:NEWLINE)
     end
+
+    it 'should handle a heredoc that specifies a syntax' do
+      manifest = <<-END.gsub(/^ {6}/, '')
+      $str = @("end":json/)
+        {
+          "foo": "bar"
+        }
+        |-end
+      END
+
+      tokens = @lexer.tokenise(manifest)
+
+      expect(tokens.length).to eq(8)
+      expect(tokens[0].type).to eq(:VARIABLE)
+      expect(tokens[1].type).to eq(:WHITESPACE)
+      expect(tokens[2].type).to eq(:EQUALS)
+      expect(tokens[3].type).to eq(:WHITESPACE)
+      expect(tokens[4].type).to eq(:HEREDOC_OPEN)
+      expect(tokens[4].value).to eq('"end":json/')
+      expect(tokens[5].type).to eq(:NEWLINE)
+      expect(tokens[6].type).to eq(:HEREDOC)
+      expect(tokens[6].value).to eq("  {\n    \"foo\": \"bar\"\n  }\n  ")
+      expect(tokens[6].raw).to eq("  {\n    \"foo\": \"bar\"\n  }\n  |-end")
+      expect(tokens[7].type).to eq(:NEWLINE)
+    end
   end
 
   context ':HEREDOC with interpolation' do
