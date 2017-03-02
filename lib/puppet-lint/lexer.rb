@@ -29,6 +29,7 @@ class PuppetLint
     def initialize
       @line_no = 1
       @column = 1
+      @@heredoc_queue ||= []
     end
 
     # Internal: A Hash whose keys are Strings representing reserved keywords in
@@ -166,7 +167,6 @@ class PuppetLint
     # (usually the result of syntax errors).
     def tokenise(code)
       i = 0
-      in_heredoc = nil
 
       while i < code.size
         chunk = code[i..-1]
@@ -207,10 +207,10 @@ class PuppetLint
             interpolate_string(str_contents, _.count, _.last.length)
             length = str_contents.size + 1
 
-          elsif heredoc_name = chunk[/\A@\(("?.+"?(\/.*)?)\)/, 1]
-            in_heredoc = heredoc_name
+          elsif heredoc_name = chunk[/\A@\(("?.+?"?(\/.*?)?)\)/, 1]
+            @@heredoc_queue << heredoc_name
             tokens << new_token(:HEREDOC_OPEN, heredoc_name, heredoc_name.size + 3)
-            length += heredoc_name.size + 2
+            length = heredoc_name.size + 3
 
           elsif comment = chunk[/\A(#.*)/, 1]
             length = comment.size
@@ -241,17 +241,17 @@ class PuppetLint
             tokens << new_token(:NEWLINE, eol, eol.size)
             length = eol.size
 
-            if in_heredoc.nil?
+            if @@heredoc_queue.empty?
               indent = eolindent[/\A[\r\n]+([ \t]+)/m, 1]
               tokens << new_token(:INDENT, indent, indent.size)
               length += indent.size
             else
-              heredoc_name = in_heredoc[/\A"?(.+?)"?(\/.*)?\Z/, 1]
+              heredoc_tag = @@heredoc_queue.shift
+              heredoc_name = heredoc_tag[/\A"?(.+?)"?(\/.*)?\Z/, 1]
               str_contents = StringScanner.new(code[i+1..-1]).scan_until(/\|?\s*-?\s*#{heredoc_name}/)
               _ = code[0..i].split("\n")
-              interpolate_heredoc(str_contents, in_heredoc, _.count, _.last.length)
-              length += str_contents.size + 1
-              in_heredoc = nil
+              interpolate_heredoc(str_contents, heredoc_tag, _.count, _.last.length)
+              length += str_contents.size
             end
 
           elsif whitespace = chunk[/\A([ \t]+)/, 1]
@@ -262,13 +262,13 @@ class PuppetLint
             length = eol.size
             tokens << new_token(:NEWLINE, eol, length)
 
-            unless in_heredoc.nil?
-              heredoc_name = in_heredoc[/\A"?(.+?)"?(\/.*)?\Z/, 1]
+            unless @@heredoc_queue.empty?
+              heredoc_tag = @@heredoc_queue.shift
+              heredoc_name = heredoc_tag[/\A"?(.+?)"?(\/.*)?\Z/, 1]
               str_contents = StringScanner.new(code[i+1..-1]).scan_until(/\|?\s*-?\s*#{heredoc_name}/)
               _ = code[0..i].split("\n")
-              interpolate_heredoc(str_contents, in_heredoc, _.count, _.last.length)
-              length += str_contents.size + 1
-              in_heredoc = nil
+              interpolate_heredoc(str_contents, heredoc_tag, _.count, _.last.length)
+              length += str_contents.size
             end
 
           elsif chunk.match(/\A\//)

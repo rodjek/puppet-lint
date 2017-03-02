@@ -641,6 +641,7 @@ describe PuppetLint::Lexer do
       END
       tokens = @lexer.tokenise(manifest)
 
+      expect(tokens.length).to eq(8)
       expect(tokens[0].type).to eq(:VARIABLE)
       expect(tokens[1].type).to eq(:WHITESPACE)
       expect(tokens[2].type).to eq(:EQUALS)
@@ -651,6 +652,7 @@ describe PuppetLint::Lexer do
       expect(tokens[6].type).to eq(:HEREDOC)
       expect(tokens[6].value).to eq("  SOMETHING\n  ELSE\n  :\n  ")
       expect(tokens[6].raw).to eq("  SOMETHING\n  ELSE\n  :\n  |-myheredoc")
+      expect(tokens[7].type).to eq(:NEWLINE)
     end
 
     it 'should not interpolate the contents of the heredoc' do
@@ -662,7 +664,7 @@ describe PuppetLint::Lexer do
         |-myheredoc
       END
       tokens = @lexer.tokenise(manifest)
-      expect(tokens.length).to eq(7)
+      expect(tokens.length).to eq(8)
       expect(tokens[0].type).to eq(:VARIABLE)
       expect(tokens[1].type).to eq(:WHITESPACE)
       expect(tokens[2].type).to eq(:EQUALS)
@@ -673,6 +675,43 @@ describe PuppetLint::Lexer do
       expect(tokens[6].type).to eq(:HEREDOC)
       expect(tokens[6].value).to eq("  SOMETHING\n  ${else}\n  :\n  ")
       expect(tokens[6].raw).to eq("  SOMETHING\n  ${else}\n  :\n  |-myheredoc")
+      expect(tokens[7].type).to eq(:NEWLINE)
+    end
+
+    it 'should handle multiple heredoc declarations on a single line' do
+      manifest = <<-END.gsub(/^ {6}/, '')
+      $str = "${@(end1)} ${@(end2)}"
+        foo
+        |-end1
+        bar
+        |-end2
+      END
+      tokens = @lexer.tokenise(manifest)
+
+      expect(tokens.length).to eq(14)
+      expect(tokens[0].type).to eq(:VARIABLE)
+      expect(tokens[1].type).to eq(:WHITESPACE)
+      expect(tokens[2].type).to eq(:EQUALS)
+      expect(tokens[3].type).to eq(:WHITESPACE)
+      expect(tokens[4].type).to eq(:DQPRE)
+      expect(tokens[4].value).to eq('')
+      expect(tokens[5].type).to eq(:HEREDOC_OPEN)
+      expect(tokens[5].value).to eq('end1')
+      expect(tokens[6].type).to eq(:DQMID)
+      expect(tokens[6].value).to eq(' ')
+      expect(tokens[7].type).to eq(:HEREDOC_OPEN)
+      expect(tokens[7].value).to eq('end2')
+      expect(tokens[8].type).to eq(:DQPOST)
+      expect(tokens[8].value).to eq('')
+      expect(tokens[9].type).to eq(:NEWLINE)
+      expect(tokens[10].type).to eq(:HEREDOC)
+      expect(tokens[10].value).to eq("  foo\n  ")
+      expect(tokens[10].raw).to eq("  foo\n  |-end1")
+      expect(tokens[11].type).to eq(:NEWLINE)
+      expect(tokens[12].type).to eq(:HEREDOC)
+      expect(tokens[12].value).to eq("  bar\n  ")
+      expect(tokens[12].raw).to eq("  bar\n  |-end2")
+      expect(tokens[13].type).to eq(:NEWLINE)
     end
   end
 
