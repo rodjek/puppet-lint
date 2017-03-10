@@ -1,0 +1,37 @@
+build: off
+
+branches:
+  only:
+    - master
+
+# ruby versions under test
+environment:
+  matrix:
+    - RUBY_VERSION: 187
+    - RUBY_VERSION: 193
+    - RUBY_VERSION: 200
+    - RUBY_VERSION: 219
+    - RUBY_VERSION: 231
+    - RUBY_VERSION: 240
+
+matrix:
+  allow_failures:
+    - RUBY_VERSION: 187
+
+install:
+  - SET PATH=C:\Ruby%RUBY_VERSION%\bin;%PATH%
+  - SET LOG_SPEC_ORDER=true
+  - bundle install --jobs 4 --retry 2 --without development
+
+before_test:
+  - type Gemfile.lock
+  - ruby -v
+  - gem -v
+  - bundle -v
+
+test_script:
+  - bundle exec rake test
+
+notifications:
+  email:
+    - tim@bombasticmonkey.com
