@@ -5,15 +5,13 @@
 PuppetLint.new_check(:class_inherits_from_params_class) do
   def check
     class_indexes.each do |class_idx|
-      unless class_idx[:inherited_token].nil?
-        if class_idx[:inherited_token].value.end_with? '::params'
-          notify :warning, {
-            :message => 'class inheriting from params class',
-            :line    => class_idx[:inherited_token].line,
-            :column  => class_idx[:inherited_token].column,
-          }
-        end
-      end
+      next unless class_idx[:inherited_token] && class_idx[:inherited_token].value.end_with?('::params')
+
+      notify :warning, {
+        :message => 'class inheriting from params class',
+        :line    => class_idx[:inherited_token].line,
+        :column  => class_idx[:inherited_token].column,
+      }
     end
   end
 end

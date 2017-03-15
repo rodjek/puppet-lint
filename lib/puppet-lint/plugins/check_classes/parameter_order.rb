@@ -6,42 +6,48 @@
 PuppetLint.new_check(:parameter_order) do
   def check
     (class_indexes + defined_type_indexes).each do |class_idx|
-      unless class_idx[:param_tokens].nil?
-        paren_stack = []
-        hash_or_array_stack = []
-        class_idx[:param_tokens].each_with_index do |token, i|
-          if token.type == :LPAREN
-            paren_stack.push(true)
-          elsif token.type == :RPAREN
-            paren_stack.pop
-          elsif token.type == :LBRACE || token.type == :LBRACK
-            hash_or_array_stack.push(true)
-          elsif token.type == :RBRACE || token.type == :RBRACK
-            hash_or_array_stack.pop
-          end
-          next if (! hash_or_array_stack.empty?)
-          next unless paren_stack.empty?
+      next if class_idx[:param_tokens].nil?
 
-          if token.type == :VARIABLE
-            data_type = token.prev_token_of(:TYPE, :skip_blocks => true)
-            next if data_type && data_type.value == 'Optional'
+      paren_stack = []
+      hash_or_array_stack = []
+      class_idx[:param_tokens].each_with_index do |token, i|
+        if token.type == :LPAREN
+          paren_stack.push(true)
+        elsif token.type == :RPAREN
+          paren_stack.pop
+        elsif token.type == :LBRACE || token.type == :LBRACK
+          hash_or_array_stack.push(true)
+        elsif token.type == :RBRACE || token.type == :RBRACK
+          hash_or_array_stack.pop
+        end
 
-            if token.next_code_token.nil? || [:COMMA, :RPAREN].include?(token.next_code_token.type)
-              prev_tokens = class_idx[:param_tokens][0..i]
-              unless prev_tokens.rindex { |r| r.type == :EQUALS }.nil?
-                unless token.prev_code_token.nil? or token.prev_code_token.type == :EQUALS
-                  msg = 'optional parameter listed before required parameter'
-                  notify :warning, {
-                    :message => msg,
-                    :line    => token.line,
-                    :column  => token.column,
-                  }
-                end
-              end
+        next unless hash_or_array_stack.empty? && paren_stack.empty?
+
+        if required_parameter?(token)
+            prev_tokens = class_idx[:param_tokens][0..i]
+            unless prev_tokens.rindex { |r| r.type == :EQUALS }.nil?
+              msg = 'optional parameter listed before required parameter'
+              notify :warning, {
+                :message => msg,
+                :line    => token.line,
+                :column  => token.column,
+              }
             end
-          end
         end
       end
     end
+  end
+
+  def required_parameter?(token)
+    return false unless token.type == :VARIABLE
+
+    data_type = token.prev_token_of(:TYPE, :skip_blocks => true)
+    return false if data_type && data_type.value == 'Optional'
+
+    if token.next_code_token.nil? || [:COMMA, :RPAREN].include?(token.next_code_token.type)
+      return !(token.prev_code_token && token.prev_code_token.type == :EQUALS)
+    end
+
+    false
   end
 end
