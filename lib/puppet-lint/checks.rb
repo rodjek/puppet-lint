@@ -109,6 +109,6 @@ END
   #
   # Returns the manifest as a String.
   def manifest
-    PuppetLint::Data.tokens.map { |t| t.to_manifest }.join('')
+    PuppetLint::Data.tokens.map(&:to_manifest).join('')
   end
 end
