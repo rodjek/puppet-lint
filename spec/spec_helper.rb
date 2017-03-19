@@ -75,8 +75,9 @@ module RSpec
 
           messages << check_attr(:kind, 'would be of kind')
           messages << check_attr(:message, 'would have the message')
-          messages << check_attr(:linenumber, 'would be on line')
+          messages << check_attr(:line, 'would be on line')
           messages << check_attr(:column, 'would start on column')
+          messages << check_attr(:reason, 'would have the reason')
 
           messages.compact.join("\n  ")
         else
