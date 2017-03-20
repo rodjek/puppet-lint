@@ -228,8 +228,7 @@ class PuppetLint
             mlcomment.sub!(/\A\/\* ?/, '')
             mlcomment.sub!(/ ?\*\/\Z/, '')
             mlcomment.gsub!(/^ *\*/, '')
-            tokens << new_token(:MLCOMMENT, mlcomment, length)
-            tokens.last.raw = mlcomment_raw
+            tokens << new_token(:MLCOMMENT, mlcomment, length, :raw => mlcomment_raw)
 
           elsif chunk.match(/\A\/.*?\//) && possible_regex?
             str_content = StringScanner.new(code[i+1..-1]).scan_until(/(\A|[^\\])(\\\\)*\//m)
@@ -318,6 +317,7 @@ class PuppetLint
     #         column:
     #   :line   - The Integer line number if calculated externally.
     #   :column - The Integer column number if calculated externally.
+    #   :raw    - The String raw value of the token (if necessary).
     #
     # Returns the instantiated PuppetLint::Lexer::Token object.
     def new_token(type, value, length, opts = {})
