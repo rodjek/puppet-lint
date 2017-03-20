@@ -931,15 +931,20 @@ describe PuppetLint::Lexer do
       expect(tokens[7].type).to eq(:VARIABLE)
       expect(tokens[7].value).to eq("else")
       expect(tokens[7].line).to eq(3)
-      # TODO: this is where i'm up to
-      # expect(tokens[7].column).to eq(3)
+      expect(tokens[7].column).to eq(3)
       expect(tokens[8].type).to eq(:HEREDOC_MID)
       expect(tokens[8].value).to eq("\n  AND :\n  ")
+      expect(tokens[8].line).to eq(3)
+      expect(tokens[8].column).to eq(10)
       expect(tokens[9].type).to eq(:UNENC_VARIABLE)
       expect(tokens[9].value).to eq("another")
+      expect(tokens[9].line).to eq(5)
+      expect(tokens[9].column).to eq(3)
       expect(tokens[10].type).to eq(:HEREDOC_POST)
       expect(tokens[10].value).to eq("\n  THING\n  ")
       expect(tokens[10].raw).to eq("\n  THING\n  | myheredoc")
+      expect(tokens[10].line).to eq(5)
+      expect(tokens[10].column).to eq(11)
     end
   end
 
