@@ -265,7 +265,7 @@ class PuppetLint
               heredoc_name = heredoc_tag[/\A"?(.+?)"?(:.+?)?(\/.*)?\Z/, 1]
               str_contents = StringScanner.new(code[i+length..-1]).scan_until(/\|?\s*-?\s*#{heredoc_name}/)
               _ = code[0..i+length].split("\n")
-              interpolate_heredoc(str_contents, heredoc_tag, _.count, _.last.length)
+              interpolate_heredoc(str_contents, heredoc_tag)
               length += str_contents.size
             end
 
