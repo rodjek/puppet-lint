@@ -248,8 +248,7 @@ class PuppetLint
               heredoc_tag = @@heredoc_queue.shift
               heredoc_name = heredoc_tag[/\A"?(.+?)"?(:.+?)?(\/.*)?\Z/, 1]
               str_contents = StringScanner.new(code[i+length..-1]).scan_until(/\|?\s*-?\s*#{heredoc_name}/)
-              _ = code[0..i+length].split("\n")
-              interpolate_heredoc(str_contents, heredoc_tag, _.count, _.last.length)
+              interpolate_heredoc(str_contents, heredoc_tag)
               length += str_contents.size
             end
 
@@ -312,7 +311,6 @@ class PuppetLint
     #
     # type   - The Symbol token type.
     # value  - The token value.
-    # length - The Integer length of the token's value.
     # opts   - A Hash of additional values required to determine line number and
     #         column:
     #   :line   - The Integer line number if calculated externally.
@@ -321,6 +319,7 @@ class PuppetLint
     #
     # Returns the instantiated PuppetLint::Lexer::Token object.
     def new_token(type, value, length, opts = {})
+      # TODO: refactor out use of length param
       column = opts[:column] || @column
       line_no = opts[:line] || @line_no
 
@@ -343,41 +342,19 @@ class PuppetLint
         token.raw = opts[:raw]
       end
 
-      @column += length
-
-      # If creating a :VARIABLE token inside a double quoted string, add 3 to
-      # the column state in order to account for the ${} characters when
-      # rendering out to manifest.
-      #if token.type == :VARIABLE
-      #  if !token.prev_code_token.nil? && [:DQPRE, :DQMID, :HEREDOC_PRE, :HEREDOC_MID].include?(token.prev_code_token.type)
-      #    @column += 3
-      #  end
-      #end
-      case type
-      when :DQPRE
-        @column += 2
-      when :DQMID
-        @column += 3
-      when :DQPOST
-        @column += 1
-      end
-
       if type == :NEWLINE
         @line_no += 1
         @column = 1
-      end
-
-      if [:MLCOMMENT, :SSTRING, :STRING, :HEREDOC_PRE, :HEREDOC_MID].include? type and /(?:\r\n|\r|\n)/.match(value)
-        lines = value.split(/(?:\r\n|\r|\n)/, -1)
-        @line_no += lines.length-1
-        @column = lines.last.length
-      end
-
-      if opts[:raw]
-        if[:HEREDOC, :HEREDOC_POST].include?(type) && /(?:\r\n|\r|\n)/.match(opts[:raw])
-          lines = opts[:raw].split(/(?:\r\n|\r|\n)/, -1)
-          @line_no += lines.length - 1
-          @column = lines.last.length + 1
+      else
+        lines = token.to_manifest.split(/(?:\r\n|\r|\n)/, -1)
+        @line_no += lines.length - 1
+        if lines.length > 1
+          # if the token renders to multiple lines, set the column state to the
+          # length of the last line plus 1 (because column numbers are
+          # 1 indexed)
+          @column = lines.last.size + 1
+        else
+          @column += (lines.last || "").size
         end
       end
 
@@ -461,7 +438,7 @@ class PuppetLint
       end
     end
 
-    def interpolate_heredoc(string, name, line, column)
+    def interpolate_heredoc(string, name)
       ss = StringScanner.new(string)
       eos_text = name[/\A"?(.+?)"?(:.+?)?(\/.*)?\Z/, 1]
       first = true
@@ -470,31 +447,24 @@ class PuppetLint
       until value.nil?
         if terminator =~ /\A\|?\s*-?\s*#{Regexp.escape(eos_text)}/
           if first
-            tokens << new_token(:HEREDOC, value, value.size + terminator.size, :line => line, :column => column, :raw => "#{value}#{terminator}")
+            tokens << new_token(:HEREDOC, value, nil, :raw => "#{value}#{terminator}")
             first = false
           else
-            line += value.scan(/(\r\n|\r|\n)/).size
-            token_column = column + (ss.pos - value.size)
-            tokens << new_token(:HEREDOC_POST, value, value.size + terminator.size, :line => line, :column => token_column, :raw => "#{value}#{terminator}")
+            tokens << new_token(:HEREDOC_POST, value, nil, :raw => "#{value}#{terminator}")
           end
         else
           if first
-            tokens << new_token(:HEREDOC_PRE, value, value.size, :line => line, :column => column)
-            line += value.scan(/(\r\n|\r|\n)/).size
+            tokens << new_token(:HEREDOC_PRE, value, nil)
             first = false
           else
-            line += value.scan(/(\r\n|\r|\n)/).size
-            token_column = column + (ss.pos - value.size)
-            tokens << new_token(:HEREDOC_MID, value, value.size, :line => line, :column => token_column)
+            tokens << new_token(:HEREDOC_MID, value, nil)
           end
           if ss.scan(/\{/).nil?
             var_name = ss.scan(/(::)?(\w+(-\w+)*::)*\w+(-\w+)*/)
             if var_name.nil?
-              token_column = column + ss.pos - 1
-              tokens << new_token(:HEREDOC_MID, "$", 1, :line => line, :column => token_column)
+              tokens << new_token(:HEREDOC_MID, "$", 1)
             else
-              token_column = column + (ss.pos - var_name.size)
-              tokens << new_token(:UNENC_VARIABLE, var_name, var_name.size, :line => line, :column => token_column)
+              tokens << new_token(:UNENC_VARIABLE, var_name, var_name.size)
             end
           else
             contents = ss.scan_until(/\}/)[0..-2]
@@ -505,9 +475,7 @@ class PuppetLint
             lexer = PuppetLint::Lexer.new
             lexer.tokenise(contents)
             lexer.tokens.each do |token|
-              tok_col = column + token.column + (ss.pos - contents.size - 1)
-              tok_line = token.line + line - 1
-              tokens << new_token(token.type, token.value, token.value.size, :line => tok_line, :column => tok_col)
+              tokens << new_token(token.type, token.value, nil)
             end
           end
         end
