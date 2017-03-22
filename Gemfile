@@ -2,10 +2,8 @@ source 'https://rubygems.org'
 
 gemspec
 
-if RUBY_VERSION > '1.8'
-  # requires ruby 1.9+, on 1.8 we'll fall back to the old regex parsing
-  gem 'rspec-json_expectations', '~> 1.4'
-end
+# requires ruby 1.9+, on 1.8 we'll fall back to the old regex parsing
+gem 'rspec-json_expectations', '~> 1.4'
 
 group :test do
   gem 'rake', '~> 10.0'
