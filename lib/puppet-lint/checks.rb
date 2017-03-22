@@ -65,6 +65,27 @@ class PuppetLint::Checks
     end
 
     @problems
+  rescue => e
+    puts <<-END
+Whoops! It looks like puppet-lint has encountered an error that it doesn't
+know how to handle. Please open an issue at https://github.com/rodjek/puppet-lint
+and paste the following output into the issue description.
+---
+puppet-lint version: #{PuppetLint::VERSION}
+ruby version: #{RUBY_VERSION}-p#{RUBY_PATCHLEVEL}
+platform: #{RUBY_PLATFORM}
+file path: #{fileinfo}
+file contents:
+```
+#{File.read(fileinfo)}
+```
+error:
+```
+#{e.class}: #{e.message}
+#{e.backtrace.join("\n")}
+```
+END
+    exit 1
   end
 
   # Internal: Get a list of checks that have not been disabled.
