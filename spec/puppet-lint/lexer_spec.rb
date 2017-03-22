@@ -13,50 +13,50 @@ describe PuppetLint::Lexer do
 
   context '#new_token' do
     it 'should calculate the line number for an empty string' do
-      token = @lexer.new_token(:TEST, 'test', 4)
+      token = @lexer.new_token(:TEST, 'test')
       expect(token.line).to eq(1)
     end
 
     it 'should get correct line number after double quoted multi line string' do
-      token = @lexer.new_token(:STRING, "test\ntest", 9)
-      token = @lexer.new_token(:TEST, 'test', 4)
+      token = @lexer.new_token(:STRING, "test\ntest")
+      token = @lexer.new_token(:TEST, 'test')
       expect(token.line).to eq(2)
     end
 
     it 'should get correct line number after a multi line comment' do
-      token = @lexer.new_token(:MLCOMMENT, "test\ntest", 9, :raw => "/*test\ntest*/")
-      token = @lexer.new_token(:TEST, 'test', 4)
+      token = @lexer.new_token(:MLCOMMENT, "test\ntest", :raw => "/*test\ntest*/")
+      token = @lexer.new_token(:TEST, 'test')
       expect(token.line).to eq(2)
     end
 
     it 'should calculate the line number for a multi line string' do
-      token = @lexer.new_token(:SSTRING, "test\ntest", 9)
-      token = @lexer.new_token(:TEST, 'test', 4)
+      token = @lexer.new_token(:SSTRING, "test\ntest")
+      token = @lexer.new_token(:TEST, 'test')
       expect(token.line).to eq(2)
     end
 
     it 'should calculate line number for string that ends with newline' do
-      token = @lexer.new_token(:SSTRING, "test\n", 5)
-      token = @lexer.new_token(:TEST, 'test', 4)
+      token = @lexer.new_token(:SSTRING, "test\n")
+      token = @lexer.new_token(:TEST, 'test')
       expect(token.line).to eq(2)
     end
 
     it 'should calculate the column number for an empty string' do
-      token = @lexer.new_token(:TEST, 'test', 4)
+      token = @lexer.new_token(:TEST, 'test')
       expect(token.column).to eq(1)
     end
 
     it 'should calculate the column number for a single line string' do
-      @lexer.new_token(:SSTRING, 'this is a test', 14)
-      token = @lexer.new_token(:TEST, 'test', 4)
+      @lexer.new_token(:SSTRING, 'this is a test')
+      token = @lexer.new_token(:TEST, 'test')
       expect(token.column).to eq(17)
     end
 
     it 'should calculate the column number for a multi line string' do
       @lexer.instance_variable_set('@line_no', 4)
       @lexer.instance_variable_set('@column', 5)
-      token = @lexer.new_token(:SSTRING, "test\ntest", 9)
-      token = @lexer.new_token(:TEST, 'test', 4)
+      token = @lexer.new_token(:SSTRING, "test\ntest")
+      token = @lexer.new_token(:TEST, 'test')
       expect(token.column).to eq(6)
     end
   end

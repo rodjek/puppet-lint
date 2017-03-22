@@ -178,12 +178,12 @@ class PuppetLint
             length = value.size
             if type == :NAME
               if KEYWORDS.include? value
-                tokens << new_token(value.upcase.to_sym, value, length)
+                tokens << new_token(value.upcase.to_sym, value)
               else
-                tokens << new_token(type, value, length)
+                tokens << new_token(type, value)
               end
             else
-              tokens << new_token(type, value, length)
+              tokens << new_token(type, value)
             end
             i += length
             found = true
@@ -194,12 +194,12 @@ class PuppetLint
         unless found
           if var_name = chunk[/\A\$((::)?(\w+(-\w+)*::)*\w+(-\w+)*(\[.+?\])*)/, 1]
             length = var_name.size + 1
-            tokens << new_token(:VARIABLE, var_name, length)
+            tokens << new_token(:VARIABLE, var_name)
 
           elsif chunk.match(/\A'(.*?)'/m)
             str_content = StringScanner.new(code[i+1..-1]).scan_until(/(\A|[^\\])(\\\\)*'/m)
             length = str_content.size + 1
-            tokens << new_token(:SSTRING, str_content[0..-2], length)
+            tokens << new_token(:SSTRING, str_content[0..-2])
 
           elsif chunk.match(/\A"/)
             str_contents = StringScanner.new(code[i+1..-1]).scan_until(/(\A|[^\\])(\\\\)*"/m)
@@ -209,18 +209,18 @@ class PuppetLint
 
           elsif heredoc_name = chunk[/\A@\(("?.+?"?(:.+?)?(\/.*?)?)\)/, 1]
             @@heredoc_queue << heredoc_name
-            tokens << new_token(:HEREDOC_OPEN, heredoc_name, heredoc_name.size + 3)
+            tokens << new_token(:HEREDOC_OPEN, heredoc_name)
             length = heredoc_name.size + 3
 
           elsif comment = chunk[/\A(#.*)/, 1]
             length = comment.size
             comment.sub!(/#/, '')
-            tokens << new_token(:COMMENT, comment, length)
+            tokens << new_token(:COMMENT, comment)
 
           elsif slash_comment = chunk[/\A(\/\/.*)/, 1]
             length = slash_comment.size
             slash_comment.sub!(/\/\//, '')
-            tokens << new_token(:SLASH_COMMENT, slash_comment, length)
+            tokens << new_token(:SLASH_COMMENT, slash_comment)
 
           elsif mlcomment = chunk[/\A(\/\*.*?\*\/)/m, 1]
             length = mlcomment.size
@@ -228,21 +228,21 @@ class PuppetLint
             mlcomment.sub!(/\A\/\* ?/, '')
             mlcomment.sub!(/ ?\*\/\Z/, '')
             mlcomment.gsub!(/^ *\*/, '')
-            tokens << new_token(:MLCOMMENT, mlcomment, length, :raw => mlcomment_raw)
+            tokens << new_token(:MLCOMMENT, mlcomment, :raw => mlcomment_raw)
 
           elsif chunk.match(/\A\/.*?\//) && possible_regex?
             str_content = StringScanner.new(code[i+1..-1]).scan_until(/(\A|[^\\])(\\\\)*\//m)
             length = str_content.size + 1
-            tokens << new_token(:REGEX, str_content[0..-2], length)
+            tokens << new_token(:REGEX, str_content[0..-2])
 
           elsif eolindent = chunk[/\A((\r\n|\r|\n)[ \t]+)/m, 1]
             eol = eolindent[/\A([\r\n]+)/m, 1]
-            tokens << new_token(:NEWLINE, eol, eol.size)
+            tokens << new_token(:NEWLINE, eol)
             length = eol.size
 
             if @@heredoc_queue.empty?
               indent = eolindent[/\A[\r\n]+([ \t]+)/m, 1]
-              tokens << new_token(:INDENT, indent, indent.size)
+              tokens << new_token(:INDENT, indent)
               length += indent.size
             else
               heredoc_tag = @@heredoc_queue.shift
@@ -254,11 +254,11 @@ class PuppetLint
 
           elsif whitespace = chunk[/\A([ \t]+)/, 1]
             length = whitespace.size
-            tokens << new_token(:WHITESPACE, whitespace, length)
+            tokens << new_token(:WHITESPACE, whitespace)
 
           elsif eol = chunk[/\A(\r\n|\r|\n)/, 1]
             length = eol.size
-            tokens << new_token(:NEWLINE, eol, length)
+            tokens << new_token(:NEWLINE, eol)
 
             unless @@heredoc_queue.empty?
               heredoc_tag = @@heredoc_queue.shift
@@ -271,11 +271,11 @@ class PuppetLint
 
           elsif chunk.match(/\A\//)
             length = 1
-            tokens << new_token(:DIV, '/', length)
+            tokens << new_token(:DIV, '/')
 
           elsif chunk.match(/\A@/)
             length = 1
-            tokens << new_token(:AT, '@', length)
+            tokens << new_token(:AT, '@')
 
           else
             raise PuppetLint::LexerError.new(@line_no, @column)
@@ -318,8 +318,12 @@ class PuppetLint
     #   :raw    - The String raw value of the token (if necessary).
     #
     # Returns the instantiated PuppetLint::Lexer::Token object.
-    def new_token(type, value, length, opts = {})
-      # TODO: refactor out use of length param
+    def new_token(type, value, *args)
+      # This bit of magic is used instead of an "opts = {}" argument so that we
+      # can safely deprecate the old "length" parameter that might still be
+      # passed by 3rd party plugins that haven't updated yet.
+      opts = args.last.is_a?(Hash) ? args.last : {}
+
       column = opts[:column] || @column
       line_no = opts[:line] || @line_no
 
@@ -393,32 +397,32 @@ class PuppetLint
       until value.nil?
         if terminator == "\""
           if first
-            tokens << new_token(:STRING, value, value.size + 2, :line => line, :column => column)
+            tokens << new_token(:STRING, value, :line => line, :column => column)
             first = false
           else
             line += value.scan(/(\r\n|\r|\n)/).size
             token_column = column + (ss.pos - value.size)
-            tokens << new_token(:DQPOST, value, value.size + 1, :line => line, :column => token_column)
+            tokens << new_token(:DQPOST, value, :line => line, :column => token_column)
             @column = token_column + 1
             @line_no = line
           end
         else
           if first
-            tokens << new_token(:DQPRE, value, value.size + 1, :line => line, :column => column)
+            tokens << new_token(:DQPRE, value, :line => line, :column => column)
             first = false
           else
             line += value.scan(/(\r\n|\r|\n)/).size
             token_column = column + (ss.pos - value.size)
-            tokens << new_token(:DQMID, value, value.size, :line => line, :column => token_column)
+            tokens << new_token(:DQMID, value, :line => line, :column => token_column)
           end
           if ss.scan(/\{/).nil?
             var_name = ss.scan(/(::)?(\w+(-\w+)*::)*\w+(-\w+)*/)
             if var_name.nil?
               token_column = column + ss.pos - 1
-              tokens << new_token(:DQMID, "$", 1, :line => line, :column => token_column)
+              tokens << new_token(:DQMID, "$", :line => line, :column => token_column)
             else
               token_column = column + (ss.pos - var_name.size)
-              tokens << new_token(:UNENC_VARIABLE, var_name, var_name.size, :line => line, :column => token_column)
+              tokens << new_token(:UNENC_VARIABLE, var_name, :line => line, :column => token_column)
             end
           else
             contents = ss.scan_until(/\}/)[0..-2]
@@ -430,7 +434,7 @@ class PuppetLint
             lexer.tokens.each do |token|
               tok_col = column + token.column + (ss.pos - contents.size - 1)
               tok_line = token.line + line - 1
-              tokens << new_token(token.type, token.value, token.value.size, :line => tok_line, :column => tok_col)
+              tokens << new_token(token.type, token.value, :line => tok_line, :column => tok_col)
             end
           end
         end
@@ -447,24 +451,24 @@ class PuppetLint
       until value.nil?
         if terminator =~ /\A\|?\s*-?\s*#{Regexp.escape(eos_text)}/
           if first
-            tokens << new_token(:HEREDOC, value, nil, :raw => "#{value}#{terminator}")
+            tokens << new_token(:HEREDOC, value, :raw => "#{value}#{terminator}")
             first = false
           else
-            tokens << new_token(:HEREDOC_POST, value, nil, :raw => "#{value}#{terminator}")
+            tokens << new_token(:HEREDOC_POST, value, :raw => "#{value}#{terminator}")
           end
         else
           if first
-            tokens << new_token(:HEREDOC_PRE, value, nil)
+            tokens << new_token(:HEREDOC_PRE, value)
             first = false
           else
-            tokens << new_token(:HEREDOC_MID, value, nil)
+            tokens << new_token(:HEREDOC_MID, value)
           end
           if ss.scan(/\{/).nil?
             var_name = ss.scan(/(::)?(\w+(-\w+)*::)*\w+(-\w+)*/)
             if var_name.nil?
-              tokens << new_token(:HEREDOC_MID, "$", 1)
+              tokens << new_token(:HEREDOC_MID, "$")
             else
-              tokens << new_token(:UNENC_VARIABLE, var_name, var_name.size)
+              tokens << new_token(:UNENC_VARIABLE, var_name)
             end
           else
             contents = ss.scan_until(/\}/)[0..-2]
@@ -475,7 +479,7 @@ class PuppetLint
             lexer = PuppetLint::Lexer.new
             lexer.tokenise(contents)
             lexer.tokens.each do |token|
-              tokens << new_token(token.type, token.value, nil)
+              tokens << new_token(token.type, token.value)
             end
           end
         end
