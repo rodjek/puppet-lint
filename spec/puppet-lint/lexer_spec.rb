@@ -871,6 +871,12 @@ describe PuppetLint::Lexer do
       expect(tokens[2].type).to eq(:REGEX)
       expect(tokens[14].type).to eq(:REGEX)
     end
+
+    it 'should properly parse when a regex is provided as a function argument' do
+      tokens = @lexer.tokenise('$somevar = $other_var.match(/([\w\.]+(:\d+)?(\/\w+)?)(:(\w+))?/)')
+      expect(tokens[8].type).to eq(:REGEX)
+      expect(tokens[8].value).to eq('([\w\.]+(:\d+)?(\/\w+)?)(:(\w+))?')
+    end
   end
 
   context ':STRING' do
