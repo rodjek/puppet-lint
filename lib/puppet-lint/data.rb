@@ -146,7 +146,9 @@ class PuppetLint::Data
     #
     # Returns a Token object.
     def find_resource_type_token(index)
-      tokens[tokens[0..index].rindex { |token| token.type == :LBRACE }].prev_code_token
+      tokens[tokens[0..index].rindex { |token|
+               token.type == :LBRACE && token.prev_code_token.type != :QMARK
+             }].prev_code_token
     end
 
     # Internal: Find all the Token objects representing the parameter names in
