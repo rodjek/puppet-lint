@@ -83,6 +83,7 @@ class PuppetLint
       :LBRACK  => true,
       :IF      => true,
       :ELSIF   => true,
+      :LPAREN  => true,
     }
 
     # Internal: An Array of Arrays containing tokens that can be described by
