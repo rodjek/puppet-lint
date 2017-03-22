@@ -442,6 +442,12 @@ class PuppetLint
       end
     end
 
+    # Internal: Tokenise the contents of a heredoc.
+    #
+    # string - The String to be tokenised.
+    # name   - The String name/endtext of the heredoc.
+    #
+    # Returns nothing.
     def interpolate_heredoc(string, name)
       ss = StringScanner.new(string)
       eos_text = name[/\A"?(.+?)"?(:.+?)?(\/.*)?\Z/, 1]
@@ -487,6 +493,16 @@ class PuppetLint
       end
     end
 
+    # Internal: Splits a heredoc String into segments if it is to be
+    # interpolated.
+    #
+    # string      - The String heredoc.
+    # eos_text    - The String endtext for the heredoc.
+    # interpolate - A Boolean that specifies whether this heredoc can contain
+    #               interpolated values (defaults to True).
+    #
+    # Returns an Array consisting of two Strings, the String up to the first
+    # terminator and the terminator that was found.
     def get_heredoc_segment(string, eos_text, interpolate=true)
       if interpolate
         regexp = /(([^\\]|^|[^\\])([\\]{2})*[$]+|\|?\s*-?#{Regexp.escape(eos_text)})/
