@@ -77,7 +77,7 @@ platform: #{RUBY_PLATFORM}
 file path: #{fileinfo}
 file contents:
 ```
-#{File.read(fileinfo)}
+#{File.read(fileinfo) if File.readable?(fileinfo)}
 ```
 error:
 ```
