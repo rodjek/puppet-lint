@@ -402,6 +402,28 @@ describe 'arrow_alignment' do
         expect(problems).to contain_warning(sprintf(msg,23,19)).on_line(6).in_column(19)
       end
     end
+
+    context 'complex data structure with different indentation levels at the same depth' do
+      let(:code) { "
+        class { 'some_class':
+          config_hash => {
+            'a_hash'   => {
+              'foo' => 'bar',
+            },
+            'an_array' => [
+              {
+                foo => 'bar',
+                bar => 'baz',
+              },
+            ],
+          },
+        }
+      " }
+
+      it 'should not detect any problems' do
+        expect(problems).to have(0).problems
+      end
+    end
   end
 
   context 'with fix enabled' do
@@ -669,6 +691,52 @@ describe 'arrow_alignment' do
       it 'should fix 2 problems' do
         expect(problems).to contain_fixed(sprintf(msg,23,15)).on_line(4).in_column(15)
         expect(problems).to contain_fixed(sprintf(msg,23,19)).on_line(6).in_column(19)
+      end
+
+      it 'should align the hash rockets' do
+        expect(manifest).to eq(fixed)
+      end
+    end
+
+    context 'complex data structure with different indentation levels at the same depth' do
+      let(:code) { "
+        class { 'some_class':
+          config_hash => {
+            'a_hash'   => {
+              'foo' => 'bar',
+            },
+            'an_array' => [
+              {
+                foo => 'bar',
+                bar  => 'baz',
+              },
+            ],
+          },
+        }
+      " }
+
+      let(:fixed) { "
+        class { 'some_class':
+          config_hash => {
+            'a_hash'   => {
+              'foo' => 'bar',
+            },
+            'an_array' => [
+              {
+                foo => 'bar',
+                bar => 'baz',
+              },
+            ],
+          },
+        }
+      " }
+
+      it 'should detect 1 problem' do
+        expect(problems).to have(1).problems
+      end
+
+      it 'should fix 1 problem' do
+        expect(problems).to contain_fixed(sprintf(msg, 21, 22)).on_line(10).in_column(22)
       end
 
       it 'should align the hash rockets' do
