@@ -139,7 +139,7 @@ PuppetLint.new_check(:arrow_alignment) do
       last_arrow = resource_tokens.rindex { |r| r.type == :FARROW }
       next if first_arrow.nil?
       next if last_arrow.nil?
-      next unless resource_tokens[first_arrow..last_arrow].any? { |r| r.type == :NEWLINE }
+      next if resource_tokens[first_arrow].line == resource_tokens[last_arrow].line
 
       resource_tokens.each_with_index do |token, idx|
         if token.type == :FARROW
@@ -194,6 +194,7 @@ PuppetLint.new_check(:arrow_alignment) do
           end
           indent_depth[indent_depth_idx] = 0
           level_tokens[indent_depth_idx].clear
+          param_column[indent_depth_idx] = nil
           indent_depth_idx -= 1
         end
       end
