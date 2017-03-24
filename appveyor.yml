@@ -7,16 +7,11 @@ branches:
 # ruby versions under test
 environment:
   matrix:
-    - RUBY_VERSION: 187
     - RUBY_VERSION: 193
     - RUBY_VERSION: 200
-    - RUBY_VERSION: 219
-    - RUBY_VERSION: 231
-    - RUBY_VERSION: 240
-
-matrix:
-  allow_failures:
-    - RUBY_VERSION: 187
+    - RUBY_VERSION: 21
+    - RUBY_VERSION: 22
+    - RUBY_VERSION: 23-x64
 
 install:
   - SET PATH=C:\Ruby%RUBY_VERSION%\bin;%PATH%
