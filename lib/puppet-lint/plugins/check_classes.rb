@@ -14,6 +14,44 @@ PuppetLint.new_check(:right_to_left_relationship) do
   end
 end
 
+# Public: Test the manifest tokens for chaining arrow that is
+# on the line of the left operand when the right operand is on another line.
+#
+# https://docs.puppet.com/guides/style_guide.html#chaining-arrow-syntax
+PuppetLint.new_check(:arrow_on_right_operand_line) do
+  def check
+    tokens.select { |r| Set[:IN_EDGE, :IN_EDGE_SUB].include?(r.type) }.each do |token|
+      if token.next_code_token.line != token.line
+        notify :warning, {
+          :message =>  'arrow should be on the right operand\'s line',
+          :line    => token.line,
+          :column  => token.column,
+          :token   => token,
+        }
+      end
+    end
+  end
+
+  def fix(problem)
+    token = problem[:token]
+    tokens.delete(token)
+    # remove any excessive whitespace on the line
+    temp_token = token.prev_code_token
+    while (temp_token = temp_token.next_token)
+      tokens.delete(temp_token) if whitespace?(temp_token)
+      break if temp_token.type == :NEWLINE
+    end
+
+    index = tokens.index(token.next_code_token)
+    tokens.insert(index, token)
+    tokens.insert(index + 1, PuppetLint::Lexer::Token.new(:WHITESPACE, ' ', 0, 0))
+  end
+
+  def whitespace?(token)
+    Set[:INDENT, :WHITESPACE].include?(token.type)
+  end
+end
+
 # Public: Test the manifest tokens for any classes or defined types that are
 # not in an appropriately named file for the autoloader to detect and record
 # an error of each instance found.
