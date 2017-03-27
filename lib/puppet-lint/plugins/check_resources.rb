@@ -47,43 +47,22 @@ PuppetLint.new_check(:ensure_first_param) do
       end
     end
   end
+
   def fix(problem)
-    # We find the first and ensure paramss boundaries
-    first_param_name_token = nil
-    first_param_name_idx = nil
-    first_param_comma_token = nil
-    first_param_comma_idx = nil
-    ensure_param_name_token = nil
-    ensure_param_name_idx = nil
-    ensure_param_comma_token = nil
-    ensure_param_comma_idx = nil
-    tokens[(problem[:resource][:start])..(problem[:resource][:end])].each_with_index do |token, token_idx|
-      if first_param_name_token.nil?
-        if token.type == :NAME
-          first_param_name_token = token
-          first_param_name_idx = problem[:resource][:start] + token_idx
-        end
-      elsif first_param_comma_token.nil?
-        if token.type == :COMMA
-          first_param_comma_token = token
-          first_param_comma_idx = problem[:resource][:start] + token_idx
-        end
-      elsif ensure_param_name_token.nil?
-        if token.type == :NAME and token.value == 'ensure'
-          ensure_param_name_token = token
-          ensure_param_name_idx = problem[:resource][:start] + token_idx
-        end
-      elsif ensure_param_comma_token.nil?
-        if token.type == :COMMA or token.type == :SEMIC
-          ensure_param_comma_token = token
-          ensure_param_comma_idx = problem[:resource][:start] + token_idx
-          break
-        end
-      end
-    end
+    first_param_name_token = tokens[problem[:resource][:start]].next_token_of(:NAME)
+    first_param_comma_token = first_param_name_token.next_token_of(:COMMA)
+    ensure_param_name_token = first_param_comma_token.next_token_of(:NAME, :value => 'ensure')
+    ensure_param_comma_token = ensure_param_name_token.next_token_of([:COMMA, :SEMIC])
+
     if first_param_name_token.nil? or first_param_comma_token.nil? or ensure_param_name_token.nil? or ensure_param_comma_token.nil?
       raise PuppetLint::NoFix
     end
+
+    first_param_name_idx = tokens.index(first_param_name_token)
+    first_param_comma_idx = tokens.index(first_param_comma_token)
+    ensure_param_name_idx = tokens.index(ensure_param_name_token)
+    ensure_param_comma_idx = tokens.index(ensure_param_comma_token)
+
     # Flip params
     prev_token = first_param_name_token.prev_token
     first_param_name_token.prev_token = ensure_param_name_token.prev_token
