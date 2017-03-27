@@ -108,10 +108,42 @@ class PuppetLint
       # Returns a PuppetLint::Lexer::Token object if a matching token could be
       # found, otherwise nil.
       def next_token_of(type, opts = {})
+        find_token_of(:next, type, opts)
+      end
+
+      # Public: Search from this token to find the previous token of a given type.
+      #
+      # type - A Symbol type of the token to find
+      # opts - An optional Hash
+      #   :value       - A token value to search for in addition to type
+      #   :skip_blocks - A Boolean to specify whether { } blocks should be
+      #                  skipped over (defaults to true).
+      #
+      # Returns a PuppetLint::Lexer::Token object if a matching token could be
+      # found, otherwise nil.
+      def prev_token_of(type, opts = {})
+        find_token_of(:prev, type, opts)
+      end
+
+      # Internal: Search from this token to find the next token of a given type
+      # in a given direction.
+      #
+      # direction - A Symbol direction to search (:next or :prev).
+      # type      - A Symbol type of the token to find
+      # opts      - An optional Hash
+      #   :value       - A token value to search for in addition to type
+      #   :skip_blocks - A Boolean to specify whether { } blocks should be
+      #                  skipped over (defaults to true).
+      #
+      # Returns a PuppetLint::Lexer::Token object if a matching token could be
+      # found, otherwise nil.
+      def find_token_of(direction, type, opts = {})
+        return nil unless [:next, :prev].include?(direction)
+
         opts[:skip_blocks] ||= true
         to_find = Array[*type]
 
-        token_iter = next_token
+        token_iter = self.send("#{direction}_token".to_sym)
         while !token_iter.nil?
           if to_find.include? token_iter.type
             if opts[:value]
@@ -121,10 +153,20 @@ class PuppetLint
             end
           end
 
-          if opts[:skip_blocks] && token_iter.type == :LBRACE
-            token_iter = token_iter.next_token_of(:RBRACE, opts)
+          opening_token = direction == :next ? "L" : "R"
+          closing_token = direction == :next ? "R" : "L"
+
+          if opts[:skip_blocks]
+            case token_iter.type
+            when "#{opening_token}BRACE".to_sym
+              token_iter = token_iter.send("#{direction}_token_of".to_sym, ["#{closing_token}BRACE".to_sym, opts])
+            when "#{opening_token}BRACK".to_sym
+              token_iter = token_iter.send("#{direction}_token_of".to_sym, ["#{closing_token}BRACK".to_sym, opts])
+            when "#{opening_token}PAREN".to_sym
+              token_iter = token_iter.send("#{direction}_token_of".to_sym, ["#{closing_token}PAREN".to_sym, opts])
+            end
           end
-          token_iter = token_iter.next_token
+          token_iter = token_iter.send("#{direction}_token".to_sym)
         end
         nil
       end
