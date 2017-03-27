@@ -159,5 +159,45 @@ describe 'ensure_first_param' do
         expect(problems).to have(0).problems
       end
     end
+
+    context 'ensure is a selector' do
+      let(:code) { "
+        file { 'foo':
+          mode   => '0640',
+          ensure => $::operatingsystem ? {
+            'redhat' => absent,
+            default  => $::phase_of_the_moon ? {
+              'full'  => absent,
+              default => present,
+            },
+          },
+        }
+      " }
+
+      let(:fixed) { "
+        file { 'foo':
+          ensure => $::operatingsystem ? {
+            'redhat' => absent,
+            default  => $::phase_of_the_moon ? {
+              'full'  => absent,
+              default => present,
+            },
+          },
+          mode   => '0640',
+        }
+      " }
+
+      it 'should detect a problem' do
+        expect(problems).to have(1).problem
+      end
+
+      it 'should fix the problem' do
+        expect(problems).to contain_fixed(msg).on_line(4).in_column(11)
+      end
+
+      it 'should move the whole ensure parameter to the top' do
+        expect(manifest).to eq(fixed)
+      end
+    end
   end
 end
