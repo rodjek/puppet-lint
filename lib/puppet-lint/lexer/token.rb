@@ -96,6 +96,38 @@ class PuppetLint
           @value
         end
       end
+
+      # Public: Search from this token to find the next token of a given type.
+      #
+      # type - A Symbol type of the token to find
+      # opts - An optional Hash
+      #   :value       - A token value to search for in addition to type
+      #   :skip_blocks - A Boolean to specify whether { } blocks should be
+      #                  skipped over (defaults to true).
+      #
+      # Returns a PuppetLint::Lexer::Token object if a matching token could be
+      # found, otherwise nil.
+      def next_token_of(type, opts = {})
+        opts[:skip_blocks] ||= true
+        to_find = Array[*type]
+
+        token_iter = next_token
+        while !token_iter.nil?
+          if to_find.include? token_iter.type
+            if opts[:value]
+              return token_iter if token_iter.value == opts[:value]
+            else
+              return token_iter
+            end
+          end
+
+          if opts[:skip_blocks] && token_iter.type == :LBRACE
+            token_iter = token_iter.next_token_of(:RBRACE, opts)
+          end
+          token_iter = token_iter.next_token
+        end
+        nil
+      end
     end
   end
 end
