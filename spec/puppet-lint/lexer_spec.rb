@@ -13,51 +13,51 @@ describe PuppetLint::Lexer do
 
   context '#new_token' do
     it 'should calculate the line number for an empty string' do
-      token = @lexer.new_token(:TEST, 'test', 4)
+      token = @lexer.new_token(:TEST, 'test')
       expect(token.line).to eq(1)
     end
 
     it 'should get correct line number after double quoted multi line string' do
-      token = @lexer.new_token(:STRING, "test\ntest", 9)
-      token = @lexer.new_token(:TEST, 'test', 4)
+      token = @lexer.new_token(:STRING, "test\ntest")
+      token = @lexer.new_token(:TEST, 'test')
       expect(token.line).to eq(2)
     end
 
     it 'should get correct line number after a multi line comment' do
-      token = @lexer.new_token(:MLCOMMENT, "test\ntest", 9)
-      token = @lexer.new_token(:TEST, 'test', 4)
+      token = @lexer.new_token(:MLCOMMENT, "test\ntest", :raw => "/*test\ntest*/")
+      token = @lexer.new_token(:TEST, 'test')
       expect(token.line).to eq(2)
     end
 
     it 'should calculate the line number for a multi line string' do
-      token = @lexer.new_token(:SSTRING, "test\ntest", 9)
-      token = @lexer.new_token(:TEST, 'test', 4)
+      token = @lexer.new_token(:SSTRING, "test\ntest")
+      token = @lexer.new_token(:TEST, 'test')
       expect(token.line).to eq(2)
     end
 
     it 'should calculate line number for string that ends with newline' do
-      token = @lexer.new_token(:SSTRING, "test\n", 5)
-      token = @lexer.new_token(:TEST, 'test', 4)
+      token = @lexer.new_token(:SSTRING, "test\n")
+      token = @lexer.new_token(:TEST, 'test')
       expect(token.line).to eq(2)
     end
 
     it 'should calculate the column number for an empty string' do
-      token = @lexer.new_token(:TEST, 'test', 4)
+      token = @lexer.new_token(:TEST, 'test')
       expect(token.column).to eq(1)
     end
 
     it 'should calculate the column number for a single line string' do
-      @lexer.instance_variable_set('@column', 'this is a test'.size)
-      token = @lexer.new_token(:TEST, 'test', 4)
-      expect(token.column).to eq(14)
+      @lexer.new_token(:SSTRING, 'this is a test')
+      token = @lexer.new_token(:TEST, 'test')
+      expect(token.column).to eq(17)
     end
 
     it 'should calculate the column number for a multi line string' do
       @lexer.instance_variable_set('@line_no', 4)
-      @lexer.instance_variable_set('@column', "gronk".size)
-      token = @lexer.new_token(:SSTRING, "test\ntest", 9)
-      token = @lexer.new_token(:TEST, 'test', 4)
-      expect(token.column).to eq(4)
+      @lexer.instance_variable_set('@column', 5)
+      token = @lexer.new_token(:SSTRING, "test\ntest")
+      token = @lexer.new_token(:TEST, 'test')
+      expect(token.column).to eq(6)
     end
   end
 
@@ -627,6 +627,324 @@ describe PuppetLint::Lexer do
       token = @lexer.tokenise('Callable').first
       expect(token.type).to eq(:TYPE)
       expect(token.value).to eq('Callable')
+    end
+  end
+
+  context ':HEREDOC without interpolation' do
+    it 'should parse a simple heredoc' do
+      manifest = <<-END.gsub(/^ {6}/, '')
+      $str = @(myheredoc)
+        SOMETHING
+        ELSE
+        :
+        |-myheredoc
+      END
+      tokens = @lexer.tokenise(manifest)
+
+      expect(tokens.length).to eq(8)
+      expect(tokens[0].type).to eq(:VARIABLE)
+      expect(tokens[0].value).to eq("str")
+      expect(tokens[0].line).to eq(1)
+      expect(tokens[0].column).to eq(1)
+      expect(tokens[1].type).to eq(:WHITESPACE)
+      expect(tokens[1].value).to eq(' ')
+      expect(tokens[1].line).to eq(1)
+      expect(tokens[1].column).to eq(5)
+      expect(tokens[2].type).to eq(:EQUALS)
+      expect(tokens[2].value).to eq('=')
+      expect(tokens[2].line).to eq(1)
+      expect(tokens[2].column).to eq(6)
+      expect(tokens[3].type).to eq(:WHITESPACE)
+      expect(tokens[3].value).to eq(' ')
+      expect(tokens[3].line).to eq(1)
+      expect(tokens[3].column).to eq(7)
+      expect(tokens[4].type).to eq(:HEREDOC_OPEN)
+      expect(tokens[4].value).to eq('myheredoc')
+      expect(tokens[4].line).to eq(1)
+      expect(tokens[4].column).to eq(8)
+      expect(tokens[5].type).to eq(:NEWLINE)
+      expect(tokens[5].value).to eq("\n")
+      expect(tokens[5].line).to eq(1)
+      expect(tokens[5].column).to eq(20)
+      expect(tokens[6].type).to eq(:HEREDOC)
+      expect(tokens[6].value).to eq("  SOMETHING\n  ELSE\n  :\n  ")
+      expect(tokens[6].raw).to eq("  SOMETHING\n  ELSE\n  :\n  |-myheredoc")
+      expect(tokens[6].line).to eq(2)
+      expect(tokens[6].column).to eq(1)
+      expect(tokens[7].type).to eq(:NEWLINE)
+      expect(tokens[7].line).to eq(5)
+      expect(tokens[7].column).to eq(14)
+    end
+
+    it 'should not interpolate the contents of the heredoc' do
+      manifest = <<-END.gsub(/^ {6}/, '')
+      $str = @(myheredoc)
+        SOMETHING
+        ${else}
+        :
+        |-myheredoc
+      END
+      tokens = @lexer.tokenise(manifest)
+
+      expect(tokens.length).to eq(8)
+      expect(tokens[0].type).to eq(:VARIABLE)
+      expect(tokens[0].value).to eq('str')
+      expect(tokens[0].line).to eq(1)
+      expect(tokens[0].column).to eq(1)
+      expect(tokens[1].type).to eq(:WHITESPACE)
+      expect(tokens[1].value).to eq(' ')
+      expect(tokens[1].line).to eq(1)
+      expect(tokens[1].column).to eq(5)
+      expect(tokens[2].type).to eq(:EQUALS)
+      expect(tokens[2].value).to eq('=')
+      expect(tokens[2].line).to eq(1)
+      expect(tokens[2].column).to eq(6)
+      expect(tokens[3].type).to eq(:WHITESPACE)
+      expect(tokens[3].value).to eq(' ')
+      expect(tokens[3].line).to eq(1)
+      expect(tokens[3].column).to eq(7)
+      expect(tokens[4].type).to eq(:HEREDOC_OPEN)
+      expect(tokens[4].value).to eq('myheredoc')
+      expect(tokens[4].line).to eq(1)
+      expect(tokens[4].column).to eq(8)
+      expect(tokens[5].type).to eq(:NEWLINE)
+      expect(tokens[5].value).to eq("\n")
+      expect(tokens[5].line).to eq(1)
+      expect(tokens[5].column).to eq(20)
+      expect(tokens[6].type).to eq(:HEREDOC)
+      expect(tokens[6].value).to eq("  SOMETHING\n  ${else}\n  :\n  ")
+      expect(tokens[6].raw).to eq("  SOMETHING\n  ${else}\n  :\n  |-myheredoc")
+      expect(tokens[6].line).to eq(2)
+      expect(tokens[6].column).to eq(1)
+      expect(tokens[7].type).to eq(:NEWLINE)
+      expect(tokens[7].value).to eq("\n")
+      expect(tokens[7].line).to eq(5)
+      expect(tokens[7].column).to eq(14)
+    end
+
+    it 'should handle multiple heredoc declarations on a single line' do
+      manifest = <<-END.gsub(/^ {6}/, '')
+      $str = "${@(end1)} ${@(end2)}"
+        foo
+        |-end1
+        bar
+        |-end2
+      END
+      tokens = @lexer.tokenise(manifest)
+
+      expect(tokens.length).to eq(14)
+      expect(tokens[0].type).to eq(:VARIABLE)
+      expect(tokens[0].value).to eq('str')
+      expect(tokens[0].line).to eq(1)
+      expect(tokens[0].column).to eq(1)
+      expect(tokens[1].type).to eq(:WHITESPACE)
+      expect(tokens[1].value).to eq(' ')
+      expect(tokens[1].line).to eq(1)
+      expect(tokens[1].column).to eq(5)
+      expect(tokens[2].type).to eq(:EQUALS)
+      expect(tokens[2].value).to eq('=')
+      expect(tokens[2].line).to eq(1)
+      expect(tokens[2].column).to eq(6)
+      expect(tokens[3].type).to eq(:WHITESPACE)
+      expect(tokens[3].value).to eq(' ')
+      expect(tokens[3].line).to eq(1)
+      expect(tokens[3].column).to eq(7)
+      expect(tokens[4].type).to eq(:DQPRE)
+      expect(tokens[4].value).to eq('')
+      expect(tokens[4].line).to eq(1)
+      expect(tokens[4].column).to eq(8)
+      expect(tokens[5].type).to eq(:HEREDOC_OPEN)
+      expect(tokens[5].value).to eq('end1')
+      expect(tokens[5].line).to eq(1)
+      expect(tokens[5].column).to eq(11)
+      expect(tokens[6].type).to eq(:DQMID)
+      expect(tokens[6].value).to eq(' ')
+      expect(tokens[6].line).to eq(1)
+      expect(tokens[6].column).to eq(19)
+      expect(tokens[7].type).to eq(:HEREDOC_OPEN)
+      expect(tokens[7].value).to eq('end2')
+      expect(tokens[7].line).to eq(1)
+      expect(tokens[7].column).to eq(22)
+      expect(tokens[8].type).to eq(:DQPOST)
+      expect(tokens[8].value).to eq('')
+      expect(tokens[8].line).to eq(1)
+      expect(tokens[8].column).to eq(30)
+      expect(tokens[9].type).to eq(:NEWLINE)
+      expect(tokens[9].value).to eq("\n")
+      expect(tokens[9].line).to eq(1)
+      expect(tokens[9].column).to eq(31)
+      expect(tokens[10].type).to eq(:HEREDOC)
+      expect(tokens[10].value).to eq("  foo\n  ")
+      expect(tokens[10].raw).to eq("  foo\n  |-end1")
+      expect(tokens[10].line).to eq(2)
+      expect(tokens[10].column).to eq(1)
+      expect(tokens[11].type).to eq(:NEWLINE)
+      expect(tokens[11].value).to eq("\n")
+      expect(tokens[11].line).to eq(3)
+      expect(tokens[11].column).to eq(9)
+      expect(tokens[12].type).to eq(:HEREDOC)
+      expect(tokens[12].value).to eq("  bar\n  ")
+      expect(tokens[12].raw).to eq("  bar\n  |-end2")
+      expect(tokens[12].line).to eq(4)
+      expect(tokens[12].column).to eq(1)
+      expect(tokens[13].type).to eq(:NEWLINE)
+      expect(tokens[13].value).to eq("\n")
+      expect(tokens[13].line).to eq(5)
+      expect(tokens[13].column).to eq(9)
+    end
+
+    it 'should handle a heredoc that specifies a syntax' do
+      manifest = <<-END.gsub(/^ {6}/, '')
+      $str = @("end":json/)
+        {
+          "foo": "bar"
+        }
+        |-end
+      END
+
+      tokens = @lexer.tokenise(manifest)
+
+      expect(tokens.length).to eq(8)
+      expect(tokens[0].type).to eq(:VARIABLE)
+      expect(tokens[0].value).to eq("str")
+      expect(tokens[0].line).to eq(1)
+      expect(tokens[0].column).to eq(1)
+      expect(tokens[1].type).to eq(:WHITESPACE)
+      expect(tokens[1].value).to eq(' ')
+      expect(tokens[1].line).to eq(1)
+      expect(tokens[1].column).to eq(5)
+      expect(tokens[2].type).to eq(:EQUALS)
+      expect(tokens[2].value).to eq('=')
+      expect(tokens[2].line).to eq(1)
+      expect(tokens[2].column).to eq(6)
+      expect(tokens[3].type).to eq(:WHITESPACE)
+      expect(tokens[3].value).to eq(' ')
+      expect(tokens[3].line).to eq(1)
+      expect(tokens[3].column).to eq(7)
+      expect(tokens[4].type).to eq(:HEREDOC_OPEN)
+      expect(tokens[4].value).to eq('"end":json/')
+      expect(tokens[4].line).to eq(1)
+      expect(tokens[4].column).to eq(8)
+      expect(tokens[5].type).to eq(:NEWLINE)
+      expect(tokens[5].value).to eq("\n")
+      expect(tokens[5].line).to eq(1)
+      expect(tokens[5].column).to eq(22)
+      expect(tokens[6].type).to eq(:HEREDOC)
+      expect(tokens[6].value).to eq("  {\n    \"foo\": \"bar\"\n  }\n  ")
+      expect(tokens[6].raw).to eq("  {\n    \"foo\": \"bar\"\n  }\n  |-end")
+      expect(tokens[6].line).to eq(2)
+      expect(tokens[6].column).to eq(1)
+      expect(tokens[7].type).to eq(:NEWLINE)
+      expect(tokens[7].value).to eq("\n")
+      expect(tokens[7].line).to eq(5)
+      expect(tokens[7].column).to eq(8)
+    end
+  end
+
+  context ':HEREDOC with interpolation' do
+    it 'should parse a heredoc with no interpolated values as a :HEREDOC' do
+      manifest = <<-END.gsub(/^ {6}/, '')
+      $str = @("myheredoc"/)
+        SOMETHING
+        ELSE
+        :
+        |-myheredoc
+      END
+      tokens = @lexer.tokenise(manifest)
+
+      expect(tokens[0].type).to eq(:VARIABLE)
+      expect(tokens[0].value).to eq("str")
+      expect(tokens[0].line).to eq(1)
+      expect(tokens[0].column).to eq(1)
+      expect(tokens[1].type).to eq(:WHITESPACE)
+      expect(tokens[1].value).to eq(' ')
+      expect(tokens[1].line).to eq(1)
+      expect(tokens[1].column).to eq(5)
+      expect(tokens[2].type).to eq(:EQUALS)
+      expect(tokens[2].value).to eq('=')
+      expect(tokens[2].line).to eq(1)
+      expect(tokens[2].column).to eq(6)
+      expect(tokens[3].type).to eq(:WHITESPACE)
+      expect(tokens[3].value).to eq(' ')
+      expect(tokens[3].line).to eq(1)
+      expect(tokens[3].column).to eq(7)
+      expect(tokens[4].type).to eq(:HEREDOC_OPEN)
+      expect(tokens[4].value).to eq('"myheredoc"/')
+      expect(tokens[4].line).to eq(1)
+      expect(tokens[4].column).to eq(8)
+      expect(tokens[5].type).to eq(:NEWLINE)
+      expect(tokens[5].value).to eq("\n")
+      expect(tokens[5].line).to eq(1)
+      expect(tokens[5].column).to eq(23)
+      expect(tokens[6].type).to eq(:HEREDOC)
+      expect(tokens[6].value).to eq("  SOMETHING\n  ELSE\n  :\n  ")
+      expect(tokens[6].raw).to eq("  SOMETHING\n  ELSE\n  :\n  |-myheredoc")
+      expect(tokens[6].line).to eq(2)
+      expect(tokens[6].column).to eq(1)
+      expect(tokens[7].type).to eq(:NEWLINE)
+      expect(tokens[7].value).to eq("\n")
+      expect(tokens[7].line).to eq(5)
+      expect(tokens[7].column).to eq(14)
+    end
+
+    it 'should parse a heredoc with interpolated values' do
+      manifest = <<-END.gsub(/^ {6}/, '')
+      $str = @("myheredoc"/)
+        SOMETHING
+        ${else}
+        AND :
+        $another
+        THING
+        | myheredoc
+      END
+
+      tokens = @lexer.tokenise(manifest)
+
+      expect(tokens[0].type).to eq(:VARIABLE)
+      expect(tokens[0].value).to eq('str')
+      expect(tokens[0].line).to eq(1)
+      expect(tokens[0].column).to eq(1)
+      expect(tokens[1].type).to eq(:WHITESPACE)
+      expect(tokens[1].value).to eq(' ')
+      expect(tokens[1].line).to eq(1)
+      expect(tokens[1].column).to eq(5)
+      expect(tokens[2].type).to eq(:EQUALS)
+      expect(tokens[2].value).to eq('=')
+      expect(tokens[2].line).to eq(1)
+      expect(tokens[2].column).to eq(6)
+      expect(tokens[3].type).to eq(:WHITESPACE)
+      expect(tokens[3].value).to eq(' ')
+      expect(tokens[3].line).to eq(1)
+      expect(tokens[3].column).to eq(7)
+      expect(tokens[4].type).to eq(:HEREDOC_OPEN)
+      expect(tokens[4].value).to eq('"myheredoc"/')
+      expect(tokens[4].line).to eq(1)
+      expect(tokens[4].column).to eq(8)
+      expect(tokens[5].type).to eq(:NEWLINE)
+      expect(tokens[5].value).to eq("\n")
+      expect(tokens[5].line).to eq(1)
+      expect(tokens[5].column).to eq(23)
+      expect(tokens[6].type).to eq(:HEREDOC_PRE)
+      expect(tokens[6].value).to eq("  SOMETHING\n  ")
+      expect(tokens[6].line).to eq(2)
+      expect(tokens[6].column).to eq(1)
+      expect(tokens[7].type).to eq(:VARIABLE)
+      expect(tokens[7].value).to eq("else")
+      expect(tokens[7].line).to eq(3)
+      expect(tokens[7].column).to eq(3)
+      expect(tokens[8].type).to eq(:HEREDOC_MID)
+      expect(tokens[8].value).to eq("\n  AND :\n  ")
+      expect(tokens[8].line).to eq(3)
+      expect(tokens[8].column).to eq(10)
+      expect(tokens[9].type).to eq(:UNENC_VARIABLE)
+      expect(tokens[9].value).to eq("another")
+      expect(tokens[9].line).to eq(5)
+      expect(tokens[9].column).to eq(3)
+      expect(tokens[10].type).to eq(:HEREDOC_POST)
+      expect(tokens[10].value).to eq("\n  THING\n  ")
+      expect(tokens[10].raw).to eq("\n  THING\n  | myheredoc")
+      expect(tokens[10].line).to eq(5)
+      expect(tokens[10].column).to eq(11)
     end
   end
 

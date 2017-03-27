@@ -77,7 +77,8 @@ class PuppetLint
         when :DQPOST
           "#{@value}\""
         when :VARIABLE
-          if !@prev_code_token.nil? && [:DQPRE, :DQMID].include?(@prev_code_token.type)
+          enclose_token_types = Set[:DQPRE, :DQMID, :HEREDOC_PRE, :HEREDOC_MID].freeze
+          if !@prev_code_token.nil? && enclose_token_types.include?(@prev_code_token.type)
             "${#{@value}}"
           else
             "$#{@value}"
@@ -91,6 +92,12 @@ class PuppetLint
         when :REGEX
           "/#{@value}/"
         when :MLCOMMENT
+          @raw
+        when :HEREDOC_OPEN
+          "@(#{@value})"
+        when :HEREDOC
+          @raw
+        when :HEREDOC_POST
           @raw
         else
           @value
