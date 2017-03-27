@@ -1209,5 +1209,32 @@ describe PuppetLint::Lexer do
       expect(token.type).to eq(:STRING)
       expect(token.value).to eq("\n")
     end
+
+    it 'should handle interpolated values that contain double quotes' do
+      manifest = %Q{"export bar=\\"${join(hiera('test'), "," )}\\""}
+
+      tokens = @lexer.tokenise(manifest)
+      expect(tokens[0].type).to eq(:DQPRE)
+      expect(tokens[0].value).to eq('export bar=\"')
+      expect(tokens[1].type).to eq(:FUNCTION_NAME)
+      expect(tokens[1].value).to eq('join')
+      expect(tokens[2].type).to eq(:LPAREN)
+      expect(tokens[3].type).to eq(:FUNCTION_NAME)
+      expect(tokens[3].value).to eq('hiera')
+      expect(tokens[4].type).to eq(:LPAREN)
+      expect(tokens[5].type).to eq(:SSTRING)
+      expect(tokens[5].value).to eq('test')
+      expect(tokens[6].type).to eq(:RPAREN)
+      expect(tokens[7].type).to eq(:COMMA)
+      expect(tokens[8].type).to eq(:WHITESPACE)
+      expect(tokens[8].value).to eq(' ')
+      expect(tokens[9].type).to eq(:STRING)
+      expect(tokens[9].value).to eq(',')
+      expect(tokens[10].type).to eq(:WHITESPACE)
+      expect(tokens[10].value).to eq(' ')
+      expect(tokens[11].type).to eq(:RPAREN)
+      expect(tokens[12].type).to eq(:DQPOST)
+      expect(tokens[12].value).to eq('\"')
+    end
   end
 end
