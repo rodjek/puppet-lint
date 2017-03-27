@@ -198,11 +198,35 @@ describe PuppetLint::Lexer do
       expect(tokens[1].value).to eq('bar')
       expect(tokens[1].line).to eq(1)
       expect(tokens[1].column).to eq(3)
+      expect(tokens[1].to_manifest).to eq("${bar}")
 
       expect(tokens[2].type).to eq(:DQPOST)
       expect(tokens[2].value).to eq('')
       expect(tokens[2].line).to eq(1)
       expect(tokens[2].column).to eq(8)
+    end
+
+    it 'should not remove the unnecessary $ from enclosed variables' do
+      tokens = @lexer.tokenise('"${$bar}"')
+
+      expect(tokens.length).to eq(3)
+
+      expect(tokens[0].type).to eq(:DQPRE)
+      expect(tokens[0].value).to eq('')
+      expect(tokens[0].line).to eq(1)
+      expect(tokens[0].column).to eq(1)
+
+      expect(tokens[1].type).to eq(:VARIABLE)
+      expect(tokens[1].value).to eq('bar')
+      expect(tokens[1].raw).to eq('$bar')
+      expect(tokens[1].line).to eq(1)
+      expect(tokens[1].column).to eq(4)
+      expect(tokens[1].to_manifest).to eq("${$bar}")
+
+      expect(tokens[2].type).to eq(:DQPOST)
+      expect(tokens[2].value).to eq('')
+      expect(tokens[2].line).to eq(1)
+      expect(tokens[2].column).to eq(9)
     end
 
     it 'should handle a variable with an array reference' do
@@ -932,6 +956,7 @@ describe PuppetLint::Lexer do
       expect(tokens[7].value).to eq("else")
       expect(tokens[7].line).to eq(3)
       expect(tokens[7].column).to eq(3)
+      expect(tokens[7].to_manifest).to eq("${else}")
       expect(tokens[8].type).to eq(:HEREDOC_MID)
       expect(tokens[8].value).to eq("\n  AND :\n  ")
       expect(tokens[8].line).to eq(3)
@@ -940,11 +965,28 @@ describe PuppetLint::Lexer do
       expect(tokens[9].value).to eq("another")
       expect(tokens[9].line).to eq(5)
       expect(tokens[9].column).to eq(3)
+      expect(tokens[9].to_manifest).to eq("$another")
       expect(tokens[10].type).to eq(:HEREDOC_POST)
       expect(tokens[10].value).to eq("\n  THING\n  ")
       expect(tokens[10].raw).to eq("\n  THING\n  | myheredoc")
       expect(tokens[10].line).to eq(5)
       expect(tokens[10].column).to eq(11)
+    end
+
+    it 'should not remove the unnecessary $ from enclosed variables' do
+      manifest = <<-END.gsub(/^ {6}/, '')
+      $str = @("myheredoc"/)
+        ${$myvar}
+        |-myheredoc
+      END
+      tokens = @lexer.tokenise(manifest)
+
+      expect(tokens.length).to eq(10)
+
+      expect(tokens[7].type).to eq(:VARIABLE)
+      expect(tokens[7].value).to eq('myvar')
+      expect(tokens[7].raw).to eq('$myvar')
+      expect(tokens[7].to_manifest).to eq("${$myvar}")
     end
   end
 
