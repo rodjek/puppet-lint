@@ -99,7 +99,7 @@ class PuppetLint
 
       # Public: Search from this token to find the next token of a given type.
       #
-      # type - A Symbol type of the token to find
+      # type - A Symbol type of the token to find, or an Array of Symbols.
       # opts - An optional Hash
       #   :value       - A token value to search for in addition to type
       #   :skip_blocks - A Boolean to specify whether { } blocks should be
@@ -113,7 +113,7 @@ class PuppetLint
 
       # Public: Search from this token to find the previous token of a given type.
       #
-      # type - A Symbol type of the token to find
+      # type - A Symbol type of the token to find, or an Array of Symbols.
       # opts - An optional Hash
       #   :value       - A token value to search for in addition to type
       #   :skip_blocks - A Boolean to specify whether { } blocks should be
@@ -129,7 +129,7 @@ class PuppetLint
       # in a given direction.
       #
       # direction - A Symbol direction to search (:next or :prev).
-      # type      - A Symbol type of the token to find
+      # type      - A Symbol type of the token to find, or an Array of Symbols.
       # opts      - An optional Hash
       #   :value       - A token value to search for in addition to type
       #   :skip_blocks - A Boolean to specify whether { } blocks should be
