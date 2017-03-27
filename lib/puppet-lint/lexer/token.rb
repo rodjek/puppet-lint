@@ -79,7 +79,11 @@ class PuppetLint
         when :VARIABLE
           enclose_token_types = Set[:DQPRE, :DQMID, :HEREDOC_PRE, :HEREDOC_MID].freeze
           if !@prev_code_token.nil? && enclose_token_types.include?(@prev_code_token.type)
-            "${#{@value}}"
+            if @raw.nil?
+              "${#{@value}}"
+            else
+              "${#{@raw}}"
+            end
           else
             "$#{@value}"
           end
