@@ -203,7 +203,7 @@ class PuppetLint
             tokens << new_token(:SSTRING, str_content[0..-2])
 
           elsif chunk.match(/\A"/)
-            str_contents = StringScanner.new(code[i+1..-1]).scan_until(/(\A|[^\\])(\\\\)*"/m)
+            str_contents = slurp_string(code[i+1..-1])
             _ = code[0..i].split("\n")
             interpolate_string(str_contents, _.count, _.last.length)
             length = str_contents.size + 1
@@ -287,6 +287,18 @@ class PuppetLint
       end
 
       tokens
+    end
+
+
+    def slurp_string(string)
+      dq_str_regexp = /(\$\{|(\A|[^\\])(\\\\)*")/m
+      scanner = StringScanner.new(string)
+      contents = scanner.scan_until(dq_str_regexp)
+      until scanner.matched.end_with?('"')
+        contents += scanner.scan_until(/\}/m)
+        contents += scanner.scan_until(dq_str_regexp)
+      end
+      contents
     end
 
     # Internal: Given the tokens already processed, determine if the next token
