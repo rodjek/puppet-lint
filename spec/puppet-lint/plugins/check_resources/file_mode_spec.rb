@@ -153,6 +153,10 @@ describe 'file_mode' do
          }"
       }
 
+      it 'should detect 3 problems' do
+        expect(problems).to have(3).problems
+      end
+
       it 'should create three warnings' do
         expect(problems).to contain_warning(sprintf(msg)).on_line(5).in_column(21)
         expect(problems).to contain_warning(sprintf(msg)).on_line(7).in_column(21)
@@ -259,10 +263,30 @@ describe 'file_mode' do
          }"
       }
 
-      it 'should fix the manifest' do
+      let(:fixed) { "
+        file {
+          '/tmp/foo1':
+            ensure => $foo ? { default => absent },
+            mode => '0644';
+          '/tmp/foo2':
+            mode => '0644';
+          '/tmp/foo3':
+            mode => '0644';
+         }"
+      }
+
+      it 'should detect 3 problems' do
+        expect(problems).to have(3).problems
+      end
+
+      it 'should fix 3 problems' do
         expect(problems).to contain_fixed(msg).on_line(5).in_column(21)
         expect(problems).to contain_fixed(msg).on_line(7).in_column(21)
         expect(problems).to contain_fixed(msg).on_line(9).in_column(21)
+      end
+
+      it 'should zero pad the file modes and change them to strings' do
+        expect(manifest).to eq(fixed)
       end
     end
   end
