@@ -202,20 +202,6 @@ PuppetLint.new_check(:arrow_alignment) do
   end
 
   def fix(problem)
-    param_token = problem[:token].prev_code_token
-    if param_token.type == :DQPOST
-      param_length = 0
-      iter_token = param_token
-      while iter_token.type != :DQPRE do
-        param_length += iter_token.to_manifest.length
-        iter_token = iter_token.prev_token
-      end
-      param_length += iter_token.to_manifest.length
-    else
-      param_length = param_token.to_manifest.length
-    end
-    new_ws_len = (problem[:arrow_column] - (problem[:newline_indent] + param_length + 1))
-    new_ws = ' ' * new_ws_len
     if problem[:newline]
       index = tokens.index(problem[:token].prev_code_token.prev_token)
 
@@ -226,6 +212,12 @@ PuppetLint.new_check(:arrow_alignment) do
       problem[:token].prev_code_token.prev_token.type = :INDENT
       problem[:token].prev_code_token.prev_token.value = ' ' * problem[:newline_indent]
     end
+
+    end_param_idx = tokens.index(problem[:token].prev_code_token)
+    start_param_idx = tokens.index(problem[:token].prev_token_of([:INDENT, :NEWLINE])) + 1
+    param_length = tokens[start_param_idx..end_param_idx].map { |r| r.to_manifest.length }.sum
+    new_ws_len = (problem[:arrow_column] - (problem[:newline_indent] + param_length + 1))
+    new_ws = ' ' * new_ws_len
 
     if problem[:token].prev_token.type == :WHITESPACE
       problem[:token].prev_token.value = new_ws
