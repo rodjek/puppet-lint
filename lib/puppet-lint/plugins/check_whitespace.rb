@@ -178,18 +178,20 @@ PuppetLint.new_check(:arrow_alignment) do
           level_tokens[level_idx] ||= []
           param_column << nil
         elsif token.type == :RBRACE || token.type == :SEMIC
-          level_tokens[level_idx].each do |arrow_tok|
-            unless arrow_tok.column == arrow_column[level_idx] || level_tokens[level_idx].size == 1
-              arrows_on_line = level_tokens[level_idx].select { |t| t.line == arrow_tok.line }
-              notify :warning, {
-                :message        => "indentation of => is not properly aligned (expected in column #{arrow_column[level_idx]}, but found it in column #{arrow_tok.column})",
-                :line           => arrow_tok.line,
-                :column         => arrow_tok.column,
-                :token          => arrow_tok,
-                :arrow_column   => arrow_column[level_idx],
-                :newline        => !(arrows_on_line.index(arrow_tok) == 0),
-                :newline_indent => param_column[level_idx] - 1,
-              }
+          if level_tokens[level_idx].map(&:line).uniq.length > 1
+            level_tokens[level_idx].each do |arrow_tok|
+              unless arrow_tok.column == arrow_column[level_idx] || level_tokens[level_idx].size == 1
+                arrows_on_line = level_tokens[level_idx].select { |t| t.line == arrow_tok.line }
+                notify :warning, {
+                  :message        => "indentation of => is not properly aligned (expected in column #{arrow_column[level_idx]}, but found it in column #{arrow_tok.column})",
+                  :line           => arrow_tok.line,
+                  :column         => arrow_tok.column,
+                  :token          => arrow_tok,
+                  :arrow_column   => arrow_column[level_idx],
+                  :newline        => !(arrows_on_line.index(arrow_tok) == 0),
+                  :newline_indent => param_column[level_idx] - 1,
+                }
+              end
             end
           end
           arrow_column[level_idx] = 0
