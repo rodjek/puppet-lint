@@ -803,5 +803,58 @@ describe 'arrow_alignment' do
         expect(manifest).to eq(fixed)
       end
     end
+
+    context 'realignment of resource with an inline single line hash' do
+      let(:code) { <<-END.gsub(/^ {8}/, '')
+        class { 'puppetdb':
+          database                => 'embedded',
+          #database                => 'postgres',
+          #postgres_version        => '9.3',
+          java_args               => { '-Xmx' => '512m', '-Xms' => '256m' },
+          listen_address          => $::ipaddress_eth0,
+          listen_port             => 4998,
+          ssl_listen_address      => $::ipaddress_eth0,
+          ssl_listen_port         => 4999,
+          open_listen_port        => false,
+          open_ssl_listen_port    => false;
+        }
+        END
+      }
+
+      let(:fixed) { <<-END.gsub(/^ {8}/, '')
+        class { 'puppetdb':
+          database             => 'embedded',
+          #database                => 'postgres',
+          #postgres_version        => '9.3',
+          java_args            => { '-Xmx' => '512m', '-Xms' => '256m' },
+          listen_address       => $::ipaddress_eth0,
+          listen_port          => 4998,
+          ssl_listen_address   => $::ipaddress_eth0,
+          ssl_listen_port      => 4999,
+          open_listen_port     => false,
+          open_ssl_listen_port => false;
+        }
+        END
+      }
+
+      it 'should detect 8 problems' do
+        expect(problems).to have(8).problems
+      end
+
+      it 'should fix 8 problems' do
+        expect(problems).to contain_fixed(sprintf(msg, 24, 27)).on_line(2).in_column(27)
+        expect(problems).to contain_fixed(sprintf(msg, 24, 27)).on_line(5).in_column(27)
+        expect(problems).to contain_fixed(sprintf(msg, 24, 27)).on_line(6).in_column(27)
+        expect(problems).to contain_fixed(sprintf(msg, 24, 27)).on_line(7).in_column(27)
+        expect(problems).to contain_fixed(sprintf(msg, 24, 27)).on_line(8).in_column(27)
+        expect(problems).to contain_fixed(sprintf(msg, 24, 27)).on_line(9).in_column(27)
+        expect(problems).to contain_fixed(sprintf(msg, 24, 27)).on_line(10).in_column(27)
+        expect(problems).to contain_fixed(sprintf(msg, 24, 27)).on_line(11).in_column(27)
+      end
+
+      it 'should realign the arrows' do
+        expect(manifest).to eq(fixed)
+      end
+    end
   end
 end
