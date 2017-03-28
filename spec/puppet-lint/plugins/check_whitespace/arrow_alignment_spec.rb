@@ -743,5 +743,65 @@ describe 'arrow_alignment' do
         expect(manifest).to eq(fixed)
       end
     end
+
+    context 'complex data structure with multiple token keys' do
+      let(:code) { <<-END.gsub(/^ {8}/, '')
+        class example (
+          $external_ip_base,
+        ) {
+
+          bar { 'xxxxxxxxx':
+            inputs => {
+              'ny' => {
+                "${external_ip_base}.16:443 ${a} ${b} ${c}" => 'foo',
+                'veryveryverylongstring8:443'=> 'foo',
+                'simple'=> 'foo',
+                '3'=> :foo,
+                :baz=> :qux,
+                3=> 3,
+              },
+            },
+          }
+        }
+        END
+      }
+
+      let(:fixed) { <<-END.gsub(/^ {8}/, '')
+        class example (
+          $external_ip_base,
+        ) {
+
+          bar { 'xxxxxxxxx':
+            inputs => {
+              'ny' => {
+                "${external_ip_base}.16:443 ${a} ${b} ${c}" => 'foo',
+                'veryveryverylongstring8:443'               => 'foo',
+                'simple'                                    => 'foo',
+                '3'                                         => :foo,
+                :baz                                        => :qux,
+                3                                           => 3,
+              },
+            },
+          }
+        }
+        END
+      }
+
+      it 'should detect 5 problems' do
+        expect(problems).to have(5).problems
+      end
+
+      it 'should fix 5 problems' do
+        expect(problems).to contain_fixed(sprintf(msg, 53, 38)).on_line(9).in_column(38)
+        expect(problems).to contain_fixed(sprintf(msg, 53, 17)).on_line(10).in_column(17)
+        expect(problems).to contain_fixed(sprintf(msg, 53, 12)).on_line(11).in_column(12)
+        expect(problems).to contain_fixed(sprintf(msg, 53, 13)).on_line(12).in_column(13)
+        expect(problems).to contain_fixed(sprintf(msg, 53, 10)).on_line(13).in_column(10)
+      end
+
+      it 'should realign the arrows' do
+        expect(manifest).to eq(fixed)
+      end
+    end
   end
 end
