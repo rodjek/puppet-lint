@@ -105,38 +105,28 @@ class PuppetLint::Data
     #   :end   - An Integer position in the `tokens` Array pointing to the last
     #            Token of a resource declaration.
     def resource_indexes
-      @resource_indexes ||= Proc.new do
+      @resource_indexes ||= begin
+        marker = 0
         result = []
-        tokens.each_index do |token_idx|
-          if tokens[token_idx].type == :COLON
-            next_token = tokens[token_idx].next_code_token
-            depth = 1
-            if next_token && next_token.type != :LBRACE
-              tokens[(token_idx + 1)..-1].each_index do |idx|
-                real_idx = token_idx + idx + 1
-                if tokens[real_idx].type == :LBRACE
-                  depth += 1
-                elsif {:SEMIC => true, :RBRACE => true}.include? tokens[real_idx].type
-                  unless tokens[real_idx].type == :SEMIC && depth > 1
-                    depth -= 1
-                    if depth == 0
-                      result << {
-                        :start        => token_idx + 1,
-                        :end          => real_idx,
-                        :tokens       => tokens[(token_idx + 1)..real_idx],
-                        :type         => find_resource_type_token(token_idx),
-                        :param_tokens => find_resource_param_tokens(tokens[(token_idx + 1)..real_idx]),
-                      }
-                      break
-                    end
-                  end
-                end
-              end
-            end
+        tokens.select { |t| t.type == :COLON }.each do |colon_token|
+          if colon_token.next_code_token && colon_token.next_code_token != :LBRACE
+            start_idx = tokens.index(colon_token)
+            next if start_idx < marker
+            end_token = colon_token.next_token_of([:SEMIC, :RBRACE])
+            end_idx = tokens.index(end_token)
+
+            result << {
+              :start        => start_idx + 1,
+              :end          => end_idx,
+              :tokens       => tokens[start_idx..end_idx],
+              :type         => find_resource_type_token(start_idx),
+              :param_tokens => find_resource_param_tokens(tokens[start_idx..end_idx]),
+            }
+            marker = end_idx
           end
         end
         result
-      end.call
+      end
     end
 
     # Internal: Find the Token representing the type of a resource definition.
