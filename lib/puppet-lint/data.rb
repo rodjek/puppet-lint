@@ -109,7 +109,7 @@ class PuppetLint::Data
         marker = 0
         result = []
         tokens.select { |t| t.type == :COLON }.each do |colon_token|
-          if colon_token.next_code_token && colon_token.next_code_token != :LBRACE
+          if colon_token.next_code_token && colon_token.next_code_token.type != :LBRACE
             start_idx = tokens.index(colon_token)
             next if start_idx < marker
             end_token = colon_token.next_token_of([:SEMIC, :RBRACE])

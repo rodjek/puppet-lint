@@ -424,6 +424,23 @@ describe 'arrow_alignment' do
         expect(problems).to have(0).problems
       end
     end
+
+    context 'where the top level of the block has no parameters' do
+      let(:code) { "
+        case $::osfamily {
+          'RedHat': {
+            $datadir = $::operatingsystem ? {
+              'Amazon' => pick($datadir, 'value'),
+              default  => pick($datadir, 'value'),
+            }
+          }
+        }
+      " }
+
+      it 'should not detect any problems' do
+        expect(problems).to have(0).problems
+      end
+    end
   end
 
   context 'with fix enabled' do
