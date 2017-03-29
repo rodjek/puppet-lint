@@ -178,7 +178,7 @@ PuppetLint.new_check(:arrow_alignment) do
           level_tokens[level_idx] ||= []
           param_column << nil
         elsif token.type == :RBRACE || token.type == :SEMIC
-          if level_tokens[level_idx].map(&:line).uniq.length > 1
+          if (level_tokens[level_idx] ||= []).map(&:line).uniq.length > 1
             level_tokens[level_idx].each do |arrow_tok|
               unless arrow_tok.column == arrow_column[level_idx] || level_tokens[level_idx].size == 1
                 arrows_on_line = level_tokens[level_idx].select { |t| t.line == arrow_tok.line }
