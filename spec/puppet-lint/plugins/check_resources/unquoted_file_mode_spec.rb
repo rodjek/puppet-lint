@@ -35,6 +35,30 @@ describe 'unquoted_file_mode' do
         expect(problems).to have(0).problems
       end
     end
+
+    context 'multi body file bad modes selector' do
+      let(:code) { "
+        file {
+          '/tmp/foo1':
+            ensure => $foo ? { default => absent },
+            mode => 644;
+          '/tmp/foo2':
+            mode => 644;
+          '/tmp/foo3':
+            mode => 644;
+         }"
+      }
+
+      it 'should detect 3 problems' do
+        expect(problems).to have(3).problems
+      end
+
+      it 'should create three warnings' do
+        expect(problems).to contain_warning(sprintf(msg)).on_line(5).in_column(21)
+        expect(problems).to contain_warning(sprintf(msg)).on_line(7).in_column(21)
+        expect(problems).to contain_warning(sprintf(msg)).on_line(9).in_column(21)
+      end
+    end
   end
 
   context 'with fix enabled' do
@@ -87,6 +111,46 @@ describe 'unquoted_file_mode' do
 
       it 'should not change the manifest' do
         expect(manifest).to eq(code)
+      end
+    end
+
+    context 'multi body file bad modes selector' do
+      let(:code) { "
+        file {
+          '/tmp/foo1':
+            ensure => $foo ? { default => absent },
+            mode => 644;
+          '/tmp/foo2':
+            mode => 644;
+          '/tmp/foo3':
+            mode => 644;
+         }"
+      }
+
+      let(:fixed) { "
+        file {
+          '/tmp/foo1':
+            ensure => $foo ? { default => absent },
+            mode => '644';
+          '/tmp/foo2':
+            mode => '644';
+          '/tmp/foo3':
+            mode => '644';
+         }"
+      }
+
+      it 'should detect 3 problems' do
+        expect(problems).to have(3).problems
+      end
+
+      it 'should fix 3 problems' do
+        expect(problems).to contain_fixed(msg).on_line(5).in_column(21)
+        expect(problems).to contain_fixed(msg).on_line(7).in_column(21)
+        expect(problems).to contain_fixed(msg).on_line(9).in_column(21)
+      end
+
+      it 'should quote the file modes' do
+        expect(manifest).to eq(fixed)
       end
     end
   end
