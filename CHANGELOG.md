@@ -50,8 +50,6 @@
 - \(SDK-115\) Enable appveyor testing [\#653](https://github.com/rodjek/puppet-lint/pull/653) ([james-stocks](https://github.com/james-stocks))
 - Heredoc support [\#650](https://github.com/rodjek/puppet-lint/pull/650) ([rodjek](https://github.com/rodjek))
 - Warn when control comment blocks are not properly terminated [\#648](https://github.com/rodjek/puppet-lint/pull/648) ([rodjek](https://github.com/rodjek))
-- Remove ruby 1.8.7 in 3.x train. [\#644](https://github.com/rodjek/puppet-lint/pull/644) ([rnelson0](https://github.com/rnelson0))
-- Bring 2.1.1+ into 3.x branch [\#643](https://github.com/rodjek/puppet-lint/pull/643) ([rnelson0](https://github.com/rnelson0))
 - Prevent incomplete node blocks from crashing puppet-lint [\#642](https://github.com/rodjek/puppet-lint/pull/642) ([rodjek](https://github.com/rodjek))
 - Update the tokeniser to differentiate between unquoted strings and function names [\#640](https://github.com/rodjek/puppet-lint/pull/640) ([rodjek](https://github.com/rodjek))
 - Check for escaped backslashes too [\#639](https://github.com/rodjek/puppet-lint/pull/639) ([binford2k](https://github.com/binford2k))
@@ -60,7 +58,6 @@
 - Support for nested multiple-variable assignments [\#636](https://github.com/rodjek/puppet-lint/pull/636) ([hanazuki](https://github.com/hanazuki))
 - Add LoadError to fix broken tests [\#631](https://github.com/rodjek/puppet-lint/pull/631) ([davidmogar](https://github.com/davidmogar))
 - Deal with ruby 1.8.7 gem issues [\#630](https://github.com/rodjek/puppet-lint/pull/630) ([mterzo](https://github.com/mterzo))
-- Allow builds on the 3.0.0 branch [\#607](https://github.com/rodjek/puppet-lint/pull/607) ([rnelson0](https://github.com/rnelson0))
 - Plugin review; disable unnecessary plugins [\#567](https://github.com/rodjek/puppet-lint/pull/567) ([rnelson0](https://github.com/rnelson0))
 
 ## [2.1.1](https://github.com/rodjek/puppet-lint/tree/2.1.1) (2017-02-13)
