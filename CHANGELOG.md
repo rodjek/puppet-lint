@@ -1,5 +1,19 @@
 # Change Log
 
+## [2.2.1](https://github.com/rodjek/puppet-lint/tree/2.2.1) (2017-03-29)
+[Full Changelog](https://github.com/rodjek/puppet-lint/compare/2.2.0...2.2.1)
+
+**Closed issues:**
+
+- "undefined method `map' for nil:NilClass" when running check\_whitespace [\#681](https://github.com/rodjek/puppet-lint/issues/681)
+- "undefined method `next\_token='" when fixing with check\_whitespace [\#680](https://github.com/rodjek/puppet-lint/issues/680)
+- Release 2.2.0 planning and discussion [\#668](https://github.com/rodjek/puppet-lint/issues/668)
+
+**Merged pull requests:**
+
+- restore the links between tokens after arrow\_on\_right\_operand\_line\#fix [\#684](https://github.com/rodjek/puppet-lint/pull/684) ([rodjek](https://github.com/rodjek))
+- level\_tokens\[0\] can be nil if there is no params in the top level block [\#682](https://github.com/rodjek/puppet-lint/pull/682) ([rodjek](https://github.com/rodjek))
+
 ## [2.2.0](https://github.com/rodjek/puppet-lint/tree/2.2.0) (2017-03-29)
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/2.1.1...2.2.0)
 
