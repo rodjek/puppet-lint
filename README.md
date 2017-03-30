@@ -172,6 +172,7 @@ At the moment, the following tests have been implemented:
    before optional parameters.
  * When using top-scope variables, including facts, Puppet modules should
    explicitly specify the empty namespace.
+ * Chaining operators should appear on the same line as the right hand operand.
 
 ## Disabling checks
 
