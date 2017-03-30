@@ -56,6 +56,7 @@ how to resolve it.
  * ["optional parameter listed before required parameter"](/checks/parameter_order/)
  * ["class inheriting from params class"](/checks/class_inherits_from_params_class/)
  * ["foo::bar-baz contains a dash"](/checks/names_containing_dash/)
+ * ["arrow should be on right operand's line"](/checks/arrow_on_right_operand_line/)
 
 ### Variables
 
