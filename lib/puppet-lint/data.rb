@@ -49,6 +49,55 @@ class PuppetLint::Data
       end
     end
 
+    # Public: Add new token.
+    def insert(index, token)
+      current_token = tokens[index - 1]
+      token.next_token = current_token.next_token
+      token.prev_token = current_token
+
+      current_token.next_token.prev_token = token unless current_token.next_token.nil?
+
+      unless formatting_tokens.include?(token.type)
+        current_token.next_token.prev_code_token = token unless current_token.next_token.nil?
+        next_nf_idx = tokens[index..-1].index { |r| !formatting_tokens.include? r.type }
+        unless next_nf_idx.nil?
+          next_nf_token = tokens[index + next_nf_idx]
+          token.next_code_token = next_nf_token
+          next_nf_token.prev_code_token = token
+        end
+      end
+
+      if formatting_tokens.include?(current_token.type)
+        prev_nf_idx = tokens[0..index-1].rindex { |r| !formatting_tokens.include? r.type }
+        unless prev_nf_idx.nil?
+          prev_nf_token = tokens[prev_nf_idx]
+          token.prev_code_token = prev_nf_token
+          prev_nf_token.next_code_token = token
+        end
+      else
+        token.prev_code_token = current_token
+      end
+
+      current_token.next_token = token
+      unless formatting_tokens.include?(token.type)
+        current_token.next_code_token = token
+      end
+
+      tokens.insert(index, token)
+    end
+
+    # Public: Removes a token
+    def delete(token)
+      token.next_token.prev_token = token.prev_token unless token.next_token.nil?
+      token.prev_token.next_token = token.next_token unless token.prev_token.nil?
+      unless formatting_tokens.include?(token.type)
+        token.prev_code_token.next_code_token = token.next_code_token unless token.prev_code_token.nil?
+        token.next_code_token.prev_code_token = token.prev_code_token unless token.next_code_token.nil?
+      end
+
+      tokens.delete(token)
+    end
+
     # Internal: Store the path to the manifest file and populate fullpath and
     # filename.
     #
