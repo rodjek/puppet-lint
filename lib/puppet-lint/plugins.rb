@@ -61,14 +61,8 @@ class PuppetLint
   end
 end
 
-require 'puppet-lint/plugins/check_classes'
-require 'puppet-lint/plugins/check_comments'
-require 'puppet-lint/plugins/check_conditionals'
-require 'puppet-lint/plugins/check_documentation'
-require 'puppet-lint/plugins/check_strings'
-require 'puppet-lint/plugins/check_variables'
-require 'puppet-lint/plugins/check_whitespace'
-require 'puppet-lint/plugins/check_resources'
-require 'puppet-lint/plugins/check_nodes'
+Dir[File.expand_path('plugins/**/*.rb', File.dirname(__FILE__))].each do |file|
+  require file
+end
 
 PuppetLint::Plugins.load_from_gems

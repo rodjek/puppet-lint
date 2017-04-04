@@ -1,29 +1,3 @@
-# Public: Test the manifest tokens for any selectors embedded within resource
-# declarations and record a warning for each instance found.
-#
-# https://docs.puppet.com/guides/style_guide.html#keep-resource-declarations-simple
-PuppetLint.new_check(:selector_inside_resource) do
-  def check
-    resource_indexes.each do |resource|
-      resource[:tokens].each do |token|
-        if token.type == :FARROW
-          if token.next_code_token.type == :VARIABLE
-            unless token.next_code_token.next_code_token.nil?
-              if token.next_code_token.next_code_token.type == :QMARK
-                notify :warning, {
-                  :message => 'selector inside resource block',
-                  :line    => token.line,
-                  :column  => token.column,
-                }
-              end
-            end
-          end
-        end
-      end
-    end
-  end
-end
-
 # Public: Test the manifest tokens for any case statements that do not
 # contain a "default" case and record a warning for each instance found.
 #
@@ -54,7 +28,7 @@ PuppetLint.new_check(:case_without_default) do
       case_tokens = tokens[kase[:start]..kase[:end]]
 
       case_indexes[(kase_index + 1)..-1].each do |successor_kase|
-	case_tokens -= tokens[successor_kase[:start]..successor_kase[:end]]
+        case_tokens -= tokens[successor_kase[:start]..successor_kase[:end]]
       end
 
       unless case_tokens.index { |r| r.type == :DEFAULT }
