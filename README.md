@@ -224,6 +224,13 @@ from being linted:
 PuppetLint.configuration.ignore_paths = ["vendor/**/*.pp"]
 ```
 
+The pattern of files to check can be set with:
+
+``` ruby
+# Defaults to `**/*.pp`
+PuppetLint.configuration.pattern = "modules"
+```
+
 ## Reporting bugs or incorrect results
 
 If you find a bug in puppet-lint or its results, please create an issue in the

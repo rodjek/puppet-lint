@@ -68,6 +68,10 @@ class PuppetLint
           @ignore_paths = PuppetLint.configuration.ignore_paths
         end
 
+        if PuppetLint.configuration.pattern
+          @pattern = PuppetLint.configuration.pattern
+        end
+
         RakeFileUtils.send(:verbose, true) do
           linter = PuppetLint.new
           matched_files = FileList[@pattern]
