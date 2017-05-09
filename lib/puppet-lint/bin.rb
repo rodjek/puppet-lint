@@ -40,40 +40,39 @@ class PuppetLint::Bin
       return 1
     end
 
-    begin
-      path = @args[0]
-      if File.directory?(path)
-        path = Dir.glob("#{path}/**/*.pp")
-      else
-        path = @args
-      end
-
-      if path.length > 1
-        PuppetLint.configuration.with_filename = true
-      end
-
-      return_val = 0
-      path.each do |f|
-        l = PuppetLint.new
-        l.file = f
-        l.run
-        l.print_problems
-        if l.errors? or (l.warnings? and PuppetLint.configuration.fail_on_warnings)
-          return_val = 1
-        end
-
-        if PuppetLint.configuration.fix && !l.problems.any? { |e| e[:check] == :syntax }
-          File.open(f, 'w') do |fd|
-            fd.write l.manifest
-          end
-        end
-      end
-      return return_val
-
-    rescue PuppetLint::NoCodeError
-      puts "puppet-lint: no file specified or specified file does not exist"
-      puts "puppet-lint: try 'puppet-lint --help' for more information"
-      return 1
+    path = @args[0]
+    if File.directory?(path)
+      path = Dir.glob("#{path}/**/*.pp")
+    else
+      path = @args
     end
+
+    if path.length > 1
+      PuppetLint.configuration.with_filename = true
+    end
+
+    return_val = 0
+    path.each do |f|
+      l = PuppetLint.new
+      l.file = f
+      begin
+        l.run
+      rescue PuppetLint::NoCodeError
+        puts "puppet-lint: #{f} does not exist"
+        next
+      end
+      l.print_problems
+      if l.errors? or (l.warnings? and PuppetLint.configuration.fail_on_warnings)
+        return_val = 1
+      end
+
+      if PuppetLint.configuration.fix && !l.problems.any? { |e| e[:check] == :syntax }
+        File.open(f, 'w') do |fd|
+          fd.write l.manifest
+        end
+      end
+    end
+
+    return return_val
   end
 end
