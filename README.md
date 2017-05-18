@@ -35,6 +35,13 @@ puppet-lint ~/modules/puppetlabs-java/manifests/init.pp
 puppet-lint ~/modules/puppetlabs-mysql/manifests
 ```
 
+### Fix issues automatically
+
+To instruct Lint to automatically fix any issues that it detects, use the `--fix` flag:
+
+```
+puppet-lint --fix /modules
+```
 
 ### Modify which checks to run
 
@@ -42,18 +49,10 @@ Puppet Lint options allow you to modify which checks to run. You can disable any
 
 #### Run specific checks
 
-To run only specific checks, use the `--only-checks` option, with arguments specifying which checks to make:
+To run only specific checks, use the `--only-checks` option, with arguments specifying which checks to make: [TODO: can you specify more than one argument for this?]
 
 ```
 puppet-lint --only-checks trailing_whitespace
-```
-
-### Fix issues automatically
-
-To instruct Lint to automatically fix any issues that it detects, use the `--fix` flag:
-
-```
-puppet-lint --fix /modules
 ```
 
 To avoid enormous patch sets when using the `--fix` flag, use the `--only-checks` option to limit which checks Puppet Lint makes:
@@ -67,7 +66,7 @@ puppet-lint --only-checks trailing_whitespace --fix modules/
 * To disable any of the checks when running the `puppet-lint` command, add a `--no-<check name>-check` flag to the command. For example, to skip the 140-character check, run:
 
   ```
-puppet-lint --no-140chars-check /path/to/my/manifest.pp
+  puppet-lint --no-140chars-check /path/to/my/manifest.pp
   ```
 
 * To always skip a given check, specify the flag in a `.puppet-lint.rc`. Puppet Lint checks for this file in both the current directory and your home directory. For example, to always skip the hard tab character check, create `~/.puppet-lint.rc` and include the line:
@@ -81,17 +80,17 @@ puppet-lint --no-140chars-check /path/to/my/manifest.pp
   For example:
 
   ```
-class foo {
-  $bar = 'bar'
-  # This ignores the double_quoted_strings check over multiple lines
-  # lint:ignore:double_quoted_strings
-  $baz = "baz"
-  $gronk = "gronk"
-  # lint:endignore
+  class foo {
+    $bar = 'bar'
+    # This ignores the double_quoted_strings check over multiple lines
+    # lint:ignore:double_quoted_strings
+    $baz = "baz"
+    $gronk = "gronk"
+    # lint:endignore
 
-  # This ignores the 140chars check on a single line
+    # This ignores the 140chars check on a single line
 
-$this_line_has_a_really_long_name_and_value_that_is_much_longer_than_the_style_guide_recommends = "I mean, a really, really long line like you can't believe" # lint:ignore:140chars
+  $this_line_has_a_really_long_name_and_value_that_is_much_longer_than_the_style_guide_recommends = "I mean, a really, really long line like you can't believe" # lint:ignore:140chars
 }
   ```
 
@@ -141,30 +140,32 @@ To modify the default behaviour of the Rake task, modify the Puppet Lint configu
 
 ### Disable checks in the Lint Rake task
 
-You can also disable checks when running Puppet Lint through the supplied Rake task. Add the following line after the `require` statement in your `Rakefile`:
+You can also disable checks when running Puppet Lint through the supplied Rake task by modifying your `Rakefile`.
 
-``` ruby
-PuppetLint.configuration.send("disable_<check name>")
-```
+* To disable a check, add the following line after the `require` statement in your `Rakefile`:
 
-For example, to disable the 140-character check, add:
+  ``` ruby
+  PuppetLint.configuration.send("disable_<check name>")
+  ```
 
-``` ruby
-PuppetLint.configuration.send("disable_140chars")
-```
+  For example, to disable the 140-character check, add:
 
-You can also set the Lint Rake task to ignore certain paths:
+  ``` ruby
+  PuppetLint.configuration.send("disable_140chars")
+ ```
 
-``` ruby
-PuppetLint.configuration.ignore_paths = ["vendor/**/*.pp"]
-```
+* To set the Lint Rake task to ignore certain paths:
 
-Set the pattern of files to check with:
+  ``` ruby
+  PuppetLint.configuration.ignore_paths = ["vendor/**/*.pp"]
+  ```
 
-``` ruby
-# Defaults to `**/*.pp`
-PuppetLint.configuration.pattern = "modules"
-```
+* To set a pattern of files that Lint should check:
+
+  ``` ruby
+  # Defaults to `**/*.pp`
+  PuppetLint.configuration.pattern = "modules"
+  ```
 
 ## Options
 
@@ -176,47 +177,47 @@ At the moment, the following tests have been implemented:
 
 ### Spacing, Indentation, and Whitespace
 
- * Must use two-space soft tabs.
- * Must not use literal tab characters.
- * Must not contain trailing white space.
- * Should not exceed an 140-character line width.
-   * An exception has been made for `source => 'puppet://...'` lines as splitting these over multiple lines decreases the readability of the manifests.
- * Should align arrows (`=>`) within blocks of attributes.
+* Must use two-space soft tabs.
+* Must not use literal tab characters.
+* Must not contain trailing white space.
+* Should not exceed an 140-character line width.
+  * An exception has been made for `source => 'puppet://...'` lines as splitting these over multiple lines decreases the readability of the manifests.
+* Should align arrows (`=>`) within blocks of attributes.
 
 ### Quoting
 
  * All strings that do not contain variables should be enclosed in single quotes.
-   * An exception has been made for double-quoted strings containing \n or \t.
- * All strings that contain variables must be enclosed in double quotes.
- * All variables should be enclosed in braces when interpolated in a string.
- * Variables standing by themselves should not be quoted.
+  * An exception has been made for double-quoted strings containing \n or \t.
+* All strings that contain variables must be enclosed in double quotes.
+* All variables should be enclosed in braces when interpolated in a string.
+* Variables standing by themselves should not be quoted.
 
 ### Capitalization
 
- * All variables should be in lowercase.
+* All variables should be in lowercase.
 
 ### Resources
 
- * All resource titles should be quoted.
-   * An exception has been made for resource titles that consist of only a variable standing by itself.
- * If a resource declaration includes an `ensure` attribute, it should be the first attribute specified.
- * Symbolic links should be declared by using an ensure value of `link` and explicitly specifying a value for the `target` attribute.
- * File modes should be represented as a 4-digit string enclosed in single quotes or use symbolic file modes.
+* All resource titles should be quoted.
+  * An exception has been made for resource titles that consist of only a variable standing by itself.
+* If a resource declaration includes an `ensure` attribute, it should be the first attribute specified.
+* Symbolic links should be declared by using an ensure value of `link` and explicitly specifying a value for the `target` attribute.
+* File modes should be represented as a 4-digit string enclosed in single quotes or use symbolic file modes.
 
 ### Conditionals
 
- * You should not intermingle conditionals inside resource declarations (that is, selectors inside resources).
- * Case statements should have a default case.
+* You should not intermingle conditionals inside resource declarations (that is, selectors inside resources).
+* Case statements should have a default case.
 
 ### Classes
 
- * Relationship declarations with the chaining syntax should only be used in the 'left to right' direction.
- * Classes should not be defined inside a class.
- * Defines should not be defined inside a class.
- * Classes should not inherit between namespaces.
- * Required parameters in class & defined type definitions should be listed before optional parameters.
- * When using top-scope variables, including facts, Puppet modules should explicitly specify the empty namespace.
- * Chaining operators should appear on the same line as the right hand operand.
+* Relationship declarations with the chaining syntax should only be used in the 'left to right' direction.
+* Classes should not be defined inside a class.
+* Defines should not be defined inside a class.
+* Classes should not inherit between namespaces.
+* Required parameters in class & defined type definitions should be listed before optional parameters.
+* When using top-scope variables, including facts, Puppet modules should explicitly specify the empty namespace.
+* Chaining operators should appear on the same line as the right hand operand.
 
 ## Reporting bugs or incorrect results
 
@@ -228,10 +229,10 @@ points will be awarded if you also include a patch that fixes the issue.
 
 Many thanks to the following people for contributing to puppet-lint
 
- * James Turnbull (@kartar)
- * Jan Vansteenkiste (@vStone)
- * Julian Simpson (@simpsonjulian)
- * S. Zachariah Sprackett (@zsprackett)
+* James Turnbull (@kartar)
+* Jan Vansteenkiste (@vStone)
+* Julian Simpson (@simpsonjulian)
+* S. Zachariah Sprackett (@zsprackett)
 
 As well as the many people who have reported the issues they've had!
 
