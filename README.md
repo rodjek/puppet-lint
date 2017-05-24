@@ -4,14 +4,12 @@
 Status](https://secure.travis-ci.org/rodjek/puppet-lint.png)](http://travis-ci.org/rodjek/puppet-lint)
 [![Inline docs](http://inch-ci.org/github/rodjek/puppet-lint.png?branch=master)](http://inch-ci.org/github/rodjek/puppet-lint)
 
-Puppet Lint tests modules and manifests against the recommended Puppet style guidelines. It can also help automatically fix style issues in your code.
-
-Puppet Lint tests Puppet code style against the [Puppet language style
-guide](http://docs.puppet.com/puppet/latest/style_guide.html) as closely as practical. It is not meant to validate syntax. Please use Puppet's `puppet parser validate` command for validation.
+Puppet Lint tests Puppet code against the recommended [Puppet language style
+guide](http://docs.puppet.com/puppet/latest/style_guide.html). Puppet Lint validates only code style; it does not validate syntax. To test syntax, use Puppet's `puppet parser validate` command.
 
 ## Compatibility warning
 
-Release 2.1.0 of Puppet Lint is the last planned version with support for Puppet 3 and Ruby 1.8.7. Future versions will drop support for these versions.
+Puppet Lint version 2 is the last planned version with support for Puppet 3 and Ruby 1.8.7. The next major version of Puppet Lint will drop support for these versions.
 
 ## Installation
 
@@ -49,10 +47,10 @@ Puppet Lint options allow you to modify which checks to run. You can disable any
 
 #### Run specific checks
 
-To run only specific checks, use the `--only-checks` option, with arguments specifying which checks to make: [TODO: can you specify more than one argument for this?]
+To run only specific checks, use the `--only-checks` option, with a comma-separated list of arguments specifying which checks to make:
 
 ```
-puppet-lint --only-checks trailing_whitespace
+puppet-lint --only-checks trailing_whitespace, 140chars
 ```
 
 To avoid enormous patch sets when using the `--fix` flag, use the `--only-checks` option to limit which checks Puppet Lint makes:
@@ -61,38 +59,46 @@ To avoid enormous patch sets when using the `--fix` flag, use the `--only-checks
 puppet-lint --only-checks trailing_whitespace --fix modules/
 ```
 
-### Disable checks
+### Disable Lint checks
 
-* To disable any of the checks when running the `puppet-lint` command, add a `--no-<check name>-check` flag to the command. For example, to skip the 140-character check, run:
+You can disable specific Lint checks on the command line, disable them permanently with a configuration file, or disable them with control comments within your Puppet code.
 
-  ```
-  puppet-lint --no-140chars-check /path/to/my/manifest.pp
-  ```
+#### Disable checks on the command line
 
-* To always skip a given check, specify the flag in a `.puppet-lint.rc`. Puppet Lint checks for this file in both the current directory and your home directory. For example, to always skip the hard tab character check, create `~/.puppet-lint.rc` and include the line:
+To disable any of the checks when running the `puppet-lint` command, add a `--no-<check name>-check` flag to the command. For example, to skip the 140-character check, run:
 
-  ```
+```
+puppet-lint --no-140chars-check /path/to/my/manifest.pp
+```
+
+#### Permanently disable Lint checks
+
+To always skip a given check, specify the flag in a `.puppet-lint.rc` file. Puppet Lint checks for this file in both the current directory and your home directory. For example, to always skip the hard tab character check, create `~/.puppet-lint.rc` and include the line:
+
+```
 --no-hard_tabs-check
-  ```
+```
 
-* To disable checks within your Puppet code, use [control comments](http://puppet-lint.com/controlcomments/). You can disable checks on a per-line or per-block basis using `#lint:ignore:<check_name>`.
+#### Disable checks within Puppet code
 
-  For example:
+To disable checks from within your Puppet code itself, use [control comments](http://puppet-lint.com/controlcomments/). Disable checks on either a per-line or per-block basis using `#lint:ignore:<check_name>`.
 
-  ```
-  class foo {
-    $bar = 'bar'
-    # This ignores the double_quoted_strings check over multiple lines
-    # lint:ignore:double_quoted_strings
-    $baz = "baz"
-    $gronk = "gronk"
-    # lint:endignore
+For example:
 
-    # This ignores the 140chars check on a single line
+```
+class foo {
+  $bar = 'bar'
+  # This ignores the double_quoted_strings check over multiple lines
+  # lint:ignore:double_quoted_strings
+  $baz = "baz"
+  $gronk = "gronk"
+  # lint:endignore
 
-  $this_line_has_a_really_long_name_and_value_that_is_much_longer_than_the_style_guide_recommends = "I mean, a really, really long line like you can't believe" # lint:ignore:140chars
+  # This ignores the 140chars check on a single line
+
+$this_line_has_a_really_long_name_and_value_that_is_much_longer_than_the_style_guide_recommends = "I mean, a really, really long line like you can't believe" # lint:ignore:140chars
 }
-  ```
+```
 
 ## Testing with Puppet Lint as a Rake task
 
@@ -171,9 +177,13 @@ You can also disable checks when running Puppet Lint through the supplied Rake t
 
 See `puppet-lint --help` for a full list of command line options and checks.
 
-## Implemented Tests
+## Checks
 
-At the moment, the following tests have been implemented:
+For a complete list of checks, and how to resolve errors on each check, see the Puppet Lint [checks](http://puppet-lint.com/checks/) page.
+
+Click on any of the following error messages to learn more about the check and how to resolve it.
+
+
 
 ### Spacing, Indentation, and Whitespace
 
