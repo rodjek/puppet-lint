@@ -23,7 +23,7 @@ gem install puppet-lint
 
 To test manifests for correct Puppet style, run the `puppet-lint` command with the path to the files you want to test.
 
-For example: 
+For example:
 
 ```
 puppet-lint ~/modules/puppetlabs-java/manifests/init.pp
@@ -96,7 +96,7 @@ class foo {
 
   # This ignores the 140chars check on a single line
 
-$this_line_has_a_really_long_name_and_value_that_is_much_longer_than_the_style_guide_recommends = "I mean, a really, really long line like you can't believe" # lint:ignore:140chars
+  $this_line_has_a_really_long_name_and_value_that_is_much_longer_than_the_style_guide_recommends = "I mean, a really, really long line like you can't believe" # lint:ignore:140chars
 }
 ```
 
@@ -150,25 +150,25 @@ You can also disable checks when running Puppet Lint through the supplied Rake t
 
 * To disable a check, add the following line after the `require` statement in your `Rakefile`:
 
-  ``` ruby
+  ```ruby
   PuppetLint.configuration.send("disable_<check name>")
   ```
 
   For example, to disable the 140-character check, add:
 
-  ``` ruby
+  ```ruby
   PuppetLint.configuration.send("disable_140chars")
- ```
+  ```
 
 * To set the Lint Rake task to ignore certain paths:
 
-  ``` ruby
+  ```ruby
   PuppetLint.configuration.ignore_paths = ["vendor/**/*.pp"]
   ```
 
 * To set a pattern of files that Lint should check:
 
-  ``` ruby
+  ```ruby
   # Defaults to `**/*.pp`
   PuppetLint.configuration.pattern = "modules"
   ```
@@ -196,7 +196,7 @@ Click on any of the following error messages to learn more about the check and h
 
 ### Quoting
 
- * All strings that do not contain variables should be enclosed in single quotes.
+* All strings that do not contain variables should be enclosed in single quotes.
   * An exception has been made for double-quoted strings containing \n or \t.
 * All strings that contain variables must be enclosed in double quotes.
 * All variables should be enclosed in braces when interpolated in a string.
