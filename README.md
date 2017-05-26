@@ -23,7 +23,7 @@ gem install puppet-lint
 
 To test manifests for correct Puppet style, run the `puppet-lint` command with the path to the files you want to test.
 
-For example: 
+For example:
 
 ```
 puppet-lint ~/modules/puppetlabs-java/manifests/init.pp
@@ -50,7 +50,7 @@ Puppet Lint options allow you to modify which checks to run. You can disable any
 To run only specific checks, use the `--only-checks` option, with a comma-separated list of arguments specifying which checks to make:
 
 ```
-puppet-lint --only-checks trailing_whitespace, 140chars
+puppet-lint --only-checks trailing_whitespace,140chars modules/
 ```
 
 To avoid enormous patch sets when using the `--fix` flag, use the `--only-checks` option to limit which checks Puppet Lint makes:
@@ -68,7 +68,7 @@ You can disable specific Lint checks on the command line, disable them permanent
 To disable any of the checks when running the `puppet-lint` command, add a `--no-<check name>-check` flag to the command. For example, to skip the 140-character check, run:
 
 ```
-puppet-lint --no-140chars-check /path/to/my/manifest.pp
+puppet-lint --no-140chars-check modules/
 ```
 
 #### Permanently disable Lint checks
@@ -85,10 +85,12 @@ To disable checks from within your Puppet code itself, use [control comments](ht
 
 For example:
 
-```
+```puppet
 class foo {
   $bar = 'bar'
+
   # This ignores the double_quoted_strings check over multiple lines
+
   # lint:ignore:double_quoted_strings
   $baz = "baz"
   $gronk = "gronk"
@@ -96,7 +98,7 @@ class foo {
 
   # This ignores the 140chars check on a single line
 
-$this_line_has_a_really_long_name_and_value_that_is_much_longer_than_the_style_guide_recommends = "I mean, a really, really long line like you can't believe" # lint:ignore:140chars
+  $this_line_has_a_really_long_name_and_value_that_is_much_longer_than_the_style_guide_recommends = "I mean, a really, really long line like you can't believe" # lint:ignore:140chars
 }
 ```
 
@@ -110,39 +112,41 @@ rake lint
 
 To modify the default behaviour of the Rake task, modify the Puppet Lint configuration by defining the task yourself. For example:
 
-    PuppetLint::RakeTask.new :lint do |config|
-      # Pattern of files to check, defaults to `**/*.pp`
-      config.pattern = 'modules'
+```ruby
+PuppetLint::RakeTask.new :lint do |config|
+  # Pattern of files to check, defaults to `**/*.pp`
+  config.pattern = 'modules'
 
-      # Pattern of files to ignore
-      config.ignore_paths = ['modules/apt', 'modules/stdlib']
+  # Pattern of files to ignore
+  config.ignore_paths = ['modules/apt', 'modules/stdlib']
 
-      # List of checks to disable
-      config.disable_checks = ['documentation', '140chars']
+  # List of checks to disable
+  config.disable_checks = ['documentation', '140chars']
 
-      # Should puppet-lint prefix it's output with the file being checked,
-      # defaults to true
-      config.with_filename = false
+  # Should puppet-lint prefix it's output with the file being checked,
+  # defaults to true
+  config.with_filename = false
 
-      # Should the task fail if there were any warnings, defaults to false
-      config.fail_on_warnings = true
+  # Should the task fail if there were any warnings, defaults to false
+  config.fail_on_warnings = true
 
-      # Format string for puppet-lint's output (see the puppet-lint help output
-      # for details
-      config.log_format = '%{filename} - %{message}'
+  # Format string for puppet-lint's output (see the puppet-lint help output
+  # for details
+  config.log_format = '%{filename} - %{message}'
 
-      # Print out the context for the problem, defaults to false
-      config.with_context = true
+  # Print out the context for the problem, defaults to false
+  config.with_context = true
 
-      # Enable automatic fixing of problems, defaults to false
-      config.fix = true
+  # Enable automatic fixing of problems, defaults to false
+  config.fix = true
 
-      # Show ignored problems in the output, defaults to false
-      config.show_ignored = true
+  # Show ignored problems in the output, defaults to false
+  config.show_ignored = true
 
-      # Compare module layout relative to the module root
-      config.relative = true
-    end
+  # Compare module layout relative to the module root
+  config.relative = true
+end
+```
 
 ### Disable checks in the Lint Rake task
 
@@ -150,25 +154,25 @@ You can also disable checks when running Puppet Lint through the supplied Rake t
 
 * To disable a check, add the following line after the `require` statement in your `Rakefile`:
 
-  ``` ruby
+  ```ruby
   PuppetLint.configuration.send("disable_<check name>")
   ```
 
   For example, to disable the 140-character check, add:
 
-  ``` ruby
+  ```ruby
   PuppetLint.configuration.send("disable_140chars")
- ```
+  ```
 
 * To set the Lint Rake task to ignore certain paths:
 
-  ``` ruby
+  ```ruby
   PuppetLint.configuration.ignore_paths = ["vendor/**/*.pp"]
   ```
 
 * To set a pattern of files that Lint should check:
 
-  ``` ruby
+  ```ruby
   # Defaults to `**/*.pp`
   PuppetLint.configuration.pattern = "modules"
   ```
@@ -181,10 +185,6 @@ See `puppet-lint --help` for a full list of command line options and checks.
 
 For a complete list of checks, and how to resolve errors on each check, see the Puppet Lint [checks](http://puppet-lint.com/checks/) page.
 
-Click on any of the following error messages to learn more about the check and how to resolve it.
-
-
-
 ### Spacing, Indentation, and Whitespace
 
 * Must use two-space soft tabs.
@@ -196,7 +196,7 @@ Click on any of the following error messages to learn more about the check and h
 
 ### Quoting
 
- * All strings that do not contain variables should be enclosed in single quotes.
+* All strings that do not contain variables should be enclosed in single quotes.
   * An exception has been made for double-quoted strings containing \n or \t.
 * All strings that contain variables must be enclosed in double quotes.
 * All variables should be enclosed in braces when interpolated in a string.
