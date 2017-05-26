@@ -185,10 +185,6 @@ See `puppet-lint --help` for a full list of command line options and checks.
 
 For a complete list of checks, and how to resolve errors on each check, see the Puppet Lint [checks](http://puppet-lint.com/checks/) page.
 
-Click on any of the following error messages to learn more about the check and how to resolve it.
-
-
-
 ### Spacing, Indentation, and Whitespace
 
 * Must use two-space soft tabs.
