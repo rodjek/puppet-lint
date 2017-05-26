@@ -85,10 +85,12 @@ To disable checks from within your Puppet code itself, use [control comments](ht
 
 For example:
 
-```
+```puppet
 class foo {
   $bar = 'bar'
+
   # This ignores the double_quoted_strings check over multiple lines
+
   # lint:ignore:double_quoted_strings
   $baz = "baz"
   $gronk = "gronk"
@@ -110,39 +112,41 @@ rake lint
 
 To modify the default behaviour of the Rake task, modify the Puppet Lint configuration by defining the task yourself. For example:
 
-    PuppetLint::RakeTask.new :lint do |config|
-      # Pattern of files to check, defaults to `**/*.pp`
-      config.pattern = 'modules'
+```ruby
+PuppetLint::RakeTask.new :lint do |config|
+  # Pattern of files to check, defaults to `**/*.pp`
+  config.pattern = 'modules'
 
-      # Pattern of files to ignore
-      config.ignore_paths = ['modules/apt', 'modules/stdlib']
+  # Pattern of files to ignore
+  config.ignore_paths = ['modules/apt', 'modules/stdlib']
 
-      # List of checks to disable
-      config.disable_checks = ['documentation', '140chars']
+  # List of checks to disable
+  config.disable_checks = ['documentation', '140chars']
 
-      # Should puppet-lint prefix it's output with the file being checked,
-      # defaults to true
-      config.with_filename = false
+  # Should puppet-lint prefix it's output with the file being checked,
+  # defaults to true
+  config.with_filename = false
 
-      # Should the task fail if there were any warnings, defaults to false
-      config.fail_on_warnings = true
+  # Should the task fail if there were any warnings, defaults to false
+  config.fail_on_warnings = true
 
-      # Format string for puppet-lint's output (see the puppet-lint help output
-      # for details
-      config.log_format = '%{filename} - %{message}'
+  # Format string for puppet-lint's output (see the puppet-lint help output
+  # for details
+  config.log_format = '%{filename} - %{message}'
 
-      # Print out the context for the problem, defaults to false
-      config.with_context = true
+  # Print out the context for the problem, defaults to false
+  config.with_context = true
 
-      # Enable automatic fixing of problems, defaults to false
-      config.fix = true
+  # Enable automatic fixing of problems, defaults to false
+  config.fix = true
 
-      # Show ignored problems in the output, defaults to false
-      config.show_ignored = true
+  # Show ignored problems in the output, defaults to false
+  config.show_ignored = true
 
-      # Compare module layout relative to the module root
-      config.relative = true
-    end
+  # Compare module layout relative to the module root
+  config.relative = true
+end
+```
 
 ### Disable checks in the Lint Rake task
 
