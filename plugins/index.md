@@ -216,11 +216,11 @@ Check the plugin's URL for more information on use of its check(s).
 ---
 
 
-### non_erb_template_filename
+### template_file_extension
 
-> Ensure all file names used in template functions end with the string '.erb'.
+> Ensure all file names used in `template` and `epp` functions end with the string '.erb' or '.epp' respectively.
 
-| **URL**     | <https://github.com/deanwilson/puppet-lint-non_erb_template_filename-check> |
-| **Install** | `gem install puppet-lint-non_erb_template_filename-check`   |
+| **URL**     | <https://github.com/deanwilson/puppet-lint-template_file_extension-check> |
+| **Install** | `gem install puppet-lint-template_file_extension-check`   |
 {: .table .table-condensed }
 
