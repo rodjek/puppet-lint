@@ -71,14 +71,6 @@ To disable any of the checks when running the `puppet-lint` command, add a `--no
 puppet-lint --no-140chars-check modules/
 ```
 
-#### Permanently disable Lint checks
-
-To always skip a given check, specify the flag in a `.puppet-lint.rc` file. Puppet Lint checks for this file in both the current directory and your home directory. For example, to always skip the hard tab character check, create `~/.puppet-lint.rc` and include the line:
-
-```
---no-hard_tabs-check
-```
-
 #### Disable checks within Puppet code
 
 To disable checks from within your Puppet code itself, use [control comments](http://puppet-lint.com/controlcomments/). Disable checks on either a per-line or per-block basis using `#lint:ignore:<check_name>`.
@@ -100,6 +92,28 @@ class foo {
 
   $this_line_has_a_really_long_name_and_value_that_is_much_longer_than_the_style_guide_recommends = "I mean, a really, really long line like you can't believe" # lint:ignore:140chars
 }
+```
+
+## Configuration file
+
+Each time Puppet Lint starts up, it loads configuration from three files in order:
+
+1. `/etc/puppet-lint.rc`
+1. `~/.puppet-lint.rc`
+1. `.puppet-lint.rc`
+
+This means that a flag in the local `.puppet-lint.rc` will take precedence over a flag in the global `/etc/puppet-lint.rc`, for example. Flags specified on the command line take final precedence and override all config file options.
+
+Any flag that can be specified on the command line can also be specified in the configuration file. For example, to always skip the hard tab character check, create `~/.puppet-lint.rc` and include the line:
+
+```
+--no-hard_tabs-check
+```
+
+Or to specify a whitelist of allowed checks, include a line like:
+
+```
+--only-checks=trailing_whitespace,hard_tabs,duplicate_params,double_quoted_strings,unquoted_file_mode,only_variable_string,variables_not_enclosed,single_quote_string_with_variables,variable_contains_dash,ensure_not_symlink_target,unquoted_resource_title,relative_classname_inclusion,file_mode,resource_reference_without_title_capital,leading_zero,arrow_alignment,variable_is_lowercase,ensure_first_param,resource_reference_without_whitespace,file_ensure,trailing_comma,leading_zero
 ```
 
 ## Testing with Puppet Lint as a Rake task
