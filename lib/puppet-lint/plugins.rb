@@ -40,7 +40,7 @@ class PuppetLint
     # Returns an Array of Gem::Specification objects.
     def self.gemspecs
       @gemspecs ||= if Gem::Specification.respond_to?(:latest_specs)
-        Gem::Specification.latest_specs
+        Gem::Specification.latest_specs(!PuppetLint.configuration.load_prerelease_plugins)
       else
         Gem.searcher.init_gemspecs
       end
