@@ -66,10 +66,6 @@ class PuppetLint::OptParser
         end
       end
 
-      opts.on('-load-prerelease-plugins', 'Load plugins that ruby deems to be pre-release versions') do
-        PuppetLint.configuration.load_prerelease_plugins = true
-      end
-
       opts.on('-f', '--fix', 'Attempt to automatically fix errors') do
         PuppetLint.configuration.fix = true
       end
