@@ -40,9 +40,11 @@ class PuppetLint
     # Returns an Array of Gem::Specification objects.
     def self.gemspecs
       @gemspecs ||= if Gem::Specification.respond_to?(:latest_specs)
-        # The 'true' allows it to load prerelease plugins (which ruby defines as
-        # any gem which has a letter in its version number).
-        Gem::Specification.latest_specs(true)
+        # Environment variable to load prerelease plugins (which ruby defines as
+        # any gem which has a letter in its version number). Can't use puppet-lint configuration
+        # object here because this code executes before the command line is parsed.
+        load_prerelease_plugins = ENV.key?('PUPPET_LINT_LOAD_PRERELEASE_PLUGINS')
+        Gem::Specification.latest_specs(load_prerelease_plugins)
       else
         Gem.searcher.init_gemspecs
       end
