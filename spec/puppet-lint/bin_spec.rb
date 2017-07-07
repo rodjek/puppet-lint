@@ -279,6 +279,23 @@ describe PuppetLint::Bin do
     end
   end
 
+  context 'when displaying results for multiple targets as json' do
+
+    let(:args) { [
+      '--json',
+      'spec/fixtures/test/manifests/fail.pp',
+      'spec/fixtures/test/manifests/warning.pp',
+    ] }
+    its(:exitstatus) { is_expected.to eq(1) }
+    its(:stdout) do
+      if respond_to?(:include_json)
+        is_expected.to include_json([[{'KIND' => 'ERROR'}],[{'KIND' => 'WARNING'}]])
+      else
+        is_expected.to match(/\[\n  \{/)
+      end
+    end
+  end
+
   context 'when hiding ignored problems' do
     let(:args) { [
       'spec/fixtures/test/manifests/ignore.pp'
