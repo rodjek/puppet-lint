@@ -416,7 +416,7 @@ class PuppetLint
             line += value.scan(/(\r\n|\r|\n)/).size
             token_column = column + (ss.pos - value.size)
             tokens << new_token(:DQPOST, value, :line => line, :column => token_column)
-            @column = token_column + 1
+            @column = column + ss.pos + 1
             @line_no = line
           end
         else
