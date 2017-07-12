@@ -11,7 +11,7 @@ begin
   GitHubChangelogGenerator::RakeTask.new :changelog do |config|
     version = PuppetLint::VERSION
     config.future_release = "#{version}"
-    config.exclude_labels = %w{duplicate question invalid wontfix}
+    config.exclude_labels = %w{duplicate question invalid wontfix release-pr}
   end
 rescue LoadError
 end

@@ -1,10 +1,34 @@
 # Change Log
 
+## [2.3.0](https://github.com/rodjek/puppet-lint/tree/2.3.0) (2017-07-12)
+[Full Changelog](https://github.com/rodjek/puppet-lint/compare/2.2.1...2.3.0)
+
+**Closed issues:**
+
+- Inappropriate =\> Indentation Warning in Hash [\#698](https://github.com/rodjek/puppet-lint/issues/698)
+- Regression: arrow\_alignment check broken between 2.1.1 and 2.2.x releases when left side contains text after variable interpolation [\#697](https://github.com/rodjek/puppet-lint/issues/697)
+- Check `arrow\_on\_right\_operand\_line` is undocumented. [\#688](https://github.com/rodjek/puppet-lint/issues/688)
+
+**Merged pull requests:**
+
+- \(maint\) Fixes puppet-lint json formatting to output valid json to stdout [\#719](https://github.com/rodjek/puppet-lint/pull/719) ([bmjen](https://github.com/bmjen))
+- Permit puppet-lint to load "prerelease" gems [\#718](https://github.com/rodjek/puppet-lint/pull/718) ([kpaulisse](https://github.com/kpaulisse))
+- Document the configuration file better [\#713](https://github.com/rodjek/puppet-lint/pull/713) ([binford2k](https://github.com/binford2k))
+- Replace deprecated plugin with an improved alternative. [\#712](https://github.com/rodjek/puppet-lint/pull/712) ([deanwilson](https://github.com/deanwilson))
+- Readme formatting fixes [\#709](https://github.com/rodjek/puppet-lint/pull/709) ([dbeckham](https://github.com/dbeckham))
+- Readme edit [\#707](https://github.com/rodjek/puppet-lint/pull/707) ([jbondpdx](https://github.com/jbondpdx))
+- Take into account length of DQPOST token when updating column number [\#701](https://github.com/rodjek/puppet-lint/pull/701) ([dbeckham](https://github.com/dbeckham))
+- Add pattern support to rake task [\#700](https://github.com/rodjek/puppet-lint/pull/700) ([dbeckham](https://github.com/dbeckham))
+- Note arrow\_on\_right\_operand\_line in the README [\#690](https://github.com/rodjek/puppet-lint/pull/690) ([rodjek](https://github.com/rodjek))
+- Document the arrow\_on\_right\_operand\_line check on the website [\#689](https://github.com/rodjek/puppet-lint/pull/689) ([rodjek](https://github.com/rodjek))
+- One file per plugin. Fixes \#657 [\#671](https://github.com/rodjek/puppet-lint/pull/671) ([Darhazer](https://github.com/Darhazer))
+
 ## [2.2.1](https://github.com/rodjek/puppet-lint/tree/2.2.1) (2017-03-29)
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/2.2.0...2.2.1)
 
 **Closed issues:**
 
+- Error on whitespace with 2.2.0 [\#683](https://github.com/rodjek/puppet-lint/issues/683)
 - "undefined method `map' for nil:NilClass" when running check\_whitespace [\#681](https://github.com/rodjek/puppet-lint/issues/681)
 - "undefined method `next\_token='" when fixing with check\_whitespace [\#680](https://github.com/rodjek/puppet-lint/issues/680)
 - Release 2.2.0 planning and discussion [\#668](https://github.com/rodjek/puppet-lint/issues/668)
@@ -19,43 +43,46 @@
 
 **Closed issues:**
 
+- Plugins reorganization: One file per check [\#657](https://github.com/rodjek/puppet-lint/issues/657)
+- 2.1.1 git tag [\#652](https://github.com/rodjek/puppet-lint/issues/652)
+- Quoted boolean triggers on the command 'true' [\#646](https://github.com/rodjek/puppet-lint/issues/646)
+- Namevars detected as optional parameters [\#633](https://github.com/rodjek/puppet-lint/issues/633)
+- 'Duplicate Parameter' warning on dynamic class parameter [\#627](https://github.com/rodjek/puppet-lint/issues/627)
+- arrow\_alignment should only check the alignment of the first arrow on each line [\#609](https://github.com/rodjek/puppet-lint/issues/609)
+- Top-scope variable warning on inline lambda [\#549](https://github.com/rodjek/puppet-lint/issues/549)
+- Puppet-lint crash with new puppet 4 syntax [\#516](https://github.com/rodjek/puppet-lint/issues/516)
+- Top-scope warning when looping though an array of hashes [\#464](https://github.com/rodjek/puppet-lint/issues/464)
+- Array of hashes one-liner throws a "Indentation of =\> is not properly aligned" [\#446](https://github.com/rodjek/puppet-lint/issues/446)
 - Missed bad file modes in file with multiple resource bodies [\#663](https://github.com/rodjek/puppet-lint/issues/663)
 - Provide helper methods to search for specific tokens [\#660](https://github.com/rodjek/puppet-lint/issues/660)
 - ensure\_first\_param fix can create invalid syntax [\#659](https://github.com/rodjek/puppet-lint/issues/659)
 - puppet-lint dies with inline\_template syntax [\#656](https://github.com/rodjek/puppet-lint/issues/656)
 - Variable use like "${$a}" isn't reported as an error and is changed with no message when run with --fix [\#655](https://github.com/rodjek/puppet-lint/issues/655)
 - Linter gets confused with arrays of hashes [\#654](https://github.com/rodjek/puppet-lint/issues/654)
-- 2.1.1 git tag [\#652](https://github.com/rodjek/puppet-lint/issues/652)
 - heredoc throws unhandled exception [\#649](https://github.com/rodjek/puppet-lint/issues/649)
-- Quoted boolean triggers on the command 'true' [\#646](https://github.com/rodjek/puppet-lint/issues/646)
 - Match function breaks puppet-lint [\#645](https://github.com/rodjek/puppet-lint/issues/645)
 - top-scope variable being used without an explicit namespace in a string with a lookup [\#635](https://github.com/rodjek/puppet-lint/issues/635)
 - unquoted file mode & mode should be represented as a 4 digit when file mode is done by a lookup [\#634](https://github.com/rodjek/puppet-lint/issues/634)
-- Namevars detected as optional parameters [\#633](https://github.com/rodjek/puppet-lint/issues/633)
-- 'Duplicate Parameter' warning on dynamic class parameter [\#627](https://github.com/rodjek/puppet-lint/issues/627)
 - double\_quoted\_strings-check issue with escaped character in the string [\#625](https://github.com/rodjek/puppet-lint/issues/625)
 - unable to disable 140chars check with control comments "block" [\#622](https://github.com/rodjek/puppet-lint/issues/622)
-- arrow\_alignment should only check the alignment of the first arrow on each line [\#609](https://github.com/rodjek/puppet-lint/issues/609)
 - unquoted\_node\_name crash when curly braces missing [\#582](https://github.com/rodjek/puppet-lint/issues/582)
 - Heredoc triggers exception in arrow\_alignment check [\#578](https://github.com/rodjek/puppet-lint/issues/578)
 - Each + With = Fake positive top-scope variable detection [\#576](https://github.com/rodjek/puppet-lint/issues/576)
-- Top-scope variable warning on inline lambda [\#549](https://github.com/rodjek/puppet-lint/issues/549)
 - Top-scope variable warning on nested each loops [\#548](https://github.com/rodjek/puppet-lint/issues/548)
-- Puppet-lint crash with new puppet 4 syntax [\#516](https://github.com/rodjek/puppet-lint/issues/516)
 - `arrow\_alignment --fix` doesn't indent keys when introducing line breaks; erroneously reports success [\#506](https://github.com/rodjek/puppet-lint/issues/506)
-- Top-scope warning when looping though an array of hashes [\#464](https://github.com/rodjek/puppet-lint/issues/464)
-- Array of hashes one-liner throws a "Indentation of =\> is not properly aligned" [\#446](https://github.com/rodjek/puppet-lint/issues/446)
 - heredoc escape gives syntax error [\#430](https://github.com/rodjek/puppet-lint/issues/430)
 - NoMethodError when multiple heredocs are used [\#395](https://github.com/rodjek/puppet-lint/issues/395)
 
 **Merged pull requests:**
 
+- Support double quoted strings inside interpolated values in double quoted strings [\#676](https://github.com/rodjek/puppet-lint/pull/676) ([rodjek](https://github.com/rodjek))
+- Check that arrow is on the line of right operand [\#672](https://github.com/rodjek/puppet-lint/pull/672) ([Darhazer](https://github.com/Darhazer))
+- Deal with ruby 1.8.7 gem issues [\#630](https://github.com/rodjek/puppet-lint/pull/630) ([mterzo](https://github.com/mterzo))
+- Plugin review; disable unnecessary plugins [\#567](https://github.com/rodjek/puppet-lint/pull/567) ([rnelson0](https://github.com/rnelson0))
 - Ignore selectors when finding resource type [\#678](https://github.com/rodjek/puppet-lint/pull/678) ([rodjek](https://github.com/rodjek))
 - Fix for arrow\_alignment bugs in \#506 [\#677](https://github.com/rodjek/puppet-lint/pull/677) ([rodjek](https://github.com/rodjek))
-- Support double quoted strings inside interpolated values in double quoted strings [\#676](https://github.com/rodjek/puppet-lint/pull/676) ([rodjek](https://github.com/rodjek))
 - Don't silently remove unnecessary $ from enclosed variables [\#674](https://github.com/rodjek/puppet-lint/pull/674) ([rodjek](https://github.com/rodjek))
 - Fix ensure\_first\_param fix method to retrieve the full value of the ensure parameter [\#673](https://github.com/rodjek/puppet-lint/pull/673) ([rodjek](https://github.com/rodjek))
-- Check that arrow is on the line of right operand [\#672](https://github.com/rodjek/puppet-lint/pull/672) ([Darhazer](https://github.com/Darhazer))
 - Restrict appveyor testing to Ruby versions that appveyor supports [\#670](https://github.com/rodjek/puppet-lint/pull/670) ([james-stocks](https://github.com/james-stocks))
 - Clear expected parameter column after processing each block when checking arrow alignment [\#669](https://github.com/rodjek/puppet-lint/pull/669) ([rodjek](https://github.com/rodjek))
 - Allow regexps to used as function arguments [\#665](https://github.com/rodjek/puppet-lint/pull/665) ([rodjek](https://github.com/rodjek))
@@ -71,10 +98,8 @@
 - Correctly handle nested lambdas [\#637](https://github.com/rodjek/puppet-lint/pull/637) ([hanazuki](https://github.com/hanazuki))
 - Support for nested multiple-variable assignments [\#636](https://github.com/rodjek/puppet-lint/pull/636) ([hanazuki](https://github.com/hanazuki))
 - Add LoadError to fix broken tests [\#631](https://github.com/rodjek/puppet-lint/pull/631) ([davidmogar](https://github.com/davidmogar))
-- Deal with ruby 1.8.7 gem issues [\#630](https://github.com/rodjek/puppet-lint/pull/630) ([mterzo](https://github.com/mterzo))
-- Plugin review; disable unnecessary plugins [\#567](https://github.com/rodjek/puppet-lint/pull/567) ([rnelson0](https://github.com/rnelson0))
 
-## [2.1.1](https://github.com/rodjek/puppet-lint/tree/2.1.1) (2017-02-13)
+## [2.1.1](https://github.com/rodjek/puppet-lint/tree/2.1.1) (2017-02-15)
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/2.1.0...2.1.1)
 
 **Closed issues:**
@@ -123,8 +148,6 @@
 
 **Merged pull requests:**
 
-- 2.1.0 Release [\#612](https://github.com/rodjek/puppet-lint/pull/612) ([rnelson0](https://github.com/rnelson0))
-- Puppet-lint version bump to 2.1.0.pre [\#608](https://github.com/rodjek/puppet-lint/pull/608) ([rnelson0](https://github.com/rnelson0))
 - Ignore \*.pp files at the top level [\#597](https://github.com/rodjek/puppet-lint/pull/597) ([rnelson0](https://github.com/rnelson0))
 - Show logs in rspec tests [\#596](https://github.com/rodjek/puppet-lint/pull/596) ([ghoneycutt](https://github.com/ghoneycutt))
 - Count lines in comments and double quoted strings [\#577](https://github.com/rodjek/puppet-lint/pull/577) ([paran1](https://github.com/paran1))
@@ -163,7 +186,6 @@
 
 **Merged pull requests:**
 
-- Release 2.0.2 [\#536](https://github.com/rodjek/puppet-lint/pull/536) ([rnelson0](https://github.com/rnelson0))
 - Revert "Bugfix: properly handling $gronk-$grouik with --fix \(fix \#442\)" [\#535](https://github.com/rodjek/puppet-lint/pull/535) ([rnelson0](https://github.com/rnelson0))
 
 ## [2.0.1](https://github.com/rodjek/puppet-lint/tree/2.0.1) (2016-08-18)
@@ -223,7 +245,6 @@
 **Merged pull requests:**
 
 - Continue supporting Ruby \< 2 [\#529](https://github.com/rodjek/puppet-lint/pull/529) ([ghoneycutt](https://github.com/ghoneycutt))
-- Release 2.0.1 [\#528](https://github.com/rodjek/puppet-lint/pull/528) ([rnelson0](https://github.com/rnelson0))
 - Use underscores instead of CamelCase in example [\#527](https://github.com/rodjek/puppet-lint/pull/527) ([ghoneycutt](https://github.com/ghoneycutt))
 - new linter for top\_scope\_facts [\#526](https://github.com/rodjek/puppet-lint/pull/526) ([mmckinst](https://github.com/mmckinst))
 - \(GH462\) Multi-line comments can now be fixed. [\#525](https://github.com/rodjek/puppet-lint/pull/525) ([rnelson0](https://github.com/rnelson0))
