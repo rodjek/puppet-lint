@@ -101,7 +101,7 @@ PuppetLint.new_check(:arrow_alignment) do
     start_param_idx = tokens.index(problem[:token].prev_token_of([:INDENT, :NEWLINE])) + 1
     param_length = tokens[start_param_idx..end_param_idx].map { |r| r.to_manifest.length }.inject(0) { |sum,x| sum + x }
     new_ws_len = (problem[:arrow_column] - (problem[:newline_indent] + param_length + 1))
-    new_ws = ' ' * new_ws_len
+    new_ws = ' ' * new_ws_len unless new_ws_len < 1
 
     if problem[:token].prev_token.type == :WHITESPACE
       problem[:token].prev_token.value = new_ws
