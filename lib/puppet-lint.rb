@@ -155,6 +155,10 @@ class PuppetLint
       end
     end
     puts JSON.pretty_generate(json) if configuration.json
+
+    if problems.any? { |p| p[:check] == :syntax }
+      $stderr.puts "Try running `puppet parser validate <file>`"
+    end
   end
 
   # Public: Determine if PuppetLint found any errors in the manifest.

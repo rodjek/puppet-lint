@@ -13,13 +13,18 @@ class PuppetLint
     # Internal: Get the Integer column number of the location of the error.
     attr_reader :column
 
+    # Internal: Get the String reason for the error (if known).
+    attr_reader :reason
+
     # Internal: Initialise a new PuppetLint::LexerError object.
     #
     # line_no - The Integer line number of the location of the error.
     # column  - The Integer column number of the location of the error.
-    def initialize(line_no, column)
+    # reason  - A String describing the cause of the error (if known).
+    def initialize(line_no, column, reason = nil)
       @line_no = line_no
       @column = column
+      @reason = reason
     end
   end
 
