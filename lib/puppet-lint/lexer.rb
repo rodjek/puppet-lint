@@ -299,6 +299,11 @@ class PuppetLint
       dq_str_regexp = /(\$\{|(\A|[^\\])(\\\\)*")/m
       scanner = StringScanner.new(string)
       contents = scanner.scan_until(dq_str_regexp)
+
+      if scanner.matched.nil?
+        raise LexerError.new(@line_no, @column, "Double quoted string missing closing quote")
+      end
+
       until scanner.matched.end_with?('"')
         contents += scanner.scan_until(/\}/m)
         contents += scanner.scan_until(dq_str_regexp)

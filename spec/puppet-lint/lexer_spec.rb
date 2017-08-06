@@ -61,6 +61,14 @@ describe PuppetLint::Lexer do
     end
   end
 
+  describe '#slurp_string' do
+    it 'raises a LexerError if the string is not terminated' do
+      expect {
+        @lexer.slurp_string('unterminated string')
+      }.to raise_error(PuppetLint::LexerError)
+    end
+  end
+
   context '#get_string_segment' do
     it 'should get a segment with a single terminator' do
       data = StringScanner.new('foo"bar')
