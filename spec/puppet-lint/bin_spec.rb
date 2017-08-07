@@ -71,7 +71,8 @@ describe PuppetLint::Bin do
     let(:args) { 'spec/fixtures/test/manifests/malformed.pp' }
 
     its(:exitstatus) { is_expected.to eq(1) }
-    its(:stdout) { is_expected.to eq('ERROR: Syntax error (try running `puppet parser validate <file>`) on line 1') }
+    its(:stdout) { is_expected.to eq('ERROR: Syntax error on line 1') }
+    its(:stderr) { is_expected.to eq('Try running `puppet parser validate <file>`') }
   end
 
   context 'when limited to errors only' do

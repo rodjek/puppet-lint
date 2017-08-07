@@ -25,10 +25,16 @@ class PuppetLint::Checks
       PuppetLint::Data.tokens = lexer.tokenise(content)
       PuppetLint::Data.parse_control_comments
     rescue PuppetLint::LexerError => e
+      message = if e.reason.nil?
+                  'Syntax error'
+                else
+                  "Syntax error (#{e.reason})"
+                end
+
       problems << {
         :kind     => :error,
         :check    => :syntax,
-        :message  => 'Syntax error (try running `puppet parser validate <file>`)',
+        :message  => message,
         :line     => e.line_no,
         :column   => e.column,
         :fullpath => PuppetLint::Data.fullpath,
