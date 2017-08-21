@@ -122,5 +122,16 @@ describe 'parameter_order' do
 
       it { expect(problems).to have(0).problem }
     end
+
+    context "#{type} parameter with Optional data type" do
+      let(:code) { "
+        #{type} test(
+          String $test = 'value',
+          Optional[String] $optional,
+        ) { }
+      "}
+
+      it { expect(problems).to have(0).problems }
+    end
   end
 end
