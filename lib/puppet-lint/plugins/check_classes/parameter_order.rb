@@ -23,6 +23,9 @@ PuppetLint.new_check(:parameter_order) do
           next unless paren_stack.empty?
 
           if token.type == :VARIABLE
+            data_type = token.prev_token_of(:TYPE, :skip_blocks => true)
+            next if data_type && data_type.value == 'Optional'
+
             if token.next_code_token.nil? || [:COMMA, :RPAREN].include?(token.next_code_token.type)
               prev_tokens = class_idx[:param_tokens][0..i]
               unless prev_tokens.rindex { |r| r.type == :EQUALS }.nil?
