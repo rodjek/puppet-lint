@@ -1,3 +1,4 @@
+# encoding: utf-8
 require 'set'
 require 'json'
 require 'puppet-lint/version'
@@ -72,7 +73,7 @@ class PuppetLint
   def file=(path)
     if File.exist? path
       @path = path
-      @code = File.read(path)
+      @code = File.open(path, 'r:UTF-8').read
     end
   end
 
