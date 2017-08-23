@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require 'spec_helper'
 
 describe PuppetLint::Lexer do
@@ -1304,6 +1306,26 @@ describe PuppetLint::Lexer do
       expect(tokens[11].type).to eq(:RPAREN)
       expect(tokens[12].type).to eq(:DQPOST)
       expect(tokens[12].value).to eq('\"')
+    end
+  end
+
+  context ':WHITESPACE' do
+    it 'should parse spaces' do
+      token = @lexer.tokenise(' ').first
+      expect(token.type).to eq(:WHITESPACE)
+      expect(token.value).to eq(' ')
+    end
+
+    it 'should parse tabs' do
+      token = @lexer.tokenise("\t").first
+      expect(token.type).to eq(:WHITESPACE)
+      expect(token.value).to eq("\t")
+    end
+
+    it 'should parse unicode spaces' do
+      token = @lexer.tokenise("\xc2\xa0").first
+      expect(token.type).to eq(:WHITESPACE)
+      expect(token.value).to eq("\xc2\xa0")
     end
   end
 end
