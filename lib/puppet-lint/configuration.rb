@@ -149,6 +149,7 @@ class PuppetLint
       self.fix = false
       self.json = false
       self.show_ignored = false
+      self.ignore_paths = ['vendor/**/*.pp']
     end
   end
 end
