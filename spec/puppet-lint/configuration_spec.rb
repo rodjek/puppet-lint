@@ -44,14 +44,15 @@ describe PuppetLint::Configuration do
     subject.defaults
 
     expect(subject.settings).to eq({
-      'with_filename' => false,
+      'with_filename'    => false,
       'fail_on_warnings' => false,
-      'error_level' => :all,
-      'log_format' => '',
-      'with_context' => false,
-      'fix' => false,
-      'show_ignored' => false,
-      'json' => false,
+      'error_level'      => :all,
+      'log_format'       => '',
+      'with_context'     => false,
+      'fix'              => false,
+      'show_ignored'     => false,
+      'json'             => false,
+      'ignore_paths'     => ['vendor/**/*.pp'],
     })
   end
 end
