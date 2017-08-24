@@ -453,6 +453,7 @@ class PuppetLint
               tokens << new_token(:UNENC_VARIABLE, var_name, :line => line, :column => token_column)
             end
           else
+            line += value.scan(/(\r\n|\r|\n)/).size
             contents = ss.scan_until(%r{\}})[0..-2]
             raw = contents.dup
             if contents.match(%r{\A(::)?([\w-]+::)*[\w-]+(\[.+?\])*}) && !contents.match(%r{\A\w+\(})
