@@ -106,4 +106,24 @@ describe 'quoted_booleans', :type => :lint do
       expect(problems).to contain_ignored(msg).on_line(1).in_column(1).with_reason('a reason')
     end
   end
+
+  context 'disable multiple checks in a block' do
+    let(:code) { "
+      # lint:ignore:double_quoted_string lint:ignore:quoted_booleans lint:ignore:arrow_alignment
+      foo { \"bar\":
+        test => 'true',
+        other_test => 'false',
+      }
+      # lint:endignore
+    " }
+
+    it 'should detect 2 problems' do
+      expect(problems).to have(2).problems
+    end
+
+    it 'should ignore both problems' do
+      expect(problems).to contain_ignored(msg).on_line(4).in_column(17).with_reason('')
+      expect(problems).to contain_ignored(msg).on_line(5).in_column(23).with_reason('')
+    end
+  end
 end

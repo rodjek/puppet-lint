@@ -465,7 +465,6 @@ class PuppetLint::Data
     # Returns nothing.
     def parse_control_comments
       @ignore_overrides.each_key { |check| @ignore_overrides[check].clear }
-      control_re = /\A(lint:\S+)(\s+lint:\S+)*(.*)/
 
       comment_token_types = Set[:COMMENT, :MLCOMMENT, :SLASH_COMMENT]
 
@@ -473,17 +472,28 @@ class PuppetLint::Data
         comment_token_types.include?(token.type)
       }
       control_comment_tokens = comment_tokens.select { |token|
-        token.value.strip =~ /\Alint:(ignore:[\w\d]+|endignore)/
+        token.value.strip =~ /\Alint\:(ignore\:[\w\d]+|endignore)/
       }
 
       stack = []
       control_comment_tokens.each do |token|
-        comment_data = control_re.match(token.value.strip).to_a[1..-1].compact.map(&:strip)
-        if comment_data.last =~ /\Alint:(ignore|endignore)/
-          comment_data << ''
+        comment_data = []
+        reason = []
+
+        comment_words = token.value.strip.split(/\s+/)
+        comment_words.each_with_index do |word, i|
+          if word =~ /\Alint\:(ignore|endignore)/
+            comment_data << word
+          else
+            # Once we reach the first non-controlcomment word, assume the rest
+            # of the words are the reason.
+            reason = comment_words[i..-1]
+            break
+          end
         end
-        reason = comment_data.pop
+
         stack_add = []
+
         comment_data.each do |control|
           split_control = control.split(':')
           command = split_control[1]
@@ -493,9 +503,9 @@ class PuppetLint::Data
             if token.prev_token && !Set[:NEWLINE, :INDENT].include?(token.prev_token.type)
               # control comment at the end of the line, override applies to
               # a single line only
-              (ignore_overrides[check] ||= {})[token.line] = reason
+              (ignore_overrides[check] ||= {})[token.line] = reason.join(' ')
             else
-              stack_add << [token.line, reason, check]
+              stack_add << [token.line, reason.join(' '), check]
             end
           else
             top_override = stack.pop
