@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require 'pp'
 require 'strscan'
 require 'puppet-lint/lexer/token'
@@ -157,6 +159,12 @@ class PuppetLint
       :INDENT        => true,
     }
 
+    # \t == tab
+    # \v == vertical tab
+    # \f == form feed
+    # \p{Zs} == ASCII + Unicode non-linebreaking whitespace
+    WHITESPACE_RE = /[\t\v\f\p{Zs}]/
+
     # Internal: Access the internal token storage.
     #
     # Returns an Array of PuppetLint::Lexer::Toxen objects.
@@ -241,13 +249,13 @@ class PuppetLint
             length = str_content.size + 1
             tokens << new_token(:REGEX, str_content[0..-2])
 
-          elsif eolindent = chunk[/\A((\r\n|\r|\n)[ \t]+)/m, 1]
+          elsif eolindent = chunk[/\A((\r\n|\r|\n)#{WHITESPACE_RE}+)/m, 1]
             eol = eolindent[/\A([\r\n]+)/m, 1]
             tokens << new_token(:NEWLINE, eol)
             length = eol.size
 
             if @@heredoc_queue.empty?
-              indent = eolindent[/\A[\r\n]+([ \t]+)/m, 1]
+              indent = eolindent[/\A[\r\n]+(#{WHITESPACE_RE}+)/m, 1]
               tokens << new_token(:INDENT, indent)
               length += indent.size
             else
@@ -258,7 +266,7 @@ class PuppetLint
               length += str_contents.size
             end
 
-          elsif whitespace = chunk[/\A([ \t]+)/, 1]
+          elsif whitespace = chunk[/\A(#{WHITESPACE_RE}+)/, 1]
             length = whitespace.size
             tokens << new_token(:WHITESPACE, whitespace)
 
