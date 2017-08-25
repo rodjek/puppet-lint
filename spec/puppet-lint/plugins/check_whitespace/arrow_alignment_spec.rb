@@ -761,7 +761,7 @@ describe 'arrow_alignment' do
         expect(manifest).to eq(fixed)
       end
     end
-    
+
     context 'hash with strings containing variables as keys incorrectly aligned' do
       let(:code) do
         <<-END

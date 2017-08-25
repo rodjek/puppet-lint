@@ -36,7 +36,7 @@ describe 'case_without_default' do
       expect(problems).to contain_warning(msg).on_line(1).in_column(9)
     end
   end
-  
+
   context 'nested case statements without a default case on the outermost' do
     let(:code) do
       <<-END

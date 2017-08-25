@@ -50,7 +50,7 @@ describe 'puppet_url_without_modules' do
       end
     end
   end
-  
+
   context 'double string wrapped puppet:// urls' do
     let(:code) { File.read('spec/fixtures/test/manifests/url_interpolation.pp') }
 

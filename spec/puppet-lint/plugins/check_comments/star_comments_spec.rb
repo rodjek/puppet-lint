@@ -60,7 +60,7 @@ describe 'star_comments' do
         expect(manifest).to eq(fixed)
       end
     end
- 
+
     context 'multiline comment w/ one line of content' do
       let(:code) do
         <<-END

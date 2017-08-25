@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe 'names_containing_uppercase' do
-  
   context 'defined type named FooBar' do
     let(:code) { 'define FooBar { }' }
     let(:path) { 'foobar/manifests/init.pp' }
@@ -47,17 +46,17 @@ describe 'names_containing_uppercase' do
       before do
         PuppetLint.configuration.fix = true
       end
-      
+
       after do
         PuppetLint.configuration.fix = false
       end
-      
+
       let(:fixed) { code.downcase }
-      
+
       it 'should create an error' do
         expect(problems).to contain_fixed(class_msg).on_line(1).in_column(7)
       end
-      
+
       it 'should downcase the class name' do
         expect(manifest).to eq(fixed)
       end

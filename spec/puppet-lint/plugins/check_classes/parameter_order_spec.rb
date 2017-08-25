@@ -84,7 +84,7 @@ describe 'parameter_order' do
       let(:code) do
         <<-END
           $var1 = 'test'
-          
+
           #{type} test (
             $entries = {
               '200 xxx' => {
@@ -105,7 +105,7 @@ describe 'parameter_order' do
       let(:code) do
         <<-END
           $var1 = 'test'
-          
+
           #{type} test (
             $entries = {
               '200 xxx' => {

@@ -66,7 +66,7 @@ class PuppetLint
       'attr'     => true,
       'private'  => true,
     }.freeze
-    
+
     # Internal: A Hash whose keys are Strings representing reserved keywords in
     # the Puppet DSL when Application Management is enabled
     # From https://github.com/puppetlabs/puppet/blob/master/lib/puppet/pops/parser/lexer2.rb#L142-L159
