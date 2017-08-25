@@ -49,7 +49,7 @@ class PuppetLint
     # Signature
     #
     #   <option>=(value)
-    def method_missing(method, *args, &block)
+    def method_missing(method, *args, &_block)
       if method.to_s =~ /^(\w+)=$/
         option = $1
         add_option(option.to_s) if settings[option].nil?
