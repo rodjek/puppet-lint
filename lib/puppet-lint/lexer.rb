@@ -211,7 +211,7 @@ class PuppetLint
             length = str_content.size + 1
             tokens << new_token(:SSTRING, str_content[0..-2])
 
-          elsif chunk.match(/\A"/)
+          elsif chunk.start_with?('"')
             str_contents = slurp_string(code[i + 1..-1])
             lines_parsed = code[0..i].split("\n")
             interpolate_string(str_contents, lines_parsed.count, lines_parsed.last.length)
