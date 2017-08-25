@@ -700,7 +700,6 @@ describe 'arrow_alignment' do
         }
       ' }
 
-
       it 'should detect 2 problems' do
         expect(problems).to have(2).problems
       end

@@ -298,7 +298,6 @@ class PuppetLint
       tokens
     end
 
-
     def slurp_string(string)
       dq_str_regexp = /(\$\{|(\A|[^\\])(\\\\)*")/m
       scanner = StringScanner.new(string)

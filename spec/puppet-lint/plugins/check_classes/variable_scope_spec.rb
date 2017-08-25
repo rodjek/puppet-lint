@@ -61,7 +61,6 @@ describe 'variable_scope' do
     end
   end
 
-
   context 'class with variables declared accessing local scope' do
     let(:code) { "
       class foo {

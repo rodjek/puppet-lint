@@ -100,6 +100,4 @@ describe 'autoloader_layout' do
       expect(problems).to have(0).problems
     end
   end
-
-
 end
