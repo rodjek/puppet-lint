@@ -534,7 +534,7 @@ class PuppetLint
     #
     # Returns an Array consisting of two Strings, the String up to the first
     # terminator and the terminator that was found.
-    def get_heredoc_segment(string, eos_text, interpolate=true)
+    def get_heredoc_segment(string, eos_text, interpolate = true)
       if interpolate
         regexp = /(([^\\]|^|[^\\])([\\]{2})*[$]+|\|?\s*-?#{Regexp.escape(eos_text)})/
       else
