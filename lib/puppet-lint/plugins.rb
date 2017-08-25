@@ -27,7 +27,9 @@ class PuppetLint
       gemspec = gemspecs.select { |spec| spec.name == 'puppet-lint' }.first
       load Pathname.new(gemspec.full_gem_path) + 'spec/spec_helper.rb'
     end
-  private
+
+    private
+
     # Internal: Check if RubyGems is loaded and available.
     #
     # Returns true if RubyGems is available, false if not.
