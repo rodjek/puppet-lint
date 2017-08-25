@@ -89,7 +89,7 @@ PuppetLint.new_check(:arrow_alignment) do
     if problem[:newline]
       index = tokens.index(problem[:token].prev_code_token.prev_token)
 
-      #insert newline
+      # insert newline
       tokens.insert(index, PuppetLint::Lexer::Token.new(:NEWLINE, "\n", 0, 0))
 
       # indent the parameter to the correct depth
