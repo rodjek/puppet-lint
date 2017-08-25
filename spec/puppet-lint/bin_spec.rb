@@ -290,7 +290,7 @@ describe PuppetLint::Bin do
     its(:exitstatus) { is_expected.to eq(1) }
     its(:stdout) do
       if respond_to?(:include_json)
-        is_expected.to include_json([[{'KIND' => 'ERROR'}],[{'KIND' => 'WARNING'}]])
+        is_expected.to include_json([[{'KIND' => 'ERROR'}], [{'KIND' => 'WARNING'}]])
       else
         is_expected.to match(/\[\n  \{/)
       end

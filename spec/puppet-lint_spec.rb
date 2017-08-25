@@ -14,7 +14,7 @@ describe PuppetLint do
   end
 
   it 'should not break regular % support' do
-    string = 'replace %s %s' % ['get','replaced']
+    string = 'replace %s %s' % ['get', 'replaced']
     expect(string).to match('replace get replaced')
   end
 

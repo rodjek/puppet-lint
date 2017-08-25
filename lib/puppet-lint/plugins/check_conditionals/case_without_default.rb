@@ -24,7 +24,7 @@ PuppetLint.new_check(:case_without_default) do
       end
     end
 
-    case_indexes.each_with_index do |kase,kase_index|
+    case_indexes.each_with_index do |kase, kase_index|
       case_tokens = tokens[kase[:start]..kase[:end]]
 
       case_indexes[(kase_index + 1)..-1].each do |successor_kase|

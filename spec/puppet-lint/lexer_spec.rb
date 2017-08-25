@@ -96,7 +96,7 @@ describe PuppetLint::Lexer do
 
   context '#interpolate_string' do
     it 'should handle a string with no variables' do
-      @lexer.interpolate_string('foo bar baz"',1, 1)
+      @lexer.interpolate_string('foo bar baz"', 1, 1)
       token = @lexer.tokens.first
 
       expect(@lexer.tokens.length).to eq(1)
