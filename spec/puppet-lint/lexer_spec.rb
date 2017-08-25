@@ -574,7 +574,6 @@ describe PuppetLint::Lexer do
       expect(token.type).to eq(:FARROW)
       expect(token.column).to eq(18)
     end
-
   end
 
   [

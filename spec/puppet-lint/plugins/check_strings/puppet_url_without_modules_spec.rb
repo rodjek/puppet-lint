@@ -57,6 +57,5 @@ describe 'puppet_url_without_modules' do
     it 'should detect several problems' do
       expect(problems).to have(4).problem
     end
-
   end
 end

@@ -2,38 +2,43 @@ require 'spec_helper'
 
 describe 'code_on_top_scope' do
   describe 'comments outside class block' do
-    let(:code) { "
-      # Baz
-      class foo:bar {
-      }"
-    }
+    let(:code) do
+      <<-END
+        # Baz
+        class foo:bar {
+        }
+      END
+    end
 
     its(:problems) { should be_empty }
   end
 
   describe 'new lines outside of class-define block' do
-    let(:code) { "
+    let(:code) do
+      <<-END
 
-      class foo:bar {
-      }
+        class foo:bar {
+        }
 
-      "
-    }
+      END
+    end
 
     its(:problems) { should be_empty }
   end
 
   describe 'code outside class block' do
-    let(:code) { "
-      include('something')
+    let(:code) do
+      <<-END
+        include('something')
 
-      # Baz
-      class foo:bar {
-      }
+        # Baz
+        class foo:bar {
+        }
 
-      define whatever {
-      }"
-    }
+        define whatever {
+        }
+      END
+    end
 
     its(:problems) {
       should contain_warning('code outside of class or define block - include')
