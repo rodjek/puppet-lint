@@ -75,7 +75,7 @@ PuppetLint.new_check(:variable_scope) do
                 break if brack_depth == 0
               when :COMMA
                 # ignore
-              else  # unexpected
+              else # unexpected
                 break
               end
             end
