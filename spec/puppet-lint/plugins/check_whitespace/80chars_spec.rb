@@ -55,17 +55,4 @@ describe '80chars' do
       expect(problems).to contain_warning(msg).on_line(1).in_column(80)
     end
   end
-
-# TODO: figure out why rspec keeps enabling this check!
-#
-#   context '81 character line with disabled check' do
-#     let(:code) { 'a' * 81 }
-#
-#     PuppetLint.configuration.send("disable_80chars")
-#
-#     it 'should not detect any problems' do
-#       expect(problems).to have(0).problem
-#     end
-#   end
-
 end
