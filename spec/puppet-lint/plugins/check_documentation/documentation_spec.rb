@@ -17,10 +17,12 @@ describe 'documentation' do
   end
 
   describe 'documented class' do
-    let(:code) { "
-      # foo
-      class test {}
-    "}
+    let(:code) do
+      <<-END
+        # foo
+        class test {}
+      END
+    end
 
     it 'should not detect any problems' do
       expect(problems).to have(0).problems
@@ -40,10 +42,12 @@ describe 'documentation' do
   end
 
   describe 'documented defined type' do
-    let(:code) { "
-      # foo
-      define test {}
-    "}
+    let(:code) do
+      <<-END
+        # foo
+        define test {}
+      END
+    end
 
     it 'should not detect any problems' do
       expect(problems).to have(0).problems

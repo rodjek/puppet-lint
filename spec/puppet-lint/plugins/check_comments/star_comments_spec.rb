@@ -5,17 +5,19 @@ describe 'star_comments' do
 
   context 'with fix disabled' do
     context 'multiline comment w/ one line of content' do
-      let(:code) { "
-        /* foo
-        */
-      "}
+      let(:code) do
+        <<-END
+          /* foo
+          */
+        END
+      end
 
       it 'should only detect a single problem' do
         expect(problems).to have(1).problem
       end
 
       it 'should create a warning' do
-        expect(problems).to contain_warning(msg).on_line(2).in_column(9)
+        expect(problems).to contain_warning(msg).on_line(1).in_column(11)
       end
     end
   end
@@ -30,13 +32,21 @@ describe 'star_comments' do
     end
 
     context 'multiline comment w/ no indents' do
-      let(:code) { "/* foo *
- *     *
- * bar */"}
+      let(:code) do
+        <<-END.gsub(/^ {10}/, '')
+          /* foo *
+           *     *
+           * bar */
+        END
+      end
 
-      let(:fixed) { "# foo *
-# *
-# bar"}
+      let(:fixed) do
+        <<-END.gsub(/^ {10}/, '')
+          # foo *
+          # *
+          # bar
+        END
+      end
 
       it 'should only detect a single problem' do
         expect(problems).to have(1).problem
@@ -52,21 +62,25 @@ describe 'star_comments' do
     end
  
     context 'multiline comment w/ one line of content' do
-      let(:code) { "
-        /* foo
-        */
-      "}
+      let(:code) do
+        <<-END
+          /* foo
+          */
+        END
+      end
 
-      let(:fixed) { "
-        # foo
-      "}
+      let(:fixed) do
+        <<-END
+          # foo
+        END
+      end
 
       it 'should only detect a single problem' do
         expect(problems).to have(1).problem
       end
 
       it 'should create a warning' do
-        expect(problems).to contain_fixed(msg).on_line(2).in_column(9)
+        expect(problems).to contain_fixed(msg).on_line(1).in_column(11)
       end
 
       it 'should convert the multiline comment' do
@@ -75,27 +89,31 @@ describe 'star_comments' do
     end
 
     context 'multiline comment w/ multiple line of content' do
-      let(:code) { "
-        /* foo
-         * bar
-         * baz
-         */
-        notify { 'foo': }
-      "}
+      let(:code) do
+        <<-END
+          /* foo
+           * bar
+           * baz
+           */
+          notify { 'foo': }
+        END
+      end
 
-      let(:fixed) { "
-        # foo
-        # bar
-        # baz
-        notify { 'foo': }
-      "}
+      let(:fixed) do
+        <<-END
+          # foo
+          # bar
+          # baz
+          notify { 'foo': }
+        END
+      end
 
       it 'should only detect a single problem' do
         expect(problems).to have(1).problem
       end
 
       it 'should create a warning' do
-        expect(problems).to contain_fixed(msg).on_line(2).in_column(9)
+        expect(problems).to contain_fixed(msg).on_line(1).in_column(11)
       end
 
       it 'should convert the multiline comment' do

@@ -61,13 +61,15 @@ describe 'parameter_order' do
     end
 
     context 'issue-101' do
-      let(:code) { "
-        #{type} b (
-          $foo,
-          $bar='',
-          $baz={}
-        ) { }
-      " }
+      let(:code) do
+        <<-END
+          #{type} b (
+            $foo,
+            $bar='',
+            $baz={}
+          ) { }
+        END
+      end
 
       it 'should not detect any problems' do
         expect(problems).to have(0).problems
@@ -75,61 +77,69 @@ describe 'parameter_order' do
     end
 
     context "#{type} parameter w/a hash containing a variable and no optional parameters" do
-      let(:code) { "
-        $var1 = 'test'
-        
-        #{type} test (
-          $entries = {
-            '200 xxx' => {
-              param1 => $var1,
-              param2 => 'value2',
-              param3 => 'value3',
-            }
-          },
-          $mandatory => undef,
-        ) { }
-      "}
+      let(:code) do
+        <<-END
+          $var1 = 'test'
+          
+          #{type} test (
+            $entries = {
+              '200 xxx' => {
+                param1 => $var1,
+                param2 => 'value2',
+                param3 => 'value3',
+              }
+            },
+            $mandatory => undef,
+          ) { }
+        END
+      end
 
       it { expect(problems).to have(0).problem }
     end
 
     context "#{type} parameter w/a hash containing a variable followed by an optional parameter" do
-      let(:code) { "
-        $var1 = 'test'
-        
-        #{type} test (
-          $entries = {
-            '200 xxx' => {
-              param1 => $var1,
-              param2 => 'value2',
-              param3 => 'value3',
-            }
-          },
-          $optional,
-          $mandatory => undef,
-        ) { }
-      "}
+      let(:code) do
+        <<-END
+          $var1 = 'test'
+          
+          #{type} test (
+            $entries = {
+              '200 xxx' => {
+                param1 => $var1,
+                param2 => 'value2',
+                param3 => 'value3',
+              }
+            },
+            $optional,
+            $mandatory => undef,
+          ) { }
+        END
+      end
 
-      it { expect(problems).to contain_warning(msg).on_line(12).in_column(11) }
+      it { expect(problems).to contain_warning(msg).on_line(11).in_column(13) }
     end
 
     context "#{type} parameter w/array containing a variable" do
-      let(:code) {"
-        #{type} test (
-          $var1 = [$::hostname, 'host'],
-        ) { }
-      "}
+      let(:code) do
+        <<-END
+          #{type} test (
+            $var1 = [$::hostname, 'host'],
+          ) { }
+        END
+      end
 
       it { expect(problems).to have(0).problem }
     end
 
     context "#{type} parameter with Optional data type" do
-      let(:code) { "
-        #{type} test(
-          String $test = 'value',
-          Optional[String] $optional,
-        ) { }
-      "}
+      let(:code) do
+        <<-END
+          #{type} test(
+            String $test = 'value',
+            Optional[String] $optional,
+          ) { }
+        END
+      end
 
       it { expect(problems).to have(0).problems }
     end

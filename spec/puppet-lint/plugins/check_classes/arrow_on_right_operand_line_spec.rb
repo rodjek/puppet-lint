@@ -36,8 +36,12 @@ describe 'arrow_on_right_operand_line' do
       end
 
       context 'arrow on the line of right operand' do
-        let(:code) { "Package['httpd']
-          #{operator} Service['httpd']" }
+        let(:code) do
+          <<-END
+            Package['httpd']
+            #{operator} Service['httpd']
+          END
+        end
 
         it { expect(problems).to have(0).problems }
       end
