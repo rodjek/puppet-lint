@@ -20,25 +20,25 @@ describe PuppetLint::Lexer do
     end
 
     it 'should get correct line number after double quoted multi line string' do
-      token = @lexer.new_token(:STRING, "test\ntest")
+      @lexer.new_token(:STRING, "test\ntest")
       token = @lexer.new_token(:TEST, 'test')
       expect(token.line).to eq(2)
     end
 
     it 'should get correct line number after a multi line comment' do
-      token = @lexer.new_token(:MLCOMMENT, "test\ntest", :raw => "/*test\ntest*/")
+      @lexer.new_token(:MLCOMMENT, "test\ntest", :raw => "/*test\ntest*/")
       token = @lexer.new_token(:TEST, 'test')
       expect(token.line).to eq(2)
     end
 
     it 'should calculate the line number for a multi line string' do
-      token = @lexer.new_token(:SSTRING, "test\ntest")
+      @lexer.new_token(:SSTRING, "test\ntest")
       token = @lexer.new_token(:TEST, 'test')
       expect(token.line).to eq(2)
     end
 
     it 'should calculate line number for string that ends with newline' do
-      token = @lexer.new_token(:SSTRING, "test\n")
+      @lexer.new_token(:SSTRING, "test\n")
       token = @lexer.new_token(:TEST, 'test')
       expect(token.line).to eq(2)
     end
@@ -57,7 +57,7 @@ describe PuppetLint::Lexer do
     it 'should calculate the column number for a multi line string' do
       @lexer.instance_variable_set('@line_no', 4)
       @lexer.instance_variable_set('@column', 5)
-      token = @lexer.new_token(:SSTRING, "test\ntest")
+      @lexer.new_token(:SSTRING, "test\ntest")
       token = @lexer.new_token(:TEST, 'test')
       expect(token.column).to eq(6)
     end
