@@ -28,7 +28,6 @@ rescue
       else
         Percent.bind(string).call(a, &b)
       end
-
     end
 
     def expand! vars = {}
