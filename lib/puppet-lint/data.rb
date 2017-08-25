@@ -313,10 +313,15 @@ class PuppetLint::Data
       @function_indexes ||= Proc.new do
         functions = []
         tokens.each_with_index do |token, token_idx|
-          if token.type == :NAME && \
-            (token_idx == 0 || (token_idx == 1 && tokens[0].type == :WHITESPACE) || token.prev_token.type == :NEWLINE || token.prev_token.type == :INDENT || \
-              # function in a function
-              (token.prev_code_token && token.prev_code_token.type == :LPAREN))
+          if token.type == :NAME &&
+             (
+               token_idx == 0 ||
+               (token_idx == 1 && tokens[0].type == :WHITESPACE) ||
+               token.prev_token.type == :NEWLINE ||
+               token.prev_token.type == :INDENT ||
+               # function in a function
+               (token.prev_code_token && token.prev_code_token.type == :LPAREN)
+             )
 
             # Hash key
             next if token.next_code_token && token.next_code_token.type == :FARROW
@@ -369,8 +374,9 @@ class PuppetLint::Data
             end
 
             # Ignore resource references
-            next if token.prev_code_token && \
-              token.prev_code_token.type == :CLASSREF
+            next if token.prev_code_token &&
+                    token.prev_code_token.type == :CLASSREF
+
             arrays << {
               :start  => token_idx,
               :end    => real_idx,
@@ -434,8 +440,9 @@ class PuppetLint::Data
       @defaults_indexes ||= Proc.new do
         defaults = []
         tokens.each_with_index do |token, token_idx|
-          if token.type == :CLASSREF && token.next_code_token && \
-            token.next_code_token.type == :LBRACE
+          if token.type == :CLASSREF && token.next_code_token &&
+             token.next_code_token.type == :LBRACE
+
             real_idx = 0
 
             tokens[token_idx + 1..-1].each_with_index do |cur_token, cur_token_idx|
