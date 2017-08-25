@@ -28,48 +28,50 @@ class PuppetLint
       load Pathname.new(gemspec.full_gem_path) + 'spec/spec_helper.rb'
     end
 
-    private
+    class << self
+      private
 
-    # Internal: Check if RubyGems is loaded and available.
-    #
-    # Returns true if RubyGems is available, false if not.
-    def self.has_rubygems?
-      defined? ::Gem
-    end
-
-    # Internal: Retrieve a list of avaliable gemspecs.
-    #
-    # Returns an Array of Gem::Specification objects.
-    def self.gemspecs
-      @gemspecs ||= if Gem::Specification.respond_to?(:latest_specs)
-                      Gem::Specification.latest_specs(load_prerelease_plugins?)
-                    else
-                      Gem.searcher.init_gemspecs
-                    end
-    end
-
-    # Internal: Determine whether to load plugins that contain a letter in their version number.
-    #
-    # Returns true if the configuration is set to load "prerelease" gems, false otherwise.
-    def self.load_prerelease_plugins?
-      # Load prerelease plugins (which ruby defines as any gem which has a letter in its version number).
-      # Can't use puppet-lint configuration object here because this code executes before the command line is parsed.
-      if ENV['PUPPET_LINT_LOAD_PRERELEASE_PLUGINS']
-        return %w(true yes).include?(ENV['PUPPET_LINT_LOAD_PRERELEASE_PLUGINS'].downcase)
+      # Internal: Check if RubyGems is loaded and available.
+      #
+      # Returns true if RubyGems is available, false if not.
+      def has_rubygems?
+        defined? ::Gem
       end
-      false
-    end
 
-    # Internal: Retrieve a list of available gem paths from RubyGems.
-    #
-    # Returns an Array of Pathname objects.
-    def self.gem_directories
-      if has_rubygems?
-        gemspecs.reject { |spec| spec.name == 'puppet-lint' }.map do |spec|
-          Pathname.new(spec.full_gem_path) + 'lib'
+      # Internal: Retrieve a list of avaliable gemspecs.
+      #
+      # Returns an Array of Gem::Specification objects.
+      def gemspecs
+        @gemspecs ||= if Gem::Specification.respond_to?(:latest_specs)
+                        Gem::Specification.latest_specs(load_prerelease_plugins?)
+                      else
+                        Gem.searcher.init_gemspecs
+                      end
+      end
+
+      # Internal: Determine whether to load plugins that contain a letter in their version number.
+      #
+      # Returns true if the configuration is set to load "prerelease" gems, false otherwise.
+      def load_prerelease_plugins?
+        # Load prerelease plugins (which ruby defines as any gem which has a letter in its version number).
+        # Can't use puppet-lint configuration object here because this code executes before the command line is parsed.
+        if ENV['PUPPET_LINT_LOAD_PRERELEASE_PLUGINS']
+          return %w(true yes).include?(ENV['PUPPET_LINT_LOAD_PRERELEASE_PLUGINS'].downcase)
         end
-      else
-        []
+        false
+      end
+
+      # Internal: Retrieve a list of available gem paths from RubyGems.
+      #
+      # Returns an Array of Pathname objects.
+      def gem_directories
+        if has_rubygems?
+          gemspecs.reject { |spec| spec.name == 'puppet-lint' }.map do |spec|
+            Pathname.new(spec.full_gem_path) + 'lib'
+          end
+        else
+          []
+        end
       end
     end
   end
