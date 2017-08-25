@@ -14,5 +14,5 @@ describe PuppetLint::Lexer::Token do
   its(:value) { is_expected.to eq('foo') }
   its(:line) { is_expected.to eq(1) }
   its(:column) { is_expected.to eq(2) }
-  its(:inspect) { is_expected.to eq("<Token :NAME (foo) @1:2>") }
+  its(:inspect) { is_expected.to eq('<Token :NAME (foo) @1:2>') }
 end

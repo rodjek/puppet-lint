@@ -178,7 +178,7 @@ describe PuppetLint::Bin do
     ] }
 
     its(:exitstatus) { is_expected.to eq(0) }
-    its(:stdout) { is_expected.to eq("") }
+    its(:stdout) { is_expected.to eq('') }
   end
 
   context 'when changing the log format' do
@@ -324,8 +324,8 @@ describe PuppetLint::Bin do
 
     its(:exitstatus) { is_expected.to eq(0) }
     its(:stdout) { is_expected.to eq([
-      "IGNORED: double quoted string containing no variables on line 3",
-      "  for a good reason",
+      'IGNORED: double quoted string containing no variables on line 3',
+      '  for a good reason',
     ].join("\n")) }
   end
 

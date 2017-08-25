@@ -75,7 +75,7 @@ describe 'only_variable_string' do
       end
 
       it 'should unquote the variable' do
-        expect(manifest).to eq("$foo")
+        expect(manifest).to eq('$foo')
       end
     end
 
@@ -91,7 +91,7 @@ describe 'only_variable_string' do
       end
 
       it 'should unquoted the variable' do
-        expect(manifest).to eq("$foo[0]")
+        expect(manifest).to eq('$foo[0]')
       end
     end
 
@@ -107,7 +107,7 @@ describe 'only_variable_string' do
       end
 
       it 'should unquote the variable' do
-        expect(manifest).to eq("$foo[0][aoeuaoeu][bar][999]")
+        expect(manifest).to eq('$foo[0][aoeuaoeu][bar][999]')
       end
     end
   end

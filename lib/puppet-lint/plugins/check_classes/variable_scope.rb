@@ -118,7 +118,7 @@ PuppetLint.new_check(:variable_scope) do
         end
       end
 
-      msg = "top-scope variable being used without an explicit namespace"
+      msg = 'top-scope variable being used without an explicit namespace'
       referenced_variables.each do |token|
         unless future_parser_scopes[token.line].nil?
           next if future_parser_scopes[token.line].include?(token.value.gsub(/\[.+\]\Z/, ''))

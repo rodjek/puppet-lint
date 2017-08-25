@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'autoloader_layout' do
   context 'foo::bar in foo/manifests/bar.pp' do
-    let(:code) { "class foo::bar { }" }
+    let(:code) { 'class foo::bar { }' }
     let(:path) { 'foo/manifests/bar.pp' }
 
     it 'should not detect any problems' do

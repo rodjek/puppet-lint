@@ -5,7 +5,7 @@ describe 'nested_classes_or_defines' do
   let(:define_msg) { 'defined type defined inside a class' }
 
   context 'class on its own' do
-    let(:code) { "class foo { }" }
+    let(:code) { 'class foo { }' }
 
     it 'should not detect any problems' do
       expect(problems).to have(0).problems

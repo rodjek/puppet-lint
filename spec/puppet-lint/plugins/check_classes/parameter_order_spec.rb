@@ -27,7 +27,7 @@ describe 'parameter_order' do
         expect(problems).to have(1).problem
       end
 
-      col = (type == "class" ? 23 : 24)
+      col = (type == 'class' ? 23 : 24)
       it 'should create a warning' do
         expect(problems).to contain_warning(msg).on_line(1).in_column(col)
       end
@@ -54,7 +54,7 @@ describe 'parameter_order' do
         expect(problems).to have(1).problem
       end
 
-      col = (type == "class" ? 33 : 34)
+      col = (type == 'class' ? 33 : 34)
       it 'should create a warning' do
         expect(problems).to contain_warning(msg).on_line(2).in_column(col)
       end

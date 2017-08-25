@@ -305,7 +305,7 @@ class PuppetLint
       contents = scanner.scan_until(dq_str_regexp)
 
       if scanner.matched.nil?
-        raise LexerError.new(@line_no, @column, "Double quoted string missing closing quote")
+        raise LexerError.new(@line_no, @column, 'Double quoted string missing closing quote')
       end
 
       until scanner.matched.end_with?('"')
@@ -381,7 +381,7 @@ class PuppetLint
           # 1 indexed)
           @column = lines.last.size + 1
         else
-          @column += (lines.last || "").size
+          @column += (lines.last || '').size
         end
       end
 
@@ -418,7 +418,7 @@ class PuppetLint
       first = true
       value, terminator = get_string_segment(ss, '"$')
       until value.nil?
-        if terminator == "\""
+        if terminator == '"'
           if first
             tokens << new_token(:STRING, value, :line => line, :column => column)
             first = false
@@ -442,7 +442,7 @@ class PuppetLint
             var_name = ss.scan(/(::)?(\w+(-\w+)*::)*\w+(-\w+)*/)
             if var_name.nil?
               token_column = column + ss.pos - 1
-              tokens << new_token(:DQMID, "$", :line => line, :column => token_column)
+              tokens << new_token(:DQMID, '$', :line => line, :column => token_column)
             else
               token_column = column + (ss.pos - var_name.size)
               tokens << new_token(:UNENC_VARIABLE, var_name, :line => line, :column => token_column)
@@ -499,7 +499,7 @@ class PuppetLint
           if ss.scan(/\{/).nil?
             var_name = ss.scan(/(::)?(\w+(-\w+)*::)*\w+(-\w+)*/)
             if var_name.nil?
-              tokens << new_token(:HEREDOC_MID, "$")
+              tokens << new_token(:HEREDOC_MID, '$')
             else
               tokens << new_token(:UNENC_VARIABLE, var_name)
             end
@@ -507,7 +507,7 @@ class PuppetLint
             contents = ss.scan_until(/\}/)[0..-2]
             raw = contents.dup
             if contents.match(/\A(::)?([\w-]+::)*[\w-]|(\[.+?\])*/) && !contents.match(/\A\w+\(/)
-              contents = "$#{contents}" unless contents.start_with?("$")
+              contents = "$#{contents}" unless contents.start_with?('$')
             end
 
             lexer = PuppetLint::Lexer.new

@@ -6,7 +6,7 @@
 PuppetLint.new_check(:ensure_not_symlink_target) do
   def check
     resource_indexes.each do |resource|
-      if resource[:type].value == "file"
+      if resource[:type].value == 'file'
         resource[:param_tokens].select { |param_token|
           param_token.value == 'ensure'
         }.each do |ensure_token|

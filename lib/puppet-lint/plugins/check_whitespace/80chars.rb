@@ -18,4 +18,4 @@ PuppetLint.new_check(:'80chars') do
     end
   end
 end
-PuppetLint.configuration.send("disable_80chars")
+PuppetLint.configuration.send('disable_80chars')

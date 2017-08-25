@@ -164,8 +164,8 @@ class PuppetLint
             end
           end
 
-          opening_token = direction == :next ? "L" : "R"
-          closing_token = direction == :next ? "R" : "L"
+          opening_token = direction == :next ? 'L' : 'R'
+          closing_token = direction == :next ? 'R' : 'L'
 
           if opts[:skip_blocks]
             case token_iter.type

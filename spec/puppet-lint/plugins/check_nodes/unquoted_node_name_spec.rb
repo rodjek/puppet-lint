@@ -5,7 +5,7 @@ describe 'unquoted_node_name' do
 
   context 'with fix disabled' do
     context 'unquoted node name' do
-      let(:code) { "node foo { }" }
+      let(:code) { 'node foo { }' }
 
       it 'should only detect a single problem' do
         expect(problems).to have(1).problem
@@ -17,7 +17,7 @@ describe 'unquoted_node_name' do
     end
 
     context 'default node' do
-      let(:code) { "node default { }" }
+      let(:code) { 'node default { }' }
 
       it 'should not detect any problems' do
         expect(problems).to have(0).problems
@@ -33,7 +33,7 @@ describe 'unquoted_node_name' do
     end
 
     context 'regex node name' do
-      let(:code) { "node /foo/ { }" }
+      let(:code) { 'node /foo/ { }' }
 
       it 'should not detect any problems' do
         expect(problems).to have(0).problems
@@ -41,7 +41,7 @@ describe 'unquoted_node_name' do
     end
 
     context 'multiple bare node names' do
-      let(:code) { "node foo, bar, baz { }" }
+      let(:code) { 'node foo, bar, baz { }' }
 
       it 'should detect 3 problems' do
         expect(problems).to have(3).problems
@@ -68,7 +68,7 @@ describe 'unquoted_node_name' do
     end
 
     context 'multiple node blocks' do
-      let(:code) { "node foo { } node bar { }" }
+      let(:code) { 'node foo { } node bar { }' }
 
       it 'should detect 2 problems' do
         expect(problems).to have(2).problems
@@ -103,7 +103,7 @@ describe 'unquoted_node_name' do
     end
 
     context 'unquoted node name' do
-      let(:code) { "node foo { }" }
+      let(:code) { 'node foo { }' }
 
       it 'should only detect a single problem' do
         expect(problems).to have(1).problem
@@ -119,7 +119,7 @@ describe 'unquoted_node_name' do
     end
 
     context 'multiple bare node names' do
-      let(:code) { "node foo, bar, baz { }" }
+      let(:code) { 'node foo, bar, baz { }' }
       let(:fixed) { "node 'foo', 'bar', 'baz' { }" }
 
       it 'should detect 3 problems' do

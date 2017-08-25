@@ -35,7 +35,7 @@ class PuppetLint::Bin
     end
 
     if @args[0].nil?
-      puts "puppet-lint: no file specified"
+      puts 'puppet-lint: no file specified'
       puts "puppet-lint: try 'puppet-lint --help' for more information"
       return 1
     end
@@ -77,7 +77,7 @@ class PuppetLint::Bin
       return return_val
 
     rescue PuppetLint::NoCodeError
-      puts "puppet-lint: no file specified or specified file does not exist"
+      puts 'puppet-lint: no file specified or specified file does not exist'
       puts "puppet-lint: try 'puppet-lint --help' for more information"
       return 1
     end

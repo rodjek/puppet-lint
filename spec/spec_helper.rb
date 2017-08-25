@@ -61,9 +61,9 @@ module RSpec
       def failure_message
         case @problems.length
         when 0
-          "expected that the check would create a problem but it did not"
+          'expected that the check would create a problem but it did not'
         when 1
-          messages = ["expected that the problem"]
+          messages = ['expected that the problem']
 
           messages << check_attr(:kind, 'would be of kind')
           messages << check_attr(:message, 'would have the message')
@@ -74,16 +74,16 @@ module RSpec
           messages.compact.join("\n  ")
         else
           [
-            "expected that the check would create",
+            'expected that the check would create',
             PP.pp(@expected_problem, '').strip,
-            "but it instead created",
+            'but it instead created',
             PP.pp(@problems, ''),
           ].join("\n")
         end
       end
 
       def failure_message_when_negated
-        "expected that the check would not create the problem, but it did"
+        'expected that the check would not create the problem, but it did'
       end
     end
 

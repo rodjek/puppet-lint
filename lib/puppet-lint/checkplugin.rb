@@ -170,7 +170,7 @@ class PuppetLint::CheckPlugin
     problem.merge!(default_info) { |key, v1, v2| v1 }
 
     unless [:warning, :error, :fixed].include? kind
-      raise ArgumentError, "unknown value passed for kind"
+      raise ArgumentError, 'unknown value passed for kind'
     end
 
     [:message, :line, :column, :check].each do |attr|

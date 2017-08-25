@@ -12,7 +12,7 @@ PuppetLint.new_check(:inherits_across_namespaces) do
 
       unless class_module_name == inherited_module_name
         notify :warning, {
-          :message => "class inherits across module namespaces",
+          :message => 'class inherits across module namespaces',
           :line    => class_idx[:inherited_token].line,
           :column  => class_idx[:inherited_token].column,
         }

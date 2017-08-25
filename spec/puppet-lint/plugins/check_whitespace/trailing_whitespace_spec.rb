@@ -5,7 +5,7 @@ describe 'trailing_whitespace' do
 
   context 'with fix disabled' do
     context 'line with trailing whitespace' do
-      let(:code) { "foo " }
+      let(:code) { 'foo ' }
 
       it 'should only detect a single problem' do
         expect(problems).to have(1).problem
@@ -43,7 +43,7 @@ class {
     end
 
     context 'single line with trailing whitespace' do
-      let(:code) { "foo " }
+      let(:code) { 'foo ' }
 
       it 'should only detect a single problem' do
         expect(problems).to have(1).problem

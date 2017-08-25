@@ -5,13 +5,13 @@
 # https://docs.puppet.com/guides/style_guide.html#file-modes
 PuppetLint.new_check(:file_mode) do
   MSG = 'mode should be represented as a 4 digit octal value or symbolic mode'.freeze
-  SYM_RE = "([ugoa]*[-=+][-=+rstwxXugo]*)(,[ugoa]*[-=+][-=+rstwxXugo]*)*".freeze
+  SYM_RE = '([ugoa]*[-=+][-=+rstwxXugo]*)(,[ugoa]*[-=+][-=+rstwxXugo]*)*'.freeze
   IGNORE_TYPES = Set[:VARIABLE, :UNDEF, :FUNCTION_NAME]
   MODE_RE = Regexp.new(/\A([0-7]{4}|#{SYM_RE})\Z/)
 
   def check
     resource_indexes.each do |resource|
-      if resource[:type].value == "file" or resource[:type].value == "concat"
+      if resource[:type].value == 'file' or resource[:type].value == 'concat'
         resource[:param_tokens].select { |param_token|
           param_token.value == 'mode'
         }.each do |param_token|

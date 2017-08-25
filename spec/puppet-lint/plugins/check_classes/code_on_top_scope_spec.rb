@@ -36,7 +36,7 @@ describe 'code_on_top_scope' do
     }
 
     its(:problems) {
-      should contain_warning("code outside of class or define block - include")
+      should contain_warning('code outside of class or define block - include')
       should have(4).problems
     }
   end

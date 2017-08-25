@@ -13,7 +13,7 @@ describe 'unquoted_resource_title' do
     end
 
     context 'unquoted resource title on single line resource' do
-      let(:code) { "file { foo: }" }
+      let(:code) { 'file { foo: }' }
 
       it 'should only detect a single problem' do
         expect(problems).to have(1).problem
@@ -148,7 +148,7 @@ describe 'unquoted_resource_title' do
     end
 
     context 'unquoted resource title on single line resource' do
-      let(:code) { "file { foo: }" }
+      let(:code) { 'file { foo: }' }
 
       it 'should only detect a single problem' do
         expect(problems).to have(1).problem

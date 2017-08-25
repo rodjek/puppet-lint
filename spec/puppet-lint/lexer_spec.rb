@@ -208,7 +208,7 @@ describe PuppetLint::Lexer do
       expect(tokens[1].value).to eq('bar')
       expect(tokens[1].line).to eq(1)
       expect(tokens[1].column).to eq(3)
-      expect(tokens[1].to_manifest).to eq("${bar}")
+      expect(tokens[1].to_manifest).to eq('${bar}')
 
       expect(tokens[2].type).to eq(:DQPOST)
       expect(tokens[2].value).to eq('')
@@ -231,7 +231,7 @@ describe PuppetLint::Lexer do
       expect(tokens[1].raw).to eq('$bar')
       expect(tokens[1].line).to eq(1)
       expect(tokens[1].column).to eq(4)
-      expect(tokens[1].to_manifest).to eq("${$bar}")
+      expect(tokens[1].to_manifest).to eq('${$bar}')
 
       expect(tokens[2].type).to eq(:DQPOST)
       expect(tokens[2].value).to eq('')
@@ -696,7 +696,7 @@ describe PuppetLint::Lexer do
 
       expect(tokens.length).to eq(8)
       expect(tokens[0].type).to eq(:VARIABLE)
-      expect(tokens[0].value).to eq("str")
+      expect(tokens[0].value).to eq('str')
       expect(tokens[0].line).to eq(1)
       expect(tokens[0].column).to eq(1)
       expect(tokens[1].type).to eq(:WHITESPACE)
@@ -859,7 +859,7 @@ describe PuppetLint::Lexer do
 
       expect(tokens.length).to eq(8)
       expect(tokens[0].type).to eq(:VARIABLE)
-      expect(tokens[0].value).to eq("str")
+      expect(tokens[0].value).to eq('str')
       expect(tokens[0].line).to eq(1)
       expect(tokens[0].column).to eq(1)
       expect(tokens[1].type).to eq(:WHITESPACE)
@@ -906,7 +906,7 @@ describe PuppetLint::Lexer do
       tokens = @lexer.tokenise(manifest)
 
       expect(tokens[0].type).to eq(:VARIABLE)
-      expect(tokens[0].value).to eq("str")
+      expect(tokens[0].value).to eq('str')
       expect(tokens[0].line).to eq(1)
       expect(tokens[0].column).to eq(1)
       expect(tokens[1].type).to eq(:WHITESPACE)
@@ -982,19 +982,19 @@ describe PuppetLint::Lexer do
       expect(tokens[6].line).to eq(2)
       expect(tokens[6].column).to eq(1)
       expect(tokens[7].type).to eq(:VARIABLE)
-      expect(tokens[7].value).to eq("else")
+      expect(tokens[7].value).to eq('else')
       expect(tokens[7].line).to eq(3)
       expect(tokens[7].column).to eq(3)
-      expect(tokens[7].to_manifest).to eq("${else}")
+      expect(tokens[7].to_manifest).to eq('${else}')
       expect(tokens[8].type).to eq(:HEREDOC_MID)
       expect(tokens[8].value).to eq("\n  AND :\n  ")
       expect(tokens[8].line).to eq(3)
       expect(tokens[8].column).to eq(10)
       expect(tokens[9].type).to eq(:UNENC_VARIABLE)
-      expect(tokens[9].value).to eq("another")
+      expect(tokens[9].value).to eq('another')
       expect(tokens[9].line).to eq(5)
       expect(tokens[9].column).to eq(3)
-      expect(tokens[9].to_manifest).to eq("$another")
+      expect(tokens[9].to_manifest).to eq('$another')
       expect(tokens[10].type).to eq(:HEREDOC_POST)
       expect(tokens[10].value).to eq("\n  THING\n  ")
       expect(tokens[10].raw).to eq("\n  THING\n  | myheredoc")
@@ -1015,7 +1015,7 @@ describe PuppetLint::Lexer do
       expect(tokens[7].type).to eq(:VARIABLE)
       expect(tokens[7].value).to eq('myvar')
       expect(tokens[7].raw).to eq('$myvar')
-      expect(tokens[7].to_manifest).to eq("${$myvar}")
+      expect(tokens[7].to_manifest).to eq('${$myvar}')
     end
   end
 
@@ -1172,43 +1172,43 @@ describe PuppetLint::Lexer do
       expect(token.value).to eq('single quoted string with "\\\'"')
     end
 
-    it "should match a single quoted string with an escaped $" do
+    it 'should match a single quoted string with an escaped $' do
       token = @lexer.tokenise(%q{'single quoted string with "\$"'}).first
       expect(token.type).to eq(:SSTRING)
       expect(token.value).to eq('single quoted string with "\\$"')
     end
 
-    it "should match a single quoted string with an escaped ." do
+    it 'should match a single quoted string with an escaped .' do
       token = @lexer.tokenise(%q{'single quoted string with "\."'}).first
       expect(token.type).to eq(:SSTRING)
       expect(token.value).to eq('single quoted string with "\\."')
     end
 
-    it "should match a single quoted string with an escaped \\n" do
+    it 'should match a single quoted string with an escaped \\n' do
       token = @lexer.tokenise(%q{'single quoted string with "\n"'}).first
       expect(token.type).to eq(:SSTRING)
       expect(token.value).to eq('single quoted string with "\\n"')
     end
 
-    it "should match a single quoted string with an escaped \\" do
+    it 'should match a single quoted string with an escaped \\' do
       token = @lexer.tokenise(%q{'single quoted string with "\\\\"'}).first
       expect(token.type).to eq(:SSTRING)
       expect(token.value).to eq('single quoted string with "\\\\"')
     end
 
-    it "should match an empty string" do
+    it 'should match an empty string' do
       token = @lexer.tokenise("''").first
       expect(token.type).to eq(:SSTRING)
       expect(token.value).to eq('')
     end
 
-    it "should match an empty string ending with \\\\" do
+    it 'should match an empty string ending with \\\\' do
       token = @lexer.tokenise("'foo\\\\'").first
       expect(token.type).to eq(:SSTRING)
       expect(token.value).to eq(%{foo\\\\})
     end
 
-    it "should match single quoted string containing a line break" do
+    it 'should match single quoted string containing a line break' do
       token = @lexer.tokenise("'\n'").first
       expect(token.type).to eq(:SSTRING)
       expect(token.value).to eq("\n")
@@ -1269,13 +1269,13 @@ describe PuppetLint::Lexer do
   end
 
   context ':STRING' do
-    it 'should parse strings with \\\\\\' do
+    it 'should parse strings with embedded strings' do
       expect {
-        @lexer.tokenise("exec { \"/bin/echo \\\\\\\"${environment}\\\\\\\"\": }")
+        @lexer.tokenise('exec { "/bin/echo \"${environment}\"": }')
       }.to_not raise_error
     end
 
-    it "should match double quoted string containing a line break" do
+    it 'should match double quoted string containing a line break' do
       token = @lexer.tokenise(%Q{"\n"}).first
       expect(token.type).to eq(:STRING)
       expect(token.value).to eq("\n")

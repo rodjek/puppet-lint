@@ -5,7 +5,7 @@ describe 'documentation' do
   let(:define_msg) { 'defined type not documented' }
 
   describe 'undocumented class' do
-    let(:code) { "class test {}" }
+    let(:code) { 'class test {}' }
 
     it 'should only detect a single problem' do
       expect(problems).to have(1).problem
@@ -28,7 +28,7 @@ describe 'documentation' do
   end
 
   describe 'undocumented defined type' do
-    let(:code) { "define test {}" }
+    let(:code) { 'define test {}' }
 
     it 'should only detect a single problem' do
       expect(problems).to have(1).problem
