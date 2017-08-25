@@ -39,7 +39,7 @@ rescue
           [
             %r/\%\{#{ var }\}/,
           ].each do |pat|
-            changed = gsub! pat, "#{ value }"
+            changed = gsub! pat, "#{value}"
           end
         end
         break unless changed
