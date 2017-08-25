@@ -73,7 +73,7 @@ PuppetLint.new_check(:variable_scope) do
               when :LBRACK
                 brack_depth -= 1
                 break if brack_depth == 0
-              when :COMMA
+              when :COMMA # rubocop:disable Lint/EmptyWhen
                 # ignore
               else # unexpected
                 break
