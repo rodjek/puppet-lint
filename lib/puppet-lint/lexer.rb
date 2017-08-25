@@ -355,7 +355,7 @@ class PuppetLint
         tokens.last.next_token = token
 
         unless FORMATTING_TOKENS.include?(token.type)
-          prev_nf_idx = tokens.rindex { |r| ! FORMATTING_TOKENS.include? r.type }
+          prev_nf_idx = tokens.rindex { |r| !FORMATTING_TOKENS.include? r.type }
           unless prev_nf_idx.nil?
             prev_nf_token = tokens[prev_nf_idx]
             prev_nf_token.next_code_token = token
