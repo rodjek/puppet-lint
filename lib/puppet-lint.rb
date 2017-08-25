@@ -1,4 +1,5 @@
 # encoding: utf-8
+
 require 'set'
 require 'json'
 require 'puppet-lint/version'
