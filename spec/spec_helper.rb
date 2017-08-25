@@ -40,17 +40,9 @@ module RSpec
         @problems = problems
 
         problems.any? do |problem|
-          ret = true
-          @expected_problem.each do |key, value|
-            if !problem.key?(key)
-              ret = false
-              break
-            elsif problem[key] != value
-              ret = false
-              break
-            end
+          @expected_problem.all? do |key, value|
+            problem.key?(key) && problem[key] == value
           end
-          ret
         end
       end
 

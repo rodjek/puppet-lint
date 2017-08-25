@@ -190,12 +190,8 @@ class PuppetLint
         KNOWN_TOKENS.each do |type, regex|
           if value = chunk[regex, 1]
             length = value.size
-            if type == :NAME
-              if KEYWORDS.include? value
-                tokens << new_token(value.upcase.to_sym, value)
-              else
-                tokens << new_token(type, value)
-              end
+            if type == :NAME && KEYWORDS.include?(value)
+              tokens << new_token(value.upcase.to_sym, value)
             else
               tokens << new_token(type, value)
             end
@@ -330,11 +326,7 @@ class PuppetLint
 
       return true if prev_token.nil?
 
-      if REGEX_PREV_TOKENS.include? prev_token.type
-        true
-      else
-        false
-      end
+      REGEX_PREV_TOKENS.include? prev_token.type
     end
 
     # Internal: Create a new PuppetLint::Lexer::Token object, calculate its

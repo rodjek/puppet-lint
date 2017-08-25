@@ -21,7 +21,7 @@ class PuppetLint::CheckPlugin
     check
 
     @problems.each do |problem|
-      if problem[:check] != :syntax && PuppetLint::Data.ignore_overrides[problem[:check]].has_key?(problem[:line])
+      if problem[:check] != :syntax && PuppetLint::Data.ignore_overrides[problem[:check]].key?(problem[:line])
         problem[:kind] = :ignored
         problem[:reason] = PuppetLint::Data.ignore_overrides[problem[:check]][problem[:line]]
         next
@@ -174,7 +174,7 @@ class PuppetLint::CheckPlugin
     end
 
     [:message, :line, :column, :check].each do |attr|
-      unless problem.has_key? attr
+      unless problem.key? attr
         raise ArgumentError, "problem hash must contain #{attr.inspect}"
       end
     end
