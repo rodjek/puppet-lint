@@ -213,8 +213,8 @@ class PuppetLint
 
           elsif chunk.match(/\A"/)
             str_contents = slurp_string(code[i + 1..-1])
-            _ = code[0..i].split("\n")
-            interpolate_string(str_contents, _.count, _.last.length)
+            lines_parsed = code[0..i].split("\n")
+            interpolate_string(str_contents, lines_parsed.count, lines_parsed.last.length)
             length = str_contents.size + 1
 
           elsif heredoc_name = chunk[/\A@\(("?.+?"?(:.+?)?(\/.*?)?)\)/, 1]
