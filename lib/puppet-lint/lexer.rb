@@ -206,7 +206,7 @@ class PuppetLint
             length = var_name.size + 1
             tokens << new_token(:VARIABLE, var_name)
 
-          elsif chunk.match(/\A'(.*?)'/m)
+          elsif chunk =~ /\A'.*?'/m
             str_content = StringScanner.new(code[i + 1..-1]).scan_until(/(\A|[^\\])(\\\\)*'/m)
             length = str_content.size + 1
             tokens << new_token(:SSTRING, str_content[0..-2])
@@ -279,11 +279,11 @@ class PuppetLint
               length += str_contents.size
             end
 
-          elsif chunk.match(/\A\//)
+          elsif chunk.start_with?('/')
             length = 1
             tokens << new_token(:DIV, '/')
 
-          elsif chunk.match(/\A@/)
+          elsif chunk.start_with?('@')
             length = 1
             tokens << new_token(:AT, '@')
 
