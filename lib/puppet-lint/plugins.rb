@@ -14,7 +14,7 @@ class PuppetLint
       gem_directories.select { |path|
         (path + 'puppet-lint/plugins').directory?
       }.each do |gem_path|
-        Dir["#{(gem_path + 'puppet-lint/plugins').to_s}/*.rb"].each do |file|
+        Dir["#{gem_path + 'puppet-lint/plugins'}/*.rb"].each do |file|
           load file
         end
       end

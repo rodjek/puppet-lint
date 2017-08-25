@@ -649,7 +649,7 @@ describe PuppetLint::Lexer do
     [:NEWLINE, "\n"],
     [:NEWLINE, "\r\n"],
   ].each do |name, string|
-    it "should have a token named '#{name.to_s}'" do
+    it "should have a token named '#{name}'" do
       token = @lexer.tokenise(string).first
       expect(token.type).to eq(name)
       expect(token.value).to eq(string)

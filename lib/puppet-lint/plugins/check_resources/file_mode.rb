@@ -34,7 +34,7 @@ PuppetLint.new_check(:file_mode) do
   def fix(problem)
     if problem[:token].value =~ /\A[0-7]{3}\Z/
       problem[:token].type = :SSTRING
-      problem[:token].value = "0#{problem[:token].value.to_s}"
+      problem[:token].value = "0#{problem[:token].value}"
     else
       raise PuppetLint::NoFix
     end
