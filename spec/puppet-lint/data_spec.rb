@@ -53,7 +53,7 @@ describe PuppetLint::Data do
 
   describe '.delete' do
     let(:manifest) { '$x + = $a' }
-    let(:token) {tokens[2] }
+    let(:token) { tokens[2] }
     let(:original_tokens) { lexer.tokenise(manifest) }
     let(:tokens) { original_tokens.dup }
     before do
