@@ -9,7 +9,7 @@ describe PuppetLint do
   end
 
   it 'should have support for % with a hash' do
-    string = 'replace %{hash}' % {:hash => 'replaced'}
+    string = 'replace %{hash}' % { :hash => 'replaced' }
     expect(string).to match('replace replaced')
   end
 

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'arrow_on_right_operand_line' do
-  {'chain' => '->', 'subscribe chain' => '~>'}.each do |name, operator|
+  { 'chain' => '->', 'subscribe chain' => '~>' }.each do |name, operator|
     context "#{name} operator" do
       context 'both operands on same line' do
         let(:code) { "Package['httpd'] #{operator} Service['httpd']" }

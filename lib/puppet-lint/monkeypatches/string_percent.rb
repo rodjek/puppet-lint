@@ -1,7 +1,7 @@
 # If we are using an older ruby version, we back-port the basic functionality
 # we need for formatting output: 'somestring' % <hash>
 begin
-  if ('%{test}' % {:test => 'replaced'} == 'replaced')
+  if ('%{test}' % { :test => 'replaced' } == 'replaced')
     # If this works, we are all good to go.
   end
 rescue

@@ -130,7 +130,7 @@ class PuppetLint::Data
               }
               title_array_tokens = tokens[(array_start_idx + 1)..(token_idx - 2)]
               result += title_array_tokens.select { |token|
-                {:STRING => true, :NAME => true}.include? token.type
+                { :STRING => true, :NAME => true }.include? token.type
               }
             else
               next_token = tokens[token_idx].next_code_token
