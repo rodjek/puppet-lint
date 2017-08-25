@@ -8,7 +8,7 @@ PuppetLint.new_check(:duplicate_params) do
       seen_params = {}
       level = 0
 
-      resource[:tokens].each_with_index do |token, idx|
+      resource[:tokens].each do |token|
         case token.type
         when :LBRACE
           level += 1

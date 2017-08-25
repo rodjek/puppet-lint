@@ -23,7 +23,7 @@ PuppetLint.new_check(:arrow_alignment) do
       next if last_arrow.nil?
       next if resource_tokens[first_arrow].line == resource_tokens[last_arrow].line
 
-      resource_tokens.each_with_index do |token, idx|
+      resource_tokens.each do |token|
         if token.type == :FARROW
           (level_tokens[level_idx] ||= []) << token
           param_token = token.prev_code_token

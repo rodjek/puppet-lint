@@ -166,7 +166,7 @@ class PuppetLint::CheckPlugin
   # Returns nothing.
   def notify(kind, problem)
     problem[:kind] = kind
-    problem.merge!(default_info) { |key, v1, v2| v1 }
+    problem.merge!(default_info) { |_key, v1, _v2| v1 }
 
     unless [:warning, :error, :fixed].include? kind
       raise ArgumentError, 'unknown value passed for kind'
