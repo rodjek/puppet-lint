@@ -32,14 +32,29 @@ class PuppetLint::Data
       @defaults_indexes = nil
     end
 
+    def ruby_1?
+      if @ruby_1.nil?
+        @ruby_1 = RbConfig::CONFIG['MAJOR'] == '1'
+      end
+      @ruby_1
+    end
+
     # Public: Get the tokenised manifest.
     #
     # Returns an Array of PuppetLint::Lexer::Token objects.
     def tokens
-      calling_method = begin
-        caller[0][/`.*'/][1..-2]
-      rescue NoMethodError
-        caller[1][/`.*'/][1..-2]
+      calling_method = if ruby_1?
+        begin
+          caller[0][/`.*'/][1..-2]
+        rescue NoMethodError
+          caller[1][/`.*'/][1..-2]
+        end
+      else
+        begin
+          caller(0..0).first[/`.*'/][1..-2]
+        rescue NoMethodError
+          caller(1..1).first[/`.*'/][1..-2]
+        end
       end
 
       if calling_method == 'check'
