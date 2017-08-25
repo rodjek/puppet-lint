@@ -34,10 +34,12 @@ describe 'parameter_order' do
     end
 
     context "#{type} parameter set to another variable" do
-      let(:code) { "
-        #{type} foo($bar, $baz = $name, $gronk=$::fqdn) {
-        }"
-      }
+      let(:code) do
+        <<-END
+          #{type} foo($bar, $baz = $name, $gronk=$::fqdn) {
+          }
+        END
+      end
 
       it 'should not detect any problems' do
         expect(problems).to have(0).problems
@@ -45,18 +47,20 @@ describe 'parameter_order' do
     end
 
     context "#{type} parameter set to another variable with incorrect order" do
-      let(:code) { "
-        #{type} foo($baz = $name, $bar, $gronk=$::fqdn) {
-        }"
-      }
+      let(:code) do
+        <<-END
+          #{type} foo($baz = $name, $bar, $gronk=$::fqdn) {
+          }
+        END
+      end
 
       it 'should only detect a single problem' do
         expect(problems).to have(1).problem
       end
 
-      col = (type == 'class' ? 33 : 34)
+      col = (type == 'class' ? 35 : 36)
       it 'should create a warning' do
-        expect(problems).to contain_warning(msg).on_line(2).in_column(col)
+        expect(problems).to contain_warning(msg).on_line(1).in_column(col)
       end
     end
 

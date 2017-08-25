@@ -49,18 +49,20 @@ describe 'double_quoted_strings' do
     end
 
     context 'double quoted string with backslash for continuation' do
-      let(:code) { %{
-        class puppet::master::maintenance (
-        ) {
-          cron { 'puppet_master_reports_cleanup':
-            command     => "/usr/bin/find /var/lib/puppet/reports -type f -mtime +15 \
-                           -delete && /usr/bin/find /var/lib/puppet/reports -mindepth 1 \
-                           -empty -type d -delete",
-            minute      => '15',
-            hour        => '5',
+      let(:code) do
+        <<-END
+          class puppet::master::maintenance (
+          ) {
+            cron { 'puppet_master_reports_cleanup':
+              command     => "/usr/bin/find /var/lib/puppet/reports -type f -mtime +15 \
+                             -delete && /usr/bin/find /var/lib/puppet/reports -mindepth 1 \
+                             -empty -type d -delete",
+              minute      => '15',
+              hour        => '5',
+            }
           }
-        }
-      } }
+        END
+      end
 
       it 'should not detect any problems' do
         expect(problems).to have(0).problems
@@ -92,15 +94,17 @@ describe 'double_quoted_strings' do
     end
 
     context 'double quoted stings containing supported escape patterns' do
-      let(:code) {%{
-        $string1 = "this string contins \n newline"
-        $string2 = "this string contains \ttab"
-        $string3 = "this string contains \${escaped} var"
-        $string4 = "this string contains \\"escaped \\" double quotes"
-        $string5 = "this string contains \\'escaped \\' single quotes"
-        $string6 = "this string contains \r line return"
-        $string7 = "this string contains \\\\ an escaped backslash"
-        }}
+      let(:code) do
+        <<-END
+          $string1 = "this string contins \n newline"
+          $string2 = "this string contains \ttab"
+          $string3 = "this string contains \${escaped} var"
+          $string4 = "this string contains \\"escaped \\" double quotes"
+          $string5 = "this string contains \\'escaped \\' single quotes"
+          $string6 = "this string contains \r line return"
+          $string7 = "this string contains \\\\ an escaped backslash"
+        END
+      end
 
       it 'should not detect any problems' do
         expect(problems).to have(0).problems

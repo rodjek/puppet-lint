@@ -6,11 +6,13 @@ describe '140chars' do
   let(:msg) { 'line has more than 140 characters' }
 
   context 'file resource with a source line > 140c' do
-    let(:code) { "
-      file {
-        source  => 'puppet:///modules/certificates/etc/ssl/private/wildcard.example.com.crt',
-      }"
-    }
+    let(:code) do
+      <<-END
+        file {
+          source  => 'puppet:///modules/certificates/etc/ssl/private/wildcard.example.com.crt',
+        }
+      END
+    end
 
     it 'should not detect any problems' do
       expect(problems).to have(0).problems
@@ -18,11 +20,13 @@ describe '140chars' do
   end
 
   context 'file resource with a template line > 140c' do
-    let(:code) { "
-      file {
-        content => template('mymodule/this/is/a/truely/absurdly/long/path/that/should/make/you/feel/bad'),
-      }"
-    }
+    let(:code) do
+      <<-END
+        file {
+          content => template('mymodule/this/is/a/truely/absurdly/long/path/that/should/make/you/feel/bad'),
+        }
+      END
+    end
 
     it 'should not detect any problems' do
       expect(problems).to have(0).problems
@@ -30,11 +34,13 @@ describe '140chars' do
   end
 
   context 'length of lines with UTF-8 characters' do
-    let(:code) { "
-      # ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-      # ┃          Configuration           ┃
-      # ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛"
-    }
+    let(:code) do
+      <<-END
+        # ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+        # ┃          Configuration           ┃
+        # ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛"
+      END
+    end
 
     it 'should not detect any problems' do
       expect(problems).to have(0).problems

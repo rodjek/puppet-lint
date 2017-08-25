@@ -141,26 +141,28 @@ describe 'file_mode' do
     end
 
     context 'multi body file bad modes selector' do
-      let(:code) { "
-        file {
-          '/tmp/foo1':
-            ensure => $foo ? { default => absent },
-            mode => 644;
-          '/tmp/foo2':
-            mode => 644;
-          '/tmp/foo3':
-            mode => 644;
-         }"
-      }
+      let(:code) do
+        <<-END
+          file {
+            '/tmp/foo1':
+              ensure => $foo ? { default => absent },
+              mode => 644;
+            '/tmp/foo2':
+              mode => 644;
+            '/tmp/foo3':
+              mode => 644;
+          }
+        END
+      end
 
       it 'should detect 3 problems' do
         expect(problems).to have(3).problems
       end
 
       it 'should create three warnings' do
-        expect(problems).to contain_warning(sprintf(msg)).on_line(5).in_column(21)
-        expect(problems).to contain_warning(sprintf(msg)).on_line(7).in_column(21)
-        expect(problems).to contain_warning(sprintf(msg)).on_line(9).in_column(21)
+        expect(problems).to contain_warning(sprintf(msg)).on_line(4).in_column(23)
+        expect(problems).to contain_warning(sprintf(msg)).on_line(6).in_column(23)
+        expect(problems).to contain_warning(sprintf(msg)).on_line(8).in_column(23)
       end
     end
   end
@@ -251,38 +253,42 @@ describe 'file_mode' do
     end
 
     context 'multi body file bad modes selector' do
-      let(:code) { "
-        file {
-          '/tmp/foo1':
-            ensure => $foo ? { default => absent },
-            mode => 644;
-          '/tmp/foo2':
-            mode => 644;
-          '/tmp/foo3':
-            mode => 644;
-         }"
-      }
+      let(:code) do
+        <<-END
+          file {
+            '/tmp/foo1':
+              ensure => $foo ? { default => absent },
+              mode => 644;
+            '/tmp/foo2':
+              mode => 644;
+            '/tmp/foo3':
+              mode => 644;
+          }
+        END
+      end
 
-      let(:fixed) { "
-        file {
-          '/tmp/foo1':
-            ensure => $foo ? { default => absent },
-            mode => '0644';
-          '/tmp/foo2':
-            mode => '0644';
-          '/tmp/foo3':
-            mode => '0644';
-         }"
-      }
+      let(:fixed) do
+        <<-END
+          file {
+            '/tmp/foo1':
+              ensure => $foo ? { default => absent },
+              mode => '0644';
+            '/tmp/foo2':
+              mode => '0644';
+            '/tmp/foo3':
+              mode => '0644';
+          }
+        END
+      end
 
       it 'should detect 3 problems' do
         expect(problems).to have(3).problems
       end
 
       it 'should fix 3 problems' do
-        expect(problems).to contain_fixed(msg).on_line(5).in_column(21)
-        expect(problems).to contain_fixed(msg).on_line(7).in_column(21)
-        expect(problems).to contain_fixed(msg).on_line(9).in_column(21)
+        expect(problems).to contain_fixed(msg).on_line(4).in_column(23)
+        expect(problems).to contain_fixed(msg).on_line(6).in_column(23)
+        expect(problems).to contain_fixed(msg).on_line(8).in_column(23)
       end
 
       it 'should zero pad the file modes and change them to strings' do

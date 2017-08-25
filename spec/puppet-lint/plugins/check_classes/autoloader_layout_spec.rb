@@ -43,14 +43,16 @@ describe 'autoloader_layout' do
   end
 
   context 'foo included in bar/manifests/init.pp' do
-    let(:code) { "
-      class bar {
-        class {'foo':
-          someparam => 'somevalue',
+    let(:code) do
+      <<-END
+        class bar {
+          class {'foo':
+            someparam => 'somevalue',
+          }
         }
-      }
-      "
-    }
+      END
+    end
+
     let(:path) { 'bar/manifests/init.pp' }
 
     it 'should not detect any problems' do

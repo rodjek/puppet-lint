@@ -41,12 +41,14 @@ describe 'only_variable_string' do
     end
 
     context 'string containing only a variable as a hash key' do
-      let(:code) { "
-        $bar = 'key'
-        $foo = {
-          \"$bar\" => 1,
-        }"
-      }
+      let(:code) do
+        <<-END
+          $bar = 'key'
+          $foo = {
+            \"$bar\" => 1,
+          }
+        END
+      end
 
       it 'should not detect any problems' do
         expect(problems).to be_empty

@@ -25,10 +25,12 @@ describe 'unquoted_resource_title' do
     end
 
     context 'quoted resource title on multi line resource' do
-      let(:code) { "
-        file { 'foo':
-        }"
-      }
+      let(:code) do
+        <<-END
+          file { 'foo':
+          }
+        END
+      end
 
       it 'should not detect any problems' do
         expect(problems).to have(0).problems
@@ -36,27 +38,31 @@ describe 'unquoted_resource_title' do
     end
 
     context 'unquoted resource title on multi line resource' do
-      let(:code) { "
-        file { foo:
-        }"
-      }
+      let(:code) do
+        <<-END
+          file { foo:
+          }
+        END
+      end
 
       it 'should only detect a single problem' do
         expect(problems).to have(1).problem
       end
 
       it 'should create a warning' do
-        expect(problems).to contain_warning(msg).on_line(2).in_column(16)
+        expect(problems).to contain_warning(msg).on_line(1).in_column(18)
       end
     end
 
     context 'condensed resources with quoted titles' do
-      let(:code) { "
-        file {
-          'foo': ;
-          'bar': ;
-        }"
-      }
+      let(:code) do
+        <<-END
+          file {
+            'foo': ;
+            'bar': ;
+          }
+        END
+      end
 
       it 'should not detect any problems' do
         expect(problems).to have(0).problems
@@ -64,19 +70,21 @@ describe 'unquoted_resource_title' do
     end
 
     context 'condensed resources with an unquoted title' do
-      let(:code) { "
-        file {
-          'foo': ;
-          bar: ;
-        }"
-      }
+      let(:code) do
+        <<-END
+          file {
+            'foo': ;
+            bar: ;
+          }
+        END
+      end
 
       it 'should only detect a single problem' do
         expect(problems).to have(1).problem
       end
 
       it 'should create a warning' do
-        expect(problems).to contain_warning(msg).on_line(4).in_column(11)
+        expect(problems).to contain_warning(msg).on_line(3).in_column(13)
       end
     end
 
@@ -89,15 +97,17 @@ describe 'unquoted_resource_title' do
     end
 
     context 'resource inside a case statement' do
-      let(:code) { "
-        case $ensure {
-          'absent': {
-            file { \"some_file_${name}\":
-              ensure => absent,
+      let(:code) do
+        <<-END
+          case $ensure {
+            'absent': {
+              file { "some_file_${name}":
+                ensure => absent,
+              }
             }
           }
-        }"
-      }
+        END
+      end
 
       it 'should not detect any problems' do
         expect(problems).to have(0).problems
@@ -105,12 +115,14 @@ describe 'unquoted_resource_title' do
     end
 
     context 'issue #116' do
-      let(:code) { "
-        $config_file_init = $::operatingsystem ? {
-          /(?i:Debian|Ubuntu|Mint)/ => '/etc/default/foo',
-          default                   => '/etc/sysconfig/foo',
-        }"
-      }
+      let(:code) do
+        <<-END
+          $config_file_init = $::operatingsystem ? {
+            /(?i:Debian|Ubuntu|Mint)/ => '/etc/default/foo',
+            default                   => '/etc/sysconfig/foo',
+          }
+        END
+      end
 
       it 'should not detect any problems' do
         expect(problems).to have(0).problems
@@ -118,19 +130,21 @@ describe 'unquoted_resource_title' do
     end
 
     context 'case statement' do
-      let(:code) { %{
-        case $operatingsystem {
-          centos: {
-            $version = '1.2.3'
+      let(:code) do
+        <<-END
+          case $operatingsystem {
+            centos: {
+              $version = '1.2.3'
+            }
+            solaris: {
+              $version = '3.2.1'
+            }
+            default: {
+              fail("Module ${module_name} is not supported on ${operatingsystem}")
+            }
           }
-          solaris: {
-            $version = '3.2.1'
-          }
-          default: {
-            fail("Module ${module_name} is not supported on ${operatingsystem}")
-          }
-        }}
-      }
+        END
+      end
 
       it 'should not detect any problems' do
         expect(problems).to have(0).problems
@@ -164,21 +178,26 @@ describe 'unquoted_resource_title' do
     end
 
     context 'unquoted resource title on multi line resource' do
-      let(:code) { "
-        file { foo:
-        }"
-      }
-      let(:fixed) { "
-        file { 'foo':
-        }"
-      }
+      let(:code) do
+        <<-END
+          file { foo:
+          }
+        END
+      end
+
+      let(:fixed) do
+        <<-END
+          file { 'foo':
+          }
+        END
+      end
 
       it 'should only detect a single problem' do
         expect(problems).to have(1).problem
       end
 
       it 'should fix the manifest' do
-        expect(problems).to contain_fixed(msg).on_line(2).in_column(16)
+        expect(problems).to contain_fixed(msg).on_line(1).in_column(18)
       end
 
       it 'should single quote the resource title' do
@@ -187,25 +206,30 @@ describe 'unquoted_resource_title' do
     end
 
     context 'condensed resources with an unquoted title' do
-      let(:code) { "
-        file {
-          'foo': ;
-          bar: ;
-        }"
-      }
-      let(:fixed) { "
-        file {
-          'foo': ;
-          'bar': ;
-        }"
-      }
+      let(:code) do
+        <<-END
+          file {
+            'foo': ;
+            bar: ;
+          }
+        END
+      end
+
+      let(:fixed) do
+        <<-END
+          file {
+            'foo': ;
+            'bar': ;
+          }
+        END
+      end
 
       it 'should only detect a single problem' do
         expect(problems).to have(1).problem
       end
 
       it 'should fix the manifest' do
-        expect(problems).to contain_fixed(msg).on_line(4).in_column(11)
+        expect(problems).to contain_fixed(msg).on_line(3).in_column(13)
       end
 
       it 'should single quote the resource title' do
