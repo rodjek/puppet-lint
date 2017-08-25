@@ -207,12 +207,12 @@ class PuppetLint
             tokens << new_token(:VARIABLE, var_name)
 
           elsif chunk.match(/\A'(.*?)'/m)
-            str_content = StringScanner.new(code[i+1..-1]).scan_until(/(\A|[^\\])(\\\\)*'/m)
+            str_content = StringScanner.new(code[i + 1..-1]).scan_until(/(\A|[^\\])(\\\\)*'/m)
             length = str_content.size + 1
             tokens << new_token(:SSTRING, str_content[0..-2])
 
           elsif chunk.match(/\A"/)
-            str_contents = slurp_string(code[i+1..-1])
+            str_contents = slurp_string(code[i + 1..-1])
             _ = code[0..i].split("\n")
             interpolate_string(str_contents, _.count, _.last.length)
             length = str_contents.size + 1
@@ -241,7 +241,7 @@ class PuppetLint
             tokens << new_token(:MLCOMMENT, mlcomment, :raw => mlcomment_raw)
 
           elsif chunk.match(/\A\/.*?\//) && possible_regex?
-            str_content = StringScanner.new(code[i+1..-1]).scan_until(/(\A|[^\\])(\\\\)*\//m)
+            str_content = StringScanner.new(code[i + 1..-1]).scan_until(/(\A|[^\\])(\\\\)*\//m)
             length = str_content.size + 1
             tokens << new_token(:REGEX, str_content[0..-2])
 
@@ -257,7 +257,7 @@ class PuppetLint
             else
               heredoc_tag = @@heredoc_queue.shift
               heredoc_name = heredoc_tag[/\A"?(.+?)"?(:.+?)?(\/.*)?\Z/, 1]
-              str_contents = StringScanner.new(code[i+length..-1]).scan_until(/\|?\s*-?\s*#{heredoc_name}/)
+              str_contents = StringScanner.new(code[i + length..-1]).scan_until(/\|?\s*-?\s*#{heredoc_name}/)
               interpolate_heredoc(str_contents, heredoc_tag)
               length += str_contents.size
             end
@@ -273,8 +273,8 @@ class PuppetLint
             unless @@heredoc_queue.empty?
               heredoc_tag = @@heredoc_queue.shift
               heredoc_name = heredoc_tag[/\A"?(.+?)"?(:.+?)?(\/.*)?\Z/, 1]
-              str_contents = StringScanner.new(code[i+length..-1]).scan_until(/\|?\s*-?\s*#{heredoc_name}/)
-              _ = code[0..i+length].split("\n")
+              str_contents = StringScanner.new(code[i + length..-1]).scan_until(/\|?\s*-?\s*#{heredoc_name}/)
+              _ = code[0..i + length].split("\n")
               interpolate_heredoc(str_contents, heredoc_tag)
               length += str_contents.size
             end

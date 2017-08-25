@@ -68,7 +68,7 @@ class PuppetLint::Data
       end
 
       if formatting_tokens.include?(current_token.type)
-        prev_nf_idx = tokens[0..index-1].rindex { |r| !formatting_tokens.include? r.type }
+        prev_nf_idx = tokens[0..index - 1].rindex { |r| !formatting_tokens.include? r.type }
         unless prev_nf_idx.nil?
           prev_nf_token = tokens[prev_nf_idx]
           token.prev_code_token = prev_nf_token
@@ -124,7 +124,7 @@ class PuppetLint::Data
         tokens.each_index do |token_idx|
           if tokens[token_idx].type == :COLON
             # gather a list of tokens that are resource titles
-            if tokens[token_idx-1].type == :RBRACK
+            if tokens[token_idx - 1].type == :RBRACK
               array_start_idx = tokens.rindex { |r|
                 r.type == :LBRACK
               }
@@ -264,7 +264,7 @@ class PuppetLint::Data
           paren_depth = 0
           in_params = false
           inherited_class = nil
-          tokens[i+1..-1].each_with_index do |definition_token, j|
+          tokens[i + 1..-1].each_with_index do |definition_token, j|
             case definition_token.type
             when :INHERITS
               inherited_class = definition_token.next_code_token
@@ -324,7 +324,7 @@ class PuppetLint::Data
               level = 0
               real_idx = 0
               in_paren = false
-              tokens[token_idx+1..-1].each_with_index do |cur_token, cur_token_idx|
+              tokens[token_idx + 1..-1].each_with_index do |cur_token, cur_token_idx|
                 break if level == 0 && in_paren
                 break if level == 0 && cur_token.type == :NEWLINE
 
@@ -363,7 +363,7 @@ class PuppetLint::Data
         tokens.each_with_index do |token, token_idx|
           if token.type == :LBRACK
             real_idx = 0
-            tokens[token_idx+1..-1].each_with_index do |cur_token, cur_token_idx|
+            tokens[token_idx + 1..-1].each_with_index do |cur_token, cur_token_idx|
               real_idx = token_idx + 1 + cur_token_idx
               break if cur_token.type == :RBRACK
             end
@@ -401,7 +401,7 @@ class PuppetLint::Data
           if token.type == :LBRACE
             level = 0
             real_idx = 0
-            tokens[token_idx+1..-1].each_with_index do |cur_token, cur_token_idx|
+            tokens[token_idx + 1..-1].each_with_index do |cur_token, cur_token_idx|
               real_idx = token_idx + 1 + cur_token_idx
 
               level += 1 if cur_token.type == :LBRACE
@@ -438,7 +438,7 @@ class PuppetLint::Data
             token.next_code_token.type == :LBRACE
             real_idx = 0
 
-            tokens[token_idx+1..-1].each_with_index do |cur_token, cur_token_idx|
+            tokens[token_idx + 1..-1].each_with_index do |cur_token, cur_token_idx|
               real_idx = token_idx + 1 + cur_token_idx
               break if cur_token.type == :RBRACE
             end
