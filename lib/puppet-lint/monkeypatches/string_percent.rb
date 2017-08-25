@@ -12,6 +12,7 @@ rescue
   # Basic implementation of 'string' % { } like we need it. needs work.
   class String
     Percent = instance_method '%' unless defined? Percent
+
     def % *a, &b
       a.flatten!
 
@@ -29,6 +30,7 @@ rescue
       end
 
     end
+
     def expand! vars = {}
       loop do
         changed = false
@@ -45,6 +47,7 @@ rescue
       end
       self
     end
+
     def expand opts = {}
       dup.expand! opts
     end
