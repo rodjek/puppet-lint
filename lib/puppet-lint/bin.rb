@@ -75,7 +75,6 @@ class PuppetLint::Bin
       puts ']' if PuppetLint.configuration.json
 
       return return_val
-
     rescue PuppetLint::NoCodeError
       puts 'puppet-lint: no file specified or specified file does not exist'
       puts "puppet-lint: try 'puppet-lint --help' for more information"
