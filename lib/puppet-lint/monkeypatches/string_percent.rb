@@ -17,11 +17,11 @@ rescue
       a.flatten!
 
       string = case a.last
-      when Hash
-        expand a.pop
-      else
-        self
-      end
+               when Hash
+                 expand a.pop
+               else
+                 self
+               end
 
       if a.empty?
         string
