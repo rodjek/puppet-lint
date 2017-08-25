@@ -39,10 +39,9 @@ class PuppetLint::CheckPlugin
       if self.respond_to?(:fix)
         begin
           fix(problem)
-        rescue PuppetLint::NoFix
-          # noop
-        else
           problem[:kind] = :fixed
+        rescue PuppetLint::NoFix # rubocop:disable Lint/HandleExceptions
+          # noop
         end
       end
     end

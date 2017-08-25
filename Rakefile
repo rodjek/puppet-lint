@@ -14,6 +14,7 @@ begin
     config.exclude_labels = %w{duplicate question invalid wontfix release-pr}
   end
 rescue LoadError
+  $stderr.puts 'Changelog generation requires Ruby 2.0 or higher'
 end
 
 # vim: syntax=ruby
