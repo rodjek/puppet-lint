@@ -4,8 +4,8 @@
 #
 # https://docs.puppet.com/guides/style_guide.html#file-modes
 PuppetLint.new_check(:file_mode) do
-  MSG = 'mode should be represented as a 4 digit octal value or symbolic mode'
-  SYM_RE = "([ugoa]*[-=+][-=+rstwxXugo]*)(,[ugoa]*[-=+][-=+rstwxXugo]*)*"
+  MSG = 'mode should be represented as a 4 digit octal value or symbolic mode'.freeze
+  SYM_RE = "([ugoa]*[-=+][-=+rstwxXugo]*)(,[ugoa]*[-=+][-=+rstwxXugo]*)*".freeze
   IGNORE_TYPES = Set[:VARIABLE, :UNDEF, :FUNCTION_NAME]
   MODE_RE = Regexp.new(/\A([0-7]{4}|#{SYM_RE})\Z/)
 

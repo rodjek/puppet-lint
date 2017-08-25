@@ -13,7 +13,7 @@ class PuppetLint
   class RakeTask < ::Rake::TaskLib
     include ::Rake::DSL if defined?(::Rake::DSL)
 
-    DEFAULT_PATTERN = '**/*.pp'
+    DEFAULT_PATTERN = '**/*.pp'.freeze
 
     attr_accessor :name
     attr_accessor :pattern

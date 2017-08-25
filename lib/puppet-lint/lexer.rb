@@ -65,7 +65,7 @@ class PuppetLint
       'type'     => true,
       'attr'     => true,
       'private'  => true,
-    }
+    }.freeze
     
     # Internal: A Hash whose keys are Strings representing reserved keywords in
     # the Puppet DSL when Application Management is enabled
@@ -77,7 +77,7 @@ class PuppetLint
       'consumes'    => true,
       'produces'    => true,
       'site'        => true,
-    }
+    }.freeze
 
     # Internal: A Hash whose keys are Symbols representing token types which
     # a regular expression can follow.
@@ -92,7 +92,7 @@ class PuppetLint
       :IF      => true,
       :ELSIF   => true,
       :LPAREN  => true,
-    }
+    }.freeze
 
     # Internal: An Array of Arrays containing tokens that can be described by
     # a single regular expression.  Each sub-Array contains 2 elements, the
@@ -145,7 +145,7 @@ class PuppetLint
       [:TIMES, /\A(\*)/],
       [:MODULO, /\A(%)/],
       [:PIPE, /\A(\|)/],
-    ]
+    ].freeze
 
     # Internal: A Hash whose keys are Symbols representing token types which
     # are considered to be formatting tokens (i.e. tokens that don't contain
@@ -157,7 +157,7 @@ class PuppetLint
       :MLCOMMENT     => true,
       :SLASH_COMMENT => true,
       :INDENT        => true,
-    }
+    }.freeze
 
     # \t == tab
     # \v == vertical tab

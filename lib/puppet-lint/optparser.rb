@@ -3,7 +3,7 @@ require 'optparse'
 # Public: Contains the puppet-lint option parser so that it can be used easily
 # in multiple places.
 class PuppetLint::OptParser
-  HELP_TEXT = <<-EOF
+  HELP_TEXT = <<-EOF.freeze
     puppet-lint
 
     Basic Command Line Usage:
