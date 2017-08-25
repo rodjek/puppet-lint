@@ -318,29 +318,29 @@ class PuppetLint::Data
               # function in a function
               (token.prev_code_token && token.prev_code_token.type == :LPAREN))
 
-              # Hash key
-              next if token.next_code_token && token.next_code_token.type == :FARROW
+            # Hash key
+            next if token.next_code_token && token.next_code_token.type == :FARROW
 
-              level = 0
-              real_idx = 0
-              in_paren = false
-              tokens[token_idx + 1..-1].each_with_index do |cur_token, cur_token_idx|
-                break if level == 0 && in_paren
-                break if level == 0 && cur_token.type == :NEWLINE
+            level = 0
+            real_idx = 0
+            in_paren = false
+            tokens[token_idx + 1..-1].each_with_index do |cur_token, cur_token_idx|
+              break if level == 0 && in_paren
+              break if level == 0 && cur_token.type == :NEWLINE
 
-                if cur_token.type == :LPAREN
-                  level += 1
-                  in_paren = true
-                end
-                level -= 1 if cur_token.type == :RPAREN
-                real_idx = token_idx + 1 + cur_token_idx
+              if cur_token.type == :LPAREN
+                level += 1
+                in_paren = true
               end
+              level -= 1 if cur_token.type == :RPAREN
+              real_idx = token_idx + 1 + cur_token_idx
+            end
 
-              functions << {
-                :start  => token_idx,
-                :end    => real_idx,
-                :tokens => tokens[token_idx..real_idx],
-              }         
+            functions << {
+              :start  => token_idx,
+              :end    => real_idx,
+              :tokens => tokens[token_idx..real_idx],
+            }
           end
         end
         functions
