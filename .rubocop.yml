@@ -1,0 +1,47 @@
+---
+AllCops:
+    TargetRubyVersion: 1.9
+
+Style/HashSyntax:
+    EnforcedStyle: hash_rockets
+
+Metrics/LineLength:
+    Enabled: false
+Metrics/AbcSize:
+    Enabled: false
+Metrics/CyclomaticComplexity:
+    Enabled: false
+Metrics/MethodLength:
+    Enabled: false
+Metrics/PerceivedComplexity:
+    Enabled: false
+Metrics/BlockLength:
+    Enabled: false
+Metrics/ClassLength:
+    Enabled: false
+Metrics/BlockNesting:
+    Enabled: false
+
+Layout/FirstArrayElementLineBreak:
+    Enabled: true
+Layout/FirstHashElementLineBreak:
+    Enabled: true
+Layout/FirstMethodArgumentLineBreak:
+    Enabled: true
+Layout/FirstMethodParameterLineBreak:
+    Enabled: true
+Layout/IndentArray:
+    EnforcedStyle: consistent
+Layout/MultilineArrayBraceLayout:
+    EnforcedStyle: new_line
+Layout/MultilineAssignmentLayout:
+    Enabled: true
+    EnforcedStyle: same_line
+Layout/MultilineHashBraceLayout:
+    EnforcedStyle: new_line
+Layout/MultilineMethodDefinitionBraceLayout:
+    EnforcedStyle: new_line
+
+# TODO: tokeniser refactor
+Lint/AssignmentInCondition:
+    Enabled: false
