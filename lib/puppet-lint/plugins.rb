@@ -42,10 +42,10 @@ class PuppetLint
     # Returns an Array of Gem::Specification objects.
     def self.gemspecs
       @gemspecs ||= if Gem::Specification.respond_to?(:latest_specs)
-        Gem::Specification.latest_specs(load_prerelease_plugins?)
-      else
-        Gem.searcher.init_gemspecs
-      end
+                      Gem::Specification.latest_specs(load_prerelease_plugins?)
+                    else
+                      Gem.searcher.init_gemspecs
+                    end
     end
 
     # Internal: Determine whether to load plugins that contain a letter in their version number.
