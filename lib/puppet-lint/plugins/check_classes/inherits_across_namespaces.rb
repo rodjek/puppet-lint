@@ -5,17 +5,17 @@
 PuppetLint.new_check(:inherits_across_namespaces) do
   def check
     class_indexes.each do |class_idx|
-      unless class_idx[:inherited_token].nil?
-        inherited_module_name = class_idx[:inherited_token].value.split('::').reject { |r| r.empty? }.first
-        class_module_name = class_idx[:name_token].value.split('::').reject { |r| r.empty? }.first
+      next if class_idx[:inherited_token].nil?
 
-        unless class_module_name == inherited_module_name
-          notify :warning, {
-            :message => "class inherits across module namespaces",
-            :line    => class_idx[:inherited_token].line,
-            :column  => class_idx[:inherited_token].column,
-          }
-        end
+      inherited_module_name = class_idx[:inherited_token].value.split('::').reject(&:empty?).first
+      class_module_name = class_idx[:name_token].value.split('::').reject(&:empty?).first
+
+      unless class_module_name == inherited_module_name
+        notify :warning, {
+          :message => "class inherits across module namespaces",
+          :line    => class_idx[:inherited_token].line,
+          :column  => class_idx[:inherited_token].column,
+        }
       end
     end
   end

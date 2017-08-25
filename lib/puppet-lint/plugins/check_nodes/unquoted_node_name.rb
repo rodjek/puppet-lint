@@ -21,16 +21,14 @@ PuppetLint.new_check(:unquoted_node_name) do
       node_lbrace_idx = tokens.index(node_lbrace_tok)
 
       tokens[node_token_idx..node_lbrace_idx].select { |token|
-        token.type == :NAME
+        token.type == :NAME && token.value != 'default'
       }.each do |token|
-        unless token.value == 'default'
-          notify :warning, {
-            :message => 'unquoted node name found',
-            :line    => token.line,
-            :column  => token.column,
-            :token   => token,
-          }
-        end
+        notify :warning, {
+          :message => 'unquoted node name found',
+          :line    => token.line,
+          :column  => token.column,
+          :token   => token,
+        }
       end
     end
   end
