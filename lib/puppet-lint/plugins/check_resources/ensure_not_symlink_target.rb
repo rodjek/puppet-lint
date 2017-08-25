@@ -37,7 +37,7 @@ PuppetLint.new_check(:ensure_not_symlink_target) do
       PuppetLint::Lexer::Token.new(:WHITESPACE, ' ', 0, 0),
       PuppetLint::Lexer::Token.new(:FARROW, '=>', 0, 0),
       PuppetLint::Lexer::Token.new(:WHITESPACE, ' ', 0, 0),
-    ].reverse.each do |new_token|
+    ].reverse_each do |new_token|
       tokens.insert(index, new_token)
     end
   end
