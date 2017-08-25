@@ -59,6 +59,14 @@ class PuppetLint::CheckPlugin
     PuppetLint::Data.tokens
   end
 
+  def add_token(index, token)
+    PuppetLint::Data.insert(index, token)
+  end
+
+  def remove_token(token)
+    PuppetLint::Data.delete(token)
+  end
+
   # Public: Provides the resource titles to the check plugins.
   #
   # Returns an Array of PuppetLint::Lexer::Token objects.

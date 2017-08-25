@@ -26,9 +26,9 @@ PuppetLint.new_check(:star_comments) do
     index = tokens.index(problem[:token].next_token) || 1
     comment_lines.reverse.each do |line|
       indent = problem[:token].prev_token.nil? ? nil : problem[:token].prev_token.value.dup
-      tokens.insert(index, PuppetLint::Lexer::Token.new(:COMMENT, " #{line}", 0, 0))
-      tokens.insert(index, PuppetLint::Lexer::Token.new(:INDENT, indent, 0, 0)) if indent
-      tokens.insert(index, PuppetLint::Lexer::Token.new(:NEWLINE, "\n", 0, 0))
+      add_token(index, PuppetLint::Lexer::Token.new(:COMMENT, " #{line}", 0, 0))
+      add_token(index, PuppetLint::Lexer::Token.new(:INDENT, indent, 0, 0)) if indent
+      add_token(index, PuppetLint::Lexer::Token.new(:NEWLINE, "\n", 0, 0))
     end
   end
 end

@@ -18,26 +18,20 @@ PuppetLint.new_check(:arrow_on_right_operand_line) do
 
   def fix(problem)
     token = problem[:token]
-    tokens.delete(token)
+    remove_token(token)
 
     # remove any excessive whitespace on the line
     temp_token = token.prev_code_token
     while (temp_token = temp_token.next_token)
-      tokens.delete(temp_token) if whitespace?(temp_token)
+      remove_token(temp_token) if whitespace?(temp_token)
       break if temp_token.type == :NEWLINE
     end
 
-    temp_token.next_token = token
-    token.prev_token = temp_token
     index = tokens.index(token.next_code_token)
-    tokens.insert(index, token)
+    add_token(index, token)
 
     whitespace_token = PuppetLint::Lexer::Token.new(:WHITESPACE, ' ', temp_token.line + 1, 3)
-    whitespace_token.prev_token = token
-    token.next_token = whitespace_token
-    whitespace_token.next_token = tokens[index + 1]
-    tokens[index + 1].prev_token = whitespace_token
-    tokens.insert(index + 1, whitespace_token)
+    add_token(index + 1, whitespace_token)
   end
 
   def whitespace?(token)
