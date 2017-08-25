@@ -16,7 +16,7 @@ describe 'single_quote_string_with_variables' do
   end
 
   context 'single quoted inline template with dollar signs has no problems' do
-    let (:code) do
+    let(:code) do
       <<-END
         $list = ['one', 'two', 'three']
         file { '/tmp/text.txt':
@@ -30,7 +30,7 @@ describe 'single_quote_string_with_variables' do
   end
 
   context 'single quoted inline epp with dollar signs has no problems' do
-    let (:code) do
+    let(:code) do
       <<-END
         $list = ['one', 'two', 'three']
         file { '/tmp/text.txt':

@@ -31,7 +31,7 @@ describe 'arrow_on_right_operand_line' do
             #{operator} Service['httpd']"
           end
 
-          it { expect(manifest).to eq (fixed) }
+          it { expect(manifest).to eq(fixed) }
         end
       end
 
