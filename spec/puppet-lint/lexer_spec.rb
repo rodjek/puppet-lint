@@ -140,47 +140,57 @@ describe PuppetLint::Lexer do
     end
 
     it 'should handle a string with newline characters' do
-      @lexer.interpolate_string("foo\n    \"/bin/foo\" >>\n    /bar/baz\"", 1, 1)
+      manifest = <<-END
+    foo
+    \"/bin/foo\" >>
+    /bar/baz"
+      END
+      @lexer.interpolate_string(manifest, 1, 1)
       tokens = @lexer.tokens
 
       expect(tokens.length).to eq(3)
 
       expect(tokens[0].type).to eq(:STRING)
-      expect(tokens[0].value).to eq("foo\n    ")
+      expect(tokens[0].value).to eq("    foo\n    ")
       expect(tokens[0].line).to eq(1)
       expect(tokens[0].column).to eq(1)
 
       expect(tokens[1].type).to eq(:DQPOST)
       expect(tokens[1].value).to eq('/bin/foo')
       expect(tokens[1].line).to eq(1)
-      expect(tokens[1].column).to eq(11)
+      expect(tokens[1].column).to eq(15)
 
       expect(tokens[2].type).to eq(:DQPOST)
       expect(tokens[2].value).to eq(" >>\n    /bar/baz")
       expect(tokens[2].line).to eq(2)
-      expect(tokens[2].column).to eq(20)
+      expect(tokens[2].column).to eq(24)
     end
 
     it 'should handle a string with a single variable and newline characters' do
-      @lexer.interpolate_string("foo\n    /bin/${foo} >>\n    /bar/baz\"", 1, 1)
+      manifest = <<-END
+    foo
+    /bin/${foo} >>
+    /bar/baz"
+      END
+      @lexer.interpolate_string(manifest, 1, 1)
       tokens = @lexer.tokens
 
       expect(tokens.length).to eq(3)
 
       expect(tokens[0].type).to eq(:DQPRE)
-      expect(tokens[0].value).to eq("foo\n    /bin/")
+      expect(tokens[0].value).to eq("    foo\n    /bin/")
       expect(tokens[0].line).to eq(1)
       expect(tokens[0].column).to eq(1)
 
       expect(tokens[1].type).to eq(:VARIABLE)
       expect(tokens[1].value).to eq('foo')
       expect(tokens[1].line).to eq(2)
-      expect(tokens[1].column).to eq(16)
+      expect(tokens[1].column).to eq(20)
 
       expect(tokens[2].type).to eq(:DQPOST)
       expect(tokens[2].value).to eq(" >>\n    /bar/baz")
       expect(tokens[2].line).to eq(3)
-      expect(tokens[2].column).to eq(21)
+      expect(tokens[2].column).to eq(25)
     end
 
     it 'should handle a string with a single variable and surrounding text' do
