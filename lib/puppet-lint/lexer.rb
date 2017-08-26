@@ -36,7 +36,14 @@ class PuppetLint
     def initialize
       @line_no = 1
       @column = 1
-      @@heredoc_queue ||= []
+    end
+
+    def self.heredoc_queue
+      @heredoc_queue ||= []
+    end
+
+    def heredoc_queue
+      self.class.heredoc_queue
     end
 
     # Internal: A Hash whose keys are Strings representing reserved keywords in
@@ -218,7 +225,7 @@ class PuppetLint
             length = str_contents.size + 1
 
           elsif heredoc_name = chunk[/\A@\(("?.+?"?(:.+?)?(\/.*?)?)\)/, 1]
-            @@heredoc_queue << heredoc_name
+            heredoc_queue << heredoc_name
             tokens << new_token(:HEREDOC_OPEN, heredoc_name)
             length = heredoc_name.size + 3
 
@@ -250,12 +257,12 @@ class PuppetLint
             tokens << new_token(:NEWLINE, eol)
             length = eol.size
 
-            if @@heredoc_queue.empty?
+            if heredoc_queue.empty?
               indent = eolindent[/\A[\r\n]+(#{WHITESPACE_RE}+)/m, 1]
               tokens << new_token(:INDENT, indent)
               length += indent.size
             else
-              heredoc_tag = @@heredoc_queue.shift
+              heredoc_tag = heredoc_queue.shift
               heredoc_name = heredoc_tag[/\A"?(.+?)"?(:.+?)?(\/.*)?\Z/, 1]
               str_contents = StringScanner.new(code[i + length..-1]).scan_until(/\|?\s*-?\s*#{heredoc_name}/)
               interpolate_heredoc(str_contents, heredoc_tag)
@@ -270,8 +277,8 @@ class PuppetLint
             length = eol.size
             tokens << new_token(:NEWLINE, eol)
 
-            unless @@heredoc_queue.empty?
-              heredoc_tag = @@heredoc_queue.shift
+            unless heredoc_queue.empty?
+              heredoc_tag = heredoc_queue.shift
               heredoc_name = heredoc_tag[/\A"?(.+?)"?(:.+?)?(\/.*)?\Z/, 1]
               str_contents = StringScanner.new(code[i + length..-1]).scan_until(/\|?\s*-?\s*#{heredoc_name}/)
               _ = code[0..i + length].split("\n")
