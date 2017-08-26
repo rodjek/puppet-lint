@@ -52,3 +52,5 @@ Style/BlockDelimiters:
     EnforcedStyle: braces_for_chaining
 Style/BracesAroundHashParameters:
     EnforcedStyle: context_dependent
+Style/Encoding:
+    Enabled: false
