@@ -23,8 +23,8 @@ class PuppetLint::Bin
 
     begin
       opts.parse!(@args)
-    rescue OptionParser::InvalidOption
-      puts "puppet-lint: #{$!.message}"
+    rescue OptionParser::InvalidOption => e
+      puts "puppet-lint: #{e.message}"
       puts "puppet-lint: try 'puppet-lint --help' for more information"
       return 1
     end
