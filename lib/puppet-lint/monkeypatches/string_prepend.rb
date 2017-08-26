@@ -7,7 +7,7 @@ unless String.respond_to?('prepend')
     #
     # Returns a String which is lead and self concatenated.
     def prepend(lead)
-      self.replace("#{lead}#{self}")
+      replace("#{lead}#{self}")
     end
   end
 end
