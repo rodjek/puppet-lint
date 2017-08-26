@@ -45,3 +45,6 @@ Layout/MultilineMethodDefinitionBraceLayout:
 # TODO: tokeniser refactor
 Lint/AssignmentInCondition:
     Enabled: false
+
+Style/AutoResourceCleanup:
+    Enabled: true

@@ -74,7 +74,9 @@ class PuppetLint
   def file=(path)
     if File.exist? path
       @path = path
-      @code = File.open(path, 'r:UTF-8').read
+      File.open(path, 'r:UTF-8') do |f|
+        @code = f.read
+      end
 
       # Check if the input is an SE Linux policy package file (which also use
       # the .pp extension), which all have the first 4 bytes 0xf97cff8f.
