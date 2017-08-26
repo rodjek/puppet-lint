@@ -50,3 +50,5 @@ Style/AutoResourceCleanup:
     Enabled: true
 Style/BlockDelimiters:
     EnforcedStyle: braces_for_chaining
+Style/BracesAroundHashParameters:
+    EnforcedStyle: context_dependent

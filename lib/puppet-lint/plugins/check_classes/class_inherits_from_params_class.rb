@@ -7,11 +7,10 @@ PuppetLint.new_check(:class_inherits_from_params_class) do
     class_indexes.each do |class_idx|
       next unless class_idx[:inherited_token] && class_idx[:inherited_token].value.end_with?('::params')
 
-      notify :warning, {
+      notify :warning,
         :message => 'class inheriting from params class',
         :line    => class_idx[:inherited_token].line,
-        :column  => class_idx[:inherited_token].column,
-      }
+        :column  => class_idx[:inherited_token].column
     end
   end
 end

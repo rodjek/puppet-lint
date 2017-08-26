@@ -14,12 +14,11 @@ PuppetLint.new_check(:ensure_first_param) do
       unless ensure_attr_index.nil?
         if ensure_attr_index > 0
           ensure_token = resource[:param_tokens][ensure_attr_index]
-          notify :warning, {
+          notify :warning,
             :message  => "ensure found on line but it's not the first attribute",
             :line     => ensure_token.line,
             :column   => ensure_token.column,
-            :resource => resource,
-          }
+            :resource => resource
         end
       end
     end

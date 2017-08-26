@@ -7,11 +7,10 @@ PuppetLint.new_check(:single_quote_string_with_variables) do
     tokens.select { |r|
       r.type == :SSTRING && r.value.include?('${') && !r.prev_token.prev_token.value.match(%r{inline_(epp|template)})
     }.each do |token|
-      notify :error, {
+      notify :error,
         :message => 'single quoted string containing a variable found',
         :line    => token.line,
-        :column  => token.column,
-      }
+        :column  => token.column
     end
   end
 end

@@ -128,11 +128,10 @@ PuppetLint.new_check(:variable_scope) do
           unless token.value =~ /^(facts|trusted)\[.+\]/
             unless variables_in_scope.include? token.value.gsub(/\[.+\]\Z/, '')
               unless token.value =~ /\A\d+\Z/
-                notify :warning, {
+                notify :warning,
                   :message => msg,
                   :line    => token.line,
-                  :column  => token.column,
-                }
+                  :column  => token.column
               end
             end
           end

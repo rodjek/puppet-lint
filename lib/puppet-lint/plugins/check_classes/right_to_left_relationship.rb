@@ -5,11 +5,10 @@
 PuppetLint.new_check(:right_to_left_relationship) do
   def check
     tokens.select { |r| r.type == :OUT_EDGE }.each do |token|
-      notify :warning, {
+      notify :warning,
         :message =>  'right-to-left (<-) relationship',
         :line    => token.line,
-        :column  => token.column,
-      }
+        :column  => token.column
     end
   end
 end
