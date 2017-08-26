@@ -54,8 +54,6 @@ class PuppetLint
         option = $1
         add_option(option.to_s) if settings[option].nil?
         settings[option] = args[0]
-      else
-        nil
       end
     end
 
