@@ -548,10 +548,8 @@ class PuppetLint
 
       str = string.scan_until(regexp)
       begin
-        str =~ /\A(.*?)([$]+|\|?\s*-?#{Regexp.escape(eos_text)})\Z/m
-        value = $1
-        terminator = $2
-        [value, terminator]
+        str =~ /\A(?<value>.*?)(?<terminator>[$]+|\|?\s*-?#{Regexp.escape(eos_text)})\Z/m
+        [Regexp.last_match(:value), Regexp.last_match(:terminator)]
       rescue
         [nil, nil]
       end
