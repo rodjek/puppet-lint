@@ -33,7 +33,7 @@ describe 'star_comments' do
 
     context 'multiline comment w/ no indents' do
       let(:code) do
-        <<-END.gsub(/^ {10}/, '')
+        <<-END.gsub(%r{^ {10}}, '')
           /* foo *
            *     *
            * bar */
@@ -41,7 +41,7 @@ describe 'star_comments' do
       end
 
       let(:fixed) do
-        <<-END.gsub(/^ {10}/, '')
+        <<-END.gsub(%r{^ {10}}, '')
           # foo *
           # *
           # bar

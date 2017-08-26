@@ -92,7 +92,7 @@ describe PuppetLint::Bin do
     end
 
     its(:exitstatus) { is_expected.to eq(1) }
-    its(:stdout) { is_expected.to match(/^#{args.last} - ERROR/) }
+    its(:stdout) { is_expected.to match(%r{^#{args.last} - ERROR}) }
   end
 
   context 'when limited to warnings only' do
@@ -106,8 +106,8 @@ describe PuppetLint::Bin do
     end
 
     its(:exitstatus) { is_expected.to eq(1) }
-    its(:stdout) { is_expected.to match(/WARNING/) }
-    its(:stdout) { is_expected.to_not match(/ERROR/) }
+    its(:stdout) { is_expected.to match(%r{WARNING}) }
+    its(:stdout) { is_expected.to_not match(%r{ERROR}) }
   end
 
   context 'when specifying a specific check to run' do
@@ -121,8 +121,8 @@ describe PuppetLint::Bin do
     end
 
     its(:exitstatus) { is_expected.to eq(0) }
-    its(:stdout) { is_expected.to_not match(/ERROR/) }
-    its(:stdout) { is_expected.to match(/WARNING/) }
+    its(:stdout) { is_expected.to_not match(%r{ERROR}) }
+    its(:stdout) { is_expected.to match(%r{WARNING}) }
   end
 
   context 'when asked to display filenames ' do
@@ -145,7 +145,7 @@ describe PuppetLint::Bin do
     end
 
     its(:exitstatus) { is_expected.to eq(0) }
-    its(:stdout) { is_expected.to match(/optional parameter/) }
+    its(:stdout) { is_expected.to match(%r{optional parameter}) }
   end
 
   context 'when asked to provide context to problems' do
@@ -178,28 +178,28 @@ describe PuppetLint::Bin do
     end
 
     its(:exitstatus) { is_expected.to eq(1) }
-    its(:stdout) { is_expected.to match(/optional parameter/) }
+    its(:stdout) { is_expected.to match(%r{optional parameter}) }
   end
 
   context 'when used with an invalid option' do
     let(:args) { '--foo-bar-baz' }
 
     its(:exitstatus) { is_expected.to eq(1) }
-    its(:stdout) { is_expected.to match(/invalid option/) }
+    its(:stdout) { is_expected.to match(%r{invalid option}) }
   end
 
   context 'when passed a file that does not exist' do
     let(:args) { 'spec/fixtures/test/manifests/enoent.pp' }
 
     its(:exitstatus) { is_expected.to eq(1) }
-    its(:stdout) { is_expected.to match(/specified file does not exist/) }
+    its(:stdout) { is_expected.to match(%r{specified file does not exist}) }
   end
 
   context 'when passed a directory' do
     let(:args) { 'spec/fixtures/' }
 
     its(:exitstatus) { is_expected.to eq(1) }
-    its(:stdout) { is_expected.to match(/ERROR/) }
+    its(:stdout) { is_expected.to match(%r{ERROR}) }
   end
 
   context 'when disabling a check' do
@@ -335,7 +335,7 @@ describe PuppetLint::Bin do
       if respond_to?(:include_json)
         is_expected.to include_json([[{ 'KIND' => 'WARNING' }]])
       else
-        is_expected.to match(/\[\n  \{/)
+        is_expected.to match(%r{\[\n  \{})
       end
     end
   end
@@ -354,7 +354,7 @@ describe PuppetLint::Bin do
       if respond_to?(:include_json)
         is_expected.to include_json([[{ 'KIND' => 'ERROR' }], [{ 'KIND' => 'WARNING' }]])
       else
-        is_expected.to match(/\[\n  \{/)
+        is_expected.to match(%r{\[\n  \{})
       end
     end
   end
@@ -367,7 +367,7 @@ describe PuppetLint::Bin do
     end
 
     its(:exitstatus) { is_expected.to eq(0) }
-    its(:stdout) { is_expected.to_not match(/IGNORED/) }
+    its(:stdout) { is_expected.to_not match(%r{IGNORED}) }
   end
 
   context 'when showing ignored problems' do
@@ -379,7 +379,7 @@ describe PuppetLint::Bin do
     end
 
     its(:exitstatus) { is_expected.to eq(0) }
-    its(:stdout) { is_expected.to match(/IGNORED/) }
+    its(:stdout) { is_expected.to match(%r{IGNORED}) }
   end
 
   context 'when showing ignored problems with a reason' do
@@ -419,7 +419,7 @@ describe PuppetLint::Bin do
     end
 
     its(:exitstatus) { is_expected.to eq(0) }
-    its(:stdout) { is_expected.to match(/^.*line 6$/) }
+    its(:stdout) { is_expected.to match(%r{^.*line 6$}) }
   end
 
   context 'when an lint:endignore control comment exists with no opening lint:ignore comment' do
@@ -430,7 +430,7 @@ describe PuppetLint::Bin do
     end
 
     its(:exitstatus) { is_expected.to eq(0) }
-    its(:stdout) { is_expected.to match(/WARNING: lint:endignore comment with no opening lint:ignore:<check> comment found on line 1/) }
+    its(:stdout) { is_expected.to match(%r{WARNING: lint:endignore comment with no opening lint:ignore:<check> comment found on line 1}) }
   end
 
   context 'when a lint:ignore control comment block is not terminated properly' do
@@ -440,6 +440,6 @@ describe PuppetLint::Bin do
       ]
     end
 
-    its(:stdout) { is_expected.to match(/WARNING: lint:ignore:140chars comment on line 2 with no closing lint:endignore comment/) }
+    its(:stdout) { is_expected.to match(%r{WARNING: lint:ignore:140chars comment on line 2 with no closing lint:endignore comment}) }
   end
 end

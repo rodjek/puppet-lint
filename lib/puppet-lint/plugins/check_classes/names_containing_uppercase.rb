@@ -5,7 +5,7 @@
 PuppetLint.new_check(:names_containing_uppercase) do
   def check
     (class_indexes + defined_type_indexes).each do |class_idx|
-      next unless class_idx[:name_token].value =~ /[A-Z]/
+      next unless class_idx[:name_token].value =~ %r{[A-Z]}
 
       obj_type = if class_idx[:type] == :CLASS
                    'class'

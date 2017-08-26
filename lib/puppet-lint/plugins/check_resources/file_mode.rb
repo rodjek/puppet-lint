@@ -7,7 +7,7 @@ PuppetLint.new_check(:file_mode) do
   MSG = 'mode should be represented as a 4 digit octal value or symbolic mode'.freeze
   SYM_RE = '([ugoa]*[-=+][-=+rstwxXugo]*)(,[ugoa]*[-=+][-=+rstwxXugo]*)*'.freeze
   IGNORE_TYPES = Set[:VARIABLE, :UNDEF, :FUNCTION_NAME]
-  MODE_RE = Regexp.new(/\A([0-7]{4}|#{SYM_RE})\Z/)
+  MODE_RE = %r{\A([0-7]{4}|#{SYM_RE})\Z}
 
   def check
     resource_indexes.each do |resource|
@@ -32,7 +32,7 @@ PuppetLint.new_check(:file_mode) do
   end
 
   def fix(problem)
-    raise PuppetLint::NoFix unless problem[:token].value =~ /\A[0-7]{3}\Z/
+    raise PuppetLint::NoFix unless problem[:token].value =~ %r{\A[0-7]{3}\Z}
 
     problem[:token].type = :SSTRING
     problem[:token].value = "0#{problem[:token].value}"

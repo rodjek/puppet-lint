@@ -71,7 +71,7 @@ class PuppetLint::Checks
 
     @problems
   rescue => e
-    puts <<-END.gsub(/^ {6}/, '')
+    puts <<-END.gsub(%r{^ {6}}, '')
       Whoops! It looks like puppet-lint has encountered an error that it doesn't
       know how to handle. Please open an issue at https://github.com/rodjek/puppet-lint
       and paste the following output into the issue description.

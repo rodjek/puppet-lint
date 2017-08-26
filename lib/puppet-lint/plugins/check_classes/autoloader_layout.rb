@@ -18,7 +18,7 @@ PuppetLint.new_check(:autoloader_layout) do
                       end
 
       if PuppetLint.configuration.relative
-        expected_path = expected_path.gsub(/^\//, '').split('/')[1..-1].join('/')
+        expected_path = expected_path.gsub(%r{^/}, '').split('/')[1..-1].join('/')
       end
 
       next if fullpath.end_with?(expected_path)

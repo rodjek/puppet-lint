@@ -43,15 +43,15 @@ class PuppetLint::Data
     def tokens
       calling_method = if ruby_1?
         begin
-          caller[0][/`.*'/][1..-2]
+          caller[0][%r{`.*'}][1..-2]
         rescue NoMethodError
-          caller[1][/`.*'/][1..-2]
+          caller[1][%r{`.*'}][1..-2]
         end
       else
         begin
-          caller(0..0).first[/`.*'/][1..-2]
+          caller(0..0).first[%r{`.*'}][1..-2]
         rescue NoMethodError
-          caller(1..1).first[/`.*'/][1..-2]
+          caller(1..1).first[%r{`.*'}][1..-2]
         end
       end
 
@@ -534,7 +534,7 @@ class PuppetLint::Data
         comment_token_types.include?(token.type)
       end
       control_comment_tokens = comment_tokens.select do |token|
-        token.value.strip =~ /\Alint\:(ignore\:[\w\d]+|endignore)/
+        token.value.strip =~ %r{\Alint\:(ignore\:[\w\d]+|endignore)}
       end
 
       stack = []
@@ -542,9 +542,9 @@ class PuppetLint::Data
         comment_data = []
         reason = []
 
-        comment_words = token.value.strip.split(/\s+/)
+        comment_words = token.value.strip.split(%r{\s+})
         comment_words.each_with_index do |word, i|
-          if word =~ /\Alint\:(ignore|endignore)/
+          if word =~ %r{\Alint\:(ignore|endignore)}
             comment_data << word
           else
             # Once we reach the first non-controlcomment word, assume the rest

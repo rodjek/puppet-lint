@@ -853,7 +853,7 @@ describe 'arrow_alignment' do
 
     context 'complex data structure with multiple token keys' do
       let(:code) do
-        <<-END.gsub(/^ {10}/, '')
+        <<-END.gsub(%r{^ {10}}, '')
           class example (
             $external_ip_base,
           ) {
@@ -875,7 +875,7 @@ describe 'arrow_alignment' do
       end
 
       let(:fixed) do
-        <<-END.gsub(/^ {10}/, '')
+        <<-END.gsub(%r{^ {10}}, '')
           class example (
             $external_ip_base,
           ) {
@@ -915,7 +915,7 @@ describe 'arrow_alignment' do
 
     context 'realignment of resource with an inline single line hash' do
       let(:code) do
-        <<-END.gsub(/^ {10}/, '')
+        <<-END.gsub(%r{^ {10}}, '')
           class { 'puppetdb':
             database                => 'embedded',
             #database                => 'postgres',
@@ -932,7 +932,7 @@ describe 'arrow_alignment' do
       end
 
       let(:fixed) do
-        <<-END.gsub(/^ {10}/, '')
+        <<-END.gsub(%r{^ {10}}, '')
           class { 'puppetdb':
             database             => 'embedded',
             #database                => 'postgres',

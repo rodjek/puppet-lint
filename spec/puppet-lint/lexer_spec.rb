@@ -684,7 +684,7 @@ describe PuppetLint::Lexer do
 
   context ':HEREDOC without interpolation' do
     it 'should parse a simple heredoc' do
-      manifest = <<-END.gsub(/^ {6}/, '')
+      manifest = <<-END.gsub(%r{^ {6}}, '')
       $str = @(myheredoc)
         SOMETHING
         ELSE
@@ -729,7 +729,7 @@ describe PuppetLint::Lexer do
     end
 
     it 'should not interpolate the contents of the heredoc' do
-      manifest = <<-END.gsub(/^ {6}/, '')
+      manifest = <<-END.gsub(%r{^ {6}}, '')
       $str = @(myheredoc)
         SOMETHING
         ${else}
@@ -775,7 +775,7 @@ describe PuppetLint::Lexer do
     end
 
     it 'should handle multiple heredoc declarations on a single line' do
-      manifest = <<-END.gsub(/^ {6}/, '')
+      manifest = <<-END.gsub(%r{^ {6}}, '')
       $str = "${@(end1)} ${@(end2)}"
         foo
         |-end1
@@ -846,7 +846,7 @@ describe PuppetLint::Lexer do
     end
 
     it 'should handle a heredoc that specifies a syntax' do
-      manifest = <<-END.gsub(/^ {6}/, '')
+      manifest = <<-END.gsub(%r{^ {6}}, '')
       $str = @("end":json/)
         {
           "foo": "bar"
@@ -895,7 +895,7 @@ describe PuppetLint::Lexer do
 
   context ':HEREDOC with interpolation' do
     it 'should parse a heredoc with no interpolated values as a :HEREDOC' do
-      manifest = <<-END.gsub(/^ {6}/, '')
+      manifest = <<-END.gsub(%r{^ {6}}, '')
       $str = @("myheredoc"/)
         SOMETHING
         ELSE
@@ -940,7 +940,7 @@ describe PuppetLint::Lexer do
     end
 
     it 'should parse a heredoc with interpolated values' do
-      manifest = <<-END.gsub(/^ {6}/, '')
+      manifest = <<-END.gsub(%r{^ {6}}, '')
       $str = @("myheredoc"/)
         SOMETHING
         ${else}
@@ -1002,7 +1002,7 @@ describe PuppetLint::Lexer do
     end
 
     it 'should not remove the unnecessary $ from enclosed variables' do
-      manifest = <<-END.gsub(/^ {6}/, '')
+      manifest = <<-END.gsub(%r{^ {6}}, '')
       $str = @("myheredoc"/)
         ${$myvar}
         |-myheredoc
