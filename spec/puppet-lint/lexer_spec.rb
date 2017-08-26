@@ -338,7 +338,7 @@ describe PuppetLint::Lexer do
     end
 
     it 'should handle a string with nested math' do
-      @lexer.interpolate_string(%q{string with ${(3+5)/4} nested math"}, 1, 1)
+      @lexer.interpolate_string('string with ${(3+5)/4} nested math"', 1, 1)
       tokens = @lexer.tokens
 
       expect(tokens.length).to eq(9)
@@ -430,7 +430,7 @@ describe PuppetLint::Lexer do
     end
 
     it 'should handle a string of $s' do
-      @lexer.interpolate_string(%q($$$$"), 1, 1)
+      @lexer.interpolate_string('$$$$"', 1, 1)
       tokens = @lexer.tokens
 
       expect(tokens.length).to eq(1)
@@ -442,7 +442,7 @@ describe PuppetLint::Lexer do
     end
 
     it 'should handle "$foo$bar"' do
-      @lexer.interpolate_string(%q($foo$bar"), 1, 1)
+      @lexer.interpolate_string('$foo$bar"', 1, 1)
       tokens = @lexer.tokens
 
       expect(tokens.length).to eq(5)
@@ -474,7 +474,7 @@ describe PuppetLint::Lexer do
     end
 
     it 'should handle "foo$bar$"' do
-      @lexer.interpolate_string(%q(foo$bar$"), 1, 1)
+      @lexer.interpolate_string('foo$bar$"', 1, 1)
       tokens = @lexer.tokens
 
       expect(tokens.length).to eq(3)
@@ -496,7 +496,7 @@ describe PuppetLint::Lexer do
     end
 
     it 'should handle "foo$$bar"' do
-      @lexer.interpolate_string(%q(foo$$bar"), 1, 1)
+      @lexer.interpolate_string('foo$$bar"', 1, 1)
       tokens = @lexer.tokens
 
       expect(tokens.length).to eq(3)
@@ -518,7 +518,7 @@ describe PuppetLint::Lexer do
     end
 
     it 'should handle an empty string' do
-      @lexer.interpolate_string(%q("), 1, 1)
+      @lexer.interpolate_string('"', 1, 1)
       tokens = @lexer.tokens
 
       expect(tokens.length).to eq(1)
@@ -530,7 +530,7 @@ describe PuppetLint::Lexer do
     end
 
     it 'should handle "$foo::::bar"' do
-      @lexer.interpolate_string(%q($foo::::bar"), 1, 1)
+      @lexer.interpolate_string('$foo::::bar"', 1, 1)
       tokens = @lexer.tokens
 
       expect(tokens.length).to eq(3)
