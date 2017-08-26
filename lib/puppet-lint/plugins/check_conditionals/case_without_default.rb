@@ -16,7 +16,7 @@ PuppetLint.new_check(:case_without_default) do
           depth += 1
         elsif tokens[idx].type == :RBRACE
           depth -= 1
-          if depth == 0
+          if depth.zero?
             case_indexes << { :start => token_idx, :end => idx }
             break
           end

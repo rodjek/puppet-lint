@@ -71,7 +71,7 @@ PuppetLint.new_check(:variable_scope) do
                 brack_depth += 1
               when :LBRACK
                 brack_depth -= 1
-                break if brack_depth == 0
+                break if brack_depth.zero?
               when :COMMA # rubocop:disable Lint/EmptyWhen
                 # ignore
               else # unexpected
@@ -101,7 +101,7 @@ PuppetLint.new_check(:variable_scope) do
                 brace_depth += 1
               when :RBRACE
                 brace_depth -= 1
-                if brace_depth == 0
+                if brace_depth.zero?
                   end_token = sub_token
                   break
                 end

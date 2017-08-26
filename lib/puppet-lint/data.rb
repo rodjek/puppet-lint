@@ -281,7 +281,7 @@ class PuppetLint::Data
           when :INHERITS
             inherited_class = definition_token.next_code_token
           when :LPAREN
-            in_params = true if paren_depth == 0
+            in_params = true if paren_depth.zero?
             paren_depth += 1
           when :RPAREN
             in_params = false if paren_depth == 1
@@ -290,7 +290,7 @@ class PuppetLint::Data
             brace_depth += 1
           when :RBRACE
             brace_depth -= 1
-            if brace_depth == 0 && !in_params
+            if brace_depth.zero? && !in_params
               if token.next_code_token.type != :LBRACE
                 result << {
                   :start           => i,
@@ -325,7 +325,7 @@ class PuppetLint::Data
         functions = []
         tokens.each_with_index do |token, token_idx|
           next unless token.type == :NAME
-          next unless token_idx == 0 ||
+          next unless token_idx.zero? ||
             (token_idx == 1 && tokens[0].type == :WHITESPACE) ||
             [:NEWLINE, :INDENT].include?(token.prev_token.type) ||
             # function in a function
@@ -338,8 +338,8 @@ class PuppetLint::Data
           real_idx = 0
           in_paren = false
           tokens[token_idx + 1..-1].each_with_index do |cur_token, cur_token_idx|
-            break if level == 0 && in_paren
-            break if level == 0 && cur_token.type == :NEWLINE
+            break if level.zero? && in_paren
+            break if level.zero? && cur_token.type == :NEWLINE
 
             if cur_token.type == :LPAREN
               level += 1
@@ -486,11 +486,11 @@ class PuppetLint::Data
           lparen_idx = i if depth == 1
         elsif token.type == :RPAREN
           depth -= 1
-          if depth == 0
+          if depth.zero?
             rparen_idx = i
             break
           end
-        elsif token.type == :LBRACE && depth == 0
+        elsif token.type == :LBRACE && depth.zero?
           # no parameters
           break
         end
