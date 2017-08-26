@@ -92,6 +92,10 @@ module RSpec
       super
     end
 
+    def respond_to_missing?(method, *)
+      method.to_s.start_with?('contain_') || super
+    end
+
     def problems
       subject.problems
     end

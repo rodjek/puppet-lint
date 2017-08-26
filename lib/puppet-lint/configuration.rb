@@ -50,11 +50,15 @@ class PuppetLint
     #
     #   <option>=(value)
     def method_missing(method, *args, &_block)
-      return unless method.to_s =~ /^(\w+)=$/
+      super unless method.to_s =~ /^(\w+)=?$/
 
       option = $1
       add_option(option.to_s) if settings[option].nil?
-      settings[option] = args[0]
+      settings[option] = args[0] if args.length > 1
+    end
+
+    def respond_to_missing?(method, *)
+      method.to_s =~ /^\w+=?$/ || super
     end
 
     # Internal: Add options to the PuppetLint::Configuration object from inside
