@@ -72,16 +72,16 @@ class PuppetLint
   #
   # Returns nothing.
   def file=(path)
-    if File.exist? path
-      @path = path
-      File.open(path, 'r:UTF-8') do |f|
-        @code = f.read
-      end
+    return unless File.exist?(path)
 
-      # Check if the input is an SE Linux policy package file (which also use
-      # the .pp extension), which all have the first 4 bytes 0xf97cff8f.
-      @code = '' if @code[0..3].unpack('V').first == 0xf97cff8f
+    @path = path
+    File.open(path, 'r:UTF-8') do |f|
+      @code = f.read
     end
+
+    # Check if the input is an SE Linux policy package file (which also use
+    # the .pp extension), which all have the first 4 bytes 0xf97cff8f.
+    @code = '' if @code[0..3].unpack('V').first == 0xf97cff8f
   end
 
   # Internal: Retrieve the format string to be used when writing problems to
@@ -109,9 +109,8 @@ class PuppetLint
   def format_message(message)
     format = log_format
     puts format % message
-    if message[:kind] == :ignored && !message[:reason].nil?
-      puts "  #{message[:reason]}"
-    end
+
+    puts "  #{message[:reason]}" if message[:kind] == :ignored && !message[:reason].nil?
   end
 
   # Internal: Get the line of the manifest on which the problem was found
@@ -164,9 +163,7 @@ class PuppetLint
     end
     puts JSON.pretty_generate(json) if configuration.json
 
-    if problems.any? { |p| p[:check] == :syntax }
-      $stderr.puts 'Try running `puppet parser validate <file>`'
-    end
+    $stderr.puts 'Try running `puppet parser validate <file>`' if problems.any? { |p| p[:check] == :syntax }
   end
 
   # Public: Determine if PuppetLint found any errors in the manifest.

@@ -51,11 +51,11 @@ module RSpec
       end
 
       def check_attr(attr, prefix)
-        unless @expected_problem[attr] == @problems.first[attr]
-          expected = @expected_problem[attr].inspect
-          actual = @problems.first[attr].inspect
-          "#{prefix} #{expected}, but it was #{actual}"
-        end
+        return if @expected_problem[attr] == @problems.first[attr]
+
+        expected = @expected_problem[attr].inspect
+        actual = @problems.first[attr].inspect
+        "#{prefix} #{expected}, but it was #{actual}"
       end
 
       def failure_message

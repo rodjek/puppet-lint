@@ -157,11 +157,7 @@ class PuppetLint
         token_iter = self.send("#{direction}_token".to_sym)
         while !token_iter.nil?
           if to_find.include? token_iter.type
-            if opts[:value]
-              return token_iter if token_iter.value == opts[:value]
-            else
-              return token_iter
-            end
+            return token_iter if opts[:value].nil? || token_iter.value == opts[:value]
           end
 
           opening_token = direction == :next ? 'L' : 'R'

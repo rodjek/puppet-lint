@@ -31,11 +31,9 @@ PuppetLint.new_check(:file_mode) do
   end
 
   def fix(problem)
-    if problem[:token].value =~ /\A[0-7]{3}\Z/
-      problem[:token].type = :SSTRING
-      problem[:token].value = "0#{problem[:token].value}"
-    else
-      raise PuppetLint::NoFix
-    end
+    raise PuppetLint::NoFix unless problem[:token].value =~ /\A[0-7]{3}\Z/
+
+    problem[:token].type = :SSTRING
+    problem[:token].value = "0#{problem[:token].value}"
   end
 end
