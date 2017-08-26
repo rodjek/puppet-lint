@@ -98,7 +98,7 @@ PuppetLint.new_check(:arrow_alignment) do
 
     end_param_idx = tokens.index(problem[:token].prev_code_token)
     start_param_idx = tokens.index(problem[:token].prev_token_of([:INDENT, :NEWLINE])) + 1
-    param_length = tokens[start_param_idx..end_param_idx].map { |r| r.to_manifest.length }.inject(0) { |sum, x| sum + x }
+    param_length = tokens[start_param_idx..end_param_idx].map { |r| r.to_manifest.length }.reduce(0) { |sum, x| sum + x }
     new_ws_len = (problem[:arrow_column] - (problem[:newline_indent] + param_length + 1))
     new_ws = ' ' * new_ws_len
 
