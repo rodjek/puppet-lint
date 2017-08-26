@@ -31,7 +31,7 @@ PuppetLint.new_check(:arrow_alignment) do
           if param_token.type == :DQPOST
             param_length = 0
             iter_token = param_token
-            while iter_token.type != :DQPRE do
+            while iter_token.type != :DQPRE
               param_length += iter_token.to_manifest.length
               iter_token = iter_token.prev_token
             end
