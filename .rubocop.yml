@@ -48,3 +48,5 @@ Lint/AssignmentInCondition:
 
 Style/AutoResourceCleanup:
     Enabled: true
+Style/BlockDelimiters:
+    EnforcedStyle: braces_for_chaining

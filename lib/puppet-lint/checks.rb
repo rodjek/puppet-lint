@@ -105,11 +105,11 @@ class PuppetLint::Checks
   #
   # Returns an Array of String check names.
   def enabled_checks
-    @enabled_checks ||= Proc.new do
-      PuppetLint.configuration.checks.select { |check|
+    @enabled_checks ||= Proc.new {
+      PuppetLint.configuration.checks.select do |check|
         PuppetLint.configuration.send("#{check}_enabled?")
-      }
-    end.call
+      end
+    }.call
   end
 
   # Internal: Render the fixed manifest.

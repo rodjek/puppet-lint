@@ -134,19 +134,19 @@ class PuppetLint::Data
     #
     # Returns an Array of PuppetLint::Lexer::Token objects.
     def title_tokens
-      @title_tokens ||= Proc.new do
+      @title_tokens ||= Proc.new {
         result = []
         tokens.each_index do |token_idx|
           if tokens[token_idx].type == :COLON
             # gather a list of tokens that are resource titles
             if tokens[token_idx - 1].type == :RBRACK
-              array_start_idx = tokens.rindex { |r|
+              array_start_idx = tokens.rindex do |r|
                 r.type == :LBRACK
-              }
+              end
               title_array_tokens = tokens[(array_start_idx + 1)..(token_idx - 2)]
-              result += title_array_tokens.select { |token|
+              result += title_array_tokens.select do |token|
                 { :STRING => true, :NAME => true }.include? token.type
-              }
+              end
             else
               next_token = tokens[token_idx].next_code_token
               if next_token.type != :LBRACE
@@ -156,7 +156,7 @@ class PuppetLint::Data
           end
         end
         result
-      end.call
+      }.call
     end
 
     # Internal: Calculate the positions of all resource declarations within the
@@ -200,9 +200,9 @@ class PuppetLint::Data
     #
     # Returns a Token object.
     def find_resource_type_token(index)
-      lbrace_idx = tokens[0..index].rindex { |token|
+      lbrace_idx = tokens[0..index].rindex do |token|
         token.type == :LBRACE && token.prev_code_token.type != :QMARK
-      }
+      end
       tokens[lbrace_idx].prev_code_token
     end
 
@@ -214,9 +214,9 @@ class PuppetLint::Data
     #
     # Returns an Array of Token objects.
     def find_resource_param_tokens(resource_tokens)
-      resource_tokens.select { |token|
+      resource_tokens.select do |token|
         token.type == :NAME && token.next_code_token.type == :FARROW
-      }
+      end
     end
 
     # Internal: Calculate the positions of all class definitions within the
@@ -325,7 +325,7 @@ class PuppetLint::Data
     #   :tokens - An Array consisting of all the Token objects that make up the
     #             function call.
     def function_indexes
-      @function_indexes ||= Proc.new do
+      @function_indexes ||= Proc.new {
         functions = []
         tokens.each_with_index do |token, token_idx|
           if token.type == :NAME &&
@@ -364,7 +364,7 @@ class PuppetLint::Data
           end
         end
         functions
-      end.call
+      }.call
     end
 
     # Internal: Calculate the positions of all array values within
@@ -378,7 +378,7 @@ class PuppetLint::Data
     #   :tokens - An Array consisting of all the Token objects that make up the
     #             array value.
     def array_indexes
-      @array_indexes ||= Proc.new do
+      @array_indexes ||= Proc.new {
         arrays = []
         tokens.each_with_index do |token, token_idx|
           if token.type == :LBRACK
@@ -400,7 +400,7 @@ class PuppetLint::Data
           end
         end
         arrays
-      end.call
+      }.call
     end
 
     # Internal: Calculate the positions of all hash values within
@@ -414,7 +414,7 @@ class PuppetLint::Data
     #   :tokens - An Array consisting of all the Token objects that make up the
     #             hash value.
     def hash_indexes
-      @hash_indexes ||= Proc.new do
+      @hash_indexes ||= Proc.new {
         hashes = []
         tokens.each_with_index do |token, token_idx|
           next unless token.prev_code_token
@@ -438,7 +438,7 @@ class PuppetLint::Data
           end
         end
         hashes
-      end.call
+      }.call
     end
 
     # Internal: Calculate the positions of all defaults declarations within
@@ -452,7 +452,7 @@ class PuppetLint::Data
     #   :tokens - An Array consisting of all the Token objects that make up the
     #             defaults declaration.
     def defaults_indexes
-      @defaults_indexes ||= Proc.new do
+      @defaults_indexes ||= Proc.new {
         defaults = []
         tokens.each_with_index do |token, token_idx|
           if token.type == :CLASSREF && token.next_code_token &&
@@ -473,7 +473,7 @@ class PuppetLint::Data
           end
         end
         defaults
-      end.call
+      }.call
     end
 
     # Internal: Finds all the tokens that make up the defined type or class
@@ -539,12 +539,12 @@ class PuppetLint::Data
 
       comment_token_types = Set[:COMMENT, :MLCOMMENT, :SLASH_COMMENT]
 
-      comment_tokens = tokens.select { |token|
+      comment_tokens = tokens.select do |token|
         comment_token_types.include?(token.type)
-      }
-      control_comment_tokens = comment_tokens.select { |token|
+      end
+      control_comment_tokens = comment_tokens.select do |token|
         token.value.strip =~ /\Alint\:(ignore\:[\w\d]+|endignore)/
-      }
+      end
 
       stack = []
       control_comment_tokens.each do |token|

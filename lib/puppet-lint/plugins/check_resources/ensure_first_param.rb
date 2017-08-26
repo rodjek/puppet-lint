@@ -7,9 +7,9 @@ PuppetLint.new_check(:ensure_first_param) do
   def check
     resource_indexes.each do |resource|
       next if [:CLASS].include? resource[:type].type
-      ensure_attr_index = resource[:param_tokens].index { |param_token|
+      ensure_attr_index = resource[:param_tokens].index do |param_token|
         param_token.value == 'ensure'
-      }
+      end
 
       unless ensure_attr_index.nil?
         if ensure_attr_index > 0
