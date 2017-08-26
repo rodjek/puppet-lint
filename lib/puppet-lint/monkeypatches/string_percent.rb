@@ -2,7 +2,7 @@
 # we need for formatting output: 'somestring' % <hash>
 begin
   # rubocop:disable Style/FormatString
-  if ('%{test}' % { :test => 'replaced' } == 'replaced')
+  if '%{test}' % { :test => 'replaced' } == 'replaced'
     # If this works, we are all good to go.
   end
   # rubocop:enable Style/FormatString
