@@ -132,7 +132,7 @@ class PuppetLint::Data
     #
     # Returns an Array of PuppetLint::Lexer::Token objects.
     def title_tokens
-      @title_tokens ||= Proc.new {
+      @title_tokens ||= begin
         result = []
         tokens.each_index do |token_idx|
           if tokens[token_idx].type == :COLON
@@ -152,7 +152,7 @@ class PuppetLint::Data
           end
         end
         result
-      }.call
+      end
     end
 
     # Internal: Calculate the positions of all resource declarations within the
@@ -321,7 +321,7 @@ class PuppetLint::Data
     #   :tokens - An Array consisting of all the Token objects that make up the
     #             function call.
     def function_indexes
-      @function_indexes ||= Proc.new {
+      @function_indexes ||= begin
         functions = []
         tokens.each_with_index do |token, token_idx|
           next unless token.type == :NAME
@@ -356,7 +356,7 @@ class PuppetLint::Data
           }
         end
         functions
-      }.call
+      end
     end
 
     # Internal: Calculate the positions of all array values within
@@ -370,7 +370,7 @@ class PuppetLint::Data
     #   :tokens - An Array consisting of all the Token objects that make up the
     #             array value.
     def array_indexes
-      @array_indexes ||= Proc.new {
+      @array_indexes ||= begin
         arrays = []
         tokens.each_with_index do |token, token_idx|
           next unless token.type == :LBRACK
@@ -392,7 +392,7 @@ class PuppetLint::Data
           }
         end
         arrays
-      }.call
+      end
     end
 
     # Internal: Calculate the positions of all hash values within
@@ -406,7 +406,7 @@ class PuppetLint::Data
     #   :tokens - An Array consisting of all the Token objects that make up the
     #             hash value.
     def hash_indexes
-      @hash_indexes ||= Proc.new {
+      @hash_indexes ||= begin
         hashes = []
         tokens.each_with_index do |token, token_idx|
           next unless token.type == :LBRACE
@@ -430,7 +430,7 @@ class PuppetLint::Data
           }
         end
         hashes
-      }.call
+      end
     end
 
     # Internal: Calculate the positions of all defaults declarations within
@@ -444,7 +444,7 @@ class PuppetLint::Data
     #   :tokens - An Array consisting of all the Token objects that make up the
     #             defaults declaration.
     def defaults_indexes
-      @defaults_indexes ||= Proc.new {
+      @defaults_indexes ||= begin
         defaults = []
         tokens.each_with_index do |token, token_idx|
           next unless token.type == :CLASSREF
@@ -464,7 +464,7 @@ class PuppetLint::Data
           }
         end
         defaults
-      }.call
+      end
     end
 
     # Internal: Finds all the tokens that make up the defined type or class
