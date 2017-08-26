@@ -1275,13 +1275,13 @@ describe PuppetLint::Lexer do
     end
 
     it 'should match double quoted string containing a line break' do
-      token = @lexer.tokenise(%Q{"\n"}).first
+      token = @lexer.tokenise(%{"\n"}).first
       expect(token.type).to eq(:STRING)
       expect(token.value).to eq("\n")
     end
 
     it 'should handle interpolated values that contain double quotes' do
-      manifest = %Q{"export bar=\\"${join(hiera('test'), "," )}\\""}
+      manifest = %{"export bar=\\"${join(hiera('test'), "," )}\\""}
 
       tokens = @lexer.tokenise(manifest)
       expect(tokens[0].type).to eq(:DQPRE)
