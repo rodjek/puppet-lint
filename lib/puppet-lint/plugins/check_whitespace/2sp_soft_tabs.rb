@@ -7,7 +7,7 @@ PuppetLint.new_check(:'2sp_soft_tabs') do
     tokens.select { |r|
       r.type == :INDENT
     }.reject { |r|
-      r.value.length % 2 == 0
+      r.value.length.even?
     }.each do |token|
       notify :error,
         :message => 'two-space soft tabs not used',
