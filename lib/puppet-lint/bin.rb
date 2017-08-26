@@ -64,10 +64,9 @@ class PuppetLint::Bin
           return_val = 1
         end
 
-        if PuppetLint.configuration.fix && l.problems.none? { |e| e[:check] == :syntax }
-          File.open(f, 'w') do |fd|
-            fd.write(l.manifest)
-          end
+        next unless PuppetLint.configuration.fix && l.problems.none? { |e| e[:check] == :syntax }
+        File.open(f, 'w') do |fd|
+          fd.write(l.manifest)
         end
       end
       puts ']' if PuppetLint.configuration.json

@@ -169,21 +169,21 @@ class PuppetLint::Data
         marker = 0
         result = []
         tokens.select { |t| t.type == :COLON }.each do |colon_token|
-          if colon_token.next_code_token && colon_token.next_code_token.type != :LBRACE
-            start_idx = tokens.index(colon_token)
-            next if start_idx < marker
-            end_token = colon_token.next_token_of([:SEMIC, :RBRACE])
-            end_idx = tokens.index(end_token)
+          next unless colon_token.next_code_token && colon_token.next_code_token.type != :LBRACE
 
-            result << {
-              :start        => start_idx + 1,
-              :end          => end_idx,
-              :tokens       => tokens[start_idx..end_idx],
-              :type         => find_resource_type_token(start_idx),
-              :param_tokens => find_resource_param_tokens(tokens[start_idx..end_idx]),
-            }
-            marker = end_idx
-          end
+          start_idx = tokens.index(colon_token)
+          next if start_idx < marker
+          end_token = colon_token.next_token_of([:SEMIC, :RBRACE])
+          end_idx = tokens.index(end_token)
+
+          result << {
+            :start        => start_idx + 1,
+            :end          => end_idx,
+            :tokens       => tokens[start_idx..end_idx],
+            :type         => find_resource_type_token(start_idx),
+            :param_tokens => find_resource_param_tokens(tokens[start_idx..end_idx]),
+          }
+          marker = end_idx
         end
         result
       end
@@ -270,38 +270,38 @@ class PuppetLint::Data
     def definition_indexes(type)
       result = []
       tokens.each_with_index do |token, i|
-        if token.type == type
-          brace_depth = 0
-          paren_depth = 0
-          in_params = false
-          inherited_class = nil
-          tokens[i + 1..-1].each_with_index do |definition_token, j|
-            case definition_token.type
-            when :INHERITS
-              inherited_class = definition_token.next_code_token
-            when :LPAREN
-              in_params = true if paren_depth == 0
-              paren_depth += 1
-            when :RPAREN
-              in_params = false if paren_depth == 1
-              paren_depth -= 1
-            when :LBRACE
-              brace_depth += 1
-            when :RBRACE
-              brace_depth -= 1
-              if brace_depth == 0 && !in_params
-                if token.next_code_token.type != :LBRACE
-                  result << {
-                    :start           => i,
-                    :end             => i + j + 1,
-                    :tokens          => tokens[i..(i + j + 1)],
-                    :param_tokens    => param_tokens(tokens[i..(i + j + 1)]),
-                    :type            => type,
-                    :name_token      => token.next_code_token,
-                    :inherited_token => inherited_class,
-                  }
-                  break
-                end
+        next unless token.type == type
+
+        brace_depth = 0
+        paren_depth = 0
+        in_params = false
+        inherited_class = nil
+        tokens[i + 1..-1].each_with_index do |definition_token, j|
+          case definition_token.type
+          when :INHERITS
+            inherited_class = definition_token.next_code_token
+          when :LPAREN
+            in_params = true if paren_depth == 0
+            paren_depth += 1
+          when :RPAREN
+            in_params = false if paren_depth == 1
+            paren_depth -= 1
+          when :LBRACE
+            brace_depth += 1
+          when :RBRACE
+            brace_depth -= 1
+            if brace_depth == 0 && !in_params
+              if token.next_code_token.type != :LBRACE
+                result << {
+                  :start           => i,
+                  :end             => i + j + 1,
+                  :tokens          => tokens[i..(i + j + 1)],
+                  :param_tokens    => param_tokens(tokens[i..(i + j + 1)]),
+                  :type            => type,
+                  :name_token      => token.next_code_token,
+                  :inherited_token => inherited_class,
+                }
+                break
               end
             end
           end
@@ -324,40 +324,36 @@ class PuppetLint::Data
       @function_indexes ||= Proc.new {
         functions = []
         tokens.each_with_index do |token, token_idx|
-          if token.type == :NAME &&
-             (
-               token_idx == 0 ||
-               (token_idx == 1 && tokens[0].type == :WHITESPACE) ||
-               token.prev_token.type == :NEWLINE ||
-               token.prev_token.type == :INDENT ||
-               # function in a function
-               (token.prev_code_token && token.prev_code_token.type == :LPAREN)
-             )
+          next unless token.type == :NAME
+          next unless token_idx == 0 ||
+            (token_idx == 1 && tokens[0].type == :WHITESPACE) ||
+            [:NEWLINE, :INDENT].include?(token.prev_token.type) ||
+            # function in a function
+            (token.prev_code_token && token.prev_code_token.type == :LPAREN)
 
-            # Hash key
-            next if token.next_code_token && token.next_code_token.type == :FARROW
+          # Hash key
+          next if token.next_code_token && token.next_code_token.type == :FARROW
 
-            level = 0
-            real_idx = 0
-            in_paren = false
-            tokens[token_idx + 1..-1].each_with_index do |cur_token, cur_token_idx|
-              break if level == 0 && in_paren
-              break if level == 0 && cur_token.type == :NEWLINE
+          level = 0
+          real_idx = 0
+          in_paren = false
+          tokens[token_idx + 1..-1].each_with_index do |cur_token, cur_token_idx|
+            break if level == 0 && in_paren
+            break if level == 0 && cur_token.type == :NEWLINE
 
-              if cur_token.type == :LPAREN
-                level += 1
-                in_paren = true
-              end
-              level -= 1 if cur_token.type == :RPAREN
-              real_idx = token_idx + 1 + cur_token_idx
+            if cur_token.type == :LPAREN
+              level += 1
+              in_paren = true
             end
-
-            functions << {
-              :start  => token_idx,
-              :end    => real_idx,
-              :tokens => tokens[token_idx..real_idx],
-            }
+            level -= 1 if cur_token.type == :RPAREN
+            real_idx = token_idx + 1 + cur_token_idx
           end
+
+          functions << {
+            :start  => token_idx,
+            :end    => real_idx,
+            :tokens => tokens[token_idx..real_idx],
+          }
         end
         functions
       }.call
@@ -377,23 +373,23 @@ class PuppetLint::Data
       @array_indexes ||= Proc.new {
         arrays = []
         tokens.each_with_index do |token, token_idx|
-          if token.type == :LBRACK
-            real_idx = 0
-            tokens[token_idx + 1..-1].each_with_index do |cur_token, cur_token_idx|
-              real_idx = token_idx + 1 + cur_token_idx
-              break if cur_token.type == :RBRACK
-            end
+          next unless token.type == :LBRACK
 
-            # Ignore resource references
-            next if token.prev_code_token &&
-                    token.prev_code_token.type == :CLASSREF
-
-            arrays << {
-              :start  => token_idx,
-              :end    => real_idx,
-              :tokens => tokens[token_idx..real_idx],
-            }
+          real_idx = 0
+          tokens[token_idx + 1..-1].each_with_index do |cur_token, cur_token_idx|
+            real_idx = token_idx + 1 + cur_token_idx
+            break if cur_token.type == :RBRACK
           end
+
+          # Ignore resource references
+          next if token.prev_code_token &&
+                  token.prev_code_token.type == :CLASSREF
+
+          arrays << {
+            :start  => token_idx,
+            :end    => real_idx,
+            :tokens => tokens[token_idx..real_idx],
+          }
         end
         arrays
       }.call
@@ -413,25 +409,25 @@ class PuppetLint::Data
       @hash_indexes ||= Proc.new {
         hashes = []
         tokens.each_with_index do |token, token_idx|
+          next unless token.type == :LBRACE
           next unless token.prev_code_token
           next unless [:EQUALS, :ISEQUAL, :FARROW, :LPAREN].include?(token.prev_code_token.type)
-          if token.type == :LBRACE
-            level = 0
-            real_idx = 0
-            tokens[token_idx + 1..-1].each_with_index do |cur_token, cur_token_idx|
-              real_idx = token_idx + 1 + cur_token_idx
 
-              level += 1 if cur_token.type == :LBRACE
-              level -= 1 if cur_token.type == :RBRACE
-              break if level < 0
-            end
+          level = 0
+          real_idx = 0
+          tokens[token_idx + 1..-1].each_with_index do |cur_token, cur_token_idx|
+            real_idx = token_idx + 1 + cur_token_idx
 
-            hashes << {
-              :start  => token_idx,
-              :end    => real_idx,
-              :tokens => tokens[token_idx..real_idx],
-            }
+            level += 1 if cur_token.type == :LBRACE
+            level -= 1 if cur_token.type == :RBRACE
+            break if level < 0
           end
+
+          hashes << {
+            :start  => token_idx,
+            :end    => real_idx,
+            :tokens => tokens[token_idx..real_idx],
+          }
         end
         hashes
       }.call
@@ -451,22 +447,21 @@ class PuppetLint::Data
       @defaults_indexes ||= Proc.new {
         defaults = []
         tokens.each_with_index do |token, token_idx|
-          if token.type == :CLASSREF && token.next_code_token &&
-             token.next_code_token.type == :LBRACE
+          next unless token.type == :CLASSREF
+          next unless token.next_code_token && token.next_code_token.type == :LBRACE
 
-            real_idx = 0
+          real_idx = 0
 
-            tokens[token_idx + 1..-1].each_with_index do |cur_token, cur_token_idx|
-              real_idx = token_idx + 1 + cur_token_idx
-              break if cur_token.type == :RBRACE
-            end
-
-            defaults << {
-              :start  => token_idx,
-              :end    => real_idx,
-              :tokens => tokens[token_idx..real_idx],
-            }
+          tokens[token_idx + 1..-1].each_with_index do |cur_token, cur_token_idx|
+            real_idx = token_idx + 1 + cur_token_idx
+            break if cur_token.type == :RBRACE
           end
+
+          defaults << {
+            :start  => token_idx,
+            :end    => real_idx,
+            :tokens => tokens[token_idx..real_idx],
+          }
         end
         defaults
       }.call
@@ -582,10 +577,10 @@ class PuppetLint::Data
               puts "WARNING: lint:endignore comment with no opening lint:ignore:<check> comment found on line #{token.line}"
             else
               top_override.each do |start|
-                unless start.nil?
-                  (start[0]..token.line).each do |i|
-                    (ignore_overrides[start[2]] ||= {})[i] = start[1]
-                  end
+                next if start.nil?
+
+                (start[0]..token.line).each do |i|
+                  (ignore_overrides[start[2]] ||= {})[i] = start[1]
                 end
               end
             end

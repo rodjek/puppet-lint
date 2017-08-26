@@ -21,13 +21,13 @@ PuppetLint.new_check(:autoloader_layout) do
         expected_path = expected_path.gsub(/^\//, '').split('/')[1..-1].join('/')
       end
 
-      unless fullpath.end_with?(expected_path)
-        notify(:error,
-          :message => "#{title_token.value} not in autoload module layout",
-          :line    => title_token.line,
-          :column  => title_token.column,
-        )
-      end
+      next if fullpath.end_with?(expected_path)
+
+      notify(:error,
+        :message => "#{title_token.value} not in autoload module layout",
+        :line    => title_token.line,
+        :column  => title_token.column,
+      )
     end
   end
 end

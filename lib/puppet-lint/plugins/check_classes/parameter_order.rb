@@ -22,18 +22,17 @@ PuppetLint.new_check(:parameter_order) do
         end
 
         next unless hash_or_array_stack.empty? && paren_stack.empty?
+        next unless required_parameter?(token)
 
-        if required_parameter?(token)
-          prev_tokens = class_idx[:param_tokens][0..i]
-          unless prev_tokens.rindex { |r| r.type == :EQUALS }.nil?
-            msg = 'optional parameter listed before required parameter'
-            notify(:warning,
-              :message => msg,
-              :line    => token.line,
-              :column  => token.column,
-            )
-          end
-        end
+        prev_tokens = class_idx[:param_tokens][0..i]
+        next if prev_tokens.rindex { |r| r.type == :EQUALS }.nil?
+
+        msg = 'optional parameter listed before required parameter'
+        notify(:warning,
+          :message => msg,
+          :line    => token.line,
+          :column  => token.column,
+        )
       end
     end
   end

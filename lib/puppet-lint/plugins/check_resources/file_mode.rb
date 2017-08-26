@@ -11,22 +11,22 @@ PuppetLint.new_check(:file_mode) do
 
   def check
     resource_indexes.each do |resource|
-      if resource[:type].value == 'file' || resource[:type].value == 'concat'
-        resource[:param_tokens].select { |param_token|
-          param_token.value == 'mode'
-        }.each do |param_token|
-          value_token = param_token.next_code_token.next_code_token
+      next unless resource[:type].value == 'file' || resource[:type].value == 'concat'
 
-          break if IGNORE_TYPES.include?(value_token.type)
-          break if value_token.value =~ MODE_RE
+      resource[:param_tokens].select { |param_token|
+        param_token.value == 'mode'
+      }.each do |param_token|
+        value_token = param_token.next_code_token.next_code_token
 
-          notify(:warning,
-            :message => MSG,
-            :line    => value_token.line,
-            :column  => value_token.column,
-            :token   => value_token,
-          )
-        end
+        break if IGNORE_TYPES.include?(value_token.type)
+        break if value_token.value =~ MODE_RE
+
+        notify(:warning,
+          :message => MSG,
+          :line    => value_token.line,
+          :column  => value_token.column,
+          :token   => value_token,
+        )
       end
     end
   end

@@ -8,14 +8,13 @@ PuppetLint.new_check(:selector_inside_resource) do
       resource[:tokens].each do |token|
         next unless token.type == :FARROW && token.next_code_token.type == :VARIABLE
         next if token.next_code_token.next_code_token.nil?
+        next unless token.next_code_token.next_code_token.type == :QMARK
 
-        if token.next_code_token.next_code_token.type == :QMARK
-          notify(:warning,
-            :message => 'selector inside resource block',
-            :line    => token.line,
-            :column  => token.column,
-          )
-        end
+        notify(:warning,
+          :message => 'selector inside resource block',
+          :line    => token.line,
+          :column  => token.column,
+        )
       end
     end
   end

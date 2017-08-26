@@ -195,111 +195,112 @@ class PuppetLint
         found = false
 
         KNOWN_TOKENS.each do |type, regex|
-          if value = chunk[regex, 1]
-            length = value.size
-            tokens << if type == :NAME && KEYWORDS.include?(value)
-                        new_token(value.upcase.to_sym, value)
-                      else
-                        new_token(type, value)
-                      end
-            i += length
-            found = true
-            break
-          end
-        end
+          value = chunk[regex, 1]
+          next if value.nil?
 
-        unless found
-          if var_name = chunk[/\A\$((::)?(\w+(-\w+)*::)*\w+(-\w+)*(\[.+?\])*)/, 1]
-            length = var_name.size + 1
-            tokens << new_token(:VARIABLE, var_name)
-
-          elsif chunk =~ /\A'.*?'/m
-            str_content = StringScanner.new(code[i + 1..-1]).scan_until(/(\A|[^\\])(\\\\)*'/m)
-            length = str_content.size + 1
-            tokens << new_token(:SSTRING, str_content[0..-2])
-
-          elsif chunk.start_with?('"')
-            str_contents = slurp_string(code[i + 1..-1])
-            lines_parsed = code[0..i].split("\n")
-            interpolate_string(str_contents, lines_parsed.count, lines_parsed.last.length)
-            length = str_contents.size + 1
-
-          elsif heredoc_name = chunk[/\A@\(("?.+?"?(:.+?)?(\/.*?)?)\)/, 1]
-            heredoc_queue << heredoc_name
-            tokens << new_token(:HEREDOC_OPEN, heredoc_name)
-            length = heredoc_name.size + 3
-
-          elsif comment = chunk[/\A(#.*)/, 1]
-            length = comment.size
-            comment.sub!(/#/, '')
-            tokens << new_token(:COMMENT, comment)
-
-          elsif slash_comment = chunk[/\A(\/\/.*)/, 1]
-            length = slash_comment.size
-            slash_comment.sub!(/\/\//, '')
-            tokens << new_token(:SLASH_COMMENT, slash_comment)
-
-          elsif mlcomment = chunk[/\A(\/\*.*?\*\/)/m, 1]
-            length = mlcomment.size
-            mlcomment_raw = mlcomment.dup
-            mlcomment.sub!(/\A\/\* ?/, '')
-            mlcomment.sub!(/ ?\*\/\Z/, '')
-            mlcomment.gsub!(/^ *\*/, '')
-            tokens << new_token(:MLCOMMENT, mlcomment, :raw => mlcomment_raw)
-
-          elsif chunk.match(/\A\/.*?\//) && possible_regex?
-            str_content = StringScanner.new(code[i + 1..-1]).scan_until(/(\A|[^\\])(\\\\)*\//m)
-            length = str_content.size + 1
-            tokens << new_token(:REGEX, str_content[0..-2])
-
-          elsif eolindent = chunk[/\A((\r\n|\r|\n)#{WHITESPACE_RE}+)/m, 1]
-            eol = eolindent[/\A([\r\n]+)/m, 1]
-            tokens << new_token(:NEWLINE, eol)
-            length = eol.size
-
-            if heredoc_queue.empty?
-              indent = eolindent[/\A[\r\n]+(#{WHITESPACE_RE}+)/m, 1]
-              tokens << new_token(:INDENT, indent)
-              length += indent.size
-            else
-              heredoc_tag = heredoc_queue.shift
-              heredoc_name = heredoc_tag[/\A"?(.+?)"?(:.+?)?(\/.*)?\Z/, 1]
-              str_contents = StringScanner.new(code[i + length..-1]).scan_until(/\|?\s*-?\s*#{heredoc_name}/)
-              interpolate_heredoc(str_contents, heredoc_tag)
-              length += str_contents.size
-            end
-
-          elsif whitespace = chunk[/\A(#{WHITESPACE_RE}+)/, 1]
-            length = whitespace.size
-            tokens << new_token(:WHITESPACE, whitespace)
-
-          elsif eol = chunk[/\A(\r\n|\r|\n)/, 1]
-            length = eol.size
-            tokens << new_token(:NEWLINE, eol)
-
-            unless heredoc_queue.empty?
-              heredoc_tag = heredoc_queue.shift
-              heredoc_name = heredoc_tag[/\A"?(.+?)"?(:.+?)?(\/.*)?\Z/, 1]
-              str_contents = StringScanner.new(code[i + length..-1]).scan_until(/\|?\s*-?\s*#{heredoc_name}/)
-              _ = code[0..i + length].split("\n")
-              interpolate_heredoc(str_contents, heredoc_tag)
-              length += str_contents.size
-            end
-
-          elsif chunk.start_with?('/')
-            length = 1
-            tokens << new_token(:DIV, '/')
-
-          elsif chunk.start_with?('@')
-            length = 1
-            tokens << new_token(:AT, '@')
-
-          else
-            raise PuppetLint::LexerError.new(@line_no, @column)
-          end
-
+          length = value.size
+          tokens << if type == :NAME && KEYWORDS.include?(value)
+                      new_token(value.upcase.to_sym, value)
+                    else
+                      new_token(type, value)
+                    end
           i += length
+          found = true
+          break
         end
+
+        next if found
+
+        if var_name = chunk[/\A\$((::)?(\w+(-\w+)*::)*\w+(-\w+)*(\[.+?\])*)/, 1]
+          length = var_name.size + 1
+          tokens << new_token(:VARIABLE, var_name)
+
+        elsif chunk =~ /\A'.*?'/m
+          str_content = StringScanner.new(code[i + 1..-1]).scan_until(/(\A|[^\\])(\\\\)*'/m)
+          length = str_content.size + 1
+          tokens << new_token(:SSTRING, str_content[0..-2])
+
+        elsif chunk.start_with?('"')
+          str_contents = slurp_string(code[i + 1..-1])
+          lines_parsed = code[0..i].split("\n")
+          interpolate_string(str_contents, lines_parsed.count, lines_parsed.last.length)
+          length = str_contents.size + 1
+
+        elsif heredoc_name = chunk[/\A@\(("?.+?"?(:.+?)?(\/.*?)?)\)/, 1]
+          heredoc_queue << heredoc_name
+          tokens << new_token(:HEREDOC_OPEN, heredoc_name)
+          length = heredoc_name.size + 3
+
+        elsif comment = chunk[/\A(#.*)/, 1]
+          length = comment.size
+          comment.sub!(/#/, '')
+          tokens << new_token(:COMMENT, comment)
+
+        elsif slash_comment = chunk[/\A(\/\/.*)/, 1]
+          length = slash_comment.size
+          slash_comment.sub!(/\/\//, '')
+          tokens << new_token(:SLASH_COMMENT, slash_comment)
+
+        elsif mlcomment = chunk[/\A(\/\*.*?\*\/)/m, 1]
+          length = mlcomment.size
+          mlcomment_raw = mlcomment.dup
+          mlcomment.sub!(/\A\/\* ?/, '')
+          mlcomment.sub!(/ ?\*\/\Z/, '')
+          mlcomment.gsub!(/^ *\*/, '')
+          tokens << new_token(:MLCOMMENT, mlcomment, :raw => mlcomment_raw)
+
+        elsif chunk.match(/\A\/.*?\//) && possible_regex?
+          str_content = StringScanner.new(code[i + 1..-1]).scan_until(/(\A|[^\\])(\\\\)*\//m)
+          length = str_content.size + 1
+          tokens << new_token(:REGEX, str_content[0..-2])
+
+        elsif eolindent = chunk[/\A((\r\n|\r|\n)#{WHITESPACE_RE}+)/m, 1]
+          eol = eolindent[/\A([\r\n]+)/m, 1]
+          tokens << new_token(:NEWLINE, eol)
+          length = eol.size
+
+          if heredoc_queue.empty?
+            indent = eolindent[/\A[\r\n]+(#{WHITESPACE_RE}+)/m, 1]
+            tokens << new_token(:INDENT, indent)
+            length += indent.size
+          else
+            heredoc_tag = heredoc_queue.shift
+            heredoc_name = heredoc_tag[/\A"?(.+?)"?(:.+?)?(\/.*)?\Z/, 1]
+            str_contents = StringScanner.new(code[i + length..-1]).scan_until(/\|?\s*-?\s*#{heredoc_name}/)
+            interpolate_heredoc(str_contents, heredoc_tag)
+            length += str_contents.size
+          end
+
+        elsif whitespace = chunk[/\A(#{WHITESPACE_RE}+)/, 1]
+          length = whitespace.size
+          tokens << new_token(:WHITESPACE, whitespace)
+
+        elsif eol = chunk[/\A(\r\n|\r|\n)/, 1]
+          length = eol.size
+          tokens << new_token(:NEWLINE, eol)
+
+          unless heredoc_queue.empty?
+            heredoc_tag = heredoc_queue.shift
+            heredoc_name = heredoc_tag[/\A"?(.+?)"?(:.+?)?(\/.*)?\Z/, 1]
+            str_contents = StringScanner.new(code[i + length..-1]).scan_until(/\|?\s*-?\s*#{heredoc_name}/)
+            _ = code[0..i + length].split("\n")
+            interpolate_heredoc(str_contents, heredoc_tag)
+            length += str_contents.size
+          end
+
+        elsif chunk.start_with?('/')
+          length = 1
+          tokens << new_token(:DIV, '/')
+
+        elsif chunk.start_with?('@')
+          length = 1
+          tokens << new_token(:AT, '@')
+
+        else
+          raise PuppetLint::LexerError.new(@line_no, @column)
+        end
+
+        i += length
       end
 
       tokens

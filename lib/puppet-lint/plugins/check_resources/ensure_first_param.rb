@@ -7,21 +7,20 @@ PuppetLint.new_check(:ensure_first_param) do
   def check
     resource_indexes.each do |resource|
       next if [:CLASS].include?(resource[:type].type)
+
       ensure_attr_index = resource[:param_tokens].index do |param_token|
         param_token.value == 'ensure'
       end
 
-      unless ensure_attr_index.nil?
-        if ensure_attr_index > 0
-          ensure_token = resource[:param_tokens][ensure_attr_index]
-          notify(:warning,
-            :message  => "ensure found on line but it's not the first attribute",
-            :line     => ensure_token.line,
-            :column   => ensure_token.column,
-            :resource => resource,
-          )
-        end
-      end
+      next if ensure_attr_index.nil? || ensure_attr_index.zero?
+
+      ensure_token = resource[:param_tokens][ensure_attr_index]
+      notify(:warning,
+        :message  => "ensure found on line but it's not the first attribute",
+        :line     => ensure_token.line,
+        :column   => ensure_token.column,
+        :resource => resource,
+      )
     end
   end
 

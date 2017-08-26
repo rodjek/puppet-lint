@@ -8,19 +8,19 @@ PuppetLint.new_check(:unquoted_file_mode) do
 
   def check
     resource_indexes.each do |resource|
-      if resource[:type].value == 'file' || resource[:type].value == 'concat'
-        resource[:param_tokens].select { |param_token|
-          param_token.value == 'mode' &&
-            TOKEN_TYPES.include?(param_token.next_code_token.next_code_token.type)
-        }.each do |param_token|
-          value_token = param_token.next_code_token.next_code_token
-          notify(:warning,
-            :message => 'unquoted file mode',
-            :line    => value_token.line,
-            :column  => value_token.column,
-            :token   => value_token,
-          )
-        end
+      next unless resource[:type].value == 'file' || resource[:type].value == 'concat'
+
+      resource[:param_tokens].select { |param_token|
+        param_token.value == 'mode' &&
+          TOKEN_TYPES.include?(param_token.next_code_token.next_code_token.type)
+      }.each do |param_token|
+        value_token = param_token.next_code_token.next_code_token
+        notify(:warning,
+          :message => 'unquoted file mode',
+          :line    => value_token.line,
+          :column  => value_token.column,
+          :token   => value_token,
+        )
       end
     end
   end

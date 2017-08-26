@@ -112,10 +112,11 @@ class PuppetLint::OptParser
         opts.on("--no-#{check}-check", "Skip the #{check} check.") do
           PuppetLint.configuration.send("disable_#{check}")
         end
-        unless PuppetLint.configuration.send("#{check}_enabled?")
-          opts.on("--#{check}-check", "Enable the #{check} check.") do
-            PuppetLint.configuration.send("enable_#{check}")
-          end
+
+        next if PuppetLint.configuration.send("#{check}_enabled?")
+
+        opts.on("--#{check}-check", "Enable the #{check} check.") do
+          PuppetLint.configuration.send("enable_#{check}")
         end
       end
 

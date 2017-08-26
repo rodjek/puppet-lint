@@ -6,21 +6,21 @@
 PuppetLint.new_check(:ensure_not_symlink_target) do
   def check
     resource_indexes.each do |resource|
-      if resource[:type].value == 'file'
-        resource[:param_tokens].select { |param_token|
-          param_token.value == 'ensure'
-        }.each do |ensure_token|
-          value_token = ensure_token.next_code_token.next_code_token
-          if value_token.value.start_with?('/')
-            notify(:warning,
-              :message     => 'symlink target specified in ensure attr',
-              :line        => value_token.line,
-              :column      => value_token.column,
-              :param_token => ensure_token,
-              :value_token => value_token,
-            )
-          end
-        end
+      next unless resource[:type].value == 'file'
+
+      resource[:param_tokens].select { |param_token|
+        param_token.value == 'ensure'
+      }.each do |ensure_token|
+        value_token = ensure_token.next_code_token.next_code_token
+        next unless value_token.value.start_with?('/')
+
+        notify(:warning,
+          :message     => 'symlink target specified in ensure attr',
+          :line        => value_token.line,
+          :column      => value_token.column,
+          :param_token => ensure_token,
+          :value_token => value_token,
+        )
       end
     end
   end

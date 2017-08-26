@@ -9,13 +9,13 @@ PuppetLint.new_check(:variable_is_lowercase) do
     tokens.select { |r|
       VARIABLE_LOWERCASE_TYPES.include?(r.type)
     }.each do |token|
-      if token.value.gsub(/\[.+?\]/, '') =~ /[A-Z]/
-        notify(:warning,
-          :message => 'variable contains an uppercase letter',
-          :line    => token.line,
-          :column  => token.column,
-        )
-      end
+      next unless token.value.gsub(/\[.+?\]/, '') =~ /[A-Z]/
+
+      notify(:warning,
+        :message => 'variable contains an uppercase letter',
+        :line    => token.line,
+        :column  => token.column,
+      )
     end
   end
 end
