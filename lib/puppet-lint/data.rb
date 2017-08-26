@@ -505,7 +505,7 @@ class PuppetLint::Data
         end
       end
 
-      if lparen_idx.nil? or rparen_idx.nil?
+      if lparen_idx.nil? || rparen_idx.nil?
         nil
       else
         these_tokens[(lparen_idx + 1)..(rparen_idx - 1)]

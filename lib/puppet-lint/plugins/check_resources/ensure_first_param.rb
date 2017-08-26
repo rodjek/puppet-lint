@@ -31,7 +31,7 @@ PuppetLint.new_check(:ensure_first_param) do
     ensure_param_name_token = first_param_comma_token.next_token_of(:NAME, :value => 'ensure')
     ensure_param_comma_token = ensure_param_name_token.next_token_of([:COMMA, :SEMIC])
 
-    if first_param_name_token.nil? or first_param_comma_token.nil? or ensure_param_name_token.nil? or ensure_param_comma_token.nil?
+    if first_param_name_token.nil? || first_param_comma_token.nil? || ensure_param_name_token.nil? || ensure_param_comma_token.nil?
       raise PuppetLint::NoFix
     end
 

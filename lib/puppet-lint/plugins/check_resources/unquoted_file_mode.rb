@@ -8,7 +8,7 @@ PuppetLint.new_check(:unquoted_file_mode) do
 
   def check
     resource_indexes.each do |resource|
-      if resource[:type].value == 'file' or resource[:type].value == 'concat'
+      if resource[:type].value == 'file' || resource[:type].value == 'concat'
         resource[:param_tokens].select { |param_token|
           param_token.value == 'mode' &&
             TOKEN_TYPES.include?(param_token.next_code_token.next_code_token.type)

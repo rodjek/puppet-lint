@@ -60,9 +60,9 @@ class PuppetLint::Bin
         l.file = f
         l.run
         l.print_problems
-        puts ',' if f != path.last and PuppetLint.configuration.json
+        puts ',' if f != path.last && PuppetLint.configuration.json
 
-        if l.errors? or (l.warnings? and PuppetLint.configuration.fail_on_warnings)
+        if l.errors? || (l.warnings? && PuppetLint.configuration.fail_on_warnings)
           return_val = 1
         end
 

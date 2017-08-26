@@ -7,7 +7,7 @@ PuppetLint.new_check(:only_variable_string) do
 
   def check
     tokens.each_with_index do |start_token, start_token_idx|
-      if start_token.type == :DQPRE and start_token.value == ''
+      if start_token.type == :DQPRE && start_token.value == ''
         var_token = start_token.next_token
         if VAR_TYPES.include? var_token.type
           eos_offset = 2
