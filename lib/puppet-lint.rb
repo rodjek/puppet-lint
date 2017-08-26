@@ -93,9 +93,7 @@ class PuppetLint
     if configuration.log_format == ''
       ## recreate previous old log format as far as thats possible.
       format = '%{KIND}: %{message} on line %{line}'
-      if configuration.with_filename
-        format.prepend '%{path} - '
-      end
+      format.prepend('%{path} - ') if configuration.with_filename
       configuration.log_format = format
     end
     return configuration.log_format
@@ -186,9 +184,7 @@ class PuppetLint
   # Returns nothing.
   # Raises PuppetLint::NoCodeError if no manifest code has been loaded.
   def run
-    if @code.nil?
-      raise PuppetLint::NoCodeError
-    end
+    raise PuppetLint::NoCodeError if @code.nil?
 
     if @code.empty?
       @problems = []

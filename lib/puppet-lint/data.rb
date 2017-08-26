@@ -33,9 +33,7 @@ class PuppetLint::Data
     end
 
     def ruby_1?
-      if @ruby_1.nil?
-        @ruby_1 = RbConfig::CONFIG['MAJOR'] == '1'
-      end
+      @ruby_1 = RbConfig::CONFIG['MAJOR'] == '1' if @ruby_1.nil?
       @ruby_1
     end
 
@@ -149,9 +147,7 @@ class PuppetLint::Data
               end
             else
               next_token = tokens[token_idx].next_code_token
-              if next_token.type != :LBRACE
-                result << tokens[token_idx - 1]
-              end
+              result << tokens[token_idx - 1] unless next_token.type == :LBRACE
             end
           end
         end

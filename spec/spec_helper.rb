@@ -107,9 +107,9 @@ module RSpec
       check_name = self.class.top_level_description.to_sym
       check = PuppetLint.configuration.check_object[check_name].new
       klass.problems = check.run
-      if PuppetLint.configuration.fix
-        klass.problems = check.fix_problems
-      end
+
+      klass.problems = check.fix_problems if PuppetLint.configuration.fix
+
       klass
     end
   end

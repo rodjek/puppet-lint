@@ -371,9 +371,7 @@ class PuppetLint
         end
       end
 
-      if opts[:raw]
-        token.raw = opts[:raw]
-      end
+      token.raw = opts[:raw] if opts[:raw]
 
       if type == :NEWLINE
         @line_no += 1

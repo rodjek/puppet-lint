@@ -48,9 +48,7 @@ class PuppetLint::Bin
                @args
              end
 
-      if path.length > 1
-        PuppetLint.configuration.with_filename = true
-      end
+      PuppetLint.configuration.with_filename = true if path.length > 1
 
       return_val = 0
 
