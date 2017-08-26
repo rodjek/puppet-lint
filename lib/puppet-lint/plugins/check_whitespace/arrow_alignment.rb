@@ -41,11 +41,11 @@ PuppetLint.new_check(:arrow_alignment) do
           end
 
           if param_column[level_idx].nil?
-            if param_token.type == :DQPOST
-              param_column[level_idx] = iter_token.column
-            else
-              param_column[level_idx] = param_token.column
-            end
+            param_column[level_idx] = if param_token.type == :DQPOST
+                                        iter_token.column
+                                      else
+                                        param_token.column
+                                      end
           end
 
           this_arrow_column = param_column[level_idx] + param_length + 1

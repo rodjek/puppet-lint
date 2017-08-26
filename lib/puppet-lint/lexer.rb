@@ -197,11 +197,11 @@ class PuppetLint
         KNOWN_TOKENS.each do |type, regex|
           if value = chunk[regex, 1]
             length = value.size
-            if type == :NAME && KEYWORDS.include?(value)
-              tokens << new_token(value.upcase.to_sym, value)
-            else
-              tokens << new_token(type, value)
-            end
+            tokens << if type == :NAME && KEYWORDS.include?(value)
+                        new_token(value.upcase.to_sym, value)
+                      else
+                        new_token(type, value)
+                      end
             i += length
             found = true
             break
@@ -504,11 +504,11 @@ class PuppetLint
           end
           if ss.scan(/\{/).nil?
             var_name = ss.scan(/(::)?(\w+(-\w+)*::)*\w+(-\w+)*/)
-            if var_name.nil?
-              tokens << new_token(:HEREDOC_MID, '$')
-            else
-              tokens << new_token(:UNENC_VARIABLE, var_name)
-            end
+            tokens << if var_name.nil?
+                        new_token(:HEREDOC_MID, '$')
+                      else
+                        new_token(:UNENC_VARIABLE, var_name)
+                      end
           else
             contents = ss.scan_until(/\}/)[0..-2]
             raw = contents.dup
@@ -541,11 +541,11 @@ class PuppetLint
     # Returns an Array consisting of two Strings, the String up to the first
     # terminator and the terminator that was found.
     def get_heredoc_segment(string, eos_text, interpolate = true)
-      if interpolate
-        regexp = /(([^\\]|^|[^\\])([\\]{2})*[$]+|\|?\s*-?#{Regexp.escape(eos_text)})/
-      else
-        regexp = /\|?\s*-?#{Regexp.escape(eos_text)}/
-      end
+      regexp = if interpolate
+                 /(([^\\]|^|[^\\])([\\]{2})*[$]+|\|?\s*-?#{Regexp.escape(eos_text)})/
+               else
+                 /\|?\s*-?#{Regexp.escape(eos_text)}/
+               end
 
       str = string.scan_until(regexp)
       begin

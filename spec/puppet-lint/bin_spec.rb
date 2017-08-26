@@ -26,11 +26,11 @@ end
 
 describe PuppetLint::Bin do
   subject do
-    if args.is_a? Array
-      sane_args = args
-    else
-      sane_args = [args]
-    end
+    sane_args = if args.is_a?(Array)
+                  args
+                else
+                  [args]
+                end
 
     CommandRun.new(sane_args)
   end

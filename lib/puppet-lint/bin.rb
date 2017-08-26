@@ -42,11 +42,11 @@ class PuppetLint::Bin
 
     begin
       path = @args[0]
-      if File.directory?(path)
-        path = Dir.glob("#{path}/**/*.pp")
-      else
-        path = @args
-      end
+      path = if File.directory?(path)
+               Dir.glob("#{path}/**/*.pp")
+             else
+               @args
+             end
 
       if path.length > 1
         PuppetLint.configuration.with_filename = true

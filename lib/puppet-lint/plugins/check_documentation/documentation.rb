@@ -13,11 +13,11 @@ PuppetLint.new_check(:documentation) do
 
       if comment_token.nil?
         first_token = item_idx[:tokens].first
-        if first_token.type == :CLASS
-          type = 'class'
-        else
-          type = 'defined type'
-        end
+        type = if first_token.type == :CLASS
+                 'class'
+               else
+                 'defined type'
+               end
 
         notify :warning,
           :message => "#{type} not documented",

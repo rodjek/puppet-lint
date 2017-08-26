@@ -6,11 +6,11 @@ PuppetLint.new_check(:names_containing_uppercase) do
   def check
     (class_indexes + defined_type_indexes).each do |class_idx|
       if class_idx[:name_token].value =~ /[A-Z]/
-        if class_idx[:type] == :CLASS
-          obj_type = 'class'
-        else
-          obj_type = 'defined type'
-        end
+        obj_type = if class_idx[:type] == :CLASS
+                     'class'
+                   else
+                     'defined type'
+                   end
 
         notify :error,
           :message => "#{obj_type} '#{class_idx[:name_token].value}' contains illegal uppercase",
