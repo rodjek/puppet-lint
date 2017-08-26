@@ -30,7 +30,7 @@ PuppetLint.new_check(:documentation) do
 
   def find_comment_token(start_token)
     prev_token = start_token.prev_token
-    while (!prev_token.nil?) && WHITESPACE_TOKENS.include?(prev_token.type)
+    while !prev_token.nil? && WHITESPACE_TOKENS.include?(prev_token.type)
       prev_token = prev_token.prev_token
     end
 

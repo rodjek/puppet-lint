@@ -99,7 +99,7 @@ class PuppetLint::OptParser
 
       opts.on('--only-checks CHECKS', 'A comma separated list of checks that should be run') do |checks|
         enable_checks = checks.split(',').map(&:to_sym)
-        (PuppetLint.configuration.checks).each do |check|
+        PuppetLint.configuration.checks.each do |check|
           if enable_checks.include?(check)
             PuppetLint.configuration.send("enable_#{check}")
           else
