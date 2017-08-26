@@ -8,6 +8,7 @@ describe PuppetLint do
     expect(subject.code).to_not be_nil
   end
 
+  # rubocop:disable Style/FormatString
   it 'should have support for % with a hash' do
     string = 'replace %{hash}' % { :hash => 'replaced' }
     expect(string).to match('replace replaced')
@@ -17,6 +18,7 @@ describe PuppetLint do
     string = 'replace %s %s' % ['get', 'replaced']
     expect(string).to match('replace get replaced')
   end
+  # rubocop:enable Style/FormatString
 
   it 'should return empty manifest when empty one given as the input' do
     subject.code = ''

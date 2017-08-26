@@ -133,10 +133,10 @@ describe 'arrow_alignment' do
       end
 
       it 'should create four warnings' do
-        expect(problems).to contain_warning(sprintf(msg, 19, 17)).on_line(2).in_column(17)
-        expect(problems).to contain_warning(sprintf(msg, 19, 17)).on_line(3).in_column(17)
-        expect(problems).to contain_warning(sprintf(msg, 19, 18)).on_line(5).in_column(18)
-        expect(problems).to contain_warning(sprintf(msg, 19, 17)).on_line(6).in_column(17)
+        expect(problems).to contain_warning(format(msg, 19, 17)).on_line(2).in_column(17)
+        expect(problems).to contain_warning(format(msg, 19, 17)).on_line(3).in_column(17)
+        expect(problems).to contain_warning(format(msg, 19, 18)).on_line(5).in_column(18)
+        expect(problems).to contain_warning(format(msg, 19, 17)).on_line(6).in_column(17)
       end
     end
 
@@ -158,10 +158,10 @@ describe 'arrow_alignment' do
       end
 
       it 'should create four warnings' do
-        expect(problems).to contain_warning(sprintf(msg, 19, 17)).on_line(2).in_column(17)
-        expect(problems).to contain_warning(sprintf(msg, 19, 17)).on_line(3).in_column(17)
-        expect(problems).to contain_warning(sprintf(msg, 19, 18)).on_line(5).in_column(18)
-        expect(problems).to contain_warning(sprintf(msg, 19, 17)).on_line(6).in_column(17)
+        expect(problems).to contain_warning(format(msg, 19, 17)).on_line(2).in_column(17)
+        expect(problems).to contain_warning(format(msg, 19, 17)).on_line(3).in_column(17)
+        expect(problems).to contain_warning(format(msg, 19, 18)).on_line(5).in_column(18)
+        expect(problems).to contain_warning(format(msg, 19, 17)).on_line(6).in_column(17)
       end
     end
 
@@ -185,9 +185,9 @@ describe 'arrow_alignment' do
       end
 
       it 'should create three warnings' do
-        expect(problems).to contain_warning(sprintf(msg, 18, 17)).on_line(2).in_column(17)
-        expect(problems).to contain_warning(sprintf(msg, 21, 19)).on_line(5).in_column(19)
-        expect(problems).to contain_warning(sprintf(msg, 18, 17)).on_line(8).in_column(17)
+        expect(problems).to contain_warning(format(msg, 18, 17)).on_line(2).in_column(17)
+        expect(problems).to contain_warning(format(msg, 21, 19)).on_line(5).in_column(19)
+        expect(problems).to contain_warning(format(msg, 18, 17)).on_line(8).in_column(17)
       end
     end
 
@@ -210,7 +210,7 @@ describe 'arrow_alignment' do
       end
 
       it 'should create a warning' do
-        expect(problems).to contain_warning(sprintf(msg, 21, 19)).on_line(7).in_column(19)
+        expect(problems).to contain_warning(format(msg, 21, 19)).on_line(7).in_column(19)
       end
     end
 
@@ -237,10 +237,10 @@ describe 'arrow_alignment' do
       end
 
       it 'should create a warning' do
-        expect(problems).to contain_warning(sprintf(msg, 22, 21)).on_line(4).in_column(21)
-        expect(problems).to contain_warning(sprintf(msg, 22, 20)).on_line(5).in_column(20)
-        expect(problems).to contain_warning(sprintf(msg, 22, 21)).on_line(10).in_column(21)
-        expect(problems).to contain_warning(sprintf(msg, 22, 20)).on_line(11).in_column(20)
+        expect(problems).to contain_warning(format(msg, 22, 21)).on_line(4).in_column(21)
+        expect(problems).to contain_warning(format(msg, 22, 20)).on_line(5).in_column(20)
+        expect(problems).to contain_warning(format(msg, 22, 21)).on_line(10).in_column(21)
+        expect(problems).to contain_warning(format(msg, 22, 20)).on_line(11).in_column(20)
       end
     end
 
@@ -315,8 +315,8 @@ describe 'arrow_alignment' do
       end
 
       it 'should create 2 warnings' do
-        expect(problems).to contain_warning(sprintf(msg, 20, 21)).on_line(2).in_column(21)
-        expect(problems).to contain_warning(sprintf(msg, 20, 21)).on_line(3).in_column(21)
+        expect(problems).to contain_warning(format(msg, 20, 21)).on_line(2).in_column(21)
+        expect(problems).to contain_warning(format(msg, 20, 21)).on_line(3).in_column(21)
       end
     end
 
@@ -351,8 +351,8 @@ describe 'arrow_alignment' do
       end
 
       it 'should create 2 warnings' do
-        expect(problems).to contain_warning(sprintf(msg, 17, 15)).on_line(2).in_column(15)
-        expect(problems).to contain_warning(sprintf(msg, 17, 28)).on_line(2).in_column(28)
+        expect(problems).to contain_warning(format(msg, 17, 15)).on_line(2).in_column(15)
+        expect(problems).to contain_warning(format(msg, 17, 28)).on_line(2).in_column(28)
       end
     end
 
@@ -405,7 +405,7 @@ describe 'arrow_alignment' do
       end
 
       it 'should create one warning' do
-        expect(problems).to contain_warning(sprintf(msg, 20, 19)).on_line(4).in_column(19)
+        expect(problems).to contain_warning(format(msg, 20, 19)).on_line(4).in_column(19)
       end
     end
 
@@ -445,8 +445,8 @@ describe 'arrow_alignment' do
       end
 
       it 'should create 2 warnings' do
-        expect(problems).to contain_warning(sprintf(msg, 25, 17)).on_line(3).in_column(17)
-        expect(problems).to contain_warning(sprintf(msg, 25, 21)).on_line(5).in_column(21)
+        expect(problems).to contain_warning(format(msg, 25, 17)).on_line(3).in_column(17)
+        expect(problems).to contain_warning(format(msg, 25, 21)).on_line(5).in_column(21)
       end
     end
 
@@ -533,10 +533,10 @@ describe 'arrow_alignment' do
       end
 
       it 'should fix the manifest' do
-        expect(problems).to contain_fixed(sprintf(msg, 19, 17)).on_line(2).in_column(17)
-        expect(problems).to contain_fixed(sprintf(msg, 19, 17)).on_line(3).in_column(17)
-        expect(problems).to contain_fixed(sprintf(msg, 19, 18)).on_line(5).in_column(18)
-        expect(problems).to contain_fixed(sprintf(msg, 19, 17)).on_line(6).in_column(17)
+        expect(problems).to contain_fixed(format(msg, 19, 17)).on_line(2).in_column(17)
+        expect(problems).to contain_fixed(format(msg, 19, 17)).on_line(3).in_column(17)
+        expect(problems).to contain_fixed(format(msg, 19, 18)).on_line(5).in_column(18)
+        expect(problems).to contain_fixed(format(msg, 19, 17)).on_line(6).in_column(17)
       end
 
       it 'should align the arrows' do
@@ -578,9 +578,9 @@ describe 'arrow_alignment' do
       end
 
       it 'should fix the manifest' do
-        expect(problems).to contain_fixed(sprintf(msg, 18, 17)).on_line(2).in_column(17)
-        expect(problems).to contain_fixed(sprintf(msg, 21, 19)).on_line(5).in_column(19)
-        expect(problems).to contain_fixed(sprintf(msg, 18, 17)).on_line(8).in_column(17)
+        expect(problems).to contain_fixed(format(msg, 18, 17)).on_line(2).in_column(17)
+        expect(problems).to contain_fixed(format(msg, 21, 19)).on_line(5).in_column(19)
+        expect(problems).to contain_fixed(format(msg, 18, 17)).on_line(8).in_column(17)
       end
 
       it 'should align the arrows' do
@@ -620,7 +620,7 @@ describe 'arrow_alignment' do
       end
 
       it 'should fix the manifest' do
-        expect(problems).to contain_fixed(sprintf(msg, 21, 19)).on_line(7).in_column(19)
+        expect(problems).to contain_fixed(format(msg, 21, 19)).on_line(7).in_column(19)
       end
 
       it 'should align the arrows' do
@@ -652,8 +652,8 @@ describe 'arrow_alignment' do
       end
 
       it 'should create 2 warnings' do
-        expect(problems).to contain_fixed(sprintf(msg, 20, 21)).on_line(2).in_column(21)
-        expect(problems).to contain_fixed(sprintf(msg, 20, 21)).on_line(3).in_column(21)
+        expect(problems).to contain_fixed(format(msg, 20, 21)).on_line(2).in_column(21)
+        expect(problems).to contain_fixed(format(msg, 20, 21)).on_line(3).in_column(21)
       end
 
       it 'should realign the arrows with the minimum whitespace' do
@@ -685,7 +685,7 @@ describe 'arrow_alignment' do
       end
 
       it 'should fix the problem' do
-        expect(problems).to contain_fixed(sprintf(msg, 20, 19)).on_line(3).in_column(19)
+        expect(problems).to contain_fixed(format(msg, 20, 19)).on_line(3).in_column(19)
       end
 
       it 'should add whitespace between the param and the arrow' do
@@ -718,8 +718,8 @@ describe 'arrow_alignment' do
       end
 
       it 'should fix 2 problems' do
-        expect(problems).to contain_fixed(sprintf(msg, 17, 15)).on_line(2).in_column(15)
-        expect(problems).to contain_fixed(sprintf(msg, 17, 28)).on_line(2).in_column(28)
+        expect(problems).to contain_fixed(format(msg, 17, 15)).on_line(2).in_column(15)
+        expect(problems).to contain_fixed(format(msg, 17, 28)).on_line(2).in_column(28)
       end
 
       it 'should move the extra param onto its own line and realign' do
@@ -752,9 +752,9 @@ describe 'arrow_alignment' do
       end
 
       it 'should fix 2 problems' do
-        expect(problems).to contain_fixed(sprintf(msg, 19, 15)).on_line(2).in_column(15)
-        expect(problems).to contain_fixed(sprintf(msg, 19, 31)).on_line(2).in_column(31)
-        expect(problems).to contain_fixed(sprintf(msg, 19, 17)).on_line(3).in_column(17)
+        expect(problems).to contain_fixed(format(msg, 19, 15)).on_line(2).in_column(15)
+        expect(problems).to contain_fixed(format(msg, 19, 31)).on_line(2).in_column(31)
+        expect(problems).to contain_fixed(format(msg, 19, 17)).on_line(3).in_column(17)
       end
 
       it 'should move the extra param onto its own line and realign' do
@@ -792,8 +792,8 @@ describe 'arrow_alignment' do
       end
 
       it 'should fix 2 problems' do
-        expect(problems).to contain_fixed(sprintf(msg, 25, 17)).on_line(3).in_column(17)
-        expect(problems).to contain_fixed(sprintf(msg, 25, 21)).on_line(5).in_column(21)
+        expect(problems).to contain_fixed(format(msg, 25, 17)).on_line(3).in_column(17)
+        expect(problems).to contain_fixed(format(msg, 25, 21)).on_line(5).in_column(21)
       end
 
       it 'should align the hash rockets' do
@@ -843,7 +843,7 @@ describe 'arrow_alignment' do
       end
 
       it 'should fix 1 problem' do
-        expect(problems).to contain_fixed(sprintf(msg, 23, 24)).on_line(9).in_column(24)
+        expect(problems).to contain_fixed(format(msg, 23, 24)).on_line(9).in_column(24)
       end
 
       it 'should align the hash rockets' do
@@ -901,11 +901,11 @@ describe 'arrow_alignment' do
       end
 
       it 'should fix 5 problems' do
-        expect(problems).to contain_fixed(sprintf(msg, 53, 38)).on_line(9).in_column(38)
-        expect(problems).to contain_fixed(sprintf(msg, 53, 17)).on_line(10).in_column(17)
-        expect(problems).to contain_fixed(sprintf(msg, 53, 12)).on_line(11).in_column(12)
-        expect(problems).to contain_fixed(sprintf(msg, 53, 13)).on_line(12).in_column(13)
-        expect(problems).to contain_fixed(sprintf(msg, 53, 10)).on_line(13).in_column(10)
+        expect(problems).to contain_fixed(format(msg, 53, 38)).on_line(9).in_column(38)
+        expect(problems).to contain_fixed(format(msg, 53, 17)).on_line(10).in_column(17)
+        expect(problems).to contain_fixed(format(msg, 53, 12)).on_line(11).in_column(12)
+        expect(problems).to contain_fixed(format(msg, 53, 13)).on_line(12).in_column(13)
+        expect(problems).to contain_fixed(format(msg, 53, 10)).on_line(13).in_column(10)
       end
 
       it 'should realign the arrows' do
@@ -953,14 +953,14 @@ describe 'arrow_alignment' do
       end
 
       it 'should fix 8 problems' do
-        expect(problems).to contain_fixed(sprintf(msg, 24, 27)).on_line(2).in_column(27)
-        expect(problems).to contain_fixed(sprintf(msg, 24, 27)).on_line(5).in_column(27)
-        expect(problems).to contain_fixed(sprintf(msg, 24, 27)).on_line(6).in_column(27)
-        expect(problems).to contain_fixed(sprintf(msg, 24, 27)).on_line(7).in_column(27)
-        expect(problems).to contain_fixed(sprintf(msg, 24, 27)).on_line(8).in_column(27)
-        expect(problems).to contain_fixed(sprintf(msg, 24, 27)).on_line(9).in_column(27)
-        expect(problems).to contain_fixed(sprintf(msg, 24, 27)).on_line(10).in_column(27)
-        expect(problems).to contain_fixed(sprintf(msg, 24, 27)).on_line(11).in_column(27)
+        expect(problems).to contain_fixed(format(msg, 24, 27)).on_line(2).in_column(27)
+        expect(problems).to contain_fixed(format(msg, 24, 27)).on_line(5).in_column(27)
+        expect(problems).to contain_fixed(format(msg, 24, 27)).on_line(6).in_column(27)
+        expect(problems).to contain_fixed(format(msg, 24, 27)).on_line(7).in_column(27)
+        expect(problems).to contain_fixed(format(msg, 24, 27)).on_line(8).in_column(27)
+        expect(problems).to contain_fixed(format(msg, 24, 27)).on_line(9).in_column(27)
+        expect(problems).to contain_fixed(format(msg, 24, 27)).on_line(10).in_column(27)
+        expect(problems).to contain_fixed(format(msg, 24, 27)).on_line(11).in_column(27)
       end
 
       it 'should realign the arrows' do

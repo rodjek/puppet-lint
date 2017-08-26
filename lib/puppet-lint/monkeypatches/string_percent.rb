@@ -1,9 +1,11 @@
 # If we are using an older ruby version, we back-port the basic functionality
 # we need for formatting output: 'somestring' % <hash>
 begin
+  # rubocop:disable Style/FormatString
   if ('%{test}' % { :test => 'replaced' } == 'replaced')
     # If this works, we are all good to go.
   end
+  # rubocop:enable Style/FormatString
 rescue
   # If the test failed (threw a error), monkeypatch String.
   # Most of this code came from http://www.ruby-forum.com/topic/144310 but was
