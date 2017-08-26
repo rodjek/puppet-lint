@@ -37,9 +37,9 @@ rescue
         changed = false
         vars.each do |var, value|
           var = var.to_s
-          var.gsub!(%r/[^a-zA-Z0-9_]/, '')
+          var.gsub!(%r{[^a-zA-Z0-9_]}, '')
           [
-            %r/\%\{#{var}\}/,
+            %r{\%\{#{var}\}},
           ].each do |pat|
             changed = gsub!(pat, "#{value}")
           end

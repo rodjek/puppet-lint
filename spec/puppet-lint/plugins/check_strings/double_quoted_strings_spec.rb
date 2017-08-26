@@ -41,7 +41,7 @@ describe 'double_quoted_strings' do
     end
 
     context 'double quoted string containing newline but no variables' do
-      let(:code) { %{"foo\n"} }
+      let(:code) { %("foo\n") }
 
       it 'should not detect any problems' do
         expect(problems).to have(0).problems
@@ -112,7 +112,7 @@ describe 'double_quoted_strings' do
     end
 
     context 'double quoted string with random escape should be rejected' do
-      let(:code) { %{ $ztring = "this string contains \l random esape" } }
+      let(:code) { %( $ztring = "this string contains \l random esape" ) }
 
       it 'should only detect a single problem' do
         expect(problems).to have(1).problem
@@ -132,7 +132,7 @@ describe 'double_quoted_strings' do
     end
 
     context 'double quoted string containing single quoted string' do
-      let(:code) { %[notify { "'foo'": }] }
+      let(:code) { %(notify { "'foo'": }) }
 
       it 'should not detect any problems' do
         expect(problems).to have(0).problems

@@ -223,7 +223,7 @@ describe 'variable_scope' do
     end
   end
 
-  %w{alias audit before loglevel noop notify require schedule stage subscribe tag}.each do |metaparam|
+  %w[alias audit before loglevel noop notify require schedule stage subscribe tag].each do |metaparam|
     context "referencing #{metaparam} metaparam value as a variable" do
       let(:code) do
         <<-END

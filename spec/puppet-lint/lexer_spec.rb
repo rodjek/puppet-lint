@@ -107,7 +107,7 @@ describe PuppetLint::Lexer do
     end
 
     it 'should handle a string with a newline' do
-      @lexer.interpolate_string(%{foo\nbar"}, 1, 1)
+      @lexer.interpolate_string(%(foo\nbar"), 1, 1)
       token = @lexer.tokens.first
 
       expect(@lexer.tokens.length).to eq(1)
@@ -316,7 +316,7 @@ describe PuppetLint::Lexer do
     end
 
     it 'should handle a string with a nested string inside it' do
-      @lexer.interpolate_string(%q{string with ${'a nested single quoted string'} inside it"}, 1, 1)
+      @lexer.interpolate_string(%q(string with ${'a nested single quoted string'} inside it"), 1, 1)
       tokens = @lexer.tokens
 
       expect(tokens.length).to eq(3)
@@ -386,7 +386,7 @@ describe PuppetLint::Lexer do
     end
 
     it 'should handle a string with a nested array' do
-      @lexer.interpolate_string(%q{string with ${['an array ', $v2]} in it"}, 1, 1)
+      @lexer.interpolate_string(%q(string with ${['an array ', $v2]} in it"), 1, 1)
       tokens = @lexer.tokens
 
       expect(tokens.length).to eq(8)
@@ -430,7 +430,7 @@ describe PuppetLint::Lexer do
     end
 
     it 'should handle a string of $s' do
-      @lexer.interpolate_string(%q{$$$$"}, 1, 1)
+      @lexer.interpolate_string(%q($$$$"), 1, 1)
       tokens = @lexer.tokens
 
       expect(tokens.length).to eq(1)
@@ -442,7 +442,7 @@ describe PuppetLint::Lexer do
     end
 
     it 'should handle "$foo$bar"' do
-      @lexer.interpolate_string(%q{$foo$bar"}, 1, 1)
+      @lexer.interpolate_string(%q($foo$bar"), 1, 1)
       tokens = @lexer.tokens
 
       expect(tokens.length).to eq(5)
@@ -474,7 +474,7 @@ describe PuppetLint::Lexer do
     end
 
     it 'should handle "foo$bar$"' do
-      @lexer.interpolate_string(%q{foo$bar$"}, 1, 1)
+      @lexer.interpolate_string(%q(foo$bar$"), 1, 1)
       tokens = @lexer.tokens
 
       expect(tokens.length).to eq(3)
@@ -496,7 +496,7 @@ describe PuppetLint::Lexer do
     end
 
     it 'should handle "foo$$bar"' do
-      @lexer.interpolate_string(%q{foo$$bar"}, 1, 1)
+      @lexer.interpolate_string(%q(foo$$bar"), 1, 1)
       tokens = @lexer.tokens
 
       expect(tokens.length).to eq(3)
@@ -518,7 +518,7 @@ describe PuppetLint::Lexer do
     end
 
     it 'should handle an empty string' do
-      @lexer.interpolate_string(%q{"}, 1, 1)
+      @lexer.interpolate_string(%q("), 1, 1)
       tokens = @lexer.tokens
 
       expect(tokens.length).to eq(1)
@@ -530,7 +530,7 @@ describe PuppetLint::Lexer do
     end
 
     it 'should handle "$foo::::bar"' do
-      @lexer.interpolate_string(%q{$foo::::bar"}, 1, 1)
+      @lexer.interpolate_string(%q($foo::::bar"), 1, 1)
       tokens = @lexer.tokens
 
       expect(tokens.length).to eq(3)
@@ -1166,31 +1166,31 @@ describe PuppetLint::Lexer do
     end
 
     it "should match a single quoted string with an escaped '" do
-      token = @lexer.tokenise(%q{'single quoted string with "\\'"'}).first
+      token = @lexer.tokenise(%q('single quoted string with "\\'"')).first
       expect(token.type).to eq(:SSTRING)
       expect(token.value).to eq('single quoted string with "\\\'"')
     end
 
     it 'should match a single quoted string with an escaped $' do
-      token = @lexer.tokenise(%q{'single quoted string with "\$"'}).first
+      token = @lexer.tokenise(%q('single quoted string with "\$"')).first
       expect(token.type).to eq(:SSTRING)
       expect(token.value).to eq('single quoted string with "\\$"')
     end
 
     it 'should match a single quoted string with an escaped .' do
-      token = @lexer.tokenise(%q{'single quoted string with "\."'}).first
+      token = @lexer.tokenise(%q('single quoted string with "\."')).first
       expect(token.type).to eq(:SSTRING)
       expect(token.value).to eq('single quoted string with "\\."')
     end
 
     it 'should match a single quoted string with an escaped \\n' do
-      token = @lexer.tokenise(%q{'single quoted string with "\n"'}).first
+      token = @lexer.tokenise(%q('single quoted string with "\n"')).first
       expect(token.type).to eq(:SSTRING)
       expect(token.value).to eq('single quoted string with "\\n"')
     end
 
     it 'should match a single quoted string with an escaped \\' do
-      token = @lexer.tokenise(%q{'single quoted string with "\\\\"'}).first
+      token = @lexer.tokenise(%q('single quoted string with "\\\\"')).first
       expect(token.type).to eq(:SSTRING)
       expect(token.value).to eq('single quoted string with "\\\\"')
     end
@@ -1204,7 +1204,7 @@ describe PuppetLint::Lexer do
     it 'should match an empty string ending with \\\\' do
       token = @lexer.tokenise("'foo\\\\'").first
       expect(token.type).to eq(:SSTRING)
-      expect(token.value).to eq(%{foo\\\\})
+      expect(token.value).to eq(%(foo\\\\))
     end
 
     it 'should match single quoted string containing a line break' do
@@ -1275,7 +1275,7 @@ describe PuppetLint::Lexer do
     end
 
     it 'should match double quoted string containing a line break' do
-      token = @lexer.tokenise(%{"\n"}).first
+      token = @lexer.tokenise(%("\n")).first
       expect(token.type).to eq(:STRING)
       expect(token.value).to eq("\n")
     end

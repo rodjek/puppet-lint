@@ -59,7 +59,7 @@ class PuppetLint
           PuppetLint.configuration.send("disable_#{check}")
         end
 
-        %w{with_filename fail_on_warnings error_level log_format with_context fix show_ignored relative}.each do |config|
+        %w[with_filename fail_on_warnings error_level log_format with_context fix show_ignored relative].each do |config|
           value = instance_variable_get("@#{config}")
           PuppetLint.configuration.send("#{config}=".to_sym, value) unless value.nil?
         end
