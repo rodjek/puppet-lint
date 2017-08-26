@@ -44,7 +44,7 @@ class PuppetLint::OptParser
       opts.on(
         '--error-level LEVEL',
         [:all, :warning, :error],
-        'The level of error to return (warning, error or all).'
+        'The level of error to return (warning, error or all).',
       ) do |el|
         PuppetLint.configuration.error_level = el
       end

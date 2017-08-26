@@ -68,7 +68,7 @@ describe PuppetLint::Bin do
         [
           "#{args[0]} - WARNING: optional parameter listed before required parameter on line 2",
           "#{args[1]} - ERROR: test::foo not in autoload module layout on line 2",
-        ].join("\n")
+        ].join("\n"),
       )
     end
   end
@@ -164,7 +164,7 @@ describe PuppetLint::Bin do
           '',
           "  define test::warning($foo='bar', $baz) { }",
           '                                   ^',
-        ].join("\n")
+        ].join("\n"),
       )
     end
   end
@@ -396,7 +396,7 @@ describe PuppetLint::Bin do
         [
           'IGNORED: double quoted string containing no variables on line 3',
           '  for a good reason',
-        ].join("\n")
+        ].join("\n"),
       )
     end
   end

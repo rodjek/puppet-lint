@@ -131,7 +131,7 @@ PuppetLint.new_check(:variable_scope) do
         notify(:warning,
           :message => msg,
           :line    => token.line,
-          :column  => token.column
+          :column  => token.column,
         )
       end
     end
