@@ -576,24 +576,24 @@ describe PuppetLint::Lexer do
     end
   end
 
-  [
-    'case',
-    'class',
-    'default',
-    'define',
-    'import',
-    'if',
-    'elsif',
-    'else',
-    'inherits',
-    'node',
-    'and',
-    'or',
-    'undef',
-    'true',
-    'false',
-    'in',
-    'unless',
+  %w[
+    case
+    class
+    default
+    define
+    import
+    if
+    elsif
+    else
+    inherits
+    node
+    and
+    or
+    undef
+    true
+    false
+    in
+    unless
   ].each do |keyword|
     it "should handle '#{keyword}' as a keyword" do
       token = @lexer.tokenise(keyword).first

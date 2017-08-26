@@ -15,7 +15,7 @@ describe PuppetLint do
   end
 
   it 'should not break regular % support' do
-    string = 'replace %s %s' % ['get', 'replaced']
+    string = 'replace %s %s' % %w[get replaced]
     expect(string).to match('replace get replaced')
   end
   # rubocop:enable Style/FormatString

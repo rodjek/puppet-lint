@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'parameter_order' do
   let(:msg) { 'optional parameter listed before required parameter' }
 
-  ['define', 'class'].each do |type|
+  %w[define class].each do |type|
     context "#{type} with attrs in order" do
       let(:code) { "#{type} foo($bar, $baz='gronk') { }" }
 
