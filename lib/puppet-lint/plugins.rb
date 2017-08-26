@@ -15,7 +15,7 @@ class PuppetLint
         (path + 'puppet-lint/plugins').directory?
       }.each do |gem_path|
         Dir["#{gem_path + 'puppet-lint/plugins'}/*.rb"].each do |file|
-          load file
+          load(file)
         end
       end
     end
@@ -25,7 +25,7 @@ class PuppetLint
     # Returns nothings.
     def self.load_spec_helper
       gemspec = gemspecs.select { |spec| spec.name == 'puppet-lint' }.first
-      load Pathname.new(gemspec.full_gem_path) + 'spec/spec_helper.rb'
+      load(Pathname.new(gemspec.full_gem_path) + 'spec/spec_helper.rb')
     end
 
     class << self
@@ -35,7 +35,7 @@ class PuppetLint
       #
       # Returns true if RubyGems is available, false if not.
       def has_rubygems?
-        defined? ::Gem
+        defined?(::Gem)
       end
 
       # Internal: Retrieve a list of avaliable gemspecs.

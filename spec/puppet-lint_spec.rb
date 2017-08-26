@@ -23,6 +23,6 @@ describe PuppetLint do
   it 'should return empty manifest when empty one given as the input' do
     subject.code = ''
     subject.run
-    expect(subject.manifest).to eq ''
+    expect(subject.manifest).to eq('')
   end
 end

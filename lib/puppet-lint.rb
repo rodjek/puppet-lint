@@ -133,7 +133,7 @@ class PuppetLint
     line = get_context(message)
     offset = line.index(/\S/) || 1
     puts "\n  #{line.strip}"
-    printf "%#{message[:column] + 2 - offset}s\n\n", '^'
+    printf("%#{message[:column] + 2 - offset}s\n\n", '^')
   end
 
   # Internal: Print the reported problems with a manifest to stdout.
@@ -154,7 +154,7 @@ class PuppetLint
           message['context'] = get_context(message) if configuration.with_context
           json << message
         else
-          format_message message
+          format_message(message)
           print_context(message) if configuration.with_context
         end
       end
@@ -203,7 +203,7 @@ class PuppetLint
   #
   # Returns nothing.
   def print_problems
-    report @problems
+    report(@problems)
   end
 
   # Public: Define a new check.

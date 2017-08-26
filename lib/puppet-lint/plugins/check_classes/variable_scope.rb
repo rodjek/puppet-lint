@@ -44,7 +44,7 @@ PuppetLint.new_check(:variable_scope) do
       unless idx[:param_tokens].nil?
         idx[:param_tokens].each do |token|
           if token.type == :VARIABLE
-            if POST_VAR_TOKENS.include? token.next_code_token.type
+            if POST_VAR_TOKENS.include?(token.next_code_token.type)
               variables_in_scope << token.value
             end
           end
@@ -124,14 +124,15 @@ PuppetLint.new_check(:variable_scope) do
           next if future_parser_scopes[token.line].include?(token.value.gsub(/\[.+\]\Z/, ''))
         end
 
-        unless token.value.include? '::'
+        unless token.value.include?('::')
           unless token.value =~ /^(facts|trusted)\[.+\]/
-            unless variables_in_scope.include? token.value.gsub(/\[.+\]\Z/, '')
+            unless variables_in_scope.include?(token.value.gsub(/\[.+\]\Z/, ''))
               unless token.value =~ /\A\d+\Z/
-                notify :warning,
+                notify(:warning,
                   :message => msg,
                   :line    => token.line,
                   :column  => token.column
+                )
               end
             end
           end

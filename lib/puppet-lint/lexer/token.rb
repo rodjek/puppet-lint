@@ -156,7 +156,7 @@ class PuppetLint
 
         token_iter = self.send("#{direction}_token".to_sym)
         while !token_iter.nil?
-          if to_find.include? token_iter.type
+          if to_find.include?(token_iter.type)
             return token_iter if opts[:value].nil? || token_iter.value == opts[:value]
           end
 

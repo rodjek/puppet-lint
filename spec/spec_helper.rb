@@ -117,11 +117,12 @@ end
 
 RSpec.configure do |config|
   config.mock_framework = :rspec
-  config.include RSpec::LintExampleGroup,
+  config.include(RSpec::LintExampleGroup,
     :type      => :lint,
-    :file_path => Regexp.compile(%w{spec puppet-lint plugins}.join('[\\\/]'))
+    :file_path => Regexp.compile(%w{spec puppet-lint plugins}.join('[\\\/]')),
+  )
 
-  config.expect_with :rspec do |c|
+  config.expect_with(:rspec) do |c|
     c.syntax = :expect
   end
 end

@@ -32,10 +32,11 @@ PuppetLint.new_check(:case_without_default) do
       end
 
       unless case_tokens.index { |r| r.type == :DEFAULT }
-        notify :warning,
+        notify(:warning,
           :message => 'case statement without a default case',
           :line    => case_tokens.first.line,
-          :column  => case_tokens.first.column
+          :column  => case_tokens.first.column,
+        )
       end
     end
   end

@@ -9,10 +9,11 @@ PuppetLint.new_check(:'140chars') do
     manifest_lines.each_with_index do |line, idx|
       unless line =~ /:\/\// || line =~ /template\(/
         if line.scan(/./mu).size > 140
-          notify :warning,
+          notify(:warning,
             :message => 'line has more than 140 characters',
             :line    => idx + 1,
-            :column  => 140
+            :column  => 140,
+          )
         end
       end
     end

@@ -9,7 +9,7 @@ PuppetLint.new_check(:only_variable_string) do
     tokens.each_with_index do |start_token, start_token_idx|
       if start_token.type == :DQPRE && start_token.value == ''
         var_token = start_token.next_token
-        if VAR_TYPES.include? var_token.type
+        if VAR_TYPES.include?(var_token.type)
           eos_offset = 2
           loop do
             eos_token = tokens[start_token_idx + eos_offset]
@@ -21,13 +21,14 @@ PuppetLint.new_check(:only_variable_string) do
                 if eos_token.next_code_token && eos_token.next_code_token.type == :FARROW
                   break
                 end
-                notify :warning,
+                notify(:warning,
                   :message     => 'string containing only a variable',
                   :line        => var_token.line,
                   :column      => var_token.column,
                   :start_token => start_token,
                   :var_token   => var_token,
-                  :end_token   => eos_token
+                  :end_token   => eos_token,
+                )
               end
               break
             else

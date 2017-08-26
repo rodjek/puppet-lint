@@ -11,11 +11,12 @@ PuppetLint.new_check(:double_quoted_strings) do
       token.type == :STRING &&
         token.value.gsub(' ' * token.column, "\n")[ESCAPE_CHAR_RE].nil?
     }.each do |token|
-      notify :warning,
+      notify(:warning,
         :message => 'double quoted string containing no variables',
         :line    => token.line,
         :column  => token.column,
-        :token   => token
+        :token   => token,
+      )
     end
   end
 

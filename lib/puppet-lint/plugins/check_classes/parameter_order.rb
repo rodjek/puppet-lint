@@ -27,10 +27,11 @@ PuppetLint.new_check(:parameter_order) do
           prev_tokens = class_idx[:param_tokens][0..i]
           unless prev_tokens.rindex { |r| r.type == :EQUALS }.nil?
             msg = 'optional parameter listed before required parameter'
-            notify :warning,
+            notify(:warning,
               :message => msg,
               :line    => token.line,
-              :column  => token.column
+              :column  => token.column,
+            )
           end
         end
       end

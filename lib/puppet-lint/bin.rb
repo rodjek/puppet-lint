@@ -66,7 +66,7 @@ class PuppetLint::Bin
 
         if PuppetLint.configuration.fix && l.problems.none? { |e| e[:check] == :syntax }
           File.open(f, 'w') do |fd|
-            fd.write l.manifest
+            fd.write(l.manifest)
           end
         end
       end

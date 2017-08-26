@@ -9,11 +9,12 @@ PuppetLint.new_check(:hard_tabs) do
     tokens.select { |r|
       WHITESPACE_TYPES.include?(r.type) && r.value.include?("\t")
     }.each do |token|
-      notify :error,
+      notify(:error,
         :message => 'tab character found',
         :line    => token.line,
         :column  => token.column,
-        :token   => token
+        :token   => token,
+      )
     end
   end
 

@@ -327,12 +327,12 @@ class PuppetLint
     # Returns true if the next token could be a regex, otherwise return false.
     def possible_regex?
       prev_token = tokens.reject { |r|
-        FORMATTING_TOKENS.include? r.type
+        FORMATTING_TOKENS.include?(r.type)
       }.last
 
       return true if prev_token.nil?
 
-      REGEX_PREV_TOKENS.include? prev_token.type
+      REGEX_PREV_TOKENS.include?(prev_token.type)
     end
 
     # Internal: Create a new PuppetLint::Lexer::Token object, calculate its
@@ -362,7 +362,7 @@ class PuppetLint
         tokens.last.next_token = token
 
         unless FORMATTING_TOKENS.include?(token.type)
-          prev_nf_idx = tokens.rindex { |r| !FORMATTING_TOKENS.include? r.type }
+          prev_nf_idx = tokens.rindex { |r| !FORMATTING_TOKENS.include?(r.type) }
           unless prev_nf_idx.nil?
             prev_nf_token = tokens[prev_nf_idx]
             prev_nf_token.next_code_token = token

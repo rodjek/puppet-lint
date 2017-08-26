@@ -7,13 +7,14 @@ PuppetLint.new_check(:variable_contains_dash) do
 
   def check
     tokens.select { |r|
-      VARIABLE_DASH_TYPES.include? r.type
+      VARIABLE_DASH_TYPES.include?(r.type)
     }.each do |token|
       if token.value.gsub(/\[.+?\]/, '') =~ /-/
-        notify :warning,
+        notify(:warning,
           :message => 'variable contains a dash',
           :line    => token.line,
-          :column  => token.column
+          :column  => token.column,
+        )
       end
     end
   end

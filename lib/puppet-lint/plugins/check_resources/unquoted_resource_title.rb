@@ -6,11 +6,12 @@ PuppetLint.new_check(:unquoted_resource_title) do
   def check
     title_tokens.each do |token|
       if token.type == :NAME
-        notify :warning,
+        notify(:warning,
           :message => 'unquoted resource title',
           :line    => token.line,
           :column  => token.column,
-          :token   => token
+          :token   => token,
+        )
       end
     end
   end

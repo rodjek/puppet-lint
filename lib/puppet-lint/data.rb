@@ -72,7 +72,7 @@ class PuppetLint::Data
 
       unless formatting_tokens.include?(token.type)
         current_token.next_token.prev_code_token = token unless current_token.next_token.nil?
-        next_nf_idx = tokens[index..-1].index { |r| !formatting_tokens.include? r.type }
+        next_nf_idx = tokens[index..-1].index { |r| !formatting_tokens.include?(r.type) }
         unless next_nf_idx.nil?
           next_nf_token = tokens[index + next_nf_idx]
           token.next_code_token = next_nf_token
@@ -81,7 +81,7 @@ class PuppetLint::Data
       end
 
       if formatting_tokens.include?(current_token.type)
-        prev_nf_idx = tokens[0..index - 1].rindex { |r| !formatting_tokens.include? r.type }
+        prev_nf_idx = tokens[0..index - 1].rindex { |r| !formatting_tokens.include?(r.type) }
         unless prev_nf_idx.nil?
           prev_nf_token = tokens[prev_nf_idx]
           token.prev_code_token = prev_nf_token
@@ -143,7 +143,7 @@ class PuppetLint::Data
               end
               title_array_tokens = tokens[(array_start_idx + 1)..(token_idx - 2)]
               result += title_array_tokens.select do |token|
-                { :STRING => true, :NAME => true }.include? token.type
+                { :STRING => true, :NAME => true }.include?(token.type)
               end
             else
               next_token = tokens[token_idx].next_code_token
@@ -414,7 +414,7 @@ class PuppetLint::Data
         hashes = []
         tokens.each_with_index do |token, token_idx|
           next unless token.prev_code_token
-          next unless [:EQUALS, :ISEQUAL, :FARROW, :LPAREN].include? token.prev_code_token.type
+          next unless [:EQUALS, :ISEQUAL, :FARROW, :LPAREN].include?(token.prev_code_token.type)
           if token.type == :LBRACE
             level = 0
             real_idx = 0

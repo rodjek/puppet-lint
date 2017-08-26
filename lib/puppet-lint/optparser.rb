@@ -58,13 +58,13 @@ class PuppetLint::OptParser
       end
 
       opts.on('-l', '--load FILE', 'Load a file containing custom puppet-lint checks.') do |f|
-        load f
+        load(f)
       end
 
       opts.on('--load-from-puppet MODULEPATH', 'Load plugins from the given Puppet module path.') do |path|
         path.split(':').each do |p|
           Dir["#{p}/*/lib/puppet-lint/plugins/*.rb"].each do |file|
-            load file
+            load(file)
           end
         end
       end
@@ -94,13 +94,13 @@ class PuppetLint::OptParser
         PuppetLint.configuration.json = true
       end
 
-      opts.separator ''
-      opts.separator '    Checks:'
+      opts.separator('')
+      opts.separator('    Checks:')
 
       opts.on('--only-checks CHECKS', 'A comma separated list of checks that should be run') do |checks|
         enable_checks = checks.split(',').map(&:to_sym)
         (PuppetLint.configuration.checks).each do |check|
-          if enable_checks.include? check
+          if enable_checks.include?(check)
             PuppetLint.configuration.send("enable_#{check}")
           else
             PuppetLint.configuration.send("disable_#{check}")

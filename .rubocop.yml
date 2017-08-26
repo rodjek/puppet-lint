@@ -54,3 +54,26 @@ Style/BracesAroundHashParameters:
     EnforcedStyle: context_dependent
 Style/Encoding:
     Enabled: false
+Style/MethodCallWithArgsParentheses:
+    Enabled: true
+    IgnoreMacros: true
+    IgnoredMethods:
+        - puts
+        - require
+        - include
+        - it
+        - context
+        - describe
+        - to
+        - to_not
+        - raise
+        - desc
+        - task
+        - exit
+        - should
+        - gem
+        - group
+        - attr_reader
+        - attr_accessor
+        - attr_writer
+        - source

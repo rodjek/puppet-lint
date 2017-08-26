@@ -9,10 +9,11 @@ PuppetLint.new_check(:'2sp_soft_tabs') do
     }.reject { |r|
       r.value.length.even?
     }.each do |token|
-      notify :error,
+      notify(:error,
         :message => 'two-space soft tabs not used',
         :line    => token.line,
-        :column  => token.column
+        :column  => token.column,
+      )
     end
   end
 end
