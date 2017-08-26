@@ -83,7 +83,7 @@ class PuppetLint
             linter.run
             linter.print_problems
 
-            if PuppetLint.configuration.fix && !linter.problems.any? { |e| e[:check] == :syntax }
+            if PuppetLint.configuration.fix && linter.problems.none? { |e| e[:check] == :syntax }
               IO.write(puppet_file, linter.manifest)
             end
           end
