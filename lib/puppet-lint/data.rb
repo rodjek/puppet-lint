@@ -32,16 +32,16 @@ class PuppetLint::Data
       @defaults_indexes = nil
     end
 
-    def ruby_1?
-      @ruby_1 = RbConfig::CONFIG['MAJOR'] == '1' if @ruby_1.nil?
-      @ruby_1
+    def ruby1?
+      @ruby1 = RbConfig::CONFIG['MAJOR'] == '1' if @ruby1.nil?
+      @ruby1
     end
 
     # Public: Get the tokenised manifest.
     #
     # Returns an Array of PuppetLint::Lexer::Token objects.
     def tokens
-      calling_method = if ruby_1?
+      calling_method = if ruby1?
                          begin
                            caller[0][%r{`.*'}][1..-2] # rubocop:disable Performance/Caller
                          rescue NoMethodError
