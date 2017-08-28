@@ -96,7 +96,8 @@ class PuppetLint
       format.prepend('%{path} - ') if configuration.with_filename
       configuration.log_format = format
     end
-    return configuration.log_format
+
+    configuration.log_format
   end
 
   # Internal: Format a problem message and print it to STDOUT.
@@ -117,8 +118,7 @@ class PuppetLint
   #
   # Returns the problematic line as a string.
   def get_context(message)
-    line = PuppetLint::Data.manifest_lines[message[:line] - 1]
-    return line.strip
+    PuppetLint::Data.manifest_lines[message[:line] - 1].strip
   end
 
   # Internal: Print out the line of the manifest on which the problem was found
