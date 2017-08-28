@@ -34,7 +34,7 @@ class PuppetLint
       # Internal: Check if RubyGems is loaded and available.
       #
       # Returns true if RubyGems is available, false if not.
-      def has_rubygems?
+      def rubygems?
         defined?(::Gem)
       end
 
@@ -65,7 +65,7 @@ class PuppetLint
       #
       # Returns an Array of Pathname objects.
       def gem_directories
-        if has_rubygems?
+        if rubygems?
           gemspecs.reject { |spec| spec.name == 'puppet-lint' }.map do |spec|
             Pathname.new(spec.full_gem_path) + 'lib'
           end
