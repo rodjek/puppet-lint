@@ -13,7 +13,8 @@ PuppetLint.new_check(:names_containing_dash) do
                    'defined type'
                  end
 
-      notify(:error,
+      notify(
+        :error,
         :message => "#{obj_type} name containing a dash",
         :line    => class_idx[:name_token].line,
         :column  => class_idx[:name_token].column,

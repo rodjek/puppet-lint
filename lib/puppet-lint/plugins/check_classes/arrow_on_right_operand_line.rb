@@ -7,7 +7,8 @@ PuppetLint.new_check(:arrow_on_right_operand_line) do
     tokens.select { |r| Set[:IN_EDGE, :IN_EDGE_SUB].include?(r.type) }.each do |token|
       next if token.next_code_token.line == token.line
 
-      notify(:warning,
+      notify(
+        :warning,
         :message =>  'arrow should be on the right operand\'s line',
         :line    => token.line,
         :column  => token.column,

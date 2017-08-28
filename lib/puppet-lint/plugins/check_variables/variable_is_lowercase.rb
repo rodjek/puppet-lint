@@ -11,7 +11,8 @@ PuppetLint.new_check(:variable_is_lowercase) do
     }.each do |token|
       next unless token.value.gsub(%r{\[.+?\]}, '') =~ %r{[A-Z]}
 
-      notify(:warning,
+      notify(
+        :warning,
         :message => 'variable contains an uppercase letter',
         :line    => token.line,
         :column  => token.column,

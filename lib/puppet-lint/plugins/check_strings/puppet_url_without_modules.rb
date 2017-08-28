@@ -10,7 +10,8 @@ PuppetLint.new_check(:puppet_url_without_modules) do
     }.reject { |token|
       token.value[%r{puppet://.*?/(.+)}, 1].start_with?('modules/') unless token.value[%r{puppet://.*?/(.+)}, 1].nil?
     }.each do |token|
-      notify(:warning,
+      notify(
+        :warning,
         :message => 'puppet:// URL without modules/ found',
         :line    => token.line,
         :column  => token.column,

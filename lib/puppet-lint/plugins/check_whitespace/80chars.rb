@@ -9,7 +9,8 @@ PuppetLint.new_check(:'80chars') do
       next if line =~ %r{://} || line =~ %r{template\(}
       next unless line.scan(%r{.}mu).size > 80
 
-      notify(:warning,
+      notify(
+        :warning,
         :message => 'line has more than 80 characters',
         :line    => idx + 1,
         :column  => 80,

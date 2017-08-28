@@ -128,7 +128,8 @@ PuppetLint.new_check(:variable_scope) do
         next if variables_in_scope.include?(token.value.gsub(%r{\[.+\]\Z}, ''))
         next if token.value =~ %r{\A\d+\Z}
 
-        notify(:warning,
+        notify(
+          :warning,
           :message => msg,
           :line    => token.line,
           :column  => token.column,

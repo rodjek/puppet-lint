@@ -65,7 +65,8 @@ PuppetLint.new_check(:arrow_alignment) do
               next if arrow_tok.column == arrow_column[level_idx] || level_tokens[level_idx].size == 1
 
               arrows_on_line = level_tokens[level_idx].select { |t| t.line == arrow_tok.line }
-              notify(:warning,
+              notify(
+                :warning,
                 :message        => "indentation of => is not properly aligned (expected in column #{arrow_column[level_idx]}, but found it in column #{arrow_tok.column})",
                 :line           => arrow_tok.line,
                 :column         => arrow_tok.column,

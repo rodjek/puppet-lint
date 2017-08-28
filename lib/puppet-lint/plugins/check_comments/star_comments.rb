@@ -7,7 +7,8 @@ PuppetLint.new_check(:star_comments) do
     tokens.select { |token|
       token.type == :MLCOMMENT
     }.each do |token|
-      notify(:warning,
+      notify(
+        :warning,
         :message => '/* */ comment found',
         :line    => token.line,
         :column  => token.column,

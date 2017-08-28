@@ -11,7 +11,8 @@ PuppetLint.new_check(:quoted_booleans) do
     tokens.select { |r|
       STRING_TYPES.include?(r.type) && BOOLEANS.include?(r.value)
     }.each do |token|
-      notify(:warning,
+      notify(
+        :warning,
         :message => 'quoted boolean value found',
         :line    => token.line,
         :column  => token.column,

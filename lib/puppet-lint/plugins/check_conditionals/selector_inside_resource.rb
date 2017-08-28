@@ -10,7 +10,8 @@ PuppetLint.new_check(:selector_inside_resource) do
         next if token.next_code_token.next_code_token.nil?
         next unless token.next_code_token.next_code_token.type == :QMARK
 
-        notify(:warning,
+        notify(
+          :warning,
           :message => 'selector inside resource block',
           :line    => token.line,
           :column  => token.column,

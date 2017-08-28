@@ -15,7 +15,8 @@ PuppetLint.new_check(:unquoted_file_mode) do
           TOKEN_TYPES.include?(param_token.next_code_token.next_code_token.type)
       }.each do |param_token|
         value_token = param_token.next_code_token.next_code_token
-        notify(:warning,
+        notify(
+          :warning,
           :message => 'unquoted file mode',
           :line    => value_token.line,
           :column  => value_token.column,

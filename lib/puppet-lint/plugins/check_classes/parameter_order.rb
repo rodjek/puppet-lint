@@ -28,7 +28,8 @@ PuppetLint.new_check(:parameter_order) do
         next if prev_tokens.rindex { |r| r.type == :EQUALS }.nil?
 
         msg = 'optional parameter listed before required parameter'
-        notify(:warning,
+        notify(
+          :warning,
           :message => msg,
           :line    => token.line,
           :column  => token.column,

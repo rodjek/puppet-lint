@@ -21,7 +21,8 @@ PuppetLint.new_check(:file_mode) do
         break if IGNORE_TYPES.include?(value_token.type)
         break if value_token.value =~ MODE_RE
 
-        notify(:warning,
+        notify(
+          :warning,
           :message => MSG,
           :line    => value_token.line,
           :column  => value_token.column,
