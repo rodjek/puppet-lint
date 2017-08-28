@@ -95,7 +95,7 @@ class PuppetLint::Checks
       'error:',
       '```',
       "#{e.class}: #{e.message}",
-      "#{e.backtrace.join("\n")}",
+      e.backtrace.join("\n"),
     ].join("\n")
 
     exit 1
