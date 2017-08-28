@@ -17,4 +17,14 @@ rescue LoadError
   $stderr.puts 'Changelog generation requires Ruby 2.0 or higher'
 end
 
+begin
+  require 'rubocop/rake_task'
+
+  RuboCop::RakeTask.new(:rubocop) do |task|
+    task.options = %w[-D -E]
+  end
+rescue LoadError
+  $stderr.puts 'Rubocop is not available for this version of Ruby.'
+end
+
 # vim: syntax=ruby
