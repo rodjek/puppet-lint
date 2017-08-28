@@ -9,6 +9,6 @@ bundler_args: --without development system_tests
 rvm:
   - 1.9.3
   - 2.0.0
-  - 2.1.9
-  - 2.3.1
-  - 2.4.0
+  - 2.1.10
+  - 2.3.4
+  - 2.4.1
