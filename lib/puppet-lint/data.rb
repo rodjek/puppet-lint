@@ -42,18 +42,18 @@ class PuppetLint::Data
     # Returns an Array of PuppetLint::Lexer::Token objects.
     def tokens
       calling_method = if ruby_1?
-        begin
-          caller[0][%r{`.*'}][1..-2]
-        rescue NoMethodError
-          caller[1][%r{`.*'}][1..-2]
-        end
-      else
-        begin
-          caller(0..0).first[%r{`.*'}][1..-2]
-        rescue NoMethodError
-          caller(1..1).first[%r{`.*'}][1..-2]
-        end
-      end
+                         begin
+                           caller[0][%r{`.*'}][1..-2] # rubocop:disable Performance/Caller
+                         rescue NoMethodError
+                           caller[1][%r{`.*'}][1..-2] # rubocop:disable Performance/Caller
+                         end
+                       else
+                         begin
+                           caller(0..0).first[%r{`.*'}][1..-2]
+                         rescue NoMethodError
+                           caller(1..1).first[%r{`.*'}][1..-2]
+                         end
+                       end
 
       if calling_method == 'check'
         @tokens.dup
