@@ -326,10 +326,10 @@ class PuppetLint::Data
         tokens.each_with_index do |token, token_idx|
           next unless token.type == :NAME
           next unless token_idx.zero? ||
-            (token_idx == 1 && tokens[0].type == :WHITESPACE) ||
-            [:NEWLINE, :INDENT].include?(token.prev_token.type) ||
-            # function in a function
-            (token.prev_code_token && token.prev_code_token.type == :LPAREN)
+                      (token_idx == 1 && tokens[0].type == :WHITESPACE) ||
+                      [:NEWLINE, :INDENT].include?(token.prev_token.type) ||
+                      # function in a function
+                      (token.prev_code_token && token.prev_code_token.type == :LPAREN)
 
           # Hash key
           next if token.next_code_token && token.next_code_token.type == :FARROW
