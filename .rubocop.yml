@@ -1,26 +1,10 @@
 ---
+inherit_from: './.rubocop_todo.yml'
 AllCops:
     TargetRubyVersion: 1.9
 
 Style/HashSyntax:
     EnforcedStyle: hash_rockets
-
-Metrics/LineLength:
-    Enabled: false
-Metrics/AbcSize:
-    Enabled: false
-Metrics/CyclomaticComplexity:
-    Enabled: false
-Metrics/MethodLength:
-    Enabled: false
-Metrics/PerceivedComplexity:
-    Enabled: false
-Metrics/BlockLength:
-    Enabled: false
-Metrics/ClassLength:
-    Enabled: false
-Metrics/BlockNesting:
-    Enabled: false
 
 Layout/FirstArrayElementLineBreak:
     Enabled: true
@@ -41,10 +25,6 @@ Layout/MultilineHashBraceLayout:
     EnforcedStyle: new_line
 Layout/MultilineMethodDefinitionBraceLayout:
     EnforcedStyle: new_line
-
-# TODO: tokeniser refactor
-Lint/AssignmentInCondition:
-    Enabled: false
 
 Style/AutoResourceCleanup:
     Enabled: true
@@ -77,3 +57,18 @@ Style/MethodCallWithArgsParentheses:
         - attr_accessor
         - attr_writer
         - source
+Style/MethodCalledOnDoEndBlock:
+    Enabled: true
+Style/RegexpLiteral:
+    EnforcedStyle: percent_r
+Style/TrailingCommaInArguments:
+    EnforcedStyleForMultiline: comma
+Style/TrailingCommaInLiteral:
+    EnforcedStyleForMultiline: comma
+Style/FormatStringToken:
+    Enabled: false
+Style/FileName:
+    Exclude:
+        - 'lib/puppet-lint.rb'
+        - 'lib/puppet-lint/tasks/puppet-lint.rb'
+        - 'spec/puppet-lint_spec.rb'
