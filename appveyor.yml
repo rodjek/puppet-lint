@@ -26,7 +26,3 @@ before_test:
 
 test_script:
   - bundle exec rake test
-
-notifications:
-  email:
-    - tim@bombasticmonkey.com
