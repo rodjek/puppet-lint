@@ -12,7 +12,7 @@ module RSpec
     class HaveProblem
       def initialize(method, message)
         @expected_problem = {
-          :kind    => method.to_s.gsub(/\Acontain_/, '').to_sym,
+          :kind    => method.to_s.gsub(%r{\Acontain_}, '').to_sym,
           :message => message,
         }
         @description = ["contain a #{@expected_problem[:kind]}"]
@@ -51,19 +51,19 @@ module RSpec
       end
 
       def check_attr(attr, prefix)
-        unless @expected_problem[attr] == @problems.first[attr]
-          expected = @expected_problem[attr].inspect
-          actual = @problems.first[attr].inspect
-          "#{prefix} #{expected}, but it was #{actual}"
-        end
+        return if @expected_problem[attr] == @problems.first[attr]
+
+        expected = @expected_problem[attr].inspect
+        actual = @problems.first[attr].inspect
+        "#{prefix} #{expected}, but it was #{actual}"
       end
 
       def failure_message
         case @problems.length
         when 0
-          "expected that the check would create a problem but it did not"
+          'expected that the check would create a problem but it did not'
         when 1
-          messages = ["expected that the problem"]
+          messages = ['expected that the problem']
 
           messages << check_attr(:kind, 'would be of kind')
           messages << check_attr(:message, 'would have the message')
@@ -74,22 +74,26 @@ module RSpec
           messages.compact.join("\n  ")
         else
           [
-            "expected that the check would create",
+            'expected that the check would create',
             PP.pp(@expected_problem, '').strip,
-            "but it instead created",
+            'but it instead created',
             PP.pp(@problems, ''),
           ].join("\n")
         end
       end
 
       def failure_message_when_negated
-        "expected that the check would not create the problem, but it did"
+        'expected that the check would not create the problem, but it did'
       end
     end
 
     def method_missing(method, *args, &block)
-      return HaveProblem.new(method, args.first) if method.to_s =~ /\Acontain_/
+      return HaveProblem.new(method, args.first) if method.to_s.start_with?('contain_')
       super
+    end
+
+    def respond_to_missing?(method, *)
+      method.to_s.start_with?('contain_') || super
     end
 
     def problems
@@ -102,14 +106,14 @@ module RSpec
 
     def subject
       klass = PuppetLint::Checks.new
-      filepath = self.respond_to?(:path) ? path : ''
+      filepath = respond_to?(:path) ? path : ''
       klass.load_data(filepath, code)
       check_name = self.class.top_level_description.to_sym
       check = PuppetLint.configuration.check_object[check_name].new
       klass.problems = check.run
-      if PuppetLint.configuration.fix
-        klass.problems = check.fix_problems
-      end
+
+      klass.problems = check.fix_problems if PuppetLint.configuration.fix
+
       klass
     end
   end
@@ -117,11 +121,13 @@ end
 
 RSpec.configure do |config|
   config.mock_framework = :rspec
-  config.include RSpec::LintExampleGroup, {
+  config.include(
+    RSpec::LintExampleGroup,
     :type      => :lint,
-    :file_path => Regexp.compile(%w{spec puppet-lint plugins}.join('[\\\/]')),
-  }
-  config.expect_with :rspec do |c|
+    :file_path => Regexp.compile(%w[spec puppet-lint plugins].join('[\\\/]')),
+  )
+
+  config.expect_with(:rspec) do |c|
     c.syntax = :expect
   end
 end

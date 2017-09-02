@@ -5,7 +5,7 @@ describe 'trailing_whitespace' do
 
   context 'with fix disabled' do
     context 'line with trailing whitespace' do
-      let(:code) { "foo " }
+      let(:code) { 'foo ' }
 
       it 'should only detect a single problem' do
         expect(problems).to have(1).problem
@@ -17,18 +17,20 @@ describe 'trailing_whitespace' do
     end
 
     context 'line without code and trailing whitespace' do
-      let(:code) { "
-class {
-  
-}
-" }
+      let(:code) do
+        [
+          'class {',
+          '  ',
+          '}',
+        ].join("\n")
+      end
 
       it 'should only detect a single problem' do
         expect(problems).to have(1).problem
       end
 
       it 'should create an error' do
-        expect(problems).to contain_error(msg).on_line(3).in_column(1)
+        expect(problems).to contain_error(msg).on_line(2).in_column(1)
       end
     end
   end
@@ -43,7 +45,7 @@ class {
     end
 
     context 'single line with trailing whitespace' do
-      let(:code) { "foo " }
+      let(:code) { 'foo ' }
 
       it 'should only detect a single problem' do
         expect(problems).to have(1).problem
@@ -75,22 +77,28 @@ class {
     end
 
     context 'line without code and trailing whitespace' do
-      let(:code) { "
-class foo {
-  
-}
-" }
-      let(:fixed) { "
-class foo {
+      let(:code) do
+        [
+          'class foo {',
+          '  ',
+          '}',
+        ].join("\n")
+      end
 
-}
-" }
+      let(:fixed) do
+        [
+          'class foo {',
+          '',
+          '}',
+        ].join("\n")
+      end
+
       it 'should only detect a single problem' do
         expect(problems).to have(1).problem
       end
 
       it 'should create an error' do
-        expect(problems).to contain_fixed(msg).on_line(3).in_column(1)
+        expect(problems).to contain_fixed(msg).on_line(2).in_column(1)
       end
 
       it 'should remove the trailing whitespace' do

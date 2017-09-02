@@ -9,12 +9,13 @@ PuppetLint.new_check(:unquoted_node_name) do
       node_token_idx = tokens.index(node)
       node_lbrace_tok = tokens[node_token_idx..-1].find { |token| token.type == :LBRACE }
       if node_lbrace_tok.nil?
-        notify :error, {
+        notify(
+          :error,
           :check    => :syntax,
           :message  => 'Syntax error (try running `puppet parser validate <file>`)',
           :line     => node.line,
           :column   => node.column,
-        }
+        )
         next
       end
 
@@ -23,12 +24,13 @@ PuppetLint.new_check(:unquoted_node_name) do
       tokens[node_token_idx..node_lbrace_idx].select { |token|
         token.type == :NAME && token.value != 'default'
       }.each do |token|
-        notify :warning, {
+        notify(
+          :warning,
           :message => 'unquoted node name found',
           :line    => token.line,
           :column  => token.column,
           :token   => token,
-        }
+        )
       end
     end
   end

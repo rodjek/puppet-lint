@@ -5,12 +5,14 @@ describe 'ensure_not_symlink_target' do
 
   context 'with fix disabled' do
     context 'file resource creating a symlink with seperate target attr' do
-      let(:code) { "
-        file { 'foo':
-          ensure => link,
-          target => '/foo/bar',
-        }"
-      }
+      let(:code) do
+        <<-END
+          file { 'foo':
+            ensure => link,
+            target => '/foo/bar',
+          }
+        END
+      end
 
       it 'should not detect any problems' do
         expect(problems).to have(0).problems
@@ -18,18 +20,20 @@ describe 'ensure_not_symlink_target' do
     end
 
     context 'file resource creating a symlink with target specified in ensure' do
-      let(:code) { "
-        file { 'foo':
-          ensure => '/foo/bar',
-        }"
-      }
+      let(:code) do
+        <<-END
+          file { 'foo':
+            ensure => '/foo/bar',
+          }
+        END
+      end
 
       it 'should only detect a single problem' do
         expect(problems).to have(1).problem
       end
 
       it 'should create a warning' do
-        expect(problems).to contain_warning(msg).on_line(3).in_column(21)
+        expect(problems).to contain_warning(msg).on_line(2).in_column(23)
       end
     end
   end
@@ -44,12 +48,14 @@ describe 'ensure_not_symlink_target' do
     end
 
     context 'file resource creating a symlink with seperate target attr' do
-      let(:code) { "
-        file { 'foo':
-          ensure => link,
-          target => '/foo/bar',
-        }"
-      }
+      let(:code) do
+        <<-END
+          file { 'foo':
+            ensure => link,
+            target => '/foo/bar',
+          }
+        END
+      end
 
       it 'should not detect any problems' do
         expect(problems).to have(0).problems
@@ -61,24 +67,29 @@ describe 'ensure_not_symlink_target' do
     end
 
     context 'file resource creating a symlink with target specified in ensure' do
-      let(:code) { "
-        file { 'foo':
-          ensure => '/foo/bar',
-        }"
-      }
-      let(:fixed) { "
-        file { 'foo':
-          ensure => symlink,
-          target => '/foo/bar',
-        }"
-      }
+      let(:code) do
+        <<-END
+          file { 'foo':
+            ensure => '/foo/bar',
+          }
+        END
+      end
+
+      let(:fixed) do
+        <<-END
+          file { 'foo':
+            ensure => symlink,
+            target => '/foo/bar',
+          }
+        END
+      end
 
       it 'should only detect a single problem' do
         expect(problems).to have(1).problem
       end
 
       it 'should fix the problem' do
-        expect(problems).to contain_fixed(msg).on_line(3).in_column(21)
+        expect(problems).to contain_fixed(msg).on_line(2).in_column(23)
       end
 
       it 'should create a new target param' do

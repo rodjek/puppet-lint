@@ -8,12 +8,23 @@ RSpec::Core::RakeTask.new(:test)
 
 begin
   require 'github_changelog_generator/task'
-  GitHubChangelogGenerator::RakeTask.new :changelog do |config|
+  GitHubChangelogGenerator::RakeTask.new(:changelog) do |config|
     version = PuppetLint::VERSION
-    config.future_release = "#{version}"
-    config.exclude_labels = %w{duplicate question invalid wontfix release-pr}
+    config.future_release = version.to_s
+    config.exclude_labels = %w[duplicate question invalid wontfix release-pr]
   end
 rescue LoadError
+  $stderr.puts 'Changelog generation requires Ruby 2.0 or higher'
+end
+
+begin
+  require 'rubocop/rake_task'
+
+  RuboCop::RakeTask.new(:rubocop) do |task|
+    task.options = %w[-D -E]
+  end
+rescue LoadError
+  $stderr.puts 'Rubocop is not available for this version of Ruby.'
 end
 
 # vim: syntax=ruby

@@ -43,11 +43,10 @@ PuppetLint.new_check(:variable_scope) do
 
       unless idx[:param_tokens].nil?
         idx[:param_tokens].each do |token|
-          if token.type == :VARIABLE
-            if POST_VAR_TOKENS.include? token.next_code_token.type
-              variables_in_scope << token.value
-            end
-          end
+          next unless token.type == :VARIABLE
+          next unless POST_VAR_TOKENS.include?(token.next_code_token.type)
+
+          variables_in_scope << token.value
         end
       end
 
@@ -72,10 +71,10 @@ PuppetLint.new_check(:variable_scope) do
                 brack_depth += 1
               when :LBRACK
                 brack_depth -= 1
-                break if brack_depth == 0
-              when :COMMA
+                break if brack_depth.zero?
+              when :COMMA # rubocop:disable Lint/EmptyWhen
                 # ignore
-              else  # unexpected
+              else # unexpected
                 break
               end
             end
@@ -102,7 +101,7 @@ PuppetLint.new_check(:variable_scope) do
                 brace_depth += 1
               when :RBRACE
                 brace_depth -= 1
-                if brace_depth == 0
+                if brace_depth.zero?
                   end_token = sub_token
                   break
                 end
@@ -118,25 +117,23 @@ PuppetLint.new_check(:variable_scope) do
         end
       end
 
-      msg = "top-scope variable being used without an explicit namespace"
+      msg = 'top-scope variable being used without an explicit namespace'
       referenced_variables.each do |token|
         unless future_parser_scopes[token.line].nil?
-          next if future_parser_scopes[token.line].include?(token.value.gsub(/\[.+\]\Z/, ''))
+          next if future_parser_scopes[token.line].include?(token.value.gsub(%r{\[.+\]\Z}, ''))
         end
 
-        unless token.value.include? '::'
-          unless token.value =~ /^(facts|trusted)\[.+\]/
-            unless variables_in_scope.include? token.value.gsub(/\[.+\]\Z/, '')
-              unless token.value =~ /\A\d+\Z/
-                notify :warning, {
-                  :message => msg,
-                  :line    => token.line,
-                  :column  => token.column,
-                }
-              end
-            end
-          end
-        end
+        next if token.value.include?('::')
+        next if token.value =~ %r{^(facts|trusted)\[.+\]}
+        next if variables_in_scope.include?(token.value.gsub(%r{\[.+\]\Z}, ''))
+        next if token.value =~ %r{\A\d+\Z}
+
+        notify(
+          :warning,
+          :message => msg,
+          :line    => token.line,
+          :column  => token.column,
+        )
       end
     end
   end

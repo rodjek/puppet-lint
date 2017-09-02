@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'arrow_on_right_operand_line' do
-  {'chain' => '->', 'subscribe chain' => '~>'}.each do |name, operator|
+  { 'chain' => '->', 'subscribe chain' => '~>' }.each do |name, operator|
     context "#{name} operator" do
       context 'both operands on same line' do
         let(:code) { "Package['httpd'] #{operator} Service['httpd']" }
@@ -31,13 +31,17 @@ describe 'arrow_on_right_operand_line' do
             #{operator} Service['httpd']"
           end
 
-          it { expect(manifest).to eq (fixed) }
+          it { expect(manifest).to eq(fixed) }
         end
       end
 
       context 'arrow on the line of right operand' do
-        let(:code) { "Package['httpd']
-          #{operator} Service['httpd']" }
+        let(:code) do
+          <<-END
+            Package['httpd']
+            #{operator} Service['httpd']
+          END
+        end
 
         it { expect(problems).to have(0).problems }
       end

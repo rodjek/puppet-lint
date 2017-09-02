@@ -28,7 +28,7 @@ describe 'variable_contains_dash' do
   end
 
   context 'variable with an array reference containing a dash' do
-    let(:code) { "$foo[bar-baz]" }
+    let(:code) { '$foo[bar-baz]' }
 
     it 'should not detect any problems' do
       expect(problems).to be_empty

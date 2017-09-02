@@ -9,12 +9,13 @@ PuppetLint.new_check(:trailing_whitespace) do
     }.select { |token|
       token.next_token.nil? || token.next_token.type == :NEWLINE
     }.each do |token|
-      notify :error, {
+      notify(
+        :error,
         :message => 'trailing whitespace found',
         :line    => token.line,
         :column  => token.column,
         :token   => token,
-      }
+      )
     end
   end
 

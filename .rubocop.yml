@@ -1,0 +1,74 @@
+---
+inherit_from: './.rubocop_todo.yml'
+AllCops:
+    TargetRubyVersion: 1.9
+
+Style/HashSyntax:
+    EnforcedStyle: hash_rockets
+
+Layout/FirstArrayElementLineBreak:
+    Enabled: true
+Layout/FirstHashElementLineBreak:
+    Enabled: true
+Layout/FirstMethodArgumentLineBreak:
+    Enabled: true
+Layout/FirstMethodParameterLineBreak:
+    Enabled: true
+Layout/IndentArray:
+    EnforcedStyle: consistent
+Layout/MultilineArrayBraceLayout:
+    EnforcedStyle: new_line
+Layout/MultilineAssignmentLayout:
+    Enabled: true
+    EnforcedStyle: same_line
+Layout/MultilineHashBraceLayout:
+    EnforcedStyle: new_line
+Layout/MultilineMethodDefinitionBraceLayout:
+    EnforcedStyle: new_line
+
+Style/AutoResourceCleanup:
+    Enabled: true
+Style/BlockDelimiters:
+    EnforcedStyle: braces_for_chaining
+Style/BracesAroundHashParameters:
+    EnforcedStyle: context_dependent
+Style/Encoding:
+    Enabled: false
+Style/MethodCallWithArgsParentheses:
+    Enabled: true
+    IgnoreMacros: true
+    IgnoredMethods:
+        - puts
+        - require
+        - include
+        - it
+        - context
+        - describe
+        - to
+        - to_not
+        - raise
+        - desc
+        - task
+        - exit
+        - should
+        - gem
+        - group
+        - attr_reader
+        - attr_accessor
+        - attr_writer
+        - source
+Style/MethodCalledOnDoEndBlock:
+    Enabled: true
+Style/RegexpLiteral:
+    EnforcedStyle: percent_r
+Style/TrailingCommaInArguments:
+    EnforcedStyleForMultiline: comma
+Style/TrailingCommaInLiteral:
+    EnforcedStyleForMultiline: comma
+Style/FormatStringToken:
+    Enabled: false
+Style/FileName:
+    Exclude:
+        - 'lib/puppet-lint.rb'
+        - 'lib/puppet-lint/tasks/puppet-lint.rb'
+        - 'spec/puppet-lint_spec.rb'

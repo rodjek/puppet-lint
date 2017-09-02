@@ -36,7 +36,14 @@ class PuppetLint
     def initialize
       @line_no = 1
       @column = 1
-      @@heredoc_queue ||= []
+    end
+
+    def self.heredoc_queue
+      @heredoc_queue ||= []
+    end
+
+    def heredoc_queue
+      self.class.heredoc_queue
     end
 
     # Internal: A Hash whose keys are Strings representing reserved keywords in
@@ -65,8 +72,8 @@ class PuppetLint
       'type'     => true,
       'attr'     => true,
       'private'  => true,
-    }
-    
+    }.freeze
+
     # Internal: A Hash whose keys are Strings representing reserved keywords in
     # the Puppet DSL when Application Management is enabled
     # From https://github.com/puppetlabs/puppet/blob/master/lib/puppet/pops/parser/lexer2.rb#L142-L159
@@ -77,7 +84,7 @@ class PuppetLint
       'consumes'    => true,
       'produces'    => true,
       'site'        => true,
-    }
+    }.freeze
 
     # Internal: A Hash whose keys are Symbols representing token types which
     # a regular expression can follow.
@@ -92,60 +99,60 @@ class PuppetLint
       :IF      => true,
       :ELSIF   => true,
       :LPAREN  => true,
-    }
+    }.freeze
 
     # Internal: An Array of Arrays containing tokens that can be described by
     # a single regular expression.  Each sub-Array contains 2 elements, the
     # name of the token as a Symbol and a regular expression describing the
     # value of the token.
-    NAME_RE = /\A(((::)?[_a-z0-9][-\w]*)(::[a-z0-9][-\w]*)*)/
+    NAME_RE = %r{\A(((::)?[_a-z0-9][-\w]*)(::[a-z0-9][-\w]*)*)}
     KNOWN_TOKENS = [
-      [:TYPE, /\A(Integer|Float|Boolean|Regexp|String|Array|Hash|Resource|Class|Collection|Scalar|Numeric|CatalogEntry|Data|Tuple|Struct|Optional|NotUndef|Variant|Enum|Pattern|Any|Callable|Type|Runtime|Undef|Default)\b/],
-      [:CLASSREF, /\A(((::){0,1}[A-Z][-\w]*)+)/],
-      [:NUMBER, /\A\b((?:0[xX][0-9A-Fa-f]+|0?\d+(?:\.\d+)?(?:[eE]-?\d+)?))\b/],
-      [:FUNCTION_NAME, /#{NAME_RE}\(/],
+      [:TYPE, %r{\A(Integer|Float|Boolean|Regexp|String|Array|Hash|Resource|Class|Collection|Scalar|Numeric|CatalogEntry|Data|Tuple|Struct|Optional|NotUndef|Variant|Enum|Pattern|Any|Callable|Type|Runtime|Undef|Default)\b}],
+      [:CLASSREF, %r{\A(((::){0,1}[A-Z][-\w]*)+)}],
+      [:NUMBER, %r{\A\b((?:0[xX][0-9A-Fa-f]+|0?\d+(?:\.\d+)?(?:[eE]-?\d+)?))\b}],
+      [:FUNCTION_NAME, %r{#{NAME_RE}\(}],
       [:NAME, NAME_RE],
-      [:LBRACK, /\A(\[)/],
-      [:RBRACK, /\A(\])/],
-      [:LBRACE, /\A(\{)/],
-      [:RBRACE, /\A(\})/],
-      [:LPAREN, /\A(\()/],
-      [:RPAREN, /\A(\))/],
-      [:ISEQUAL, /\A(==)/],
-      [:MATCH, /\A(=~)/],
-      [:FARROW, /\A(=>)/],
-      [:EQUALS, /\A(=)/],
-      [:APPENDS, /\A(\+=)/],
-      [:PARROW, /\A(\+>)/],
-      [:PLUS, /\A(\+)/],
-      [:GREATEREQUAL, /\A(>=)/],
-      [:RSHIFT, /\A(>>)/],
-      [:GREATERTHAN, /\A(>)/],
-      [:LESSEQUAL, /\A(<=)/],
-      [:LLCOLLECT, /\A(<<\|)/],
-      [:OUT_EDGE, /\A(<-)/],
-      [:OUT_EDGE_SUB, /\A(<~)/],
-      [:LCOLLECT, /\A(<\|)/],
-      [:LSHIFT, /\A(<<)/],
-      [:LESSTHAN, /\A(<)/],
-      [:NOMATCH, /\A(!~)/],
-      [:NOTEQUAL, /\A(!=)/],
-      [:NOT, /\A(!)/],
-      [:RRCOLLECT, /\A(\|>>)/],
-      [:RCOLLECT, /\A(\|>)/],
-      [:IN_EDGE, /\A(->)/],
-      [:IN_EDGE_SUB, /\A(~>)/],
-      [:MINUS, /\A(-)/],
-      [:COMMA, /\A(,)/],
-      [:DOT, /\A(\.)/],
-      [:COLON, /\A(:)/],
-      [:SEMIC, /\A(;)/],
-      [:QMARK, /\A(\?)/],
-      [:BACKSLASH, /\A(\\)/],
-      [:TIMES, /\A(\*)/],
-      [:MODULO, /\A(%)/],
-      [:PIPE, /\A(\|)/],
-    ]
+      [:LBRACK, %r{\A(\[)}],
+      [:RBRACK, %r{\A(\])}],
+      [:LBRACE, %r{\A(\{)}],
+      [:RBRACE, %r{\A(\})}],
+      [:LPAREN, %r{\A(\()}],
+      [:RPAREN, %r{\A(\))}],
+      [:ISEQUAL, %r{\A(==)}],
+      [:MATCH, %r{\A(=~)}],
+      [:FARROW, %r{\A(=>)}],
+      [:EQUALS, %r{\A(=)}],
+      [:APPENDS, %r{\A(\+=)}],
+      [:PARROW, %r{\A(\+>)}],
+      [:PLUS, %r{\A(\+)}],
+      [:GREATEREQUAL, %r{\A(>=)}],
+      [:RSHIFT, %r{\A(>>)}],
+      [:GREATERTHAN, %r{\A(>)}],
+      [:LESSEQUAL, %r{\A(<=)}],
+      [:LLCOLLECT, %r{\A(<<\|)}],
+      [:OUT_EDGE, %r{\A(<-)}],
+      [:OUT_EDGE_SUB, %r{\A(<~)}],
+      [:LCOLLECT, %r{\A(<\|)}],
+      [:LSHIFT, %r{\A(<<)}],
+      [:LESSTHAN, %r{\A(<)}],
+      [:NOMATCH, %r{\A(!~)}],
+      [:NOTEQUAL, %r{\A(!=)}],
+      [:NOT, %r{\A(!)}],
+      [:RRCOLLECT, %r{\A(\|>>)}],
+      [:RCOLLECT, %r{\A(\|>)}],
+      [:IN_EDGE, %r{\A(->)}],
+      [:IN_EDGE_SUB, %r{\A(~>)}],
+      [:MINUS, %r{\A(-)}],
+      [:COMMA, %r{\A(,)}],
+      [:DOT, %r{\A(\.)}],
+      [:COLON, %r{\A(:)}],
+      [:SEMIC, %r{\A(;)}],
+      [:QMARK, %r{\A(\?)}],
+      [:BACKSLASH, %r{\A(\\)}],
+      [:TIMES, %r{\A(\*)}],
+      [:MODULO, %r{\A(%)}],
+      [:PIPE, %r{\A(\|)}],
+    ].freeze
 
     # Internal: A Hash whose keys are Symbols representing token types which
     # are considered to be formatting tokens (i.e. tokens that don't contain
@@ -157,13 +164,13 @@ class PuppetLint
       :MLCOMMENT     => true,
       :SLASH_COMMENT => true,
       :INDENT        => true,
-    }
+    }.freeze
 
     # \t == tab
     # \v == vertical tab
     # \f == form feed
     # \p{Zs} == ASCII + Unicode non-linebreaking whitespace
-    WHITESPACE_RE = /[\t\v\f\p{Zs}]/
+    WHITESPACE_RE = %r{[\t\v\f\p{Zs}]}
 
     # Internal: Access the internal token storage.
     #
@@ -188,128 +195,128 @@ class PuppetLint
         found = false
 
         KNOWN_TOKENS.each do |type, regex|
-          if value = chunk[regex, 1]
-            length = value.size
-            if type == :NAME && KEYWORDS.include?(value)
-              tokens << new_token(value.upcase.to_sym, value)
-            else
-              tokens << new_token(type, value)
-            end
-            i += length
-            found = true
-            break
-          end
-        end
+          value = chunk[regex, 1]
+          next if value.nil?
 
-        unless found
-          if var_name = chunk[/\A\$((::)?(\w+(-\w+)*::)*\w+(-\w+)*(\[.+?\])*)/, 1]
-            length = var_name.size + 1
-            tokens << new_token(:VARIABLE, var_name)
-
-          elsif chunk.match(/\A'(.*?)'/m)
-            str_content = StringScanner.new(code[i+1..-1]).scan_until(/(\A|[^\\])(\\\\)*'/m)
-            length = str_content.size + 1
-            tokens << new_token(:SSTRING, str_content[0..-2])
-
-          elsif chunk.match(/\A"/)
-            str_contents = slurp_string(code[i+1..-1])
-            _ = code[0..i].split("\n")
-            interpolate_string(str_contents, _.count, _.last.length)
-            length = str_contents.size + 1
-
-          elsif heredoc_name = chunk[/\A@\(("?.+?"?(:.+?)?(\/.*?)?)\)/, 1]
-            @@heredoc_queue << heredoc_name
-            tokens << new_token(:HEREDOC_OPEN, heredoc_name)
-            length = heredoc_name.size + 3
-
-          elsif comment = chunk[/\A(#.*)/, 1]
-            length = comment.size
-            comment.sub!(/#/, '')
-            tokens << new_token(:COMMENT, comment)
-
-          elsif slash_comment = chunk[/\A(\/\/.*)/, 1]
-            length = slash_comment.size
-            slash_comment.sub!(/\/\//, '')
-            tokens << new_token(:SLASH_COMMENT, slash_comment)
-
-          elsif mlcomment = chunk[/\A(\/\*.*?\*\/)/m, 1]
-            length = mlcomment.size
-            mlcomment_raw = mlcomment.dup
-            mlcomment.sub!(/\A\/\* ?/, '')
-            mlcomment.sub!(/ ?\*\/\Z/, '')
-            mlcomment.gsub!(/^ *\*/, '')
-            tokens << new_token(:MLCOMMENT, mlcomment, :raw => mlcomment_raw)
-
-          elsif chunk.match(/\A\/.*?\//) && possible_regex?
-            str_content = StringScanner.new(code[i+1..-1]).scan_until(/(\A|[^\\])(\\\\)*\//m)
-            length = str_content.size + 1
-            tokens << new_token(:REGEX, str_content[0..-2])
-
-          elsif eolindent = chunk[/\A((\r\n|\r|\n)#{WHITESPACE_RE}+)/m, 1]
-            eol = eolindent[/\A([\r\n]+)/m, 1]
-            tokens << new_token(:NEWLINE, eol)
-            length = eol.size
-
-            if @@heredoc_queue.empty?
-              indent = eolindent[/\A[\r\n]+(#{WHITESPACE_RE}+)/m, 1]
-              tokens << new_token(:INDENT, indent)
-              length += indent.size
-            else
-              heredoc_tag = @@heredoc_queue.shift
-              heredoc_name = heredoc_tag[/\A"?(.+?)"?(:.+?)?(\/.*)?\Z/, 1]
-              str_contents = StringScanner.new(code[i+length..-1]).scan_until(/\|?\s*-?\s*#{heredoc_name}/)
-              interpolate_heredoc(str_contents, heredoc_tag)
-              length += str_contents.size
-            end
-
-          elsif whitespace = chunk[/\A(#{WHITESPACE_RE}+)/, 1]
-            length = whitespace.size
-            tokens << new_token(:WHITESPACE, whitespace)
-
-          elsif eol = chunk[/\A(\r\n|\r|\n)/, 1]
-            length = eol.size
-            tokens << new_token(:NEWLINE, eol)
-
-            unless @@heredoc_queue.empty?
-              heredoc_tag = @@heredoc_queue.shift
-              heredoc_name = heredoc_tag[/\A"?(.+?)"?(:.+?)?(\/.*)?\Z/, 1]
-              str_contents = StringScanner.new(code[i+length..-1]).scan_until(/\|?\s*-?\s*#{heredoc_name}/)
-              _ = code[0..i+length].split("\n")
-              interpolate_heredoc(str_contents, heredoc_tag)
-              length += str_contents.size
-            end
-
-          elsif chunk.match(/\A\//)
-            length = 1
-            tokens << new_token(:DIV, '/')
-
-          elsif chunk.match(/\A@/)
-            length = 1
-            tokens << new_token(:AT, '@')
-
-          else
-            raise PuppetLint::LexerError.new(@line_no, @column)
-          end
-
+          length = value.size
+          tokens << if type == :NAME && KEYWORDS.include?(value)
+                      new_token(value.upcase.to_sym, value)
+                    else
+                      new_token(type, value)
+                    end
           i += length
+          found = true
+          break
         end
+
+        next if found
+
+        if var_name = chunk[%r{\A\$((::)?(\w+(-\w+)*::)*\w+(-\w+)*(\[.+?\])*)}, 1]
+          length = var_name.size + 1
+          tokens << new_token(:VARIABLE, var_name)
+
+        elsif chunk =~ %r{\A'.*?'}m
+          str_content = StringScanner.new(code[i + 1..-1]).scan_until(%r{(\A|[^\\])(\\\\)*'}m)
+          length = str_content.size + 1
+          tokens << new_token(:SSTRING, str_content[0..-2])
+
+        elsif chunk.start_with?('"')
+          str_contents = slurp_string(code[i + 1..-1])
+          lines_parsed = code[0..i].split("\n")
+          interpolate_string(str_contents, lines_parsed.count, lines_parsed.last.length)
+          length = str_contents.size + 1
+
+        elsif heredoc_name = chunk[%r{\A@\(("?.+?"?(:.+?)?(/.*?)?)\)}, 1]
+          heredoc_queue << heredoc_name
+          tokens << new_token(:HEREDOC_OPEN, heredoc_name)
+          length = heredoc_name.size + 3
+
+        elsif comment = chunk[%r{\A(#.*)}, 1]
+          length = comment.size
+          comment.sub!(%r{#}, '')
+          tokens << new_token(:COMMENT, comment)
+
+        elsif slash_comment = chunk[%r{\A(//.*)}, 1]
+          length = slash_comment.size
+          slash_comment.sub!(%r{//}, '')
+          tokens << new_token(:SLASH_COMMENT, slash_comment)
+
+        elsif mlcomment = chunk[%r{\A(/\*.*?\*/)}m, 1]
+          length = mlcomment.size
+          mlcomment_raw = mlcomment.dup
+          mlcomment.sub!(%r{\A/\* ?}, '')
+          mlcomment.sub!(%r{ ?\*/\Z}, '')
+          mlcomment.gsub!(%r{^ *\*}, '')
+          tokens << new_token(:MLCOMMENT, mlcomment, :raw => mlcomment_raw)
+
+        elsif chunk.match(%r{\A/.*?/}) && possible_regex?
+          str_content = StringScanner.new(code[i + 1..-1]).scan_until(%r{(\A|[^\\])(\\\\)*/}m)
+          length = str_content.size + 1
+          tokens << new_token(:REGEX, str_content[0..-2])
+
+        elsif eolindent = chunk[%r{\A((\r\n|\r|\n)#{WHITESPACE_RE}+)}m, 1]
+          eol = eolindent[%r{\A([\r\n]+)}m, 1]
+          tokens << new_token(:NEWLINE, eol)
+          length = eol.size
+
+          if heredoc_queue.empty?
+            indent = eolindent[%r{\A[\r\n]+(#{WHITESPACE_RE}+)}m, 1]
+            tokens << new_token(:INDENT, indent)
+            length += indent.size
+          else
+            heredoc_tag = heredoc_queue.shift
+            heredoc_name = heredoc_tag[%r{\A"?(.+?)"?(:.+?)?(/.*)?\Z}, 1]
+            str_contents = StringScanner.new(code[i + length..-1]).scan_until(%r{\|?\s*-?\s*#{heredoc_name}})
+            interpolate_heredoc(str_contents, heredoc_tag)
+            length += str_contents.size
+          end
+
+        elsif whitespace = chunk[%r{\A(#{WHITESPACE_RE}+)}, 1]
+          length = whitespace.size
+          tokens << new_token(:WHITESPACE, whitespace)
+
+        elsif eol = chunk[%r{\A(\r\n|\r|\n)}, 1]
+          length = eol.size
+          tokens << new_token(:NEWLINE, eol)
+
+          unless heredoc_queue.empty?
+            heredoc_tag = heredoc_queue.shift
+            heredoc_name = heredoc_tag[%r{\A"?(.+?)"?(:.+?)?(/.*)?\Z}, 1]
+            str_contents = StringScanner.new(code[i + length..-1]).scan_until(%r{\|?\s*-?\s*#{heredoc_name}})
+            _ = code[0..i + length].split("\n")
+            interpolate_heredoc(str_contents, heredoc_tag)
+            length += str_contents.size
+          end
+
+        elsif chunk.start_with?('/')
+          length = 1
+          tokens << new_token(:DIV, '/')
+
+        elsif chunk.start_with?('@')
+          length = 1
+          tokens << new_token(:AT, '@')
+
+        else
+          raise PuppetLint::LexerError.new(@line_no, @column)
+        end
+
+        i += length
       end
 
       tokens
     end
 
-
     def slurp_string(string)
-      dq_str_regexp = /(\$\{|(\A|[^\\])(\\\\)*")/m
+      dq_str_regexp = %r{(\$\{|(\A|[^\\])(\\\\)*")}m
       scanner = StringScanner.new(string)
       contents = scanner.scan_until(dq_str_regexp)
 
       if scanner.matched.nil?
-        raise LexerError.new(@line_no, @column, "Double quoted string missing closing quote")
+        raise LexerError.new(@line_no, @column, 'Double quoted string missing closing quote')
       end
 
       until scanner.matched.end_with?('"')
-        contents += scanner.scan_until(/\}/m)
+        contents += scanner.scan_until(%r{\}}m)
         contents += scanner.scan_until(dq_str_regexp)
       end
       contents
@@ -321,12 +328,12 @@ class PuppetLint
     # Returns true if the next token could be a regex, otherwise return false.
     def possible_regex?
       prev_token = tokens.reject { |r|
-        FORMATTING_TOKENS.include? r.type
+        FORMATTING_TOKENS.include?(r.type)
       }.last
 
       return true if prev_token.nil?
 
-      REGEX_PREV_TOKENS.include? prev_token.type
+      REGEX_PREV_TOKENS.include?(prev_token.type)
     end
 
     # Internal: Create a new PuppetLint::Lexer::Token object, calculate its
@@ -356,7 +363,7 @@ class PuppetLint
         tokens.last.next_token = token
 
         unless FORMATTING_TOKENS.include?(token.type)
-          prev_nf_idx = tokens.rindex { |r| ! FORMATTING_TOKENS.include? r.type }
+          prev_nf_idx = tokens.rindex { |r| !FORMATTING_TOKENS.include?(r.type) }
           unless prev_nf_idx.nil?
             prev_nf_token = tokens[prev_nf_idx]
             prev_nf_token.next_code_token = token
@@ -365,15 +372,13 @@ class PuppetLint
         end
       end
 
-      if opts[:raw]
-        token.raw = opts[:raw]
-      end
+      token.raw = opts[:raw] if opts[:raw]
 
       if type == :NEWLINE
         @line_no += 1
         @column = 1
       else
-        lines = token.to_manifest.split(/(?:\r\n|\r|\n)/, -1)
+        lines = token.to_manifest.split(%r{(?:\r\n|\r|\n)}, -1)
         @line_no += lines.length - 1
         if lines.length > 1
           # if the token renders to multiple lines, set the column state to the
@@ -381,7 +386,7 @@ class PuppetLint
           # 1 indexed)
           @column = lines.last.size + 1
         else
-          @column += (lines.last || "").size
+          @column += (lines.last || '').size
         end
       end
 
@@ -398,9 +403,9 @@ class PuppetLint
     # Returns an Array consisting of two Strings, the String up to the first
     # terminator and the terminator that was found.
     def get_string_segment(string, terminators)
-      str = string.scan_until(/([^\\]|^|[^\\])([\\]{2})*[#{terminators}]+/)
+      str = string.scan_until(%r{([^\\]|^|[^\\])([\\]{2})*[#{terminators}]+})
       begin
-        [str[0..-2], str[-1,1]]
+        [str[0..-2], str[-1, 1]]
       rescue
         [nil, nil]
       end
@@ -418,12 +423,12 @@ class PuppetLint
       first = true
       value, terminator = get_string_segment(ss, '"$')
       until value.nil?
-        if terminator == "\""
+        if terminator == '"'
           if first
             tokens << new_token(:STRING, value, :line => line, :column => column)
             first = false
           else
-            line += value.scan(/(\r\n|\r|\n)/).size
+            line += value.scan(%r{(\r\n|\r|\n)}).size
             token_column = column + (ss.pos - value.size)
             tokens << new_token(:DQPOST, value, :line => line, :column => token_column)
             @column = column + ss.pos + 1
@@ -434,23 +439,23 @@ class PuppetLint
             tokens << new_token(:DQPRE, value, :line => line, :column => column)
             first = false
           else
-            line += value.scan(/(\r\n|\r|\n)/).size
+            line += value.scan(%r{(\r\n|\r|\n)}).size
             token_column = column + (ss.pos - value.size)
             tokens << new_token(:DQMID, value, :line => line, :column => token_column)
           end
-          if ss.scan(/\{/).nil?
-            var_name = ss.scan(/(::)?(\w+(-\w+)*::)*\w+(-\w+)*/)
+          if ss.scan(%r{\{}).nil?
+            var_name = ss.scan(%r{(::)?(\w+(-\w+)*::)*\w+(-\w+)*})
             if var_name.nil?
               token_column = column + ss.pos - 1
-              tokens << new_token(:DQMID, "$", :line => line, :column => token_column)
+              tokens << new_token(:DQMID, '$', :line => line, :column => token_column)
             else
               token_column = column + (ss.pos - var_name.size)
               tokens << new_token(:UNENC_VARIABLE, var_name, :line => line, :column => token_column)
             end
           else
-            contents = ss.scan_until(/\}/)[0..-2]
+            contents = ss.scan_until(%r{\}})[0..-2]
             raw = contents.dup
-            if contents.match(/\A(::)?([\w-]+::)*[\w-]+(\[.+?\])*/) && !contents.match(/\A\w+\(/)
+            if contents.match(%r{\A(::)?([\w-]+::)*[\w-]+(\[.+?\])*}) && !contents.match(%r{\A\w+\(})
               contents = "$#{contents}"
             end
             lexer = PuppetLint::Lexer.new
@@ -477,12 +482,12 @@ class PuppetLint
     # Returns nothing.
     def interpolate_heredoc(string, name)
       ss = StringScanner.new(string)
-      eos_text = name[/\A"?(.+?)"?(:.+?)?(\/.*)?\Z/, 1]
+      eos_text = name[%r{\A"?(.+?)"?(:.+?)?(/.*)?\Z}, 1]
       first = true
       interpolate = name.start_with?('"')
       value, terminator = get_heredoc_segment(ss, eos_text, interpolate)
       until value.nil?
-        if terminator =~ /\A\|?\s*-?\s*#{Regexp.escape(eos_text)}/
+        if terminator =~ %r{\A\|?\s*-?\s*#{Regexp.escape(eos_text)}}
           if first
             tokens << new_token(:HEREDOC, value, :raw => "#{value}#{terminator}")
             first = false
@@ -496,18 +501,18 @@ class PuppetLint
           else
             tokens << new_token(:HEREDOC_MID, value)
           end
-          if ss.scan(/\{/).nil?
-            var_name = ss.scan(/(::)?(\w+(-\w+)*::)*\w+(-\w+)*/)
-            if var_name.nil?
-              tokens << new_token(:HEREDOC_MID, "$")
-            else
-              tokens << new_token(:UNENC_VARIABLE, var_name)
-            end
+          if ss.scan(%r{\{}).nil?
+            var_name = ss.scan(%r{(::)?(\w+(-\w+)*::)*\w+(-\w+)*})
+            tokens << if var_name.nil?
+                        new_token(:HEREDOC_MID, '$')
+                      else
+                        new_token(:UNENC_VARIABLE, var_name)
+                      end
           else
-            contents = ss.scan_until(/\}/)[0..-2]
+            contents = ss.scan_until(%r{\}})[0..-2]
             raw = contents.dup
-            if contents.match(/\A(::)?([\w-]+::)*[\w-]|(\[.+?\])*/) && !contents.match(/\A\w+\(/)
-              contents = "$#{contents}" unless contents.start_with?("$")
+            if contents.match(%r{\A(::)?([\w-]+::)*[\w-]|(\[.+?\])*}) && !contents.match(%r{\A\w+\(})
+              contents = "$#{contents}" unless contents.start_with?('$')
             end
 
             lexer = PuppetLint::Lexer.new
@@ -534,19 +539,17 @@ class PuppetLint
     #
     # Returns an Array consisting of two Strings, the String up to the first
     # terminator and the terminator that was found.
-    def get_heredoc_segment(string, eos_text, interpolate=true)
-      if interpolate
-        regexp = /(([^\\]|^|[^\\])([\\]{2})*[$]+|\|?\s*-?#{Regexp.escape(eos_text)})/
-      else
-        regexp = /\|?\s*-?#{Regexp.escape(eos_text)}/
-      end
+    def get_heredoc_segment(string, eos_text, interpolate = true)
+      regexp = if interpolate
+                 %r{(([^\\]|^|[^\\])([\\]{2})*[$]+|\|?\s*-?#{Regexp.escape(eos_text)})}
+               else
+                 %r{\|?\s*-?#{Regexp.escape(eos_text)}}
+               end
 
       str = string.scan_until(regexp)
       begin
-        str =~ /\A(.*?)([$]+|\|?\s*-?#{Regexp.escape(eos_text)})\Z/m
-        value = $1
-        terminator = $2
-        [value, terminator]
+        str =~ %r{\A(?<value>.*?)(?<terminator>[$]+|\|?\s*-?#{Regexp.escape(eos_text)})\Z}m
+        [Regexp.last_match(:value), Regexp.last_match(:terminator)]
       rescue
         [nil, nil]
       end

@@ -154,18 +154,14 @@ class PuppetLint
         opts[:skip_blocks] ||= true
         to_find = Array[*type]
 
-        token_iter = self.send("#{direction}_token".to_sym)
-        while !token_iter.nil?
-          if to_find.include? token_iter.type
-            if opts[:value]
-              return token_iter if token_iter.value == opts[:value]
-            else
-              return token_iter
-            end
+        token_iter = send("#{direction}_token".to_sym)
+        until token_iter.nil?
+          if to_find.include?(token_iter.type)
+            return token_iter if opts[:value].nil? || token_iter.value == opts[:value]
           end
 
-          opening_token = direction == :next ? "L" : "R"
-          closing_token = direction == :next ? "R" : "L"
+          opening_token = direction == :next ? 'L' : 'R'
+          closing_token = direction == :next ? 'R' : 'L'
 
           if opts[:skip_blocks]
             case token_iter.type

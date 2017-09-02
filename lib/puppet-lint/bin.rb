@@ -23,8 +23,8 @@ class PuppetLint::Bin
 
     begin
       opts.parse!(@args)
-    rescue OptionParser::InvalidOption
-      puts "puppet-lint: #{$!.message}"
+    rescue OptionParser::InvalidOption => e
+      puts "puppet-lint: #{e.message}"
       puts "puppet-lint: try 'puppet-lint --help' for more information"
       return 1
     end
@@ -35,22 +35,20 @@ class PuppetLint::Bin
     end
 
     if @args[0].nil?
-      puts "puppet-lint: no file specified"
+      puts 'puppet-lint: no file specified'
       puts "puppet-lint: try 'puppet-lint --help' for more information"
       return 1
     end
 
     begin
       path = @args[0]
-      if File.directory?(path)
-        path = Dir.glob("#{path}/**/*.pp")
-      else
-        path = @args
-      end
+      path = if File.directory?(path)
+               Dir.glob("#{path}/**/*.pp")
+             else
+               @args
+             end
 
-      if path.length > 1
-        PuppetLint.configuration.with_filename = true
-      end
+      PuppetLint.configuration.with_filename = true if path.length > 1
 
       return_val = 0
 
@@ -60,24 +58,22 @@ class PuppetLint::Bin
         l.file = f
         l.run
         l.print_problems
-        puts ',' if f != path.last and PuppetLint.configuration.json
+        puts ',' if f != path.last && PuppetLint.configuration.json
 
-        if l.errors? or (l.warnings? and PuppetLint.configuration.fail_on_warnings)
+        if l.errors? || (l.warnings? && PuppetLint.configuration.fail_on_warnings)
           return_val = 1
         end
 
-        if PuppetLint.configuration.fix && !l.problems.any? { |e| e[:check] == :syntax }
-          File.open(f, 'w') do |fd|
-            fd.write l.manifest
-          end
+        next unless PuppetLint.configuration.fix && l.problems.none? { |r| r[:check] == :syntax }
+        File.open(f, 'w') do |fd|
+          fd.write(l.manifest)
         end
       end
       puts ']' if PuppetLint.configuration.json
 
       return return_val
-
     rescue PuppetLint::NoCodeError
-      puts "puppet-lint: no file specified or specified file does not exist"
+      puts 'puppet-lint: no file specified or specified file does not exist'
       puts "puppet-lint: try 'puppet-lint --help' for more information"
       return 1
     end

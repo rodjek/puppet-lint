@@ -5,7 +5,7 @@ describe 'slash_comments' do
 
   context 'with fix disabled' do
     context 'slash comments' do
-      let(:code) { "// foo" }
+      let(:code) { '// foo' }
 
       it 'should only detect a single problem' do
         expect(problems).to have(1).problem
@@ -38,7 +38,7 @@ describe 'slash_comments' do
       end
 
       it 'should replace the double slash with a hash' do
-        expect(manifest).to eq("# foo")
+        expect(manifest).to eq('# foo')
       end
     end
   end

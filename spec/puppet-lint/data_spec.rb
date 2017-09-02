@@ -15,45 +15,45 @@ describe PuppetLint::Data do
     end
 
     it 'adds token at the given index' do
-      expect(data.tokens.map(&:to_manifest).join).to eq '$x += $a'
+      expect(data.tokens.map(&:to_manifest).join).to eq('$x += $a')
     end
 
     it 'sets the prev_token' do
-      expect(new_token.prev_token).to eq original_tokens[1]
+      expect(new_token.prev_token).to eq(original_tokens[1])
     end
 
     it 'sets the prev_code_token' do
-      expect(new_token.prev_code_token).to eq original_tokens[0]
+      expect(new_token.prev_code_token).to eq(original_tokens[0])
     end
 
     it 'sets the next_token' do
-      expect(new_token.next_token).to eq original_tokens[2]
+      expect(new_token.next_token).to eq(original_tokens[2])
     end
 
     it 'sets the next_code_token' do
-      expect(new_token.next_code_token).to eq original_tokens[2]
+      expect(new_token.next_code_token).to eq(original_tokens[2])
     end
 
     it 'updates the existing next_token' do
-      expect(tokens[1].next_token).to eq new_token
+      expect(tokens[1].next_token).to eq(new_token)
     end
 
     it 'updates the existing next_code_token' do
-      expect(tokens[0].next_code_token).to eq new_token
+      expect(tokens[0].next_code_token).to eq(new_token)
     end
 
     it 'updates the existing prev_token' do
-      expect(tokens[3].prev_token).to eq new_token
+      expect(tokens[3].prev_token).to eq(new_token)
     end
 
     it 'updates the existing prev_code_token' do
-      expect(tokens[3].prev_code_token).to eq new_token
+      expect(tokens[3].prev_code_token).to eq(new_token)
     end
   end
 
   describe '.delete' do
     let(:manifest) { '$x + = $a' }
-    let(:token) {tokens[2] }
+    let(:token) { tokens[2] }
     let(:original_tokens) { lexer.tokenise(manifest) }
     let(:tokens) { original_tokens.dup }
     before do
@@ -62,23 +62,23 @@ describe PuppetLint::Data do
     end
 
     it 'removes the token' do
-      expect(data.tokens.map(&:to_manifest).join).to eq '$x  = $a'
+      expect(data.tokens.map(&:to_manifest).join).to eq('$x  = $a')
     end
 
     it 'updates the existing next_token' do
-      expect(tokens[1].next_token).to eq original_tokens[3]
+      expect(tokens[1].next_token).to eq(original_tokens[3])
     end
 
     it 'updates the existing next_code_token' do
-      expect(tokens[0].next_code_token).to eq original_tokens[4]
+      expect(tokens[0].next_code_token).to eq(original_tokens[4])
     end
 
     it 'updates the existing prev_token' do
-      expect(tokens[2].prev_token).to eq original_tokens[1]
+      expect(tokens[2].prev_token).to eq(original_tokens[1])
     end
 
     it 'updates the existing prev_code_token' do
-      expect(tokens[3].prev_code_token).to eq original_tokens[0]
+      expect(tokens[3].prev_code_token).to eq(original_tokens[0])
     end
   end
 end

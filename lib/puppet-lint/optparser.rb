@@ -3,7 +3,7 @@ require 'optparse'
 # Public: Contains the puppet-lint option parser so that it can be used easily
 # in multiple places.
 class PuppetLint::OptParser
-  HELP_TEXT = <<-EOF
+  HELP_TEXT = <<-EOF.freeze
     puppet-lint
 
     Basic Command Line Usage:
@@ -41,8 +41,11 @@ class PuppetLint::OptParser
         PuppetLint.configuration.fail_on_warnings = true
       end
 
-      opts.on('--error-level LEVEL', [:all, :warning, :error],
-              'The level of error to return (warning, error or all).') do |el|
+      opts.on(
+        '--error-level LEVEL',
+        [:all, :warning, :error],
+        'The level of error to return (warning, error or all).',
+      ) do |el|
         PuppetLint.configuration.error_level = el
       end
 
@@ -55,13 +58,13 @@ class PuppetLint::OptParser
       end
 
       opts.on('-l', '--load FILE', 'Load a file containing custom puppet-lint checks.') do |f|
-        load f
+        load(f)
       end
 
       opts.on('--load-from-puppet MODULEPATH', 'Load plugins from the given Puppet module path.') do |path|
         path.split(':').each do |p|
           Dir["#{p}/*/lib/puppet-lint/plugins/*.rb"].each do |file|
-            load file
+            load(file)
           end
         end
       end
@@ -70,18 +73,19 @@ class PuppetLint::OptParser
         PuppetLint.configuration.fix = true
       end
 
-      opts.on('--log-format FORMAT',
-              'Change the log format.', 'Overrides --with-filename.',
-              'The following placeholders can be used:',
-              '%{filename} - Filename without path.',
-              '%{path}     - Path as provided to puppet-lint.',
-              '%{fullpath} - Expanded path to the file.',
-              '%{line}     - Line number.',
-              '%{column}   - Column number.',
-              '%{kind}     - The kind of message (warning, error).',
-              '%{KIND}     - Uppercase version of %{kind}.',
-              '%{check}    - The name of the check.',
-              '%{message}  - The message.'
+      opts.on(
+        '--log-format FORMAT',
+        'Change the log format.', 'Overrides --with-filename.',
+        'The following placeholders can be used:',
+        '%{filename} - Filename without path.',
+        '%{path}     - Path as provided to puppet-lint.',
+        '%{fullpath} - Expanded path to the file.',
+        '%{line}     - Line number.',
+        '%{column}   - Column number.',
+        '%{kind}     - The kind of message (warning, error).',
+        '%{KIND}     - Uppercase version of %{kind}.',
+        '%{check}    - The name of the check.',
+        '%{message}  - The message.'
       ) do |format|
         PuppetLint.configuration.log_format = format
       end
@@ -90,13 +94,13 @@ class PuppetLint::OptParser
         PuppetLint.configuration.json = true
       end
 
-      opts.separator ''
-      opts.separator '    Checks:'
+      opts.separator('')
+      opts.separator('    Checks:')
 
       opts.on('--only-checks CHECKS', 'A comma separated list of checks that should be run') do |checks|
         enable_checks = checks.split(',').map(&:to_sym)
-        (PuppetLint.configuration.checks).each do |check|
-          if enable_checks.include? check
+        PuppetLint.configuration.checks.each do |check|
+          if enable_checks.include?(check)
             PuppetLint.configuration.send("enable_#{check}")
           else
             PuppetLint.configuration.send("disable_#{check}")
@@ -108,19 +112,18 @@ class PuppetLint::OptParser
         opts.on("--no-#{check}-check", "Skip the #{check} check.") do
           PuppetLint.configuration.send("disable_#{check}")
         end
-        unless PuppetLint.configuration.send("#{check}_enabled?")
-          opts.on("--#{check}-check", "Enable the #{check} check.") do
-            PuppetLint.configuration.send("enable_#{check}")
-          end
+
+        next if PuppetLint.configuration.send("#{check}_enabled?")
+
+        opts.on("--#{check}-check", "Enable the #{check} check.") do
+          PuppetLint.configuration.send("enable_#{check}")
         end
       end
 
       opts.load('/etc/puppet-lint.rc')
-      begin
-        opts.load(File.expand_path('~/.puppet-lint.rc')) if ENV['HOME']
-      rescue Errno::EACCES
-        # silently skip loading this file if HOME is set to a directory that
-        # the user doesn't have read access to.
+      if ENV.key?('HOME') && File.readable?(ENV['HOME'])
+        home_dotfile_path = File.expand_path('~/.puppet-lint.rc')
+        opts.load(home_dotfile_path) if File.readable?(home_dotfile_path)
       end
       opts.load('.puppet-lint.rc')
     end

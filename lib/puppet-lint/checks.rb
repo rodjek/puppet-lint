@@ -58,7 +58,6 @@ class PuppetLint::Checks
   def run(fileinfo, data)
     load_data(fileinfo, data)
 
-    checks_run = []
     enabled_checks.each do |check|
       klass = PuppetLint.configuration.check_object[check].new
       problems = klass.run
@@ -72,25 +71,33 @@ class PuppetLint::Checks
 
     @problems
   rescue => e
-    puts <<-END
-Whoops! It looks like puppet-lint has encountered an error that it doesn't
-know how to handle. Please open an issue at https://github.com/rodjek/puppet-lint
-and paste the following output into the issue description.
----
-puppet-lint version: #{PuppetLint::VERSION}
-ruby version: #{RUBY_VERSION}-p#{RUBY_PATCHLEVEL}
-platform: #{RUBY_PLATFORM}
-file path: #{fileinfo}
-file contents:
-```
-#{File.read(fileinfo) if File.readable?(fileinfo)}
-```
-error:
-```
-#{e.class}: #{e.message}
-#{e.backtrace.join("\n")}
-```
-END
+    puts <<-END.gsub(%r{^ {6}}, '')
+      Whoops! It looks like puppet-lint has encountered an error that it doesn't
+      know how to handle. Please open an issue at https://github.com/rodjek/puppet-lint
+      and paste the following output into the issue description.
+      ---
+      puppet-lint version: #{PuppetLint::VERSION}
+      ruby version: #{RUBY_VERSION}-p#{RUBY_PATCHLEVEL}
+      platform: #{RUBY_PLATFORM}
+      file path: #{fileinfo}
+    END
+
+    if File.readable?(fileinfo)
+      puts [
+        'file contents:',
+        '```',
+        File.read(fileinfo),
+        '```',
+      ].join("\n")
+    end
+
+    puts [
+      'error:',
+      '```',
+      "#{e.class}: #{e.message}",
+      e.backtrace.join("\n"),
+    ].join("\n")
+
     exit 1
   end
 
@@ -98,11 +105,11 @@ END
   #
   # Returns an Array of String check names.
   def enabled_checks
-    @enabled_checks ||= Proc.new do
-      PuppetLint.configuration.checks.select { |check|
+    @enabled_checks ||= begin
+      PuppetLint.configuration.checks.select do |check|
         PuppetLint.configuration.send("#{check}_enabled?")
-      }
-    end.call
+      end
+    end
   end
 
   # Internal: Render the fixed manifest.

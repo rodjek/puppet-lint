@@ -44,14 +44,15 @@ describe 'names_containing_dash' do
   end
 
   context 'multiple classes' do
-    let(:code) do '
-       class foo::bar_foo { }
-       class foo::baz-foo { }
-      '
+    let(:code) do
+      <<-END
+        class foo::bar_foo { }
+        class foo::baz-foo { }
+      END
     end
 
     it 'should create an error' do
-      expect(problems).to contain_error(class_msg).on_line(3).in_column(14)
+      expect(problems).to contain_error(class_msg).on_line(2).in_column(15)
     end
   end
 end

@@ -13,7 +13,7 @@ PuppetLint.new_check(:arrow_alignment) do
       param_column = [nil]
       resource_tokens = res_idx[:tokens]
       resource_tokens.reject! do |token|
-        COMMENT_TYPES.include? token.type
+        COMMENT_TYPES.include?(token.type)
       end
 
       # If this is a single line resource, skip it
@@ -23,7 +23,7 @@ PuppetLint.new_check(:arrow_alignment) do
       next if last_arrow.nil?
       next if resource_tokens[first_arrow].line == resource_tokens[last_arrow].line
 
-      resource_tokens.each_with_index do |token, idx|
+      resource_tokens.each do |token|
         if token.type == :FARROW
           (level_tokens[level_idx] ||= []) << token
           param_token = token.prev_code_token
@@ -31,7 +31,7 @@ PuppetLint.new_check(:arrow_alignment) do
           if param_token.type == :DQPOST
             param_length = 0
             iter_token = param_token
-            while iter_token.type != :DQPRE do
+            while iter_token.type != :DQPRE
               param_length += iter_token.to_manifest.length
               iter_token = iter_token.prev_token
             end
@@ -41,11 +41,11 @@ PuppetLint.new_check(:arrow_alignment) do
           end
 
           if param_column[level_idx].nil?
-            if param_token.type == :DQPOST
-              param_column[level_idx] = iter_token.column
-            else
-              param_column[level_idx] = param_token.column
-            end
+            param_column[level_idx] = if param_token.type == :DQPOST
+                                        iter_token.column
+                                      else
+                                        param_token.column
+                                      end
           end
 
           this_arrow_column = param_column[level_idx] + param_length + 1
@@ -62,18 +62,19 @@ PuppetLint.new_check(:arrow_alignment) do
         elsif token.type == :RBRACE || token.type == :SEMIC
           if (level_tokens[level_idx] ||= []).map(&:line).uniq.length > 1
             level_tokens[level_idx].each do |arrow_tok|
-              unless arrow_tok.column == arrow_column[level_idx] || level_tokens[level_idx].size == 1
-                arrows_on_line = level_tokens[level_idx].select { |t| t.line == arrow_tok.line }
-                notify :warning, {
-                  :message        => "indentation of => is not properly aligned (expected in column #{arrow_column[level_idx]}, but found it in column #{arrow_tok.column})",
-                  :line           => arrow_tok.line,
-                  :column         => arrow_tok.column,
-                  :token          => arrow_tok,
-                  :arrow_column   => arrow_column[level_idx],
-                  :newline        => !(arrows_on_line.index(arrow_tok) == 0),
-                  :newline_indent => param_column[level_idx] - 1,
-                }
-              end
+              next if arrow_tok.column == arrow_column[level_idx] || level_tokens[level_idx].size == 1
+
+              arrows_on_line = level_tokens[level_idx].select { |t| t.line == arrow_tok.line }
+              notify(
+                :warning,
+                :message        => "indentation of => is not properly aligned (expected in column #{arrow_column[level_idx]}, but found it in column #{arrow_tok.column})",
+                :line           => arrow_tok.line,
+                :column         => arrow_tok.column,
+                :token          => arrow_tok,
+                :arrow_column   => arrow_column[level_idx],
+                :newline        => arrows_on_line.index(arrow_tok) != 0,
+                :newline_indent => param_column[level_idx] - 1,
+              )
             end
           end
           arrow_column[level_idx] = 0
@@ -89,7 +90,7 @@ PuppetLint.new_check(:arrow_alignment) do
     if problem[:newline]
       index = tokens.index(problem[:token].prev_code_token.prev_token)
 
-      #insert newline
+      # insert newline
       tokens.insert(index, PuppetLint::Lexer::Token.new(:NEWLINE, "\n", 0, 0))
 
       # indent the parameter to the correct depth
@@ -99,7 +100,7 @@ PuppetLint.new_check(:arrow_alignment) do
 
     end_param_idx = tokens.index(problem[:token].prev_code_token)
     start_param_idx = tokens.index(problem[:token].prev_token_of([:INDENT, :NEWLINE])) + 1
-    param_length = tokens[start_param_idx..end_param_idx].map { |r| r.to_manifest.length }.inject(0) { |sum,x| sum + x }
+    param_length = tokens[start_param_idx..end_param_idx].map { |r| r.to_manifest.length }.reduce(0) { |sum, x| sum + x }
     new_ws_len = (problem[:arrow_column] - (problem[:newline_indent] + param_length + 1))
     new_ws = ' ' * new_ws_len
 

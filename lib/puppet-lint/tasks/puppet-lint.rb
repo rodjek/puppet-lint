@@ -13,7 +13,7 @@ class PuppetLint
   class RakeTask < ::Rake::TaskLib
     include ::Rake::DSL if defined?(::Rake::DSL)
 
-    DEFAULT_PATTERN = '**/*.pp'
+    DEFAULT_PATTERN = '**/*.pp'.freeze
 
     attr_accessor :name
     attr_accessor :pattern
@@ -59,7 +59,7 @@ class PuppetLint
           PuppetLint.configuration.send("disable_#{check}")
         end
 
-        %w{with_filename fail_on_warnings error_level log_format with_context fix show_ignored relative}.each do |config|
+        %w[with_filename fail_on_warnings error_level log_format with_context fix show_ignored relative].each do |config|
           value = instance_variable_get("@#{config}")
           PuppetLint.configuration.send("#{config}=".to_sym, value) unless value.nil?
         end
@@ -83,7 +83,7 @@ class PuppetLint
             linter.run
             linter.print_problems
 
-            if PuppetLint.configuration.fix && !linter.problems.any? { |e| e[:check] == :syntax }
+            if PuppetLint.configuration.fix && linter.problems.none? { |e| e[:check] == :syntax }
               IO.write(puppet_file, linter.manifest)
             end
           end

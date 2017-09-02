@@ -20,25 +20,25 @@ describe PuppetLint::Lexer do
     end
 
     it 'should get correct line number after double quoted multi line string' do
-      token = @lexer.new_token(:STRING, "test\ntest")
+      @lexer.new_token(:STRING, "test\ntest")
       token = @lexer.new_token(:TEST, 'test')
       expect(token.line).to eq(2)
     end
 
     it 'should get correct line number after a multi line comment' do
-      token = @lexer.new_token(:MLCOMMENT, "test\ntest", :raw => "/*test\ntest*/")
+      @lexer.new_token(:MLCOMMENT, "test\ntest", :raw => "/*test\ntest*/")
       token = @lexer.new_token(:TEST, 'test')
       expect(token.line).to eq(2)
     end
 
     it 'should calculate the line number for a multi line string' do
-      token = @lexer.new_token(:SSTRING, "test\ntest")
+      @lexer.new_token(:SSTRING, "test\ntest")
       token = @lexer.new_token(:TEST, 'test')
       expect(token.line).to eq(2)
     end
 
     it 'should calculate line number for string that ends with newline' do
-      token = @lexer.new_token(:SSTRING, "test\n")
+      @lexer.new_token(:SSTRING, "test\n")
       token = @lexer.new_token(:TEST, 'test')
       expect(token.line).to eq(2)
     end
@@ -57,7 +57,7 @@ describe PuppetLint::Lexer do
     it 'should calculate the column number for a multi line string' do
       @lexer.instance_variable_set('@line_no', 4)
       @lexer.instance_variable_set('@column', 5)
-      token = @lexer.new_token(:SSTRING, "test\ntest")
+      @lexer.new_token(:SSTRING, "test\ntest")
       token = @lexer.new_token(:TEST, 'test')
       expect(token.column).to eq(6)
     end
@@ -96,7 +96,7 @@ describe PuppetLint::Lexer do
 
   context '#interpolate_string' do
     it 'should handle a string with no variables' do
-      @lexer.interpolate_string('foo bar baz"',1, 1)
+      @lexer.interpolate_string('foo bar baz"', 1, 1)
       token = @lexer.tokens.first
 
       expect(@lexer.tokens.length).to eq(1)
@@ -107,7 +107,7 @@ describe PuppetLint::Lexer do
     end
 
     it 'should handle a string with a newline' do
-      @lexer.interpolate_string(%{foo\nbar"}, 1, 1)
+      @lexer.interpolate_string(%(foo\nbar"), 1, 1)
       token = @lexer.tokens.first
 
       expect(@lexer.tokens.length).to eq(1)
@@ -208,7 +208,7 @@ describe PuppetLint::Lexer do
       expect(tokens[1].value).to eq('bar')
       expect(tokens[1].line).to eq(1)
       expect(tokens[1].column).to eq(3)
-      expect(tokens[1].to_manifest).to eq("${bar}")
+      expect(tokens[1].to_manifest).to eq('${bar}')
 
       expect(tokens[2].type).to eq(:DQPOST)
       expect(tokens[2].value).to eq('')
@@ -231,7 +231,7 @@ describe PuppetLint::Lexer do
       expect(tokens[1].raw).to eq('$bar')
       expect(tokens[1].line).to eq(1)
       expect(tokens[1].column).to eq(4)
-      expect(tokens[1].to_manifest).to eq("${$bar}")
+      expect(tokens[1].to_manifest).to eq('${$bar}')
 
       expect(tokens[2].type).to eq(:DQPOST)
       expect(tokens[2].value).to eq('')
@@ -316,7 +316,7 @@ describe PuppetLint::Lexer do
     end
 
     it 'should handle a string with a nested string inside it' do
-      @lexer.interpolate_string(%q{string with ${'a nested single quoted string'} inside it"}, 1, 1)
+      @lexer.interpolate_string(%q(string with ${'a nested single quoted string'} inside it"), 1, 1)
       tokens = @lexer.tokens
 
       expect(tokens.length).to eq(3)
@@ -338,7 +338,7 @@ describe PuppetLint::Lexer do
     end
 
     it 'should handle a string with nested math' do
-      @lexer.interpolate_string(%q{string with ${(3+5)/4} nested math"}, 1, 1)
+      @lexer.interpolate_string('string with ${(3+5)/4} nested math"', 1, 1)
       tokens = @lexer.tokens
 
       expect(tokens.length).to eq(9)
@@ -386,7 +386,7 @@ describe PuppetLint::Lexer do
     end
 
     it 'should handle a string with a nested array' do
-      @lexer.interpolate_string(%q{string with ${['an array ', $v2]} in it"}, 1, 1)
+      @lexer.interpolate_string(%q(string with ${['an array ', $v2]} in it"), 1, 1)
       tokens = @lexer.tokens
 
       expect(tokens.length).to eq(8)
@@ -430,7 +430,7 @@ describe PuppetLint::Lexer do
     end
 
     it 'should handle a string of $s' do
-      @lexer.interpolate_string(%q{$$$$"}, 1, 1)
+      @lexer.interpolate_string('$$$$"', 1, 1)
       tokens = @lexer.tokens
 
       expect(tokens.length).to eq(1)
@@ -442,7 +442,7 @@ describe PuppetLint::Lexer do
     end
 
     it 'should handle "$foo$bar"' do
-      @lexer.interpolate_string(%q{$foo$bar"}, 1, 1)
+      @lexer.interpolate_string('$foo$bar"', 1, 1)
       tokens = @lexer.tokens
 
       expect(tokens.length).to eq(5)
@@ -474,7 +474,7 @@ describe PuppetLint::Lexer do
     end
 
     it 'should handle "foo$bar$"' do
-      @lexer.interpolate_string(%q{foo$bar$"}, 1, 1)
+      @lexer.interpolate_string('foo$bar$"', 1, 1)
       tokens = @lexer.tokens
 
       expect(tokens.length).to eq(3)
@@ -496,7 +496,7 @@ describe PuppetLint::Lexer do
     end
 
     it 'should handle "foo$$bar"' do
-      @lexer.interpolate_string(%q{foo$$bar"}, 1, 1)
+      @lexer.interpolate_string('foo$$bar"', 1, 1)
       tokens = @lexer.tokens
 
       expect(tokens.length).to eq(3)
@@ -518,7 +518,7 @@ describe PuppetLint::Lexer do
     end
 
     it 'should handle an empty string' do
-      @lexer.interpolate_string(%q{"}, 1, 1)
+      @lexer.interpolate_string('"', 1, 1)
       tokens = @lexer.tokens
 
       expect(tokens.length).to eq(1)
@@ -530,7 +530,7 @@ describe PuppetLint::Lexer do
     end
 
     it 'should handle "$foo::::bar"' do
-      @lexer.interpolate_string(%q{$foo::::bar"}, 1, 1)
+      @lexer.interpolate_string('$foo::::bar"', 1, 1)
       tokens = @lexer.tokens
 
       expect(tokens.length).to eq(3)
@@ -574,27 +574,26 @@ describe PuppetLint::Lexer do
       expect(token.type).to eq(:FARROW)
       expect(token.column).to eq(18)
     end
-
   end
 
-  [
-    'case',
-    'class',
-    'default',
-    'define',
-    'import',
-    'if',
-    'elsif',
-    'else',
-    'inherits',
-    'node',
-    'and',
-    'or',
-    'undef',
-    'true',
-    'false',
-    'in',
-    'unless',
+  %w[
+    case
+    class
+    default
+    define
+    import
+    if
+    elsif
+    else
+    inherits
+    node
+    and
+    or
+    undef
+    true
+    false
+    in
+    unless
   ].each do |keyword|
     it "should handle '#{keyword}' as a keyword" do
       token = @lexer.tokenise(keyword).first
@@ -650,7 +649,7 @@ describe PuppetLint::Lexer do
     [:NEWLINE, "\n"],
     [:NEWLINE, "\r\n"],
   ].each do |name, string|
-    it "should have a token named '#{name.to_s}'" do
+    it "should have a token named '#{name}'" do
       token = @lexer.tokenise(string).first
       expect(token.type).to eq(name)
       expect(token.value).to eq(string)
@@ -685,7 +684,7 @@ describe PuppetLint::Lexer do
 
   context ':HEREDOC without interpolation' do
     it 'should parse a simple heredoc' do
-      manifest = <<-END.gsub(/^ {6}/, '')
+      manifest = <<-END.gsub(%r{^ {6}}, '')
       $str = @(myheredoc)
         SOMETHING
         ELSE
@@ -696,7 +695,7 @@ describe PuppetLint::Lexer do
 
       expect(tokens.length).to eq(8)
       expect(tokens[0].type).to eq(:VARIABLE)
-      expect(tokens[0].value).to eq("str")
+      expect(tokens[0].value).to eq('str')
       expect(tokens[0].line).to eq(1)
       expect(tokens[0].column).to eq(1)
       expect(tokens[1].type).to eq(:WHITESPACE)
@@ -730,7 +729,7 @@ describe PuppetLint::Lexer do
     end
 
     it 'should not interpolate the contents of the heredoc' do
-      manifest = <<-END.gsub(/^ {6}/, '')
+      manifest = <<-END.gsub(%r{^ {6}}, '')
       $str = @(myheredoc)
         SOMETHING
         ${else}
@@ -776,7 +775,7 @@ describe PuppetLint::Lexer do
     end
 
     it 'should handle multiple heredoc declarations on a single line' do
-      manifest = <<-END.gsub(/^ {6}/, '')
+      manifest = <<-END.gsub(%r{^ {6}}, '')
       $str = "${@(end1)} ${@(end2)}"
         foo
         |-end1
@@ -847,7 +846,7 @@ describe PuppetLint::Lexer do
     end
 
     it 'should handle a heredoc that specifies a syntax' do
-      manifest = <<-END.gsub(/^ {6}/, '')
+      manifest = <<-END.gsub(%r{^ {6}}, '')
       $str = @("end":json/)
         {
           "foo": "bar"
@@ -859,7 +858,7 @@ describe PuppetLint::Lexer do
 
       expect(tokens.length).to eq(8)
       expect(tokens[0].type).to eq(:VARIABLE)
-      expect(tokens[0].value).to eq("str")
+      expect(tokens[0].value).to eq('str')
       expect(tokens[0].line).to eq(1)
       expect(tokens[0].column).to eq(1)
       expect(tokens[1].type).to eq(:WHITESPACE)
@@ -896,7 +895,7 @@ describe PuppetLint::Lexer do
 
   context ':HEREDOC with interpolation' do
     it 'should parse a heredoc with no interpolated values as a :HEREDOC' do
-      manifest = <<-END.gsub(/^ {6}/, '')
+      manifest = <<-END.gsub(%r{^ {6}}, '')
       $str = @("myheredoc"/)
         SOMETHING
         ELSE
@@ -906,7 +905,7 @@ describe PuppetLint::Lexer do
       tokens = @lexer.tokenise(manifest)
 
       expect(tokens[0].type).to eq(:VARIABLE)
-      expect(tokens[0].value).to eq("str")
+      expect(tokens[0].value).to eq('str')
       expect(tokens[0].line).to eq(1)
       expect(tokens[0].column).to eq(1)
       expect(tokens[1].type).to eq(:WHITESPACE)
@@ -941,7 +940,7 @@ describe PuppetLint::Lexer do
     end
 
     it 'should parse a heredoc with interpolated values' do
-      manifest = <<-END.gsub(/^ {6}/, '')
+      manifest = <<-END.gsub(%r{^ {6}}, '')
       $str = @("myheredoc"/)
         SOMETHING
         ${else}
@@ -982,19 +981,19 @@ describe PuppetLint::Lexer do
       expect(tokens[6].line).to eq(2)
       expect(tokens[6].column).to eq(1)
       expect(tokens[7].type).to eq(:VARIABLE)
-      expect(tokens[7].value).to eq("else")
+      expect(tokens[7].value).to eq('else')
       expect(tokens[7].line).to eq(3)
       expect(tokens[7].column).to eq(3)
-      expect(tokens[7].to_manifest).to eq("${else}")
+      expect(tokens[7].to_manifest).to eq('${else}')
       expect(tokens[8].type).to eq(:HEREDOC_MID)
       expect(tokens[8].value).to eq("\n  AND :\n  ")
       expect(tokens[8].line).to eq(3)
       expect(tokens[8].column).to eq(10)
       expect(tokens[9].type).to eq(:UNENC_VARIABLE)
-      expect(tokens[9].value).to eq("another")
+      expect(tokens[9].value).to eq('another')
       expect(tokens[9].line).to eq(5)
       expect(tokens[9].column).to eq(3)
-      expect(tokens[9].to_manifest).to eq("$another")
+      expect(tokens[9].to_manifest).to eq('$another')
       expect(tokens[10].type).to eq(:HEREDOC_POST)
       expect(tokens[10].value).to eq("\n  THING\n  ")
       expect(tokens[10].raw).to eq("\n  THING\n  | myheredoc")
@@ -1003,7 +1002,7 @@ describe PuppetLint::Lexer do
     end
 
     it 'should not remove the unnecessary $ from enclosed variables' do
-      manifest = <<-END.gsub(/^ {6}/, '')
+      manifest = <<-END.gsub(%r{^ {6}}, '')
       $str = @("myheredoc"/)
         ${$myvar}
         |-myheredoc
@@ -1015,7 +1014,7 @@ describe PuppetLint::Lexer do
       expect(tokens[7].type).to eq(:VARIABLE)
       expect(tokens[7].value).to eq('myvar')
       expect(tokens[7].raw).to eq('$myvar')
-      expect(tokens[7].to_manifest).to eq("${$myvar}")
+      expect(tokens[7].to_manifest).to eq('${$myvar}')
     end
   end
 
@@ -1167,48 +1166,48 @@ describe PuppetLint::Lexer do
     end
 
     it "should match a single quoted string with an escaped '" do
-      token = @lexer.tokenise(%q{'single quoted string with "\\'"'}).first
+      token = @lexer.tokenise(%q('single quoted string with "\\'"')).first
       expect(token.type).to eq(:SSTRING)
       expect(token.value).to eq('single quoted string with "\\\'"')
     end
 
-    it "should match a single quoted string with an escaped $" do
-      token = @lexer.tokenise(%q{'single quoted string with "\$"'}).first
+    it 'should match a single quoted string with an escaped $' do
+      token = @lexer.tokenise(%q('single quoted string with "\$"')).first
       expect(token.type).to eq(:SSTRING)
       expect(token.value).to eq('single quoted string with "\\$"')
     end
 
-    it "should match a single quoted string with an escaped ." do
-      token = @lexer.tokenise(%q{'single quoted string with "\."'}).first
+    it 'should match a single quoted string with an escaped .' do
+      token = @lexer.tokenise(%q('single quoted string with "\."')).first
       expect(token.type).to eq(:SSTRING)
       expect(token.value).to eq('single quoted string with "\\."')
     end
 
-    it "should match a single quoted string with an escaped \\n" do
-      token = @lexer.tokenise(%q{'single quoted string with "\n"'}).first
+    it 'should match a single quoted string with an escaped \\n' do
+      token = @lexer.tokenise(%q('single quoted string with "\n"')).first
       expect(token.type).to eq(:SSTRING)
       expect(token.value).to eq('single quoted string with "\\n"')
     end
 
-    it "should match a single quoted string with an escaped \\" do
-      token = @lexer.tokenise(%q{'single quoted string with "\\\\"'}).first
+    it 'should match a single quoted string with an escaped \\' do
+      token = @lexer.tokenise(%q('single quoted string with "\\\\"')).first
       expect(token.type).to eq(:SSTRING)
       expect(token.value).to eq('single quoted string with "\\\\"')
     end
 
-    it "should match an empty string" do
+    it 'should match an empty string' do
       token = @lexer.tokenise("''").first
       expect(token.type).to eq(:SSTRING)
       expect(token.value).to eq('')
     end
 
-    it "should match an empty string ending with \\\\" do
+    it 'should match an empty string ending with \\\\' do
       token = @lexer.tokenise("'foo\\\\'").first
       expect(token.type).to eq(:SSTRING)
-      expect(token.value).to eq(%{foo\\\\})
+      expect(token.value).to eq(%(foo\\\\))
     end
 
-    it "should match single quoted string containing a line break" do
+    it 'should match single quoted string containing a line break' do
       token = @lexer.tokenise("'\n'").first
       expect(token.type).to eq(:SSTRING)
       expect(token.value).to eq("\n")
@@ -1269,20 +1268,20 @@ describe PuppetLint::Lexer do
   end
 
   context ':STRING' do
-    it 'should parse strings with \\\\\\' do
+    it 'should parse strings with embedded strings' do
       expect {
-        @lexer.tokenise("exec { \"/bin/echo \\\\\\\"${environment}\\\\\\\"\": }")
+        @lexer.tokenise('exec { "/bin/echo \"${environment}\"": }')
       }.to_not raise_error
     end
 
-    it "should match double quoted string containing a line break" do
-      token = @lexer.tokenise(%Q{"\n"}).first
+    it 'should match double quoted string containing a line break' do
+      token = @lexer.tokenise(%("\n")).first
       expect(token.type).to eq(:STRING)
       expect(token.value).to eq("\n")
     end
 
     it 'should handle interpolated values that contain double quotes' do
-      manifest = %Q{"export bar=\\"${join(hiera('test'), "," )}\\""}
+      manifest = %{"export bar=\\"${join(hiera('test'), "," )}\\""}
 
       tokens = @lexer.tokenise(manifest)
       expect(tokens[0].type).to eq(:DQPRE)

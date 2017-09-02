@@ -11,17 +11,16 @@ PuppetLint.new_check(:nested_classes_or_defines) do
       class_tokens = class_idx[:tokens][1..-1]
 
       class_tokens.each do |token|
-        if TOKENS.include?(token.type)
-          if token.next_code_token.type != :LBRACE
-            type = token.type == :CLASS ? 'class' : 'defined type'
+        next unless TOKENS.include?(token.type)
+        next if token.next_code_token.type == :LBRACE
+        type = token.type == :CLASS ? 'class' : 'defined type'
 
-            notify :warning, {
-              :message => "#{type} defined inside a class",
-              :line    => token.line,
-              :column  => token.column,
-            }
-          end
-        end
+        notify(
+          :warning,
+          :message => "#{type} defined inside a class",
+          :line    => token.line,
+          :column  => token.column,
+        )
       end
     end
   end

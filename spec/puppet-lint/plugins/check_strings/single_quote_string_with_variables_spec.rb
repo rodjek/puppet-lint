@@ -16,25 +16,29 @@ describe 'single_quote_string_with_variables' do
   end
 
   context 'single quoted inline template with dollar signs has no problems' do
-    let (:code) {"
-      $list = ['one', 'two', 'three']
-      file { '/tmp/text.txt':
-        ensure  => file,
-        content => inline_template('<% $list.each |$item| { %><%= \"${item}\n\" %><% } %>'),
-      }
-    "}
+    let(:code) do
+      <<-END
+        $list = ['one', 'two', 'three']
+        file { '/tmp/text.txt':
+          ensure  => file,
+          content => inline_template('<% $list.each |$item| { %><%= "${item}\n" %><% } %>'),
+        }
+      END
+    end
 
     it { expect(problems).to have(0).problem }
   end
 
   context 'single quoted inline epp with dollar signs has no problems' do
-    let (:code) {"
-      $list = ['one', 'two', 'three']
-      file { '/tmp/text.txt':
-        ensure  => file,
-        content => inline_template('<% @list.each do |item| %><%= @item %>\n<% end %>'),
-      }
-    "}
+    let(:code) do
+      <<-END
+        $list = ['one', 'two', 'three']
+        file { '/tmp/text.txt':
+          ensure  => file,
+          content => inline_template('<% @list.each do |item| %><%= @item %>\n<% end %>'),
+        }
+      END
+    end
 
     it { expect(problems).to have(0).problem }
   end

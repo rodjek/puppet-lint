@@ -38,7 +38,7 @@ describe 'hard_tabs' do
       end
 
       it 'should convert the tab characters into spaces' do
-        expect(manifest).to eq("  foo => bar,")
+        expect(manifest).to eq('  foo => bar,')
       end
     end
   end

@@ -43,7 +43,7 @@ describe PuppetLint::Configuration do
   it 'should be able to set sane defaults' do
     subject.defaults
 
-    expect(subject.settings).to eq({
+    expect(subject.settings).to eq(
       'with_filename'    => false,
       'fail_on_warnings' => false,
       'error_level'      => :all,
@@ -53,6 +53,6 @@ describe PuppetLint::Configuration do
       'show_ignored'     => false,
       'json'             => false,
       'ignore_paths'     => ['vendor/**/*.pp'],
-    })
+    )
   end
 end
