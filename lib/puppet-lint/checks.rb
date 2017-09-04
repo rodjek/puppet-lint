@@ -47,11 +47,7 @@ class PuppetLint::Checks
 
   # Internal: Run the lint checks over the manifest code.
   #
-  # fileinfo - A Hash containing the following:
-  #   :fullpath - The expanded path to the file as a String.
-  #   :filename - The name of the file as a String.
-  #   :path     - The original path to the file as passed to puppet-lint as
-  #               a String.
+  # fileinfo - The path to the file as passed to puppet-lint as a String.
   # data     - The String manifest code to be checked.
   #
   # Returns an Array of problem Hashes.
