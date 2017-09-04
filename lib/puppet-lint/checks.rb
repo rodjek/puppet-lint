@@ -56,6 +56,7 @@ class PuppetLint::Checks
 
     enabled_checks.each do |check|
       klass = PuppetLint.configuration.check_object[check].new
+      # FIXME: shadowing #problems
       problems = klass.run
 
       if PuppetLint.configuration.fix
