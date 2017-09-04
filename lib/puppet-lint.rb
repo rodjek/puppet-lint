@@ -8,7 +8,6 @@ require 'puppet-lint/configuration'
 require 'puppet-lint/data'
 require 'puppet-lint/checks'
 require 'puppet-lint/bin'
-require 'puppet-lint/monkeypatches'
 
 class PuppetLint::NoCodeError < StandardError; end
 class PuppetLint::NoFix < StandardError; end
