@@ -1,3 +1,10 @@
+require 'simplecov'
+SimpleCov.start do
+  add_filter('/spec/')
+  add_filter('/vendor/')
+  add_group('Checks', 'lib/puppet-lint/plugins')
+end
+
 require 'puppet-lint'
 require 'rspec/its'
 require 'rspec/collection_matchers'
