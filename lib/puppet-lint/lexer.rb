@@ -32,7 +32,7 @@ class PuppetLint
 
   # Internal: The puppet-lint lexer. Converts your manifest into its tokenised
   # form.
-  class Lexer
+  class Lexer # rubocop:disable Metrics/ClassLength
     def initialize
       @line_no = 1
       @column = 1

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PuppetLint::Lexer do
+describe PuppetLint::Lexer do # rubocop:disable Metrics/BlockLength
   before do
     @lexer = PuppetLint::Lexer.new
   end
@@ -140,6 +140,7 @@ describe PuppetLint::Lexer do
     end
 
     it 'should handle a string with newline characters' do
+      # rubocop:disable Layout/TrailingWhitespace
       manifest = <<END
   exec {
     'do-something':
@@ -150,6 +151,7 @@ describe PuppetLint::Lexer do
       refreshonly => true;
   }
 END
+      # rubocop:enable Layout/TrailingWhitespace
       tokens = @lexer.tokenise(manifest)
 
       expect(tokens.length).to eq(36)
