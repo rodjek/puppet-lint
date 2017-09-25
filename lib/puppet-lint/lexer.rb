@@ -32,7 +32,7 @@ class PuppetLint
 
   # Internal: The puppet-lint lexer. Converts your manifest into its tokenised
   # form.
-  class Lexer
+  class Lexer # rubocop:disable Metrics/ClassLength
     def initialize
       @line_no = 1
       @column = 1
@@ -428,9 +428,9 @@ class PuppetLint
             tokens << new_token(:STRING, value, :line => line, :column => column)
             first = false
           else
-            line += value.scan(%r{(\r\n|\r|\n)}).size
             token_column = column + (ss.pos - value.size)
             tokens << new_token(:DQPOST, value, :line => line, :column => token_column)
+            line += value.scan(%r{(\r\n|\r|\n)}).size
             @column = column + ss.pos + 1
             @line_no = line
           end
@@ -439,9 +439,9 @@ class PuppetLint
             tokens << new_token(:DQPRE, value, :line => line, :column => column)
             first = false
           else
-            line += value.scan(%r{(\r\n|\r|\n)}).size
             token_column = column + (ss.pos - value.size)
             tokens << new_token(:DQMID, value, :line => line, :column => token_column)
+            line += value.scan(%r{(\r\n|\r|\n)}).size
           end
           if ss.scan(%r{\{}).nil?
             var_name = ss.scan(%r{(::)?(\w+(-\w+)*::)*\w+(-\w+)*})
@@ -453,6 +453,7 @@ class PuppetLint
               tokens << new_token(:UNENC_VARIABLE, var_name, :line => line, :column => token_column)
             end
           else
+            line += value.scan(%r{(\r\n|\r|\n)}).size
             contents = ss.scan_until(%r{\}})[0..-2]
             raw = contents.dup
             if contents.match(%r{\A(::)?([\w-]+::)*[\w-]+(\[.+?\])*}) && !contents.match(%r{\A\w+\(})

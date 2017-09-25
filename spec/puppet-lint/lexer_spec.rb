@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe PuppetLint::Lexer do
+describe PuppetLint::Lexer do # rubocop:disable Metrics/BlockLength
   before do
     @lexer = PuppetLint::Lexer.new
   end
@@ -137,6 +137,196 @@ describe PuppetLint::Lexer do
       expect(tokens[2].value).to eq('bar')
       expect(tokens[2].line).to eq(1)
       expect(tokens[2].column).to eq(8)
+    end
+
+    it 'should handle a string with newline characters' do
+      # rubocop:disable Layout/TrailingWhitespace
+      manifest = <<END
+  exec {
+    'do-something':
+      command     => "echo > /home/bar/.token; 
+                                kdestroy; 
+                                kinit ${pseudouser}@EXAMPLE.COM -kt ${keytab_path}; 
+                                test $(klist | egrep '^Default principal:' | sed 's/Default principal:\s//') = '${pseudouser}'@EXAMPLE.COM",
+      refreshonly => true;
+  }
+END
+      # rubocop:enable Layout/TrailingWhitespace
+      tokens = @lexer.tokenise(manifest)
+
+      expect(tokens.length).to eq(36)
+
+      expect(tokens[0].type).to eq(:WHITESPACE)
+      expect(tokens[0].value).to eq('  ')
+      expect(tokens[0].line).to eq(1)
+      expect(tokens[0].column).to eq(1)
+      expect(tokens[1].type).to eq(:NAME)
+      expect(tokens[1].value).to eq('exec')
+      expect(tokens[1].line).to eq(1)
+      expect(tokens[1].column).to eq(3)
+      expect(tokens[2].type).to eq(:WHITESPACE)
+      expect(tokens[2].value).to eq(' ')
+      expect(tokens[2].line).to eq(1)
+      expect(tokens[2].column).to eq(7)
+      expect(tokens[3].type).to eq(:LBRACE)
+      expect(tokens[3].value).to eq('{')
+      expect(tokens[3].line).to eq(1)
+      expect(tokens[3].column).to eq(8)
+      expect(tokens[4].type).to eq(:NEWLINE)
+      expect(tokens[4].value).to eq("\n")
+      expect(tokens[4].line).to eq(1)
+      expect(tokens[4].column).to eq(9)
+      expect(tokens[5].type).to eq(:INDENT)
+      expect(tokens[5].value).to eq('    ')
+      expect(tokens[5].line).to eq(2)
+      expect(tokens[5].column).to eq(1)
+      expect(tokens[6].type).to eq(:SSTRING)
+      expect(tokens[6].value).to eq('do-something')
+      expect(tokens[6].line).to eq(2)
+      expect(tokens[6].column).to eq(5)
+      expect(tokens[7].type).to eq(:COLON)
+      expect(tokens[7].value).to eq(':')
+      expect(tokens[7].line).to eq(2)
+      expect(tokens[7].column).to eq(19)
+      expect(tokens[8].type).to eq(:NEWLINE)
+      expect(tokens[8].value).to eq("\n")
+      expect(tokens[8].line).to eq(2)
+      expect(tokens[8].column).to eq(20)
+      expect(tokens[9].type).to eq(:INDENT)
+      expect(tokens[9].value).to eq('      ')
+      expect(tokens[9].line).to eq(3)
+      expect(tokens[9].column).to eq(1)
+      expect(tokens[10].type).to eq(:NAME)
+      expect(tokens[10].value).to eq('command')
+      expect(tokens[10].line).to eq(3)
+      expect(tokens[10].column).to eq(7)
+      expect(tokens[11].type).to eq(:WHITESPACE)
+      expect(tokens[11].value).to eq('     ')
+      expect(tokens[11].line).to eq(3)
+      expect(tokens[11].column).to eq(14)
+      expect(tokens[12].type).to eq(:FARROW)
+      expect(tokens[12].value).to eq('=>')
+      expect(tokens[12].line).to eq(3)
+      expect(tokens[12].column).to eq(19)
+      expect(tokens[13].type).to eq(:WHITESPACE)
+      expect(tokens[13].value).to eq(' ')
+      expect(tokens[13].line).to eq(3)
+      expect(tokens[13].column).to eq(21)
+      expect(tokens[14].type).to eq(:DQPRE)
+      expect(tokens[14].value).to eq("echo > /home/bar/.token; \n                                kdestroy; \n                                kinit ")
+      expect(tokens[14].line).to eq(3)
+      expect(tokens[14].column).to eq(22)
+      expect(tokens[15].type).to eq(:VARIABLE)
+      expect(tokens[15].value).to eq('pseudouser')
+      expect(tokens[15].line).to eq(5)
+      expect(tokens[15].column).to eq(131)
+      expect(tokens[16].type).to eq(:DQMID)
+      expect(tokens[16].value).to eq('@EXAMPLE.COM -kt ')
+      expect(tokens[16].line).to eq(5)
+      expect(tokens[16].column).to eq(143)
+      expect(tokens[17].type).to eq(:VARIABLE)
+      expect(tokens[17].value).to eq('keytab_path')
+      expect(tokens[17].line).to eq(5)
+      expect(tokens[17].column).to eq(161)
+      expect(tokens[18].type).to eq(:DQMID)
+      expect(tokens[18].value).to eq("; \n                                test ")
+      expect(tokens[18].line).to eq(5)
+      expect(tokens[18].column).to eq(174)
+      expect(tokens[19].type).to eq(:DQMID)
+      expect(tokens[19].value).to eq('$')
+      expect(tokens[19].line).to eq(6)
+      expect(tokens[19].column).to eq(213)
+      expect(tokens[20].type).to eq(:DQMID)
+      expect(tokens[20].value).to eq("(klist | egrep '^Default principal:' | sed 's/Default principal: //') = '")
+      expect(tokens[20].line).to eq(6)
+      expect(tokens[20].column).to eq(215)
+      expect(tokens[21].type).to eq(:VARIABLE)
+      expect(tokens[21].value).to eq('pseudouser')
+      expect(tokens[21].line).to eq(6)
+      expect(tokens[21].column).to eq(289)
+      expect(tokens[22].type).to eq(:DQPOST)
+      expect(tokens[22].value).to eq("'@EXAMPLE.COM")
+      expect(tokens[22].line).to eq(6)
+      expect(tokens[22].column).to eq(301)
+      expect(tokens[23].type).to eq(:COMMA)
+      expect(tokens[23].value).to eq(',')
+      expect(tokens[23].line).to eq(6)
+      expect(tokens[23].column).to eq(315)
+      expect(tokens[24].type).to eq(:NEWLINE)
+      expect(tokens[24].value).to eq("\n")
+      expect(tokens[24].line).to eq(6)
+      expect(tokens[24].column).to eq(316)
+      expect(tokens[25].type).to eq(:INDENT)
+      expect(tokens[25].value).to eq('      ')
+      expect(tokens[25].line).to eq(7)
+      expect(tokens[25].column).to eq(1)
+      expect(tokens[26].type).to eq(:NAME)
+      expect(tokens[26].value).to eq('refreshonly')
+      expect(tokens[26].line).to eq(7)
+      expect(tokens[26].column).to eq(7)
+      expect(tokens[27].type).to eq(:WHITESPACE)
+      expect(tokens[27].value).to eq(' ')
+      expect(tokens[27].line).to eq(7)
+      expect(tokens[27].column).to eq(18)
+      expect(tokens[28].type).to eq(:FARROW)
+      expect(tokens[28].value).to eq('=>')
+      expect(tokens[28].line).to eq(7)
+      expect(tokens[28].column).to eq(19)
+      expect(tokens[29].type).to eq(:WHITESPACE)
+      expect(tokens[29].value).to eq(' ')
+      expect(tokens[29].line).to eq(7)
+      expect(tokens[29].column).to eq(21)
+      expect(tokens[30].type).to eq(:TRUE)
+      expect(tokens[30].value).to eq('true')
+      expect(tokens[30].line).to eq(7)
+      expect(tokens[30].column).to eq(22)
+      expect(tokens[31].type).to eq(:SEMIC)
+      expect(tokens[31].value).to eq(';')
+      expect(tokens[31].line).to eq(7)
+      expect(tokens[31].column).to eq(26)
+      expect(tokens[32].type).to eq(:NEWLINE)
+      expect(tokens[32].value).to eq("\n")
+      expect(tokens[32].line).to eq(7)
+      expect(tokens[32].column).to eq(27)
+      expect(tokens[33].type).to eq(:INDENT)
+      expect(tokens[33].value).to eq('  ')
+      expect(tokens[33].line).to eq(8)
+      expect(tokens[33].column).to eq(1)
+      expect(tokens[34].type).to eq(:RBRACE)
+      expect(tokens[34].value).to eq('}')
+      expect(tokens[34].line).to eq(8)
+      expect(tokens[34].column).to eq(3)
+      expect(tokens[35].type).to eq(:NEWLINE)
+      expect(tokens[35].value).to eq("\n")
+      expect(tokens[35].line).to eq(8)
+      expect(tokens[35].column).to eq(4)
+    end
+
+    it 'should handle a string with a single variable and newline characters' do
+      manifest = <<-END
+    foo
+    /bin/${foo} >>
+    /bar/baz"
+      END
+      @lexer.interpolate_string(manifest, 1, 1)
+      tokens = @lexer.tokens
+
+      expect(tokens.length).to eq(3)
+
+      expect(tokens[0].type).to eq(:DQPRE)
+      expect(tokens[0].value).to eq("    foo\n    /bin/")
+      expect(tokens[0].line).to eq(1)
+      expect(tokens[0].column).to eq(1)
+
+      expect(tokens[1].type).to eq(:VARIABLE)
+      expect(tokens[1].value).to eq('foo')
+      expect(tokens[1].line).to eq(2)
+      expect(tokens[1].column).to eq(20)
+
+      expect(tokens[2].type).to eq(:DQPOST)
+      expect(tokens[2].value).to eq(" >>\n    /bar/baz")
+      expect(tokens[2].line).to eq(2)
+      expect(tokens[2].column).to eq(25)
     end
 
     it 'should handle a string with a single variable and surrounding text' do
