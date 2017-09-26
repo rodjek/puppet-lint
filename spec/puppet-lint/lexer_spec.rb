@@ -398,12 +398,14 @@ END
       expect(tokens[1].value).to eq('bar')
       expect(tokens[1].line).to eq(1)
       expect(tokens[1].column).to eq(3)
-      expect(tokens[1].to_manifest).to eq('${bar}')
+      expect(tokens[1].to_manifest).to eq('bar')
 
       expect(tokens[2].type).to eq(:DQPOST)
       expect(tokens[2].value).to eq('')
       expect(tokens[2].line).to eq(1)
       expect(tokens[2].column).to eq(8)
+
+      expect(tokens.map(&:to_manifest).join('')).to eq('"${bar}"')
     end
 
     it 'should not remove the unnecessary $ from enclosed variables' do
@@ -421,12 +423,14 @@ END
       expect(tokens[1].raw).to eq('$bar')
       expect(tokens[1].line).to eq(1)
       expect(tokens[1].column).to eq(4)
-      expect(tokens[1].to_manifest).to eq('${$bar}')
+      expect(tokens[1].to_manifest).to eq('$bar')
 
       expect(tokens[2].type).to eq(:DQPOST)
       expect(tokens[2].value).to eq('')
       expect(tokens[2].line).to eq(1)
       expect(tokens[2].column).to eq(9)
+
+      expect(tokens.map(&:to_manifest).join('')).to eq('"${$bar}"')
     end
 
     it 'should handle a variable with an array reference' do
@@ -763,6 +767,12 @@ END
       token = @lexer.tokenise('  "foo${bar}baz" =>').last
       expect(token.type).to eq(:FARROW)
       expect(token.column).to eq(18)
+    end
+
+    it 'should not enclose variable with a chained function call' do
+      manifest = '"This is ${a.test}"'
+      tokens = @lexer.tokenise(manifest)
+      expect(tokens.map(&:to_manifest).join('')).to eq(manifest)
     end
   end
 
@@ -1141,6 +1151,7 @@ END
       END
 
       tokens = @lexer.tokenise(manifest)
+      expect(tokens.map(&:to_manifest).join('')).to eq(manifest)
 
       expect(tokens[0].type).to eq(:VARIABLE)
       expect(tokens[0].value).to eq('str')
@@ -1173,12 +1184,13 @@ END
       expect(tokens[7].type).to eq(:VARIABLE)
       expect(tokens[7].value).to eq('else')
       expect(tokens[7].line).to eq(3)
-      expect(tokens[7].column).to eq(3)
-      expect(tokens[7].to_manifest).to eq('${else}')
+      expect(tokens[7].column).to eq(5)
+      expect(tokens[7].to_manifest).to eq('else')
       expect(tokens[8].type).to eq(:HEREDOC_MID)
       expect(tokens[8].value).to eq("\n  AND :\n  ")
       expect(tokens[8].line).to eq(3)
-      expect(tokens[8].column).to eq(10)
+      expect(tokens[8].column).to eq(9)
+      expect(tokens[8].to_manifest).to eq("}\n  AND :\n  ")
       expect(tokens[9].type).to eq(:UNENC_VARIABLE)
       expect(tokens[9].value).to eq('another')
       expect(tokens[9].line).to eq(5)
@@ -1204,7 +1216,9 @@ END
       expect(tokens[7].type).to eq(:VARIABLE)
       expect(tokens[7].value).to eq('myvar')
       expect(tokens[7].raw).to eq('$myvar')
-      expect(tokens[7].to_manifest).to eq('${$myvar}')
+      expect(tokens[7].to_manifest).to eq('$myvar')
+
+      expect(tokens.map(&:to_manifest).join('')).to eq(manifest)
     end
   end
 
