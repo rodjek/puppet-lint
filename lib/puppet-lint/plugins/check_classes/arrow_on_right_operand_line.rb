@@ -26,7 +26,7 @@ PuppetLint.new_check(:arrow_on_right_operand_line) do
 
     # Delete all tokens between the two code tokens the anchor is between
     temp_token = prev_code_token
-    while (temp_token = temp_token.next_token) and (temp_token != next_code_token)
+    while (temp_token = temp_token.next_token) && (temp_token != next_code_token)
       remove_token(temp_token) unless temp_token == token
     end
 
@@ -34,9 +34,7 @@ PuppetLint.new_check(:arrow_on_right_operand_line) do
     index = tokens.index(token)
     newline_token = PuppetLint::Lexer::Token.new(:NEWLINE, "\n", token.line, 0)
     add_token(index, newline_token)
-    if indent_token
-      add_token(index + 1, indent_token)
-    end
+    add_token(index + 1, indent_token) if indent_token
 
     # Insert a space between the arrow and the following code token
     index = tokens.index(token)
