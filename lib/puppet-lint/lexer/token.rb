@@ -73,17 +73,15 @@ class PuppetLint
         when :SSTRING
           "'#{@value}'"
         when :DQPRE
-          "\"#{@value}"
+          "\"#{@value}#{string_suffix}"
         when :DQPOST
-          "#{@value}\""
+          "#{string_prefix}#{@value}\""
+        when :DQMID
+          "#{string_prefix}#{@value}#{string_suffix}"
         when :VARIABLE
           enclose_token_types = Set[:DQPRE, :DQMID, :HEREDOC_PRE, :HEREDOC_MID].freeze
           if !@prev_code_token.nil? && enclose_token_types.include?(@prev_code_token.type)
-            if @raw.nil?
-              "${#{@value}}"
-            else
-              "${#{@raw}}"
-            end
+            @raw.nil? ? @value : @raw
           else
             "$#{@value}"
           end
@@ -101,10 +99,32 @@ class PuppetLint
           "@(#{@value})"
         when :HEREDOC
           @raw
+        when :HEREDOC_PRE
+          "#{@value}#{string_suffix}"
         when :HEREDOC_POST
-          @raw
+          "#{string_prefix}#{@raw}"
+        when :HEREDOC_MID
+          "#{string_prefix}#{@value}#{string_suffix}"
         else
           @value
+        end
+      end
+
+      def string_suffix
+        no_enclose_tokens = Set.new([:UNENC_VARIABLE, :DQMID, :DQPOST, :HEREDOC_MID, :HEREDOC_POST])
+        if next_token && no_enclose_tokens.include?(next_token.type)
+          ''
+        else
+          '${'
+        end
+      end
+
+      def string_prefix
+        no_enclose_tokens = Set.new([:UNENC_VARIABLE, :DQPRE, :DQMID, :HEREDOC_PRE, :HEREDOC_MID])
+        if prev_token && no_enclose_tokens.include?(prev_token.type)
+          ''
+        else
+          '}'
         end
       end
 

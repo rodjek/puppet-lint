@@ -354,6 +354,14 @@ class PuppetLint
       # passed by 3rd party plugins that haven't updated yet.
       opts = args.last.is_a?(Hash) ? args.last : {}
 
+      # column number is calculated at the end of this method by calling
+      # to_manifest on the token. Because the string tokens (DQPRE, DQMID etc)
+      # are parsed before the variable token, they default to assuming that
+      # they are followed by an enclosed variable and we need to remove 2 from
+      # the column number if we encounter an unenclosed variable because of the
+      # missing ${ at the end of the token value.
+      @column -= 2 if type == :UNENC_VARIABLE
+
       column = opts[:column] || @column
       line_no = opts[:line] || @line_no
 
