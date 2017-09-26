@@ -1,6 +1,7 @@
 require 'spec_helper'
 require 'rspec/mocks'
 require 'optparse'
+require 'tempfile'
 
 class CommandRun
   attr_accessor :stdout, :stderr, :exitstatus
@@ -441,5 +442,51 @@ describe PuppetLint::Bin do
     end
 
     its(:stdout) { is_expected.to match(%r{WARNING: lint:ignore:140chars comment on line 2 with no closing lint:endignore comment}) }
+  end
+
+  context 'when fixing a file with \n line endings' do
+    before(:context) do
+      @windows_file = Tempfile.new('windows')
+      @posix_file = Tempfile.new('posix')
+
+      @windows_file.binmode
+      @posix_file.binmode
+
+      @windows_file.write("\r\n")
+      @posix_file.write("\n")
+
+      @windows_file.close
+      @posix_file.close
+    end
+
+    after(:context) do
+      @windows_file.unlink
+      @posix_file.unlink
+    end
+
+    let(:args) do
+      [
+        '--fix',
+        @posix_file.path,
+        @windows_file.path,
+      ]
+    end
+
+    its(:exitstatus) { is_expected.to eq(0) }
+
+    it 'does not change the line endings' do
+      File.open(@posix_file.path, 'rb') do |f|
+        data = f.read
+
+        expect(data).to match(%r{\n\Z}m)
+        expect(data).to_not match(%r{\r\n\Z}m)
+      end
+
+      File.open(@windows_file.path, 'rb') do |f|
+        data = f.read
+
+        expect(data).to match(%r{\r\n\Z}m)
+      end
+    end
   end
 end
