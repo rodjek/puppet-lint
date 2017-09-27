@@ -11,7 +11,8 @@ describe 'arrow_on_right_operand_line' do
 
       context 'arrow on the line of left operand' do
         let(:code) do
-          "Package['httpd']  #{operator}
+          "
+            Package['httpd']  #{operator}
             Service['httpd']"
         end
 
@@ -27,7 +28,8 @@ describe 'arrow_on_right_operand_line' do
           end
 
           let(:fixed) do
-            "Package['httpd']
+            "
+            Package['httpd']
             #{operator} Service['httpd']"
           end
 
