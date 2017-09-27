@@ -1,5 +1,59 @@
 # Change Log
 
+## [2.3.1](https://github.com/rodjek/puppet-lint/tree/2.3.1) (2017-09-27)
+[Full Changelog](https://github.com/rodjek/puppet-lint/compare/2.3.0...2.3.1)
+
+**Fixed bugs:**
+
+- NoMethodError: undefined method `type' for nil:NilClass [\#732](https://github.com/rodjek/puppet-lint/issues/732)
+- NoMethodError: undefined method `end\_with?' for nil:NilClass [\#727](https://github.com/rodjek/puppet-lint/issues/727)
+- puppet-lint not applying some lint:ignore statements when there are more then 2 on the same line [\#726](https://github.com/rodjek/puppet-lint/issues/726)
+- optional paramter warning false positve when inheriting params [\#716](https://github.com/rodjek/puppet-lint/issues/716)
+- invalid byte sequence in UTF-8 in selmodule-example.pp [\#714](https://github.com/rodjek/puppet-lint/issues/714)
+- puppet-lint --fix encountered an error that it doesn't know how to handle [\#706](https://github.com/rodjek/puppet-lint/issues/706)
+- Mangled file after running puppet-lint due to chained function call [\#703](https://github.com/rodjek/puppet-lint/issues/703)
+- `incompatible encoding regexp match` for non-printing characters in place of space [\#693](https://github.com/rodjek/puppet-lint/issues/693)
+- Unhandled error case [\#691](https://github.com/rodjek/puppet-lint/issues/691)
+
+**Closed issues:**
+
+- puppet-lint has encountered an error that it doesn't know how to handle [\#750](https://github.com/rodjek/puppet-lint/issues/750)
+- Variable use like "a+1 = ${$a + 1}" isn't reported but silently changed by --fix to "a+1 = ${a} + 1" [\#749](https://github.com/rodjek/puppet-lint/issues/749)
+- using --fix changes line endings [\#748](https://github.com/rodjek/puppet-lint/issues/748)
+- Puppet lint syntax error - puppet parser validate no issues [\#746](https://github.com/rodjek/puppet-lint/issues/746)
+- Error not handled [\#745](https://github.com/rodjek/puppet-lint/issues/745)
+- Whoops, not sure why. ArgumentError: bad value for range [\#742](https://github.com/rodjek/puppet-lint/issues/742)
+- ArgumentError: bad value for range [\#741](https://github.com/rodjek/puppet-lint/issues/741)
+- Line numbers off after multi-line strings with variables [\#736](https://github.com/rodjek/puppet-lint/issues/736)
+- Whoops! It looks like puppet-lint has encountered an error [\#729](https://github.com/rodjek/puppet-lint/issues/729)
+- puppet lint config log\_format not working [\#725](https://github.com/rodjek/puppet-lint/issues/725)
+- Quoted booleans in Puppet5 for Enum type declarations. [\#720](https://github.com/rodjek/puppet-lint/issues/720)
+- Chaining arrow syntax fix introduces trailing whitespaces [\#695](https://github.com/rodjek/puppet-lint/issues/695)
+- Refactor check\_comments.rb [\#587](https://github.com/rodjek/puppet-lint/issues/587)
+- Puppethack 12/2016 Issues [\#583](https://github.com/rodjek/puppet-lint/issues/583)
+- Allow multiple block-level ignore comments [\#498](https://github.com/rodjek/puppet-lint/issues/498)
+- puppet-lint crashes with "invalid byte sequence in UTF-8 \(ArgumentError\)" [\#458](https://github.com/rodjek/puppet-lint/issues/458)
+
+**Merged pull requests:**
+
+- Render the ${} enclosures as part of the string tokens [\#752](https://github.com/rodjek/puppet-lint/pull/752) ([rodjek](https://github.com/rodjek))
+- Open manifest as binary when writing fixed manifest [\#751](https://github.com/rodjek/puppet-lint/pull/751) ([rodjek](https://github.com/rodjek))
+- Remove monkeypatches to implement String\#% [\#744](https://github.com/rodjek/puppet-lint/pull/744) ([rodjek](https://github.com/rodjek))
+- Add unit tests for PuppetLint::Checks [\#743](https://github.com/rodjek/puppet-lint/pull/743) ([rodjek](https://github.com/rodjek))
+- Update CI configuration [\#739](https://github.com/rodjek/puppet-lint/pull/739) ([rodjek](https://github.com/rodjek))
+- Rubocop compliance [\#738](https://github.com/rodjek/puppet-lint/pull/738) ([rodjek](https://github.com/rodjek))
+- Fix line numbers being off with multi-line strings containing variables [\#737](https://github.com/rodjek/puppet-lint/pull/737) ([cbowman0](https://github.com/cbowman0))
+- Split control comments into words before parsing [\#735](https://github.com/rodjek/puppet-lint/pull/735) ([rodjek](https://github.com/rodjek))
+- Handle unicode spaces in the tokeniser [\#734](https://github.com/rodjek/puppet-lint/pull/734) ([rodjek](https://github.com/rodjek))
+- Handle SE Linux policy package files [\#733](https://github.com/rodjek/puppet-lint/pull/733) ([rodjek](https://github.com/rodjek))
+- Take into account Optional data type when checking parameter order [\#731](https://github.com/rodjek/puppet-lint/pull/731) ([rodjek](https://github.com/rodjek))
+- Read the manifest files as UTF-8 [\#730](https://github.com/rodjek/puppet-lint/pull/730) ([rodjek](https://github.com/rodjek))
+- Improve handling of unterminated double quoted strings [\#728](https://github.com/rodjek/puppet-lint/pull/728) ([rodjek](https://github.com/rodjek))
+- Chaining arrow syntax fix introduces trailing whitespaces [\#708](https://github.com/rodjek/puppet-lint/pull/708) ([rnelson0](https://github.com/rnelson0))
+- Add helper methods to add and remove tokens while maintaining the token links [\#694](https://github.com/rodjek/puppet-lint/pull/694) ([Darhazer](https://github.com/Darhazer))
+- Code style improvements [\#661](https://github.com/rodjek/puppet-lint/pull/661) ([Darhazer](https://github.com/Darhazer))
+- Plugins: Improve code readability [\#658](https://github.com/rodjek/puppet-lint/pull/658) ([Darhazer](https://github.com/Darhazer))
+
 ## [2.3.0](https://github.com/rodjek/puppet-lint/tree/2.3.0) (2017-07-12)
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/2.2.1...2.3.0)
 
