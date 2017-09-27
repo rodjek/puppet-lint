@@ -54,7 +54,7 @@ class PuppetLint
 
       option = Regexp.last_match(:option)
       add_option(option.to_s) if settings[option].nil?
-      settings[option] = args[0] if args.length > 1
+      settings[option] = args[0] unless args.empty?
     end
 
     def respond_to_missing?(method, *)
