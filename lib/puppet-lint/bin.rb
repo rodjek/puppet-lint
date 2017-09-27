@@ -76,6 +76,9 @@ class PuppetLint::Bin
       puts 'puppet-lint: no file specified or specified file does not exist'
       puts "puppet-lint: try 'puppet-lint --help' for more information"
       return 1
+    rescue ArgumentError
+      puts "puppet-lint: A non-UTF-8 file was detected, exiting."
+      return 1
     end
   end
 end
