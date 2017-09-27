@@ -1,5 +1,12 @@
 # Change Log
 
+## [2.3.2](https://github.com/rodjek/puppet-lint/tree/2.3.2) (2017-09-27)
+[Full Changelog](https://github.com/rodjek/puppet-lint/compare/2.3.1...2.3.2)
+
+**Fixed bugs:**
+
+- configuration, method_missing had faulty logic [\#754](https://github.com/rodjek/puppet-lint/issues/754)
+
 ## [2.3.1](https://github.com/rodjek/puppet-lint/tree/2.3.1) (2017-09-27)
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/2.3.0...2.3.1)
 
