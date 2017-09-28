@@ -1,5 +1,6 @@
 # Puppet Lint
 
+
 [![Build
 Status](https://secure.travis-ci.org/rodjek/puppet-lint.png)](http://travis-ci.org/rodjek/puppet-lint)
 [![Inline docs](http://inch-ci.org/github/rodjek/puppet-lint.png?branch=master)](http://inch-ci.org/github/rodjek/puppet-lint)
