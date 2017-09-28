@@ -1,5 +1,22 @@
 # Change Log
 
+## [2.3.3](https://github.com/rodjek/puppet-lint/tree/2.3.3) (2017-09-28)
+[Full Changelog](https://github.com/rodjek/puppet-lint/compare/2.3.2...2.3.3)
+
+**Closed issues:**
+
+- 2.3.2 - Rakefile's ignore\_paths not respected [\#760](https://github.com/rodjek/puppet-lint/issues/760)
+- 2.3.1 - Puppet lint fails with 1.8.7-p371 and Puppet 3.8.0 [\#759](https://github.com/rodjek/puppet-lint/issues/759)
+- 2.3.1: puppet-lint does not show errors/warnings --error-level option. [\#756](https://github.com/rodjek/puppet-lint/issues/756)
+
+**Merged pull requests:**
+
+- Add some basic acceptance tests [\#764](https://github.com/rodjek/puppet-lint/pull/764) ([rodjek](https://github.com/rodjek))
+- Restore Ruby 1.8.7 support [\#763](https://github.com/rodjek/puppet-lint/pull/763) ([rodjek](https://github.com/rodjek))
+- Don't override ignore\_paths set in rake task with default value [\#762](https://github.com/rodjek/puppet-lint/pull/762) ([rodjek](https://github.com/rodjek))
+- Add spec for issue raised in \#754 \#756 [\#761](https://github.com/rodjek/puppet-lint/pull/761) ([rodjek](https://github.com/rodjek))
+- Fix setup of default log\_format in PuppetLink.configuration when it is empty. [\#757](https://github.com/rodjek/puppet-lint/pull/757) ([zekefast](https://github.com/zekefast))
+
 ## [2.3.2](https://github.com/rodjek/puppet-lint/tree/2.3.2) (2017-09-27)
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/2.3.1...2.3.2)
 
