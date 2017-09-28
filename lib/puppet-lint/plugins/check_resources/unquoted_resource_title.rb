@@ -12,7 +12,7 @@ PuppetLint.new_check(:unquoted_resource_title) do
         :message => 'unquoted resource title',
         :line    => token.line,
         :column  => token.column,
-        :token   => token,
+        :token   => token
       )
     end
   end

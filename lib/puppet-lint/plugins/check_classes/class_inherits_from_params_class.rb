@@ -11,7 +11,7 @@ PuppetLint.new_check(:class_inherits_from_params_class) do
         :warning,
         :message => 'class inheriting from params class',
         :line    => class_idx[:inherited_token].line,
-        :column  => class_idx[:inherited_token].column,
+        :column  => class_idx[:inherited_token].column
       )
     end
   end

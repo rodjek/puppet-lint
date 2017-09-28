@@ -30,7 +30,7 @@ PuppetLint.new_check(:only_variable_string) do
               :column      => var_token.column,
               :start_token => start_token,
               :var_token   => var_token,
-              :end_token   => eos_token,
+              :end_token   => eos_token
             )
           end
           break

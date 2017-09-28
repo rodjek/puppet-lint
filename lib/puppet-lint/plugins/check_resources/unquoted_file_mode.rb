@@ -20,7 +20,7 @@ PuppetLint.new_check(:unquoted_file_mode) do
           :message => 'unquoted file mode',
           :line    => value_token.line,
           :column  => value_token.column,
-          :token   => value_token,
+          :token   => value_token
         )
       end
     end

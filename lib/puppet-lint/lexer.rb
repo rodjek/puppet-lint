@@ -170,7 +170,7 @@ class PuppetLint
     # \v == vertical tab
     # \f == form feed
     # \p{Zs} == ASCII + Unicode non-linebreaking whitespace
-    WHITESPACE_RE = %r{[\t\v\f\p{Zs}]}
+    WHITESPACE_RE = RUBY_VERSION == '1.8.7' ? %r{[\t\v\f ]} : %r{[\t\v\f\p{Zs}]}
 
     # Internal: Access the internal token storage.
     #
@@ -266,7 +266,7 @@ class PuppetLint
           else
             heredoc_tag = heredoc_queue.shift
             heredoc_name = heredoc_tag[%r{\A"?(.+?)"?(:.+?)?(/.*)?\Z}, 1]
-            str_contents = StringScanner.new(code[i + length..-1]).scan_until(%r{\|?\s*-?\s*#{heredoc_name}})
+            str_contents = StringScanner.new(code[(i + length)..-1]).scan_until(%r{\|?\s*-?\s*#{heredoc_name}})
             interpolate_heredoc(str_contents, heredoc_tag)
             length += str_contents.size
           end
@@ -282,8 +282,8 @@ class PuppetLint
           unless heredoc_queue.empty?
             heredoc_tag = heredoc_queue.shift
             heredoc_name = heredoc_tag[%r{\A"?(.+?)"?(:.+?)?(/.*)?\Z}, 1]
-            str_contents = StringScanner.new(code[i + length..-1]).scan_until(%r{\|?\s*-?\s*#{heredoc_name}})
-            _ = code[0..i + length].split("\n")
+            str_contents = StringScanner.new(code[(i + length)..-1]).scan_until(%r{\|?\s*-?\s*#{heredoc_name}})
+            _ = code[0..(i + length)].split("\n")
             interpolate_heredoc(str_contents, heredoc_tag)
             length += str_contents.size
           end
@@ -557,8 +557,8 @@ class PuppetLint
 
       str = string.scan_until(regexp)
       begin
-        str =~ %r{\A(?<value>.*?)(?<terminator>[$]+|\|?\s*-?#{Regexp.escape(eos_text)})\Z}m
-        [Regexp.last_match(:value), Regexp.last_match(:terminator)]
+        str =~ %r{\A(.*?)([$]+|\|?\s*-?#{Regexp.escape(eos_text)})\Z}m
+        [Regexp.last_match(1), Regexp.last_match(2)]
       rescue
         [nil, nil]
       end

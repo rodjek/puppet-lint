@@ -13,7 +13,7 @@ PuppetLint.new_check(:'2sp_soft_tabs') do
         :error,
         :message => 'two-space soft tabs not used',
         :line    => token.line,
-        :column  => token.column,
+        :column  => token.column
       )
     end
   end

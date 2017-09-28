@@ -11,7 +11,7 @@ PuppetLint.new_check(:single_quote_string_with_variables) do
         :error,
         :message => 'single quoted string containing a variable found',
         :line    => token.line,
-        :column  => token.column,
+        :column  => token.column
       )
     end
   end

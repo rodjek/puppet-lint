@@ -131,7 +131,7 @@ RSpec.configure do |config|
   config.include(
     RSpec::LintExampleGroup,
     :type      => :lint,
-    :file_path => Regexp.compile(%w[spec puppet-lint plugins].join('[\\\/]')),
+    :file_path => Regexp.compile(%w[spec puppet-lint plugins].join('[\\\/]'))
   )
 
   config.expect_with(:rspec) do |c|

@@ -14,7 +14,7 @@ PuppetLint.new_check(:'140chars') do
         :warning,
         :message => 'line has more than 140 characters',
         :line    => idx + 1,
-        :column  => 140,
+        :column  => 140
       )
     end
   end

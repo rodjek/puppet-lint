@@ -16,7 +16,7 @@ PuppetLint.new_check(:inherits_across_namespaces) do
         :warning,
         :message => 'class inherits across module namespaces',
         :line    => class_idx[:inherited_token].line,
-        :column  => class_idx[:inherited_token].column,
+        :column  => class_idx[:inherited_token].column
       )
     end
   end

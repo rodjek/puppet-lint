@@ -13,7 +13,7 @@ PuppetLint.new_check(:'80chars') do
         :warning,
         :message => 'line has more than 80 characters',
         :line    => idx + 1,
-        :column  => 80,
+        :column  => 80
       )
     end
   end

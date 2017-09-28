@@ -26,7 +26,7 @@ PuppetLint.new_check(:file_mode) do
           :message => MSG,
           :line    => value_token.line,
           :column  => value_token.column,
-          :token   => value_token,
+          :token   => value_token
         )
       end
     end

@@ -14,7 +14,7 @@ PuppetLint.new_check(:unquoted_node_name) do
           :check    => :syntax,
           :message  => 'Syntax error (try running `puppet parser validate <file>`)',
           :line     => node.line,
-          :column   => node.column,
+          :column   => node.column
         )
         next
       end
@@ -29,7 +29,7 @@ PuppetLint.new_check(:unquoted_node_name) do
           :message => 'unquoted node name found',
           :line    => token.line,
           :column  => token.column,
-          :token   => token,
+          :token   => token
         )
       end
     end

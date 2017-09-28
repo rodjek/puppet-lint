@@ -12,7 +12,7 @@ PuppetLint.new_check(:slash_comments) do
         :message => '// comment found',
         :line    => token.line,
         :column  => token.column,
-        :token   => token,
+        :token   => token
       )
     end
   end

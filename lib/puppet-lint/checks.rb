@@ -68,7 +68,7 @@ class PuppetLint::Checks
 
     @problems
   rescue => e
-    puts <<-END.gsub(%r{^ {6}}, '')
+    $stdout.puts <<-END.gsub(%r{^ {6}}, '')
       Whoops! It looks like puppet-lint has encountered an error that it doesn't
       know how to handle. Please open an issue at https://github.com/rodjek/puppet-lint
       and paste the following output into the issue description.
@@ -80,7 +80,7 @@ class PuppetLint::Checks
     END
 
     if File.readable?(fileinfo)
-      puts [
+      $stdout.puts [
         'file contents:',
         '```',
         File.read(fileinfo),
@@ -88,7 +88,7 @@ class PuppetLint::Checks
       ].join("\n")
     end
 
-    puts [
+    $stdout.puts [
       'error:',
       '```',
       "#{e.class}: #{e.message}",

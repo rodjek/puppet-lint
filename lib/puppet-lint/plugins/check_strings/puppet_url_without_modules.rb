@@ -15,7 +15,7 @@ PuppetLint.new_check(:puppet_url_without_modules) do
         :message => 'puppet:// URL without modules/ found',
         :line    => token.line,
         :column  => token.column,
-        :token   => token,
+        :token   => token
       )
     end
   end

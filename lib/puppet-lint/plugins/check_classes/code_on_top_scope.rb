@@ -13,7 +13,7 @@ PuppetLint.new_check(:code_on_top_scope) do
         :warning,
         :message => "code outside of class or define block - #{token.value}",
         :line    => token.line,
-        :column  => token.column,
+        :column  => token.column
       )
     end
   end
