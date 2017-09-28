@@ -16,7 +16,7 @@ PuppetLint.new_check(:quoted_booleans) do
         :message => 'quoted boolean value found',
         :line    => token.line,
         :column  => token.column,
-        :token   => token,
+        :token   => token
       )
     end
   end

@@ -37,7 +37,7 @@ PuppetLint.new_check(:case_without_default) do
         :warning,
         :message => 'case statement without a default case',
         :line    => case_tokens.first.line,
-        :column  => case_tokens.first.column,
+        :column  => case_tokens.first.column
       )
     end
   end

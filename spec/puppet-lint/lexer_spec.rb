@@ -1525,7 +1525,7 @@ END
       expect(token.value).to eq("\t")
     end
 
-    it 'should parse unicode spaces' do
+    it 'should parse unicode spaces', :unless => RUBY_VERSION == '1.8.7' do
       token = @lexer.tokenise("\xc2\xa0").first
       expect(token.type).to eq(:WHITESPACE)
       expect(token.value).to eq("\xc2\xa0")

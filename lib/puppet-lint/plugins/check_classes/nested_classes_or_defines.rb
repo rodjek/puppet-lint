@@ -19,7 +19,7 @@ PuppetLint.new_check(:nested_classes_or_defines) do
           :warning,
           :message => "#{type} defined inside a class",
           :line    => token.line,
-          :column  => token.column,
+          :column  => token.column
         )
       end
     end

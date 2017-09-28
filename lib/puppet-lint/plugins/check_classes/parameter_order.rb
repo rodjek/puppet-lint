@@ -32,7 +32,7 @@ PuppetLint.new_check(:parameter_order) do
           :warning,
           :message => msg,
           :line    => token.line,
-          :column  => token.column,
+          :column  => token.column
         )
       end
     end

@@ -17,7 +17,7 @@ PuppetLint.new_check(:names_containing_dash) do
         :error,
         :message => "#{obj_type} name containing a dash",
         :line    => class_idx[:name_token].line,
-        :column  => class_idx[:name_token].column,
+        :column  => class_idx[:name_token].column
       )
     end
   end

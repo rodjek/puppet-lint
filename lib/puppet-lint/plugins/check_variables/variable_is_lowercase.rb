@@ -15,7 +15,7 @@ PuppetLint.new_check(:variable_is_lowercase) do
         :warning,
         :message => 'variable contains an uppercase letter',
         :line    => token.line,
-        :column  => token.column,
+        :column  => token.column
       )
     end
   end

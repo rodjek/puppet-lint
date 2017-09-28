@@ -50,9 +50,9 @@ class PuppetLint
     #
     #   <option>=(value)
     def method_missing(method, *args, &_block)
-      super unless method.to_s =~ %r{^(?<option>\w+)=?$}
+      super unless method.to_s =~ %r{^(\w+)=?$}
 
-      option = Regexp.last_match(:option)
+      option = Regexp.last_match(1)
       add_option(option.to_s) if settings[option].nil?
       settings[option] = args[0] unless args.empty?
     end

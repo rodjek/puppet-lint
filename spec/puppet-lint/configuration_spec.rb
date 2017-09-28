@@ -60,7 +60,7 @@ describe PuppetLint::Configuration do
       'fix'              => false,
       'show_ignored'     => false,
       'json'             => false,
-      'ignore_paths'     => ['vendor/**/*.pp'],
+      'ignore_paths'     => ['vendor/**/*.pp']
     )
   end
 end

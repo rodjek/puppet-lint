@@ -14,7 +14,7 @@ PuppetLint.new_check(:hard_tabs) do
         :message => 'tab character found',
         :line    => token.line,
         :column  => token.column,
-        :token   => token,
+        :token   => token
       )
     end
   end

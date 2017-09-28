@@ -14,7 +14,7 @@ PuppetLint.new_check(:trailing_whitespace) do
         :message => 'trailing whitespace found',
         :line    => token.line,
         :column  => token.column,
-        :token   => token,
+        :token   => token
       )
     end
   end

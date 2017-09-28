@@ -14,7 +14,7 @@ PuppetLint.new_check(:selector_inside_resource) do
           :warning,
           :message => 'selector inside resource block',
           :line    => token.line,
-          :column  => token.column,
+          :column  => token.column
         )
       end
     end

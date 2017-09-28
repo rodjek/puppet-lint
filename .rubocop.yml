@@ -62,7 +62,7 @@ Style/MethodCalledOnDoEndBlock:
 Style/RegexpLiteral:
     EnforcedStyle: percent_r
 Style/TrailingCommaInArguments:
-    EnforcedStyleForMultiline: comma
+    EnforcedStyleForMultiline: no_comma
 Style/TrailingCommaInLiteral:
     EnforcedStyleForMultiline: comma
 Style/FormatStringToken:

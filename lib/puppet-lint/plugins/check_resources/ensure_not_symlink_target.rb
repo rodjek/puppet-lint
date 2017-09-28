@@ -20,7 +20,7 @@ PuppetLint.new_check(:ensure_not_symlink_target) do
           :line        => value_token.line,
           :column      => value_token.column,
           :param_token => ensure_token,
-          :value_token => value_token,
+          :value_token => value_token
         )
       end
     end

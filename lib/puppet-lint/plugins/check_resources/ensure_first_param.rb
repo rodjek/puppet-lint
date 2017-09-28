@@ -20,7 +20,7 @@ PuppetLint.new_check(:ensure_first_param) do
         :message  => "ensure found on line but it's not the first attribute",
         :line     => ensure_token.line,
         :column   => ensure_token.column,
-        :resource => resource,
+        :resource => resource
       )
     end
   end

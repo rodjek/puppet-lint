@@ -9,7 +9,7 @@ PuppetLint.new_check(:right_to_left_relationship) do
         :warning,
         :message =>  'right-to-left (<-) relationship',
         :line    => token.line,
-        :column  => token.column,
+        :column  => token.column
       )
     end
   end

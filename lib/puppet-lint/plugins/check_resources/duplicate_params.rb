@@ -26,7 +26,7 @@ PuppetLint.new_check(:duplicate_params) do
               :error,
               :message => 'duplicate parameter found in resource',
               :line    => prev_token.line,
-              :column  => prev_token.column,
+              :column  => prev_token.column
             )
           else
             seen_params[level] << prev_token.value

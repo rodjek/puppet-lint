@@ -73,7 +73,7 @@ PuppetLint.new_check(:arrow_alignment) do
                 :token          => arrow_tok,
                 :arrow_column   => arrow_column[level_idx],
                 :newline        => arrows_on_line.index(arrow_tok) != 0,
-                :newline_indent => param_column[level_idx] - 1,
+                :newline_indent => param_column[level_idx] - 1
               )
             end
           end

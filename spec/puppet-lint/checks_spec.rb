@@ -40,7 +40,7 @@ describe PuppetLint::Checks do
             :column   => 2,
             :path     => anything,
             :fullpath => anything,
-            :filename => anything,
+            :filename => anything
           )
         end
       end
@@ -62,7 +62,7 @@ describe PuppetLint::Checks do
             :column   => 2,
             :path     => anything,
             :fullpath => anything,
-            :filename => anything,
+            :filename => anything
           )
         end
       end
@@ -111,7 +111,7 @@ describe PuppetLint::Checks do
           instance_double(
             PuppetLint::CheckPlugin,
             :run          => [{ :kind => :error, :check => :arrow_alignment }],
-            :fix_problems => [{ :kind => :fixed, :check => :arrow_alignment }],
+            :fix_problems => [{ :kind => :fixed, :check => :arrow_alignment }]
           )
         end
         let(:mock_hard_tabs) do
@@ -203,7 +203,7 @@ describe PuppetLint::Checks do
     end
 
     it 'checks the configuration for each check to see if it is enabled' do
-      expect(enabled_checks.sort).to eq(expected_enabled_checks.sort)
+      expect(enabled_checks.map(&:to_s).sort).to eq(expected_enabled_checks.map(&:to_s).sort)
     end
   end
 
