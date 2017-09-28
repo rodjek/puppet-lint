@@ -31,13 +31,21 @@ describe PuppetLint::Configuration do
     expect(subject.foobarbaz).to be_nil
   end
 
-  it 'should create options on the fly' do
+  it 'should be able to explicitly add options' do
     subject.add_option('bar')
 
     expect(subject.bar).to be_nil
 
     subject.bar = 'aoeui'
     expect(subject.bar).to eq('aoeui')
+  end
+
+  it 'should be able to add options on the fly' do
+    expect(subject.test_option).to eq(nil)
+
+    subject.test_option = 'test'
+
+    expect(subject.test_option).to eq('test')
   end
 
   it 'should be able to set sane defaults' do
