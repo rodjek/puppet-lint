@@ -1,10 +1,23 @@
 require 'rake'
 require 'open3'
+require 'English'
 
 def run_cmd(message, *cmd)
-  print("  #{message}...")
+  print("  #{message}... ")
 
-  output, status = Open3.capture2e(*cmd)
+  if Open3.respond_to?(:capture2e)
+    output, status = Open3.capture2e(*cmd)
+  else
+    output = ''
+
+    Open3.popen3(*cmd) do |stdin, stdout, stderr|
+      stdin.close
+      output += stdout.read
+      output += stderr.read
+    end
+    status = $CHILD_STATUS.dup
+  end
+
   if status.success?
     puts 'Done'
   else
