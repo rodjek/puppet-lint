@@ -1,6 +1,7 @@
 require 'rake'
 require 'rspec/core/rake_task'
 require 'puppet-lint'
+require 'puppet-lint/tasks/release_test'
 
 task :default => :test
 
@@ -26,5 +27,7 @@ begin
 rescue LoadError
   $stderr.puts 'Rubocop is not available for this version of Ruby.'
 end
+
+task :ci => [:test, :release_test]
 
 # vim: syntax=ruby
