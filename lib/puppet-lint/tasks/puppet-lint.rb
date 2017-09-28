@@ -65,7 +65,7 @@ class PuppetLint
         end
 
         if PuppetLint.configuration.ignore_paths
-          @ignore_paths = PuppetLint.configuration.ignore_paths
+          @ignore_paths ||= PuppetLint.configuration.ignore_paths
         end
 
         if PuppetLint.configuration.pattern
