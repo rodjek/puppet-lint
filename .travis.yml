@@ -9,7 +9,7 @@ bundler_args: --without development system_tests
 script:
     - bundle exec rake $CHECK
 env:
-    - CHECK=test
+    - CHECK=ci
 rvm:
   - 1.9.3
   - 2.0.0

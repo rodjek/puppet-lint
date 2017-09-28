@@ -9,3 +9,4 @@ coverage/
 /_site/
 .idea
 /*.pp
+/tmp/
