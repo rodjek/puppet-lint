@@ -42,6 +42,7 @@ class PuppetLint::Bin
 
     begin
       path = @args[0]
+      path = path.gsub(File::ALT_SEPARATOR, File::SEPARATOR) if File::ALT_SEPARATOR
       path = if File.directory?(path)
                Dir.glob("#{path}/**/*.pp")
              else

@@ -55,6 +55,17 @@ describe PuppetLint::Bin do
     its(:stdout) { is_expected.to eq("puppet-lint #{PuppetLint::VERSION}") }
   end
 
+  context 'when passed a backslash separated path on Windows', :if => Gem.win_platform? do
+    let(:args) do
+      [
+        'spec\fixtures\test\manifests',
+      ]
+    end
+
+    its(:exitstatus) { is_expected.to eq(1) }
+    its(:stdout) { is_expected.to match(%r{spec/fixtures/test/manifests/warning\.pp - WARNING: optional}m) }
+  end
+
   context 'when passed multiple files' do
     let(:args) do
       [
