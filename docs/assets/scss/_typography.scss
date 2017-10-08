@@ -1,0 +1,259 @@
+/*------- typography -------*/
+
+html, body, h1, h2, h3, h4, h5, h6, a, p, ul, ol, li {
+    font-family: $primary-font !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: $title-color;
+    font-weight: $bold;
+    letter-spacing: $letter-spacing-big;
+    margin-top: 0;
+}
+
+a {
+    color: $primary;
+    @include transition(.1s);
+    &:hover, &:active, &:focus {
+        color: $primary-hover;
+        text-decoration: none;      
+    }
+    letter-spacing: $letter-spacing;
+    font-weight: $regular;
+    outline: 0 !important;
+}
+
+p {
+    font-family: $primary-font !important;
+    font-weight: $regular;
+    font-size: 1rem;
+    color: $text-color;
+    letter-spacing: $letter-spacing;
+    margin-bottom: 10px;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+ul, ol {
+    padding-left: 16px;
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+.list-featured {
+    list-style: none;
+    padding: 0;
+}
+
+.list-featured li {
+    position: relative;
+    padding-left: 14px;
+    margin-bottom: 7px;
+}
+
+.list-featured li:before {
+    position: absolute;
+    display: block;
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    left: 0;
+    top: .5rem;
+    background-color: $primary;
+}
+
+ol li {
+    margin-bottom: 7px;
+}
+
+li {
+    color: $text-color;
+    font-size: 1rem;
+    letter-spacing: $letter-spacing;
+}
+
+.blockquote {
+    font-size: 1.25rem;
+    border-left: .25rem solid $primary-transparent-2;
+    margin-bottom: 1rem;
+    padding: .5rem 1rem;
+}
+
+.blockquote-reverse {
+    border-right: .25rem solid $primary-transparent-2;
+    border-left: 0;
+}
+
+blockquote p {
+    font-size: 1rem;
+    font-weight: $regular;
+}
+
+footer.blockquote-footer {
+    color: $text-color;
+    background: transparent;
+    border: 0;
+}
+
+cite {
+    color: $grey;
+    font-size: 0.8rem;
+}
+
+.mark, mark {
+    background-color: $secondary-hover;
+}
+
+b, strong {
+    font-weight: $bold;
+}
+
+.text-uppercase {
+    text-transform: uppercase;
+}
+
+.lead {
+    font-size: 1.1rem;
+}
+
+.text-sm {
+    font-size: 0.9rem;
+}
+
+.text-xs {
+    font-size: 0.75rem;
+}
+
+form label {
+    color: $title-color;
+    display: inline-block;
+    margin-bottom: .5rem;
+}
+
+.md-icon {
+    font-family: 'Material Icons';
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "liga" 1;
+    font-style: normal;
+    text-transform: none;
+    line-height: 1;
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+    display: inline-block;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-item {
+    text-align: center;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    -moz-transition: 0.2s ease-in-out;
+    -o-transition: 0.2s ease-in-out;
+    -webkit-transition: 0.2s ease-in-out;
+    transition: 0.2s ease-in-out;
+}
+
+.icon-item-inner {
+    background: $secondary;
+    padding: 15px 5px;
+    -moz-transition: 0.2s ease-in-out;
+    -o-transition: 0.2s ease-in-out;
+    -webkit-transition: 0.2s ease-in-out;
+    transition: 0.2s ease-in-out;
+}
+
+.icon-item-inner:hover {
+    background: $primary;
+}
+
+.icon-item-inner i {
+    -moz-transition: 0.2s ease-in-out;
+    -o-transition: 0.2s ease-in-out;
+    -webkit-transition: 0.2s ease-in-out;
+    transition: 0.2s ease-in-out;
+}
+
+.icon-item-inner:hover i {
+    color: $white;
+}
+
+.icon-item-inner .caption-sm {
+    -moz-transition: 0.2s ease-in-out;
+    -o-transition: 0.2s ease-in-out;
+    -webkit-transition: 0.2s ease-in-out;
+    transition: 0.2s ease-in-out;
+}
+
+.icon-item-inner:hover .caption-sm {
+    color: $white;
+}
+
+.md-icon.dp12 {
+    font-size: 12px;
+    width: 12px;
+    height: 12px;
+    vertical-align: middle;
+}
+
+.md-icon.dp14 {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+    vertical-align: middle;
+}
+
+.md-icon.dp16 {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+}
+
+.md-icon.dp18 {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    vertical-align: middle;
+}
+
+.md-icon.dp24 {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+    vertical-align: middle;
+}
+
+.md-icon.dp36 {
+    font-size: 36px;
+    width: 36px;
+    height: 36px;
+    vertical-align: middle;
+}
+
+.md-icon.dp48 {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    vertical-align: middle;
+}
+
+.caption {
+    font-size: .9rem;
+}
+
+.caption-sm {
+    font-size: .625rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: .5rem;
+}
+
+/*------- end of typography -------*/

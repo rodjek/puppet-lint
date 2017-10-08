@@ -1,0 +1,1196 @@
+/*---------- components ----------*/
+
+/*------- alerts-badges -------*/
+
+.alert {
+    padding: 15px 20px;
+    margin-bottom: 25px;
+    border: 1px solid transparent;
+    border-radius: 5px;
+}
+
+.alert-dismissible .close {
+    top: -.7rem;
+}
+
+.close {
+    float: right;
+    font-size: 1.4rem;
+    font-weight: $bold;
+    line-height: 1;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+    opacity: .8;
+}
+
+.alert-icon {
+    line-height: 1;
+    vertical-align: middle;
+}
+
+.alert-success {
+    background-color: $success;
+    border-color: $success-hover;
+    color: $white;
+}
+
+.alert-success .close {
+    color: $success-hover;
+}
+
+.alert-info {
+    background-color: $info;
+    border-color: $info-hover;
+    color: $white;
+}
+
+.alert-info .close {
+    color: $info-hover;
+}
+
+.alert-warning {
+    background-color: $warning;
+    border-color: $warning-hover;
+    color: $white;
+}
+
+.alert-warning .close {
+    color: $warning-hover;
+}
+
+.alert-danger {
+    background-color: $danger;
+    border-color: $danger-hover;
+    color: $white;
+}
+
+.alert-danger .close {
+    color: $danger-hover;
+}
+
+.badge {
+    color: $white;
+    font-size: 65%;
+    font-weight: $bold;
+    border-radius: 5px;
+    padding: .5em .8em;
+}
+
+.badge-pill {
+    border-radius: 10rem;
+}
+
+.badge-default {
+    background-color: $text-color;
+}
+
+.badge-primary {
+    background-color: $primary;
+}
+
+.badge-success {
+    background-color: $success;
+}
+
+.badge-info {
+    background-color: $info;
+}
+
+.badge-warning {
+    background-color: $warning;
+}
+
+.badge-danger {
+    background-color: $danger;
+}
+
+/*------- end of alerts-badges -------*/
+
+
+/*------- buttons -------*/
+
+.btn {
+    font-family: $primary-font;
+    font-weight: $regular;
+    font-size: .95rem;
+    line-height: 1.25;
+    letter-spacing: $letter-spacing;
+    border: 2px solid transparent;
+    border-radius: 0.35rem;
+    padding: .75rem 1rem;
+    -moz-transition: 0.2s ease-in-out;
+    -o-transition: 0.2s ease-in-out;
+    -webkit-transition: 0.2s ease-in-out;
+    transition: 0.2s ease-in-out;
+}
+
+.btn span {
+    vertical-align: middle;
+}
+
+.btn-group-lg>.btn, .btn-lg {
+    padding: .8rem 1.5rem;
+    font-size: 1.25rem;
+    border-radius: .35rem;
+}
+
+.btn-group-sm>.btn, .btn-sm {
+    padding: .5rem .7rem;
+    font-size: .8rem;
+    border-radius: .35rem;
+}
+
+.btn-group-xs>.btn, .btn-xs {
+    padding: .45rem .5rem;
+    font-size: .6rem;
+    border-radius: .35rem;
+}
+
+.btn-circle {
+    border-radius: 50% !important;
+    height: 40px;
+    width: 40px;
+    padding: 3px !Important;
+}
+
+.btn-square {
+    height: 40px;
+    width: 40px;
+    border-radius: 5px;
+    padding: 3px !Important;
+}
+
+/*--- button colors ---*/
+
+.btn-primary {
+    color: $white;
+    background-color: $primary;
+    border-color: $primary;
+}
+
+.btn-primary:hover, .btn-primary:focus, .btn-primary.active, .btn-primary:active, .show>.btn-primary.dropdown-toggle {
+    color: $white;
+    background-color: $primary-hover;
+    border-color: $primary-hover;
+}
+
+.btn-outline-primary {
+    color: $primary;
+    background-image: none;
+    background-color: transparent;
+    border-color: $primary;
+}
+
+.btn-outline-primary:hover, .btn-outline-primary:focus, .btn-outline-primary.active, .btn-outline-primary:active, .show>.btn-outline-primary.dropdown-toggle {
+    color: $white;
+    background-color: $primary;
+    border-color: $primary;
+}
+
+.btn-primary.disabled, .btn-primary:disabled {
+    color: $white;
+    background-color: $primary;
+    border-color: $primary;
+    opacity: 0.8;
+}
+
+.btn-secondary {
+    color: $title-color;
+    background-color: $secondary;
+    border-color: $secondary;
+}
+
+.btn-secondary:hover, .btn-secondary:focus, .btn-secondary.active, .btn-secondary:active, .show>.btn-secondary.dropdown-toggle {
+    color: $title-color;
+    background-color: $secondary-hover;
+    border-color: $secondary-hover;
+}
+
+.btn-outline-secondary {
+    color: $secondary-hover;
+    background-image: none;
+    background-color: transparent;
+    border-color: $secondary-hover;
+}
+
+.btn-outline-secondary:hover, .btn-outline-secondary:focus, .btn-outline-secondary.active, .btn-outline-secondary:active, .show>.btn-outline-secondary.dropdown-toggle {
+    color: $title-color;
+    background-color: $secondary-hover;
+    border-color: $secondary-hover;
+}
+
+.btn-secondary.disabled, .btn-secondary:disabled {
+    color: $white;
+    background-color: $secondary;
+    border-color: $secondary;
+    opacity: 0.8;
+}
+
+.btn-success {
+    color: $white;
+    background-color: $success;
+    border-color: $success;
+}
+
+.btn-success:hover, .btn-success:focus, .btn-success.active, .btn-success:active, .show>.btn-success.dropdown-toggle {
+    color: $white;
+    background-color: $success-hover;
+    border-color: $success-hover;
+}
+
+.btn-outline-success {
+    color: $success;
+    background-image: none;
+    background-color: transparent;
+    border-color: $success;
+}
+
+.btn-outline-success:hover, .btn-outline-success:focus, .btn-outline-success.active, .btn-outline-success:active, .show>.btn-outline-success.dropdown-toggle {
+    color: $white;
+    background-color: $success;
+    border-color: $success;
+}
+
+.btn-success.disabled, .btn-success:disabled {
+    color: $white;
+    background-color: $success;
+    border-color: $success;
+    opacity: 0.8;
+}
+
+.btn-info {
+    color: $white;
+    background-color: $info;
+    border-color: $info;
+}
+
+.btn-info:hover, .btn-info:focus, .btn-info.active, .btn-info:active, .show>.btn-info.dropdown-toggle {
+    color: $white;
+    background-color: $info-hover;
+    border-color: $info-hover;
+}
+
+.btn-outline-info {
+    color: $info;
+    background-image: none;
+    background-color: transparent;
+    border-color: $info;
+}
+
+.btn-outline-info:hover, .btn-outline-info:focus, .btn-outline-info.active, .btn-outline-info:active, .show>.btn-outline-info.dropdown-toggle {
+    color: $white;
+    background-color: $info;
+    border-color: $info;
+}
+
+.btn-info.disabled, .btn-info:disabled {
+    color: $white;
+    background-color: $info;
+    border-color: $info;
+    opacity: 0.8;
+}
+
+.btn-warning {
+    color: $white;
+    background-color: $warning;
+    border-color: $warning;
+}
+
+.btn-warning:hover, .btn-warning:focus, .btn-warning.active, .btn-warning:active, .show>.btn-warning.dropdown-toggle {
+    color: $white;
+    background-color: $warning-hover;
+    border-color: $warning-hover;
+}
+
+.btn-outline-warning {
+    color: $warning;
+    background-image: none;
+    background-color: transparent;
+    border-color: $warning;
+}
+
+.btn-outline-warning:hover, .btn-outline-warning:focus, .btn-outline-warning.active, .btn-outline-warning:active, .show>.btn-outline-warning.dropdown-toggle {
+    color: $white;
+    background-color: $warning;
+    border-color: $warning;
+}
+
+.btn-warning.disabled, .btn-warning:disabled {
+    color: $white;
+    background-color: $success;
+    border-color: $success;
+    opacity: 0.8;
+}
+
+.btn-danger {
+    color: $white;
+    background-color: $danger;
+    border-color: $danger;
+}
+
+.btn-danger:hover, .btn-danger:focus, .btn-danger.active, .btn-danger:active, .show>.btn-danger.dropdown-toggle {
+    color: $white;
+    background-color: $danger-hover;
+    border-color: $danger-hover;
+}
+
+.btn-outline-danger {
+    color: $danger;
+    background-image: none;
+    background-color: transparent;
+    border-color: $danger;
+}
+
+.btn-outline-danger:hover, .btn-outline-danger:focus, .btn-outline-danger.active, .btn-outline-danger:active, .show>.btn-outline-danger.dropdown-toggle {
+    color: $white;
+    background-color: $danger;
+    border-color: $danger;
+}
+
+.btn-danger.disabled, .btn-danger:disabled {
+    color: $white;
+    background-color: $danger;
+    border-color: $danger;
+    opacity: 0.8;
+}
+
+.btn-white {
+    color: $title-color;
+    background-color: $white;
+    border-color: $white;
+}
+
+.btn-white:hover, .btn-white:focus, .btn-white.active, .btn-white:active, .show>.btn-white.dropdown-toggle {
+    color: $title-color;
+    background-color: $light-grey;
+    border-color: $light-grey;
+}
+
+.btn-outline-white {
+    color: $white;
+    background-image: none;
+    background-color: transparent;
+    border-color: white;
+}
+
+.btn-outline-white:hover, .btn-outline-white:focus, .btn-outline-white.active, .btn-outline-white:active, .show>.btn-outline-white.dropdown-toggle {
+    color: $title-color;
+    background-color: $white;
+    border-color: $white;
+}
+
+.btn-white.disabled, .btn-white:disabled {
+    opacity: 0.8;
+}
+
+.btn-black {
+    color: $white;
+    background-color: $black;
+    border-color: $black;
+}
+
+.btn-black:hover, .btn-black:focus, .btn-black.active, .btn-black:active, .show>.btn-black.dropdown-toggle {
+    color: $white;
+    background-color: $dark-grey;
+    border-color: $dark-grey;
+}
+
+.btn-outline-black {
+    color: $black;
+    background-image: none;
+    background-color: transparent;
+    border-color: $black;
+}
+
+.btn-outline-black:hover, .btn-outline-black:focus, .btn-outline-black.active, .btn-outline-black:active, .show>.btn-outline-black.dropdown-toggle {
+    color: $white;
+    background-color: $black;
+    border-color: $black;
+}
+
+.btn-black.disabled, .btn-black:disabled {
+    opacity: 0.8;
+}
+
+.btn-link {
+    color: $primary;
+}
+
+.btn-link:hover, .btn-link:focus, .btn-link.active, .btn-link:active, .show>.btn-link.dropdown-toggle {
+    color: $primary-hover;
+    text-decoration: none;
+}
+
+.btn-link.disabled, .btn-link:disabled {
+    color: $primary;
+    opacity: 0.8;
+}
+
+.btn:focus {
+    outline: none !important;
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important;
+}
+
+/*--- end of button colors ---*/
+
+/*------- end of buttons -------*/
+
+
+/*------- cards -------*/
+
+.card {
+    background-color: $white;
+    border: 1px solid $secondary-hover;
+    border-radius: 5px;
+    margin-bottom: 1.5rem;
+}
+
+.card-rounded {
+    border-radius: 2rem;
+}
+
+.card-header {
+    padding: .75rem 1.25rem;
+    margin-bottom: 0;
+    background-color: $secondary;
+    border-bottom: 1px solid $secondary-hover;
+}
+
+.card-header:first-child {
+    border-radius: calc(.35rem - 1px) calc(.35rem - 1px) 0 0;
+}
+
+.card-footer {
+    padding: .75rem 1.25rem;
+    background-color: $secondary;
+    border-top: 1px solid $secondary-hover;
+}
+
+.card-inverse {
+    background-color: $dark-grey;
+    border-color: $dark-grey;
+}
+
+.card-secondary {
+    background-color: $secondary !important;
+    border-color: $secondary-hover !important;
+}
+
+.card-primary {
+    background-color: $primary !important;
+    border-color: $primary-hover !important;
+}
+
+.card-success {
+    background-color: $success;
+    border-color: $success-hover;
+}
+
+.card-info {
+    background-color: $info;
+    border-color: $info-hover;
+}
+
+.card-warning {
+    background-color: $warning;
+    border-color: $warning-hover;
+}
+
+.card-danger {
+    background-color: $danger;
+    border-color: $danger-hover;
+}
+
+.card-outline-inverse {
+    background-color: $white;
+    border-color: $dark-grey;
+}
+
+.card-outline-secondary {
+    background-color: $white;
+    border-color: $secondary-hover !important;
+}
+
+.card-outline-primary {
+    background-color: $white;
+    border-color: $primary-hover;
+}
+
+.card-outline-success {
+    background-color: $white;
+    border-color: $success-hover;
+}
+
+.card-outline-info {
+    background-color: $white;
+    border-color: $info-hover;
+}
+
+.card-outline-warning {
+    background-color: $white;
+    border-color: $warning-hover;
+}
+
+.card-outline-danger {
+    background-color: $white;
+    border-color: $danger-hover;
+}
+
+/*------- end of cards -------*/
+
+
+/*------- modals -------*/
+
+.example-modal .modal {
+    position: relative;
+    top: auto;
+    right: auto;
+    bottom: auto;
+    left: auto;
+    z-index: 1;
+    display: block;
+}
+
+.modal-content {
+    background-color: $white;
+    border: 1px solid $secondary-hover;
+    border-radius: 5px;
+}
+
+.modal-header {
+    border-bottom: 1px solid $secondary-hover;
+}
+
+ .modal-body p {
+    margin-bottom: 0;
+}
+
+.modal-body.multi-paragraph p {
+    margin-bottom: 10px;
+}
+
+.modal-footer {
+    border-top: 1px solid $secondary-hover;
+}
+
+[role=button], a, area, button, input, label, select, summary, textarea {
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+}
+
+.inverse.modal-content .modal-title {
+    color: $white;
+}
+
+.inverse.modal-content .modal-body * {
+    color: $light-grey;
+}
+
+.inverse button.close {
+    color: $white;
+}
+
+.modal-inverse.modal-content {
+    background-color: $black;
+    border: 1px solid $dark-grey;
+}
+
+.modal-inverse .modal-header, .modal-inverse .modal-footer {
+    border-color: $dark-grey;
+}
+
+.modal-primary.modal-content {
+    background-color: $primary;
+    border: 1px solid $primary-hover;
+}
+
+.modal-primary .modal-header, .modal-primary .modal-footer {
+    border-color: $primary-hover;
+}
+
+.modal-success.modal-content {
+    background-color: $success;
+    border: 1px solid $success-hover;
+}
+
+.modal-success .modal-header, .modal-success .modal-footer {
+    border-color: $success-hover;
+}
+
+.modal-info.modal-content {
+    background-color: $info;
+    border: 1px solid $info-hover;
+}
+
+.modal-info .modal-header, .modal-info .modal-footer {
+    border-color: $info-hover;
+}
+
+.modal-warning.modal-content {
+    background-color: $warning;
+    border: 1px solid $warning-hover;
+}
+
+.modal-warning .modal-header, .modal-warning .modal-footer {
+    border-color: $warning-hover;
+}
+
+.modal-danger.modal-content {
+    background-color: $danger;
+    border: 1px solid $danger-hover;
+}
+
+.modal-danger .modal-header, .modal-danger .modal-footer {
+    border-color: $danger-hover;
+}
+
+/*------- end of modals -------*/
+
+
+/*------- navigations -------*/
+
+/*--- breadcrumb ---*/
+
+.breadcrumb {
+    padding: 1rem 1.4rem;
+    background-color: $secondary;
+    border-radius: 5px;
+}
+
+.breadcrumb.text-center .breadcrumb-item, .breadcrumb.text-right .breadcrumb-item {
+    float: none;
+}
+
+.breadcrumb-transparent {
+    background-color: transparent;
+    padding: 1rem 0;
+}
+
+.breadcrumb-item+.breadcrumb-item::before {
+    display: inline-block;
+    padding-right: .5rem;
+    padding-left: .5rem;
+    color: $secondary-hover;
+    content: "/";
+}
+
+.breadcrumb-item.active {
+    color: $primary-hover;
+}
+
+/*--- end of breadcrumb ---*/
+
+/*--- navs ---*/
+
+.nav-link.disabled {
+    color: $secondary-hover;
+    cursor: not-allowed;
+}
+
+.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+    color: $primary;
+    background-color: $white;
+    border-color: $secondary-hover $secondary-hover $white;
+}
+
+.nav-tabs .nav-link:hover {
+    border: 1px solid $secondary-hover;
+}
+
+.nav-tabs .nav-link.disabled {
+    color: $secondary-hover;
+}
+
+.nav-tabs {
+    border-bottom: 1px solid $secondary-hover;
+}
+
+.nav-pills .nav-item.show .nav-link, .nav-pills .nav-link.active {
+    color: $white;
+    cursor: default;
+    background-color: $primary;
+}
+
+.nav-pills .nav-link {
+    border-radius: 5px;
+}
+
+/*--- end of navs ---*/
+
+/*--- navbars ---*/
+
+.navbar {
+    padding: .625rem 1rem;
+}
+
+.sticky-top {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    z-index: 999;
+}
+
+.fixed-top {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 999;
+}
+
+.navbar-brand {
+    padding-top: .25rem;
+    padding-bottom: .25rem;
+    margin-right: .75rem;
+    margin-left: .75rem;
+}
+
+.navbar-brand img {
+    width: auto;
+    max-height: 30px;
+}
+
+.navbar-light .navbar-nav .nav-link {
+    color: $title-color;
+}
+
+.navbar-light .navbar-nav .active>.nav-link, .navbar-light .navbar-nav .nav-link.active, .navbar-light .navbar-nav .nav-link.open, .navbar-light .navbar-nav .open>.nav-link {
+    color: $primary;
+}
+
+.navbar-light .navbar-nav .nav-link:hover, .navbar-light .navbar-nav .active>.nav-link:hover, .navbar-light .navbar-nav .nav-link.active:hover, .navbar-light .navbar-nav .nav-link.open:hover, .navbar-light .navbar-nav .open>.nav-link:hover {
+    color: $primary;
+}
+
+.dropdown-menu {
+    margin: 0;
+}
+
+.dropdown-menu {
+    color: $title-color;
+    background-color: $white;
+    border: 1px solid $secondary-hover;
+    border-radius: 5px;
+    z-index: 99;
+}
+
+.dropdown-item.disabled, .dropdown-item:disabled {
+    color: $secondary-hover;
+    cursor: not-allowed;
+    background-color: transparent;
+}
+
+.dropdown-item {
+    padding: 8px 16px;
+}
+
+.dropdown-item:focus, .dropdown-item:hover {
+    color: $title-color;
+    text-decoration: none;
+    background-color: $secondary;
+}
+
+.dropdown-item.active, .dropdown-item:active {
+    color: $white;
+    background-color: $primary;
+}
+
+.dropdown-header {
+    display: block;
+    padding: 8px 16px;
+    margin-bottom: 0;
+    font-size: .75rem;
+    color: $title-color;
+    white-space: nowrap;
+}
+
+.dropdown-divider {
+    height: 1px;
+    margin: .5rem 0;
+    overflow: hidden;
+    background-color: $secondary-hover;
+}
+
+/* inverse dropdown */
+
+.dropdown-inverse {
+    background: $title-color;
+    border-color: $black;
+}
+
+.dropdown-inverse .dropdown-item {
+    color: $grey;
+}
+
+.dropdown-inverse .dropdown-item:focus, .dropdown-inverse .dropdown-item:hover {
+    color: $white;
+    background-color: $primary;
+}
+
+.dropdown-inverse .dropdown-header {
+    color: $white;
+}
+
+.dropdown-inverse .dropdown-divider {
+    background-color: $black;
+}
+
+/* end of inverse dropdown */
+
+.navbar-light .navbar-nav .nav-link:focus, .navbar-light .navbar-nav .nav-link:hover {
+    color: $primary;
+}
+
+.navbar-toggler {
+    border: none !important;
+    padding: .25rem 0;
+}
+
+.navbar-toggler-right {
+    right: 0;
+}
+
+.navbar-light .navbar-toggler-icon {
+    background-image: url("../images/menu.png");
+    width: 32px;
+    height: 32px;
+}
+
+.navbar-inverse .navbar-toggler-icon {
+    background-image: url("../images/menu-inverse.png");
+    width: 32px;
+    height: 32px;
+}
+
+.navbar-collapse {
+    text-align: center;
+}
+
+.navbar-light .form-control {
+    border: 2px solid $white;
+}
+
+nav .btn-sm {
+    line-height: 1.5;
+}
+
+nav .btn-xs {
+    line-height: 2.3;
+}
+
+.nav-icon {
+    height: auto;
+}
+
+.nav-icon i {
+    font-size: 18px;
+}
+
+.nav-icon .md-icon {
+    line-height: 40px;
+    width: auto;
+    height: auto;
+}
+
+/* navbar-inverse */
+
+.navbar-inverse .navbar-brand, .navbar-inverse .navbar-toggler {
+    color: $white;
+}
+
+.navbar-inverse .navbar-nav .nav-link {
+    color: $grey;
+}
+
+.navbar-inverse .navbar-nav .active>.nav-link, .navbar-inverse .navbar-nav .nav-link.active, .navbar-inverse .navbar-nav .nav-link.open, .navbar-inverse .navbar-nav .open>.nav-link {
+    color: $white;
+}
+
+.navbar-inverse .navbar-nav .nav-link:hover, .navbar-inverse .navbar-nav .active>.nav-link:hover, .navbar-inverse .navbar-nav .nav-link.active:hover, .navbar-inverse .navbar-nav .nav-link.open:hover, .navbar-inverse .navbar-nav .open>.nav-link:hover {
+    color: $white;
+}
+
+.navbar-inverse .navbar-nav .nav-link:focus, .navbar-inverse .navbar-nav .nav-link:hover {
+    color: $white;
+}
+
+/* end of navbar-inverse */
+
+/*--- end of navbars ---*/
+
+/*--- paginations ---*/
+
+.page-link {
+    color: $title-color;
+    background-color: $secondary;
+    border: 1px solid $secondary-hover;
+    padding: .625rem 1.1rem;
+}
+
+.page-link:hover {
+    color: $black;
+    background-color: $secondary-hover;
+    border: 1px solid $secondary-hover;
+}
+
+.pagination-white .page-link {
+    color: $title-color;
+    background-color: $white;
+    border: 1px solid $secondary-hover;
+}
+
+.pagination-white .page-link:hover {
+    color: $black;
+    background-color: $secondary;
+    border: 1px solid $secondary-hover;
+}
+
+.pagination-primary .page-link {
+    color: $white;
+    background-color: $primary;
+    border: 1px solid $primary-hover;
+}
+
+.pagination-primary .page-link:hover {
+    color: $white;
+    background-color: $primary-hover;
+    border: 1px solid $primary-hover;
+}
+
+.page-link:active, .page-link:focus, .page-link:visited {
+    color: $black;
+}
+
+.pagination-primary .page-link:active, .pagination-primary .page-link:focus, .pagination-primary .page-link:visited {
+    color: $white;
+}
+
+.page-item.disabled {
+    cursor: not-allowed;
+}
+
+.page-item.disabled .page-link {
+    color: $text-color;
+    pointer-events: none;
+    cursor: not-allowed;
+    background-color: $secondary;
+    border-color: $secondary-hover;
+    opacity: 0.5;
+}
+
+.pagination-primary .page-item.disabled .page-link {
+    color: $light-grey;
+    pointer-events: none;
+    cursor: not-allowed;
+    background-color: $primary;
+    border-color: $primary-hover;
+}
+
+.page-item.active .page-link {
+    color: $white;
+    background-color: $primary;
+    border-color: $primary;
+}
+
+.pagination-primary .page-item.active .page-link {
+    color: $white;
+    background-color: $primary-hover;
+    border-color: $primary-hover;
+}
+
+.page-item.active .page-link:hover {
+    color: $white;
+    background-color: $primary-hover;
+    border-color: $primary-hover;
+}
+
+.pager {
+    padding-left: 0;
+}
+
+.pager span, .pager i {
+    vertical-align: middle;
+}
+
+.pager-left, .pager-right {
+    display: inline-block;
+}
+
+.pager-left i {
+    margin-right: 1px;
+}
+
+.pager-right i {
+    margin-left: 1px;
+}
+
+.pager-right {
+    float: right;
+}
+
+/*--- end of paginations ---*/
+
+/*------- end of navigations -------*/
+
+
+/*------- progress -------*/
+
+.progress {
+    margin-bottom: 20px;
+}
+
+.progress {
+    font-size: .75rem;
+    line-height: 1rem;
+    background-color: $secondary;
+    border-radius: 4px;
+}
+
+.progress-bar {
+    height: 1rem;
+    color: $white;
+    background-color: $primary;
+}
+
+/*------- end of progress -------*/
+
+
+/*------- tables -------*/
+
+.table thead th {
+    vertical-align: bottom;
+    border-bottom: 2px solid $light-grey;
+}
+
+.table td, .table th {
+    padding: .75rem;
+    vertical-align: top;
+    border-top: 1px solid $light-grey;
+}
+
+.table-inverse {
+    color: $white;
+    background-color: $dark-grey;
+}
+
+.table-inverse td, .table-inverse th, .table-inverse thead th {
+    border-color: $white;
+}
+
+.thead-default th {
+    color: $title-color;
+    background-color: $light-grey;
+}
+
+.thead-inverse th {
+    color: $white;
+    background-color: $dark-grey;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: $light-grey;
+}
+
+.table-striped.table-inverse tbody tr:nth-of-type(odd) {
+    background-color: $title-color;
+}
+
+.table-bordered td, .table-bordered th {
+    border: 1px solid $light-grey;
+}
+
+.table-hover tbody tr:hover {
+    background-color: $light-grey;
+}
+
+.table-active,.table-active>td,.table-active>th {
+    background-color: $light-grey;
+}
+
+.table-hover .table-active:hover {
+    background-color: $light-grey;
+}
+
+.table-hover .table-active:hover>td,.table-hover .table-active:hover>th {
+    background-color: $light-grey;
+}
+
+.table-hover.table-inverse tbody tr:hover {
+    background-color: $title-color;
+}
+
+.table-inverse .table-active, .table-inverse .table-active>td, .table-inverse .table-active>th {
+    background-color: $title-color;
+}
+
+.table-hover.table-inverse .table-active:hover {
+    background-color: $title-color;
+}
+
+.table-hover.table-inverse .table-active:hover>td, .table-hover.table-inverse .table-active:hover>th {
+    background-color: $title-color;
+}
+
+.table-primary, .table-primary>td, .table-primary>th {
+    background-color: $primary;
+}
+
+.table-hover .table-primary:hover {
+    background-color: $primary-hover;
+}
+
+.table-hover .table-primary:hover>td, .table-hover .table-primary:hover>th {
+    background-color: $primary-hover;
+}
+
+.table-success, .table-success>td, .table-success>th {
+    background-color: $success;
+}
+
+.table-hover .table-success:hover {
+    background-color: $success-hover;
+}
+
+.table-hover .table-success:hover>td, .table-hover .table-success:hover>th {
+    background-color: $success-hover;
+}
+
+.table-info, .table-info>td, .table-info>th {
+    background-color: $info;
+}
+
+.table-hover .table-info:hover {
+    background-color: $info-hover;
+}
+
+.table-hover .table-info:hover>td, .table-hover .table-info:hover>th {
+    background-color: $info-hover;
+}
+
+.table-warning, .table-warning>td, .table-warning>th {
+    background-color: $warning;
+}
+
+.table-hover .table-warning:hover {
+    background-color: $warning-hover;
+}
+
+.table-hover .table-warning:hover>td, .table-hover .table-warning:hover>th {
+    background-color: $warning-hover;
+}
+
+.table-danger, .table-danger>td, .table-danger>th {
+    background-color: $danger;
+}
+
+.table-hover .table-danger:hover {
+    background-color: $danger-hover;
+}
+
+.table-hover .table-danger:hover>td, .table-hover .table-danger:hover>th {
+    background-color: $danger-hover;
+}
+
+/*------- end of tables -------*/
+
+/*---------- end of components ----------*/

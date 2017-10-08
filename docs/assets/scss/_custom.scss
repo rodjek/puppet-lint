@@ -1,0 +1,509 @@
+/*------- custom css -------*/
+
+html {
+    height: 100%;
+}
+
+body {
+    position: relative;
+}
+
+html, body {
+    color: $text-color;
+    background-color: $body-bg;
+    letter-spacing: $letter-spacing;
+}
+
+/*--- spacers ---*/
+
+.spacer {
+    margin: 15px 0;
+    line-height: 0;
+}
+
+.spacer-2x {
+    margin: 30px 0;
+    line-height: 0;
+}
+
+.spacer-3x {
+    margin: 45px 0;
+    line-height: 0;
+}
+
+.spacer-line {
+    width: 50px;
+    line-height: 0;
+    border-bottom: 2px solid $light-grey;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.spacer-line-2x {
+    width: 100px;
+    line-height: 0;
+    border-bottom: 2px solid $light-grey;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.spacer-line-solid {
+    width: 50px;
+    line-height: 0;
+    border-bottom: 4px solid $light-grey;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.spacer-line-solid-2x {
+    width: 100px;
+    line-height: 0;
+    border-bottom: 4px solid $light-grey;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.spacer-line-full-width {
+    width: 100%;
+    line-height: 0;
+    border-bottom: 2px solid $light-grey;
+}
+
+.space {
+    margin: 15px !important;
+}
+
+.space-2x {
+    margin: 30px !important;
+}
+
+.space-3x {
+    margin: 45px !important;
+}
+
+.space-top {
+    margin-top: 15px !important;
+}
+
+.space-top-2x {
+    margin-top: 30px !important;
+}
+
+.space-bottom {
+    margin-bottom: 15px !important;
+}
+
+.space-bottom-2x {
+    margin-bottom: 30px !important;
+}
+
+.space-left {
+    margin-left: 15px !important;
+}
+
+.space-left-2x {
+    margin-left: 30px !important;
+}
+
+.space-right {
+    margin-right: 15px !important;
+}
+
+.space-right-2x {
+    margin-right: 30px !important;
+}
+
+.inner-space {
+    padding: 15px !important;
+}
+
+.inner-space-2x {
+    padding: 30px !important;
+}
+
+.inner-space-3x {
+    padding: 45px !important;
+}
+
+.inner-space-top {
+    padding-top: 15px !important;
+}
+
+.inner-space-top-2x {
+    padding-top: 30px !important;
+}
+
+.inner-space-bottom {
+    padding-bottom: 15px !important;
+}
+
+.inner-space-bottom-2x {
+    padding-bottom: 30px !important;
+}
+
+.inner-space-left {
+    padding-left: 15px !important;
+}
+
+.inner-space-left-2x {
+    padding-left: 30px !important;
+}
+
+.inner-space-right {
+    padding-right: 15px !important;
+}
+
+.inner-space-right-2x {
+    padding-right: 30px !important;
+}
+
+.no-margin {
+    margin: 0 !important;
+}
+
+.no-margin-top {
+    margin-top: 0 !important;
+}
+
+.no-margin-bottom {
+    margin-bottom: 0 !important;
+}
+
+.no-margin-left {
+    margin-left: 0 !important;
+}
+
+.no-margin-right {
+    margin-right: 0 !important;
+}
+
+.no-padding {
+    padding: 0 !important;
+}
+
+.no-padding-top {
+    padding-top: 0 !important;
+}
+
+.no-padding-bottom {
+    padding-bottom: 0 !important;
+}
+
+.no-padding-left {
+    padding-left: 0 !important;
+}
+
+.no-padding-right {
+    padding-right: 0 !important;
+}
+
+/*--- end of spacers ---*/
+
+
+/*--- custom colors ---*/
+
+.bg-white {
+    background-color: $white !important;
+}
+
+.bg-black {
+    background-color: $black !important;
+}
+
+.bg-light {
+    background-color: $secondary !important;
+}
+
+.bg-faded {
+    background-color: $secondary !important;
+}
+
+.bg-dark {
+    background-color: $dark-grey !important;
+}
+
+.bg-inverse {
+    background-color: $dark-grey !important;
+}
+
+.bg-primary {
+    background-color: $primary !important;
+}
+
+.bg-secondary {
+    background-color: $secondary !important;
+}
+
+.bg-success {
+    background-color: $success !important;
+}
+
+.bg-info {
+    background-color: $info !important;
+}
+
+.bg-warning {
+    background-color: $warning !important;
+}
+
+.bg-danger {
+    background-color: $danger !important;
+}
+
+.border-white {
+    border-color: $white !important;
+}
+
+.border-black {
+    border-color: $black !important;
+}
+
+.border-faded {
+    border-color: $secondary !important;
+}
+
+.border-inverse {
+    border-color: $dark-grey !important;
+}
+
+.border-primary {
+    border-color: $primary !important;
+}
+
+.border-secondary {
+    border-color: $secondary !important;
+}
+
+.border-success {
+    border-color: $success !important;
+}
+
+.border-info {
+    border-color: $info !important;
+}
+
+.border-warning {
+    border-color: $warning !important;
+}
+
+.border-danger {
+    border-color: $danger !important;
+}
+
+.text-muted {
+    color: $grey !important;
+}
+
+.text-white {
+    color: $white !important;
+}
+
+.text-black {
+    color: $black !important;
+}
+
+.text-primary {
+    color: $primary !important;
+}
+
+.text-secondary {
+    color: $secondary !important;
+}
+
+.text-success {
+    color: $success !important;
+}
+
+.text-info {
+    color: $info !important;
+}
+
+.text-warning {
+    color: $warning !important;
+}
+
+.text-danger {
+    color: $danger !important;
+}
+
+/*--- end of custom colors ---*/
+
+
+/*--- custom attributes ---*/
+
+.container.full-width {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+}
+
+button:focus {
+    outline: none !important;
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important;
+}
+
+.opc-75 {
+    opacity: 0.75 !important;
+}
+
+.opc-50 {
+    opacity: 0.5 !important;
+}
+
+.opc-25 {
+    opacity: 0.25 !important;
+}
+
+.pull-left {
+    float: left !important;
+}
+
+.pull-right {
+    float: right !important;
+}
+
+.no-border {
+    border: none !important;
+}
+
+.no-border-radius {
+    border-radius: 0 !important;
+}
+
+.rectangle {
+    border-radius: 0 !important;
+}
+
+.rounded {
+    border-radius: 5px !important;
+}
+
+.rounded-2x {
+    border-radius: 10px !important;
+}
+
+.pill {
+    border-radius: 50px !important;
+}
+
+.circle {
+    border-radius: 100% !important;
+}
+
+.sub-title {
+    font-size: 1.25rem;
+}
+
+img {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+}
+
+.img-auto {
+    width: auto !important;
+}
+
+.img-thumbnail {
+    padding: 5px;
+    background-color: #fff;
+    border: 1px solid $light-grey;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+.fa {
+    vertical-align: middle;
+}
+
+.animated {
+    -webkit-animation-duration: 1s !important;
+    animation-duration: 1s !important;
+}
+
+.animated.fast {
+    -webkit-animation-duration: 0.4s !important;
+    animation-duration: 0.4s !important;
+}
+
+.animated.first {
+    -webkit-animation-duration: 1.5s !important;
+    animation-duration: 1.5s !important;
+    animation-delay: 0.5s;
+}
+
+.animated.second {
+    -webkit-animation-duration: 1.6s !important;
+    animation-duration: 1.6s !important;
+    animation-delay: 1s;
+}
+
+.animated.third {
+    -webkit-animation-duration: 1.5s !important;
+    animation-duration: 1.5s !important;
+    animation-delay: 1.3s;
+}
+
+.animated.fourth {
+    -webkit-animation-duration: 1.6s !important;
+    animation-duration: 1.6s !important;
+    animation-delay: 1.8s;
+}
+
+.animated.fifth {
+    -webkit-animation-duration: 1.5s !important;
+    animation-duration: 1.5s !important;
+    animation-delay: 2s;
+}
+
+.animated.sixth {
+    -webkit-animation-duration: 1.5s !important;
+    animation-duration: 1.5s !important;
+    animation-delay: 2.5s;
+}
+
+.animated.seventh {
+    -webkit-animation-duration: 1.6s !important;
+    animation-duration: 1.6s !important;
+    animation-delay: 3.2s;
+}
+
+.animated.eighth {
+    -webkit-animation-duration: 1.5s !important;
+    animation-duration: 1.5s !important;
+    animation-delay: 3.5s;
+}
+
+.animated.nineth {
+    -webkit-animation-duration: 1.6s !important;
+    animation-duration: 1.6s !important;
+    animation-delay: 3.8s;
+}
+
+::-moz-selection {
+    color: $white;
+    background: $primary-transparent;
+}
+
+::selection {
+    color: $white; 
+    background: $primary-transparent;
+}
+
+.vcenter {
+    display: flex;
+    align-items: center;
+}
+
+.parallax {
+    background-attachment: fixed !important;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/*--- end of custom attributes ---*/
+
+/*------- end of custom css -------*/

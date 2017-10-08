@@ -1,0 +1,100 @@
+/*------- media screens -------*/
+
+/*--- max-widths ---*/
+
+@media only screen and (max-width: 1200px) {
+.doc .navbar-expand-lg .form-inline {
+    display: block;
+    margin: .5rem auto;
+}
+}
+
+@media only screen and (max-width: 991px) {
+.doc .navbar-collapse {
+    margin-top: .625rem;
+}
+
+.doc .navbar-expand-lg .navbar-brand {
+    margin-left: 0;
+}
+
+.doc .dropdown-item {
+    text-align: center;
+}
+
+.doc .navbar-expand-lg .form-inline {
+    display: block;
+    margin: .5rem auto;
+}
+
+.doc .side-nav {
+    display: none;
+}
+
+.doc footer {
+    text-align: center;
+}
+
+.doc footer .pull-right {
+    display: block;
+    float: none !important;
+    margin-top: 10px;
+}
+
+.doc footer a {
+    margin: 7.5px;
+}
+}
+
+@media only screen and (max-width: 767px) {
+.doc .navbar-expand-md .form-inline {
+    display: block;
+    margin: .5rem auto;
+}
+
+.doc header {
+    padding: 140px 0;
+}
+}
+
+@media only screen and (max-width: 575px) {
+.doc .container {
+    width: 100%;
+}
+
+.doc .form-inline .form-control {
+    display: block;
+    width: 70%;
+    margin: 0 auto;
+}
+
+.doc .form-inline .btn {
+    display: block;
+    width: 70%;
+    margin: 5px auto;
+}
+
+.doc header {
+    padding: 80px 0;
+}
+
+.doc footer {
+    text-align: center;
+}
+}
+
+/*--- end of max-widths ---*/
+
+
+/*--- min-widths ---*/
+
+@media only screen and (min-width: 992px) {
+.doc .navbar-expand-lg .navbar-nav .nav-link {
+    padding-right: .75rem;
+    padding-left: .75rem;
+}
+}
+
+/*--- end of min-widths ---*/
+
+/*------- end of media screens -------*/

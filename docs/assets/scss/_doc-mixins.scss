@@ -1,0 +1,7 @@
+@mixin transition($transition) {
+    -moz-transition:    $transition ease-in-out;
+    -o-transition:      $transition ease-in-out;
+    -webkit-transition: $transition ease-in-out;
+    -ms-transition: 	$transition ease-in-out;
+    transition:         $transition ease-in-out;
+}
