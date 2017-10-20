@@ -1,22 +1,32 @@
-# Public: A class that contains and provides information for the puppet-lint
-# checks.
-#
+# A class that contains and provides information for the puppet-lint checks.
 # This class should not be used directly, but instead should be inherited.
 #
-# Examples
+# To define a new check, you need to create a new `PuppetLint::CheckPlugin`
+# subclass that implements a `check` method (and optionally a `fix` method).
+# The easiest way to do this is with the `PuppetLint.new_check` method.
 #
-#   class PuppetLint::Plugin::CheckFoo < PuppetLint::CheckPlugin
+# @example
+#   PuppetLint.new_check(:check_name) do
+#     def check
+#       # ...
+#     end
 #   end
+#
+# @api developer
 class PuppetLint::CheckPlugin
-  # Internal: Initialise a new PuppetLint::CheckPlugin.
+  # Initialise a new PuppetLint::CheckPlugin.
+  #
+  # @api private
   def initialize
     @problems = []
   end
 
-  # Internal: Check the manifest for problems and filter out any problems that
-  # should be ignored.
+  # Check the manifest for problems and filter out any problems that should be
+  # ignored.
   #
-  # Returns an Array of problem Hashes.
+  # @api private
+  # @return [Array[Hash{Symbol => Object}]] an array of detected problems in
+  #   the manifest.
   def run
     check
 
@@ -31,9 +41,11 @@ class PuppetLint::CheckPlugin
     @problems
   end
 
-  # Internal: Fix any problems the check plugin has detected.
+  # Fix any problems the check plugin has detected.
   #
-  # Returns an Array of problem Hashes.
+  # @api private
+  # @return [Array[Hash{Symbol => Object}]] an array of detected problems in
+  #   manifest.
   def fix_problems
     @problems.reject { |problem| problem[:kind] == :ignored || problem[:check] == :syntax }.each do |problem|
       next unless respond_to?(:fix)
@@ -51,9 +63,11 @@ class PuppetLint::CheckPlugin
 
   private
 
-  # Public: Provides the tokenised manifest to the check plugins.
+  # Provides the tokenised manifest to the check plugins.
   #
-  # Returns an Array of PuppetLint::Lexer::Token objects.
+  # @api developer
+  # @return [Array[PuppetLint::Lexer::Token]] an array of tokens that make up
+  #   the manifest being checked..
   def tokens
     PuppetLint::Data.tokens
   end
