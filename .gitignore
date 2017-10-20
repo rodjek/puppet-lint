@@ -10,3 +10,5 @@ coverage/
 .idea
 /*.pp
 /tmp/
+/.yardoc/
+/doc/

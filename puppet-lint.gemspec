@@ -16,4 +16,7 @@ Gem::Specification.new do |s|
 
   s.authors = ['Tim Sharpe']
   s.email = 'tim@sharpe.id.au'
+
+  s.add_development_dependency 'yard'
+  s.add_development_dependency 'pry'
 end

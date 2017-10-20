@@ -1,0 +1,100 @@
+-
+    name: trailing_newlines
+    summary: Checks to ensure that your manifest files end with a trailing newline.
+    url: https://github.com/rodjek/puppet-lint-trailing_newline-check
+    gem: puppet-lint-trailing_newline-check
+-
+    name: variable_contains_upcase
+    summary: Extends puppet-lint to ensure that your variables are all lower case.
+    url: https://github.com/fiddyspence/puppetlint-variablecase
+    gem: puppet-lint-variable_contains_upcase
+-
+    name: parameter_documentation
+    summary: Check to validate that all class parameters are documented.
+    url: https://github.com/domcleal/puppet-lint-param-docs
+    gem: puppet-lint-param-docs
+-
+    name: roles_and_profiles
+    summary: Check to validate that your code matches to Roles & Profiles paradigm
+    url: https://github.com/mcanevet/puppet-lint-roles_and_profiles-check
+    gem: puppet-lint-roles_and_profiles-check
+-
+    name: absolute_template_path
+    summary: Check that template paths are relative not absolute.
+    url: https://github.com/deanwilson/puppet-lint-absolute_template_path-check
+    gem: puppet-lint-absolute_template_path
+-
+    name: strict_indent
+    summary: Check that manifests follow a strict indent pattern.
+    url: https://github.com/relud/puppet-lint-strict_indent-check
+    gem: puppet-lint-strict_indent-check
+-
+    name: unquoted_string
+    summary: Check that selectors and case statements cases are quoted.
+    url: https://github.com/mcanevet/puppet-lint-unquoted_string-check
+    gem: puppet-lint-unquoted_string-check
+-
+    name: package_ensure
+    summary: Check for packages with ensure set to latest.
+    url: https://github.com/danzilio/puppet-lint-package_ensure-check
+    gem: puppet-lint-package_ensure-check
+-
+    name: reference_syntax
+    summary: Check that resource references do not contain whitespace between resource reference and opening bracket and title does not start with capital letter.
+    url: https://github.com/voxpupuli/puppet-lint-resource_reference_syntax
+    gem: puppet-lint-resource_reference_syntax
+-
+    name: top_scope_facts
+    summary: Check that facts are accessed using the $facts hash instead of as top scope variables. e.g use $facts['operatingsystem'] instead of $::operatingsystem.
+    url: https://github.com/mmckinst/puppet-lint-top_scope_facts-check
+    gem: puppet-lint-top_scope_facts-check
+-
+    name: legacy_facts
+    summary: Ensure facts are acccessed using new structured facts. e.g use $facts['os']['name'] instead of $facts['operatingsystem']
+    url: https://github.com/mmckinst/puppet-lint-legacy_facts-check
+    gem: puppet-lint-legacy_facts-check
+-
+    name: concatenated_template_files
+    summary: Ensure all template functions expand a file, rather than concatenating multiple templates string together.
+    url: https://github.com/deanwilson/puppet-lint-concatenated_template_files-check
+    gem: puppet-lint-concatenated_template_files-check
+-
+    name: duplicate_class_parameters
+    summary: Ensures class parameter names are unique.
+    url: https://github.com/deanwilson/puppet-lint_duplicate_class_parameters-check
+    gem: puppet-lint-duplicate_class_parameters-check
+-
+    name: yumrepo_gpgcheck_enabled
+    summary: Ensure gpgcheck is enabled on yumrepo resources.
+    url: https://github.com/deanwilson/puppet-lint-yumrepo_gpgcheck_enabled-check
+    gem: puppet-lint-yumrepo_gpgcheck_enabled-check
+-
+    name: no_cron_resources
+    summary: Ensure no cron resources are contained in the catalog.
+    url: https://github.com/deanwilson/puppet-lint-no_cron_resources-check
+    gem: puppet-lint-no_cron_resources-check
+-
+    name: world_writable_files
+    summary: Ensure file resources are not world writable.
+    url: https://github.com/deanwilson/puppet-lint-world_writable_files-check
+    gem: puppet-lint-world_writable_files-check
+-
+    name: no_symbolic_file_modes
+    summary: Ensure all file resource modes are defined as octal values and not symbolic ones.
+    url: https://github.com/deanwilson/puppet-lint-no_symbolic_file_modes-check
+    gem: puppet-lint-no_symbolic_file_modes-check
+-
+    name: no_erb_template
+    summary: Ensure there are no calls to the template() or inline_template() as an aid to migrating to epp templates.
+    url: https://github.com/deanwilson/puppet-lint-no_erb_template-check
+    gem: puppet-lint-no_erb_template-check
+-
+    name: no_file_path_attribute
+    summary: Ensure file resources do not have a path attribute.
+    url: https://github.com/deanwilson/puppet-lint-no_file_path_attribute-check
+    gem: puppet-lint-no_file_path_attribute-check
+-
+    name: template_file_extension
+    summary: Ensure all file names used in template() and epp() functions end with the string '.erb' or '.epp' respectively.
+    url: https://github.com/deanwilson/puppet-lint-template_file_extension-check
+    gem: puppet-lint-template_file_extension-check

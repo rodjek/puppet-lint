@@ -1,0 +1,30 @@
+<p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Enabled by default</th>
+                <th>Supports auto-correct</th>
+                <th>Style Guide reference</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+{% if page.check.enabled %}
+                <td>Yes</td>
+{% else %}
+                <td>No</td>
+{% endif %}
+{% if page.check.fix %}
+                <td>Yes</td>
+{% else %}
+                <td>No</td>
+{% endif %}
+{% if page.check.style_guide %}
+                <td><a href="https://docs.puppetlabs.com/guides/style_guide.html#{{ page.check.style_guide}}">Link</a></td>
+{% else %}
+                <td></td>
+{% endif %}
+            </tr>
+        </tbody>
+    </table>
+</p>
