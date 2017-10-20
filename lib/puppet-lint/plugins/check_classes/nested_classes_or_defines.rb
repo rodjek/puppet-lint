@@ -1,10 +1,24 @@
-# Public: Test the manifest tokens for any classes or defined types that are
-# defined inside another class.
+# Classes and defined resource types must not be defined within other classes
 #
-# https://docs.puppet.com/guides/style_guide.html#nested-classes-or-defined-types
+# @example What you have done
+#   class apache {
+#     class ssl { }
+#   }
+#
+# @example What you should have done
+#   # in apache/manifests/init.pp
+#   class apache { }
+#
+#   # in apache/manifests/ssl.pp
+#   class apache::ssl { }
+#
+# @style_guide #nested-classes-or-defined-types
+# @enabled true
 PuppetLint.new_check(:nested_classes_or_defines) do
   TOKENS = Set[:CLASS, :DEFINE]
 
+  # Test the manifest tokens for any classes or defined types that are defined
+  # inside another class.
   def check
     class_indexes.each do |class_idx|
       # Skip the first token so that we don't pick up the first :CLASS

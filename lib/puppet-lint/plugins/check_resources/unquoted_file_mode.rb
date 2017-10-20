@@ -1,11 +1,24 @@
-# Public: Check the tokens of each File resource instance for a mode
-# parameter and if found, record a warning if the value of that parameter is
-# not a quoted string.
+# File modes should be specified as single-quoted strings instead of bare word
+# numbers.
 #
-# https://docs.puppet.com/guides/style_guide.html#file-modes
+# @example What you have done
+#   file { '/tmp/foo':
+#     mode => 0666,
+#   }
+#
+# @example What you should have done
+#   file { '/tmp/foo':
+#     mode => '0666',
+#   }
+#
+# @style_guide #file-modes
+# @enabled true
 PuppetLint.new_check(:unquoted_file_mode) do
   TOKEN_TYPES = Set[:NAME, :NUMBER]
 
+  # Check the tokens of each File resource instance for a mode parameter and
+  # if found, record a warning if the value of that parameter is not a quoted
+  # string.
   def check
     resource_indexes.each do |resource|
       next unless resource[:type].value == 'file' || resource[:type].value == 'concat'

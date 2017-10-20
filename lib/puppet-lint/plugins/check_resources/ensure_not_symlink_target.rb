@@ -1,9 +1,25 @@
-# Public: Check the tokens of each File resource instance for an ensure
-# parameter and record a warning if the value of that parameter looks like
-# a symlink target (starts with a '/').
+# In the interest of clarity, symbolic links should be declared by using an
+# ensure value of `ensure => link` and explicitly specifying a value for the
+# `target` attribute. Using a path to the target as the ensure value is not
+# recommended.
 #
-# https://docs.puppet.com/guides/style_guide.html#symbolic-links
+# @example What you have done
+#   file { '/tmp/foo':
+#     ensure => '/tmp/bar',
+#   }
+#
+# @example What you should have done
+#   file { '/tmp/foo':
+#     ensure => link,
+#     target => '/tmp/bar',
+#   }
+#
+# @style_guide #symbolic-links
+# @enabled true
 PuppetLint.new_check(:ensure_not_symlink_target) do
+  # Check the tokens of each File resource instance for an ensure parameter
+  # and record a warning if the value of that parameter looks like a symlink
+  # target (starts with a '/').
   def check
     resource_indexes.each do |resource|
       next unless resource[:type].value == 'file'

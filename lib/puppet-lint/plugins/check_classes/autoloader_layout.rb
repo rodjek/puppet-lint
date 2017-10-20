@@ -1,9 +1,20 @@
-# Public: Test the manifest tokens for any classes or defined types that are
-# not in an appropriately named file for the autoloader to detect and record
-# an error of each instance found.
+# All classes and resource type definitions must be in separate files in the
+# manifests directory of their module. This is functionally identical to
+# declaring all classes and defines in `init.pp`, but highlights the structure
+# and makes everything more legible.
 #
-# https://docs.puppet.com/guides/style_guide.html#separate-files
+# Additionally, the files should be named appropriately for the class or
+# defined type they contain. `class foo` should be in `foo/manifests/init.pp`,
+# `class foo::bar` should be in `foo/manifests/bar.pp` and so on. You can read
+# more about the filesystem layout for modules in the [module fundamentals
+# documentation](https://puppet.com/docs/puppet/latest/modules_fundamentals.html#module-layout).
+#
+# @style_guide #separate-files
+# @enabled true
 PuppetLint.new_check(:autoloader_layout) do
+  # Test the manifest tokens for any classes or defined types that ore not in
+  # an appropriately named file for the autoloader to detect, and record an
+  # error for each instance found.
   def check
     return if fullpath.nil? || fullpath == ''
 

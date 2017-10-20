@@ -1,10 +1,23 @@
-# Public: Check the manifest tokens for double quoted strings that contain
-# a single variable only and record a warning for each instance found.
+# Variables standing by themselves should not be quoted. To put it another way,
+# strings should not contain just a single variable.
 #
-# https://docs.puppet.com/guides/style_guide.html#quoting
+# @example What you have done
+#   file { '/tmp/foo':
+#     owner => "${file_owner}",
+#   }
+#
+# @example What you should have done
+#   file { '/tmp/foo':
+#     owner => $file_owner,
+#   }
+#
+# @style_guide #quoting
+# @enabled true
 PuppetLint.new_check(:only_variable_string) do
   VAR_TYPES = Set[:VARIABLE, :UNENC_VARIABLE]
 
+  # Check the manifest tokens for double quoted strings that contain a single
+  # variable only and record a warning for each instance found.
   def check
     tokens.each_with_index do |start_token, start_token_idx|
       next unless start_token.type == :DQPRE && start_token.value == ''

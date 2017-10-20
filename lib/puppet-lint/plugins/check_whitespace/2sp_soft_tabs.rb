@@ -1,8 +1,21 @@
-# Public: Check the manifest tokens for any indentation not using 2 space soft
-# tabs and record an error for each instance found.
+# In order to comply with the style guide, manifests must use 2 space
+# characters when indenting.
 #
-# https://docs.puppet.com/guides/style_guide.html#spacing-indentation-and-whitespace
+# @example What you have done
+#   file { '/tmp/foo':
+#       ensure => present,
+#   }
+#
+# @example What you should have done
+#   file { '/tmp/foo':
+#     ensure => present,
+#   }
+#
+# @style_guide #spacing-indentation-and-whitespace
+# @enabled true
 PuppetLint.new_check(:'2sp_soft_tabs') do
+  # Check the manifest tokens for any indentation not using 2 space soft tabs
+  # and record an error for each instance found.
   def check
     tokens.select { |r|
       r.type == :INDENT

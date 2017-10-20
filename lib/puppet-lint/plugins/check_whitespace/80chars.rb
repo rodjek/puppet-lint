@@ -1,9 +1,12 @@
-# Public: Test the raw manifest string for lines containing more than 80
-# characters. This is DISABLED by default and behaves like the default
-# 140chars check by excepting URLs and template() calls.
+# Your manifests should not contain any lines longer than 80 characters.
 #
-# https://docs.puppet.com/guides/style_guide.html#spacing-indentation-and-whitespace (older version)
+# @style_guide #spacing-indentation-and-whitespace
+# @enabled false
+# @deprecated The style guide has been updated with a maximum line length of
+#   140 characters, so this check has been deprecated in favour of the
+#   `140chars` check.
 PuppetLint.new_check(:'80chars') do
+  # Test the raw manifest string for lines containing more than 80 characters.
   def check
     manifest_lines.each_with_index do |line, idx|
       next if line =~ %r{://} || line =~ %r{template\(}

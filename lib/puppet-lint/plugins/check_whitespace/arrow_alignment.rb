@@ -1,10 +1,26 @@
-# Public: Check the manifest tokens for any arrows (=>) in a grouping ({}) that
-# are not aligned with other arrows in that grouping.
+# Arrows(`=>`) withing blocks of attributes (like resource declarations,
+# selectors, hashes, etc) should be aligned with the other arrows in that
+# block.
 #
-# https://docs.puppet.com/guides/style_guide.html#spacing-indentation-and-whitespace
+# @example What you have done
+#   file { '/tmp/foo':
+#     ensure => present,
+#     mode => '0444',
+#   }
+#
+# @example What you should have done
+#   file { '/tmp/foo':
+#     ensure => present,
+#     mode   => '0444',
+#   }
+#
+# @style_guide #spacing-indentation-and-whitespace
+# @enabled true
 PuppetLint.new_check(:arrow_alignment) do
   COMMENT_TYPES = Set[:COMMENT, :SLASH_COMMENT, :MLCOMMENT]
 
+  # Check the manifest tokens for any arrows (=>) in a grouping ({}) that are
+  # not aligned with the other arrows in that grouping.
   def check
     resource_indexes.each do |res_idx|
       arrow_column = [0]

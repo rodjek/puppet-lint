@@ -1,10 +1,14 @@
-# Public: Test the manifest tokens for any variables that are referenced in
-# the manifest.  If the variables are not fully qualified or one of the
-# variables automatically created in the scope, check that they have been
-# defined in the local scope and record a warning for each variable that has
-# not.
+# When using top-scope variables, including facts, Puppet modules should
+# explicity specify the empty namespace to prevent accidental scoping issues.
 #
-# https://docs.puppet.com/guides/style_guide.html#namespacing-variables
+# @example What you have done
+#   $operatingsystem
+#
+# @example What you should have done
+#   $::operatingsystem
+#
+# @style_guide #namespacing-variables
+# @enabled true
 PuppetLint.new_check(:variable_scope) do
   DEFAULT_SCOPE_VARS = Set[
     'name',
@@ -34,6 +38,11 @@ PuppetLint.new_check(:variable_scope) do
   ]
   POST_VAR_TOKENS = Set[:COMMA, :EQUALS, :RPAREN]
 
+  # Test the manifest tokens for any variables that are referenced in the
+  # manifest.  If the variables are not fully qualified or one of the
+  # variables automatically created in the scope, check that they have been
+  # defined in the local scope and record a warning for each variable that has
+  # not.
   def check
     variables_in_scope = DEFAULT_SCOPE_VARS.clone
 

@@ -1,8 +1,19 @@
-# Public: Check the manifest for unquoted node names and record a warning for
-# each instance found.
+# Node names should be one of the following:
 #
-# No style guide reference
+#  * A quoted string
+#  * The bare word `default`
+#  * A regular expression
+#
+# @example What you have done
+#   node server1 { }
+#
+# @example What you should have done
+#   node 'server1' { }
+#
+# @enabled true
 PuppetLint.new_check(:unquoted_node_name) do
+  # Check the manifest for unquoted node names and record a warning for each
+  # instance found.
   def check
     node_tokens = tokens.select { |token| token.type == :NODE }
     node_tokens.each do |node|

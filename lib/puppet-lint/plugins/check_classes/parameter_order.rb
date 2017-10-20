@@ -1,9 +1,27 @@
-# Public: Test the manifest tokens for any parameterised classes or defined
-# types that take parameters and record a warning if there are any optional
-# parameters listed before required parameters.
+# In parameterized class and defined type declarations, parameters that are
+# required should be listed before optional parameters (i.e. parameters with
+# default values).
 #
-# https://docs.puppet.com/guides/style_guide.html#display-order-of-parameters
+# @example What you have done
+#   class ntp(
+#     $options = 'iburst',
+#     $servers,
+#     $multicast = false,
+#   ) {}
+#
+# @example What you should have done
+#   class ntp(
+#     $servers,
+#     $multicast = false,
+#     $options   = 'iburst',
+#   ) { }
+#
+# @style_guide #display-order-of-parameters
+# @enabled true
 PuppetLint.new_check(:parameter_order) do
+  # Test the manifest tokens for any parameterised classes or defined types
+  # that take parameters and record a warning if there are any optional
+  # parameters listed before required parameters.
   def check
     (class_indexes + defined_type_indexes).each do |class_idx|
       next if class_idx[:param_tokens].nil?

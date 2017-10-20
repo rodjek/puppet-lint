@@ -1,9 +1,21 @@
-# Public: Check the manifest tokens for any puppet:// URL strings where the
-# path section doesn't start with modules/ and record a warning for each
-# instance found.
+# When using puppet:// URLs, you should ensure that the path starts with
+# `modules/` (as the most common mount point in the Puppet fileserver).
 #
-# No style guide reference
+# @example What you have done
+#   file { '/etc/apache/apache2.conf':
+#     source => 'puppet:///apache/etc/apache/apache2.conf',
+#   }
+#
+# @example What you should have done
+#   file { '/etc/apache/apache2.conf':
+#     source => 'puppet:///modules/apache/etc/apache/apache2.conf',
+#   }
+#
+# @enabled true
 PuppetLint.new_check(:puppet_url_without_modules) do
+  # Check the manifest tokens for any puppet:// URL strings where the path
+  # section doesn't start with modules/ and record a warning for each instance
+  # found.
   def check
     tokens.select { |token|
       (token.type == :SSTRING || token.type == :STRING || token.type == :DQPRE) && token.value.start_with?('puppet://')

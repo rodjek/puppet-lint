@@ -1,8 +1,19 @@
-# Public: Test the manifest tokens for chaining arrow that is
-# on the line of the left operand when the right operand is on another line.
+# A chain operator (`->`, `<-`, `~>`, or `<~`) should appear on the same line
+# as its right-hand operand.
 #
-# https://docs.puppet.com/guides/style_guide.html#chaining-arrow-syntax
+# @example What you have done
+#   Service['httpd'] ->
+#   Package['httpd']
+#
+# @example What you should have done
+#   Package['httpd']
+#   -> Service['httpd']
+#
+# @style_guide #chaining-arrow-syntax
+# @enabled true
 PuppetLint.new_check(:arrow_on_right_operand_line) do
+  # Test the manifest token for chaining arrows that are on the same line as
+  # the left operand when the right operand is on another line.
   def check
     tokens.select { |r| Set[:IN_EDGE, :IN_EDGE_SUB].include?(r.type) }.each do |token|
       next if token.next_code_token.line == token.line

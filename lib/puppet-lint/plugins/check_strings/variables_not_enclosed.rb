@@ -1,9 +1,17 @@
-# Public: Check the manifest tokens for any variables in a string that have
-# not been enclosed by braces ({}) and record a warning for each instance
-# found.
+# All variables should be enclosed in braces (`{}`) when being interpolated in
+# a string.
 #
-# https://docs.puppet.com/guides/style_guide.html#quoting
+# @example What you have done
+#   $foo = "bar $baz"
+#
+# @example What you should have done
+#   $foo = "bar ${baz}"
+#
+# @style_guide #quoting
+# @enabled true
 PuppetLint.new_check(:variables_not_enclosed) do
+  # Check the manifest tokens for any variables in a string that have not been
+  # enclosed by braces ({}) and record a warning for each instance found.
   def check
     tokens.select { |r|
       r.type == :UNENC_VARIABLE

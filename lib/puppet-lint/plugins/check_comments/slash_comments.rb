@@ -1,8 +1,17 @@
-# Public: Check the manifest tokens for any comments started with slashes
-# (//) and record a warning for each instance found.
+# Although the Puppet language allows you to use `//` style comments, it is
+# recommended that you use `#` style comments.
 #
-# https://docs.puppet.com/guides/style_guide.html#comments
+# @example What you have done
+#   // my awesome comment
+#
+# @example What you should have done
+#   # my awesome comment
+#
+# @style_guide #comments
+# @enabled true
 PuppetLint.new_check(:slash_comments) do
+  # Check the manifest tokens for any comments started with slashes (//) and
+  # record a warning for each instance found.
   def check
     tokens.select { |token|
       token.type == :SLASH_COMMENT

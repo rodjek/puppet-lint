@@ -1,9 +1,26 @@
-# Public: Check the tokens of each resource instance for an ensure parameter
-# and if found, check that it is the first parameter listed.  If it is not
-# the first parameter, record a warning.
+# If a resource declaration includes an `ensure` parameter, it should be the
+# first parameter specified.
 #
-# https://docs.puppet.com/guides/style_guide.html#attribute-ordering
+# @example What you have done
+#   file { '/tmp/foo':
+#     owner  => 'root',
+#     group  => 'root',
+#     ensure => present,
+#   }
+#
+# @example What you should have done
+#   file { '/tmp/foo':
+#     ensure => present,
+#     owner  => 'root',
+#     group  => 'root',
+#   }
+#
+# @style_guide #attribute-ordering
+# @enabled true
 PuppetLint.new_check(:ensure_first_param) do
+  # Check the tokens of each resource instance for an ensure parameter and if
+  # found, check that it is the first parameter listed.  If it is not the first
+  # parameter, record a warning.
   def check
     resource_indexes.each do |resource|
       next if [:CLASS].include?(resource[:type].type)

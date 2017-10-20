@@ -1,12 +1,23 @@
-# Public: Check the manifest tokens for any class or defined type that does not
-# have a comment directly above it (hopefully, explaining the usage of it) and
-# record a warning for each instance found.
+# All Puppet classes and defines should be documented via comments directly
+# above the start of the code.
 #
-# https://docs.puppet.com/guides/style_guide.html#public-and-private
+# @example What you have done
+#   class ntp {}
+#
+# @example What you should have done
+#   # Install and configure an NTP server
+#   # You should feel free to expand on this and document any parameters etc
+#   class ntp {}
+#
+# @style_guide #public-and-private
+# @enabled true
 PuppetLint.new_check(:documentation) do
   COMMENT_TOKENS = Set[:COMMENT, :MLCOMMENT, :SLASH_COMMENT]
   WHITESPACE_TOKENS = Set[:WHITESPACE, :NEWLINE, :INDENT]
 
+  # Check the manifest tokens for any class or defined type that does not have
+  # a comment directly above it (hopefully, explaining the usage of it) and
+  # record a warning for each instance found.
   def check
     (class_indexes + defined_type_indexes).each do |item_idx|
       comment_token = find_comment_token(item_idx[:tokens].first)
