@@ -2,7 +2,7 @@
 # contain any variables or common escape characters and record a warning for
 # each instance found.
 #
-# https://docs.puppet.com/guides/style_guide.html#quoting
+# https://puppet.com/docs/puppet/latest/style_guide.html#quoting
 PuppetLint.new_check(:double_quoted_strings) do
   ESCAPE_CHAR_RE = %r{(\\\$|\\"|\\'|'|\r|\t|\\t|\n|\\n|\\\\)}
 

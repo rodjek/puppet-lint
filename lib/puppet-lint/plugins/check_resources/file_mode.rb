@@ -2,7 +2,7 @@
 # parameter and if found, record a warning if the value of that parameter is
 # not a 4 digit octal value (0755) or a symbolic mode ('o=rwx,g+r').
 #
-# https://docs.puppet.com/guides/style_guide.html#file-modes
+# https://puppet.com/docs/puppet/latest/style_guide.html#file-modes
 PuppetLint.new_check(:file_mode) do
   MSG = 'mode should be represented as a 4 digit octal value or symbolic mode'.freeze
   SYM_RE = '([ugoa]*[-=+][-=+rstwxXugo]*)(,[ugoa]*[-=+][-=+rstwxXugo]*)*'.freeze

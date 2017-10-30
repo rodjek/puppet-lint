@@ -1,7 +1,7 @@
 # Public: Check the manifest tokens for any indentation not using 2 space soft
 # tabs and record an error for each instance found.
 #
-# https://docs.puppet.com/guides/style_guide.html#spacing-indentation-and-whitespace
+# https://puppet.com/docs/puppet/latest/style_guide.html#spacing-indentation-and-whitespace
 PuppetLint.new_check(:'2sp_soft_tabs') do
   def check
     tokens.select { |r|

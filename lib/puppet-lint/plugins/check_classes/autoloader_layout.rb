@@ -2,7 +2,7 @@
 # not in an appropriately named file for the autoloader to detect and record
 # an error of each instance found.
 #
-# https://docs.puppet.com/guides/style_guide.html#separate-files
+# https://puppet.com/docs/puppet/latest/style_guide.html#separate-files
 PuppetLint.new_check(:autoloader_layout) do
   def check
     return if fullpath.nil? || fullpath == ''

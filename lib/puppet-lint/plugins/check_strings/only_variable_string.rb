@@ -1,7 +1,7 @@
 # Public: Check the manifest tokens for double quoted strings that contain
 # a single variable only and record a warning for each instance found.
 #
-# https://docs.puppet.com/guides/style_guide.html#quoting
+# https://puppet.com/docs/puppet/latest/style_guide.html#quoting
 PuppetLint.new_check(:only_variable_string) do
   VAR_TYPES = Set[:VARIABLE, :UNENC_VARIABLE]
 

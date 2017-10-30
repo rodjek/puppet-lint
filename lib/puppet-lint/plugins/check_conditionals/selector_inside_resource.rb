@@ -1,7 +1,7 @@
 # Public: Test the manifest tokens for any selectors embedded within resource
 # declarations and record a warning for each instance found.
 #
-# https://docs.puppet.com/guides/style_guide.html#keep-resource-declarations-simple
+# https://puppet.com/docs/puppet/latest/style_guide.html#keep-resource-declarations-simple
 PuppetLint.new_check(:selector_inside_resource) do
   def check
     resource_indexes.each do |resource|

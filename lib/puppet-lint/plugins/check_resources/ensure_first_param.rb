@@ -2,7 +2,7 @@
 # and if found, check that it is the first parameter listed.  If it is not
 # the first parameter, record a warning.
 #
-# https://docs.puppet.com/guides/style_guide.html#attribute-ordering
+# https://puppet.com/docs/puppet/latest/style_guide.html#attribute-ordering
 PuppetLint.new_check(:ensure_first_param) do
   def check
     resource_indexes.each do |resource|

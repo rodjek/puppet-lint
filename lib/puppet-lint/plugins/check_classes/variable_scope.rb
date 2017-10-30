@@ -4,7 +4,7 @@
 # defined in the local scope and record a warning for each variable that has
 # not.
 #
-# https://docs.puppet.com/guides/style_guide.html#namespacing-variables
+# https://puppet.com/docs/puppet/latest/style_guide.html#namespacing-variables
 PuppetLint.new_check(:variable_scope) do
   DEFAULT_SCOPE_VARS = Set[
     'name',

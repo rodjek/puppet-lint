@@ -1,7 +1,7 @@
 # Public: Test the manifest tokens for chaining arrow that is
 # on the line of the left operand when the right operand is on another line.
 #
-# https://docs.puppet.com/guides/style_guide.html#chaining-arrow-syntax
+# https://puppet.com/docs/puppet/latest/style_guide.html#chaining-arrow-syntax
 PuppetLint.new_check(:arrow_on_right_operand_line) do
   def check
     tokens.select { |r| Set[:IN_EDGE, :IN_EDGE_SUB].include?(r.type) }.each do |token|

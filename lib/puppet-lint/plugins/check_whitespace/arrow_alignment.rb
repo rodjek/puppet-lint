@@ -1,7 +1,7 @@
 # Public: Check the manifest tokens for any arrows (=>) in a grouping ({}) that
 # are not aligned with other arrows in that grouping.
 #
-# https://docs.puppet.com/guides/style_guide.html#spacing-indentation-and-whitespace
+# https://puppet.com/docs/puppet/latest/style_guide.html#spacing-indentation-and-whitespace
 PuppetLint.new_check(:arrow_alignment) do
   COMMENT_TYPES = Set[:COMMENT, :SLASH_COMMENT, :MLCOMMENT]
 

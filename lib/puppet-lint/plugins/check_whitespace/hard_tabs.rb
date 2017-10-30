@@ -1,7 +1,7 @@
 # Public: Check the raw manifest string for lines containing hard tab
 # characters and record an error for each instance found.
 #
-# https://docs.puppet.com/guides/style_guide.html#spacing-indentation-and-whitespace
+# https://puppet.com/docs/puppet/latest/style_guide.html#spacing-indentation-and-whitespace
 PuppetLint.new_check(:hard_tabs) do
   WHITESPACE_TYPES = Set[:INDENT, :WHITESPACE]
 

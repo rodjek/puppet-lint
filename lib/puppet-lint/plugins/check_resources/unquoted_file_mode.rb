@@ -2,7 +2,7 @@
 # parameter and if found, record a warning if the value of that parameter is
 # not a quoted string.
 #
-# https://docs.puppet.com/guides/style_guide.html#file-modes
+# https://puppet.com/docs/puppet/latest/style_guide.html#file-modes
 PuppetLint.new_check(:unquoted_file_mode) do
   TOKEN_TYPES = Set[:NAME, :NUMBER]
 
