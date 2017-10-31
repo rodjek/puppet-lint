@@ -1,7 +1,7 @@
 # Public: Test the manifest tokens for any classes that inherit across
 # namespaces and record a warning for each instance found.
 #
-# https://docs.puppet.com/guides/style_guide.html#class-inheritance
+# https://puppet.com/docs/puppet/latest/style_guide.html#class-inheritance
 PuppetLint.new_check(:inherits_across_namespaces) do
   def check
     class_indexes.each do |class_idx|

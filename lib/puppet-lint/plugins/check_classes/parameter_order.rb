@@ -2,7 +2,7 @@
 # types that take parameters and record a warning if there are any optional
 # parameters listed before required parameters.
 #
-# https://docs.puppet.com/guides/style_guide.html#display-order-of-parameters
+# https://puppet.com/docs/puppet/latest/style_guide.html#display-order-of-parameters
 PuppetLint.new_check(:parameter_order) do
   def check
     (class_indexes + defined_type_indexes).each do |class_idx|

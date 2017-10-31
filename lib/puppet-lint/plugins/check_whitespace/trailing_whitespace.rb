@@ -1,7 +1,7 @@
 # Public: Check the manifest tokens for lines ending with whitespace and record
 # an error for each instance found.
 #
-# https://docs.puppet.com/guides/style_guide.html#spacing-indentation-and-whitespace
+# https://puppet.com/docs/puppet/latest/style_guide.html#spacing-indentation-and-whitespace
 PuppetLint.new_check(:trailing_whitespace) do
   def check
     tokens.select { |token|

@@ -3,7 +3,7 @@
 # to this rule are lines containing URLs and template() calls which would hurt
 # readability if split.
 #
-# https://docs.puppet.com/guides/style_guide.html#spacing-indentation-and-whitespace
+# https://puppet.com/docs/puppet/latest/style_guide.html#spacing-indentation-and-whitespace
 PuppetLint.new_check(:'140chars') do
   def check
     manifest_lines.each_with_index do |line, idx|

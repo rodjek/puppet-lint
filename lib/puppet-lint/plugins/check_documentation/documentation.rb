@@ -2,7 +2,7 @@
 # have a comment directly above it (hopefully, explaining the usage of it) and
 # record a warning for each instance found.
 #
-# https://docs.puppet.com/guides/style_guide.html#public-and-private
+# https://puppet.com/docs/puppet/latest/style_guide.html#public-and-private
 PuppetLint.new_check(:documentation) do
   COMMENT_TOKENS = Set[:COMMENT, :MLCOMMENT, :SLASH_COMMENT]
   WHITESPACE_TOKENS = Set[:WHITESPACE, :NEWLINE, :INDENT]

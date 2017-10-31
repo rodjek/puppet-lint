@@ -1,7 +1,7 @@
 # Public: Check the manifest tokens for any single quoted strings containing
 # a enclosed variable and record an error for each instance found.
 #
-# https://docs.puppet.com/guides/style_guide.html#quoting
+# https://puppet.com/docs/puppet/latest/style_guide.html#quoting
 PuppetLint.new_check(:single_quote_string_with_variables) do
   def check
     tokens.select { |r|

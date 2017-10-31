@@ -2,7 +2,7 @@
 # parameter and record a warning if the value of that parameter looks like
 # a symlink target (starts with a '/').
 #
-# https://docs.puppet.com/guides/style_guide.html#symbolic-links
+# https://puppet.com/docs/puppet/latest/style_guide.html#symbolic-links
 PuppetLint.new_check(:ensure_not_symlink_target) do
   def check
     resource_indexes.each do |resource|

@@ -1,7 +1,7 @@
 # Public: Check the manifest tokens for any resource titles / namevars that
 # are not quoted and record a warning for each instance found.
 #
-# https://docs.puppet.com/guides/style_guide.html#resource-names
+# https://puppet.com/docs/puppet/latest/style_guide.html#resource-names
 PuppetLint.new_check(:unquoted_resource_title) do
   def check
     title_tokens.each do |token|

@@ -1,7 +1,7 @@
 # Public: Test the manifest tokens for any classes or defined types that are
 # defined inside another class.
 #
-# https://docs.puppet.com/guides/style_guide.html#nested-classes-or-defined-types
+# https://puppet.com/docs/puppet/latest/style_guide.html#nested-classes-or-defined-types
 PuppetLint.new_check(:nested_classes_or_defines) do
   TOKENS = Set[:CLASS, :DEFINE]
 

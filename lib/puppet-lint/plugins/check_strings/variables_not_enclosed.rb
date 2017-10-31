@@ -2,7 +2,7 @@
 # not been enclosed by braces ({}) and record a warning for each instance
 # found.
 #
-# https://docs.puppet.com/guides/style_guide.html#quoting
+# https://puppet.com/docs/puppet/latest/style_guide.html#quoting
 PuppetLint.new_check(:variables_not_enclosed) do
   def check
     tokens.select { |r|

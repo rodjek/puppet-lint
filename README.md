@@ -5,7 +5,7 @@ Status](https://secure.travis-ci.org/rodjek/puppet-lint.png)](http://travis-ci.o
 [![Inline docs](http://inch-ci.org/github/rodjek/puppet-lint.png?branch=master)](http://inch-ci.org/github/rodjek/puppet-lint)
 
 Puppet Lint tests Puppet code against the recommended [Puppet language style
-guide](http://docs.puppet.com/puppet/latest/style_guide.html). Puppet Lint validates only code style; it does not validate syntax. To test syntax, use Puppet's `puppet parser validate` command.
+guide](http://puppet.com/docs/puppet/latest/style_guide.html). Puppet Lint validates only code style; it does not validate syntax. To test syntax, use Puppet's `puppet parser validate` command.
 
 ## Compatibility warning
 
