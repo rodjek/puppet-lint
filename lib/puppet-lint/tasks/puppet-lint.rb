@@ -64,8 +64,8 @@ class PuppetLint
           PuppetLint.configuration.send("#{config}=".to_sym, value) unless value.nil?
         end
 
-        if PuppetLint.configuration.ignore_paths
-          @ignore_paths ||= PuppetLint.configuration.ignore_paths
+        if PuppetLint.configuration.ignore_paths && @ignore_paths.empty?
+          @ignore_paths = PuppetLint.configuration.ignore_paths
         end
 
         if PuppetLint.configuration.pattern
