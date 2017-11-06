@@ -17,11 +17,11 @@ devcards:
   -
     title: API Reference
     icon: code
-    path: /documentation/api_reference/
+    path: /documentation/developer/plugin_api/
   -
     title: Token Reference
     icon: code
-    path: /documentation/token_reference/
+    path: /documentation/developer/tokens/
 ---
 
 {:.section-title}

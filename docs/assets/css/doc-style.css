@@ -29,6 +29,14 @@ html, body {
   padding-bottom: 1rem;
 }
 
+.doc h4 {
+  padding-top: 1rem;
+}
+
+.doc h5 {
+  padding-top: 1rem;
+}
+
 /*--- spacers ---*/
 .spacer {
   margin: 15px 0;
