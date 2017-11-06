@@ -9,6 +9,14 @@ usercards:
     title: Control Comments
     icon: code
     path: /documentation/control_comments/
+  -
+    title: Configuration
+    icon: code
+    path: /documentation/configuration/
+  -
+    title: Running puppet-lint with Rake
+    icon: code
+    path: /documentation/rake/
 devcards:
   -
     title: Plugin Tutorial
