@@ -52,9 +52,11 @@ class PuppetLint::Bin
       PuppetLint.configuration.with_filename = true if path.length > 1
 
       return_val = 0
+      ignore_paths = PuppetLint.configuration.ignore_paths
 
       puts '[' if PuppetLint.configuration.json
       path.each do |f|
+        next if ignore_paths.any? { |p| File.fnmatch(p, f) }
         l = PuppetLint.new
         l.file = f
         l.run
