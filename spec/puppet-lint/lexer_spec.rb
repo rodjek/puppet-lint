@@ -1338,6 +1338,20 @@ END
       expect(token.type).to eq(:COMMENT)
       expect(token.value).to eq(' bar baz')
     end
+
+    it 'should not include DOS line endings in the comment value' do
+      tokens = @lexer.tokenise("foo # bar baz\r\n")
+
+      expect(tokens[2]).to have_attributes(:type => :COMMENT, :value => ' bar baz')
+      expect(tokens[3]).to have_attributes(:type => :NEWLINE, :value => "\r\n")
+    end
+
+    it 'should not include Unix line endings in the comment value' do
+      tokens = @lexer.tokenise("foo # bar baz\n")
+
+      expect(tokens[2]).to have_attributes(:type => :COMMENT, :value => ' bar baz')
+      expect(tokens[3]).to have_attributes(:type => :NEWLINE, :value => "\n")
+    end
   end
 
   context ':MLCOMMENT' do
@@ -1359,6 +1373,20 @@ END
       token = @lexer.tokenise('foo // bar baz')[2]
       expect(token.type).to eq(:SLASH_COMMENT)
       expect(token.value).to eq(' bar baz')
+    end
+
+    it 'should not include DOS line endings in the comment value' do
+      tokens = @lexer.tokenise("foo // bar baz\r\n")
+
+      expect(tokens[2]).to have_attributes(:type => :SLASH_COMMENT, :value => ' bar baz')
+      expect(tokens[3]).to have_attributes(:type => :NEWLINE, :value => "\r\n")
+    end
+
+    it 'should not include Unix line endings in the comment value' do
+      tokens = @lexer.tokenise("foo // bar baz\n")
+
+      expect(tokens[2]).to have_attributes(:type => :SLASH_COMMENT, :value => ' bar baz')
+      expect(tokens[3]).to have_attributes(:type => :NEWLINE, :value => "\n")
     end
   end
 

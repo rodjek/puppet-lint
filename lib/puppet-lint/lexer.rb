@@ -233,12 +233,12 @@ class PuppetLint
           tokens << new_token(:HEREDOC_OPEN, heredoc_name)
           length = heredoc_name.size + 3
 
-        elsif comment = chunk[%r{\A(#.*)}, 1]
+        elsif comment = chunk[%r{\A(#[^\r\n]*)#{LINE_END_RE}?}, 1]
           length = comment.size
           comment.sub!(%r{#}, '')
           tokens << new_token(:COMMENT, comment)
 
-        elsif slash_comment = chunk[%r{\A(//.*)}, 1]
+        elsif slash_comment = chunk[%r{\A(//[^\r\n]*)#{LINE_END_RE}?}, 1]
           length = slash_comment.size
           slash_comment.sub!(%r{//}, '')
           tokens << new_token(:SLASH_COMMENT, slash_comment)
