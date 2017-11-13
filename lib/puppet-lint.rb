@@ -75,7 +75,7 @@ class PuppetLint
     return unless File.exist?(path)
 
     @path = path
-    File.open(path, 'r:UTF-8') do |f|
+    File.open(path, 'rb:UTF-8') do |f|
       @code = f.read
     end
 
