@@ -98,7 +98,7 @@ describe PuppetLint::Bin do
       [
         '--ignore-paths',
         'spec/*',
-        'spec/fixtures/test/manifests/malformed.pp'
+        'spec/fixtures/test/manifests/malformed.pp',
       ]
     end
 
