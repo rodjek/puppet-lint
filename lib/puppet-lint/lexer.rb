@@ -172,6 +172,8 @@ class PuppetLint
     # \p{Zs} == ASCII + Unicode non-linebreaking whitespace
     WHITESPACE_RE = RUBY_VERSION == '1.8.7' ? %r{[\t\v\f ]} : %r{[\t\v\f\p{Zs}]}
 
+    LINE_END_RE = %r{(?:\r\n|\r|\n)}
+
     # Internal: Access the internal token storage.
     #
     # Returns an Array of PuppetLint::Lexer::Toxen objects.
@@ -222,7 +224,7 @@ class PuppetLint
 
         elsif chunk.start_with?('"')
           str_contents = slurp_string(code[i + 1..-1])
-          lines_parsed = code[0..i].split("\n")
+          lines_parsed = code[0..i].split(LINE_END_RE)
           interpolate_string(str_contents, lines_parsed.count, lines_parsed.last.length)
           length = str_contents.size + 1
 
@@ -231,12 +233,12 @@ class PuppetLint
           tokens << new_token(:HEREDOC_OPEN, heredoc_name)
           length = heredoc_name.size + 3
 
-        elsif comment = chunk[%r{\A(#.*)}, 1]
+        elsif comment = chunk[%r{\A(#[^\r\n]*)#{LINE_END_RE}?}, 1]
           length = comment.size
           comment.sub!(%r{#}, '')
           tokens << new_token(:COMMENT, comment)
 
-        elsif slash_comment = chunk[%r{\A(//.*)}, 1]
+        elsif slash_comment = chunk[%r{\A(//[^\r\n]*)#{LINE_END_RE}?}, 1]
           length = slash_comment.size
           slash_comment.sub!(%r{//}, '')
           tokens << new_token(:SLASH_COMMENT, slash_comment)
@@ -254,13 +256,13 @@ class PuppetLint
           length = str_content.size + 1
           tokens << new_token(:REGEX, str_content[0..-2])
 
-        elsif eolindent = chunk[%r{\A((\r\n|\r|\n)#{WHITESPACE_RE}+)}m, 1]
-          eol = eolindent[%r{\A([\r\n]+)}m, 1]
+        elsif eolindent = chunk[%r{\A(#{LINE_END_RE}#{WHITESPACE_RE}+)}m, 1]
+          eol = eolindent[%r{\A(#{LINE_END_RE})}m, 1]
           tokens << new_token(:NEWLINE, eol)
           length = eol.size
 
           if heredoc_queue.empty?
-            indent = eolindent[%r{\A[\r\n]+(#{WHITESPACE_RE}+)}m, 1]
+            indent = eolindent[%r{\A#{LINE_END_RE}+(#{WHITESPACE_RE}+)}m, 1]
             tokens << new_token(:INDENT, indent)
             length += indent.size
           else
@@ -275,7 +277,7 @@ class PuppetLint
           length = whitespace.size
           tokens << new_token(:WHITESPACE, whitespace)
 
-        elsif eol = chunk[%r{\A(\r\n|\r|\n)}, 1]
+        elsif eol = chunk[%r{\A(#{LINE_END_RE})}, 1]
           length = eol.size
           tokens << new_token(:NEWLINE, eol)
 
@@ -283,7 +285,7 @@ class PuppetLint
             heredoc_tag = heredoc_queue.shift
             heredoc_name = heredoc_tag[%r{\A"?(.+?)"?(:.+?)?(/.*)?\Z}, 1]
             str_contents = StringScanner.new(code[(i + length)..-1]).scan_until(%r{\|?\s*-?\s*#{heredoc_name}})
-            _ = code[0..(i + length)].split("\n")
+            _ = code[0..(i + length)].split(LINE_END_RE)
             interpolate_heredoc(str_contents, heredoc_tag)
             length += str_contents.size
           end
@@ -386,7 +388,7 @@ class PuppetLint
         @line_no += 1
         @column = 1
       else
-        lines = token.to_manifest.split(%r{(?:\r\n|\r|\n)}, -1)
+        lines = token.to_manifest.split(LINE_END_RE, -1)
         @line_no += lines.length - 1
         if lines.length > 1
           # if the token renders to multiple lines, set the column state to the
@@ -438,7 +440,7 @@ class PuppetLint
           else
             token_column = column + (ss.pos - value.size)
             tokens << new_token(:DQPOST, value, :line => line, :column => token_column)
-            line += value.scan(%r{(\r\n|\r|\n)}).size
+            line += value.scan(LINE_END_RE).size
             @column = column + ss.pos + 1
             @line_no = line
           end
@@ -449,7 +451,7 @@ class PuppetLint
           else
             token_column = column + (ss.pos - value.size)
             tokens << new_token(:DQMID, value, :line => line, :column => token_column)
-            line += value.scan(%r{(\r\n|\r|\n)}).size
+            line += value.scan(LINE_END_RE).size
           end
           if ss.scan(%r{\{}).nil?
             var_name = ss.scan(%r{(::)?(\w+(-\w+)*::)*\w+(-\w+)*})
@@ -461,7 +463,7 @@ class PuppetLint
               tokens << new_token(:UNENC_VARIABLE, var_name, :line => line, :column => token_column)
             end
           else
-            line += value.scan(%r{(\r\n|\r|\n)}).size
+            line += value.scan(LINE_END_RE).size
             contents = ss.scan_until(%r{\}})[0..-2]
             raw = contents.dup
             if contents.match(%r{\A(::)?([\w-]+::)*[\w-]+(\[.+?\])*}) && !contents.match(%r{\A\w+\(})
