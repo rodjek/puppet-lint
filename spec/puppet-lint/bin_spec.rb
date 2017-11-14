@@ -93,6 +93,19 @@ describe PuppetLint::Bin do
     its(:stderr) { is_expected.to eq('Try running `puppet parser validate <file>`') }
   end
 
+  context 'when passed ignore paths option' do
+    let(:args) do
+      [
+        '--ignore-paths',
+        'spec/*',
+        'spec/fixtures/test/manifests/malformed.pp'
+      ]
+    end
+
+    its(:exitstatus) { is_expected.to eq(0) }
+    its(:stdout) { is_expected.to eq('') }
+  end
+
   context 'when limited to errors only' do
     let(:args) do
       [
