@@ -19,9 +19,8 @@ class PuppetLint::Bin
   #
   # Returns an Integer exit code to be passed back to the shell.
   def run
-    opts = PuppetLint::OptParser.build
-
     begin
+      opts = PuppetLint::OptParser.build(@args)
       opts.parse!(@args)
     rescue OptionParser::InvalidOption => e
       puts "puppet-lint: #{e.message}"

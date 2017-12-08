@@ -17,12 +17,17 @@ class PuppetLint::OptParser
   # Public: Initialise a new puppet-lint OptionParser.
   #
   # Returns an OptionParser object.
-  def self.build
-    OptionParser.new do |opts|
+  def self.build(args)
+    noconfig = false
+    opt_parser = OptionParser.new do |opts|
       opts.banner = HELP_TEXT
 
       opts.on('--version', 'Display the current version.') do
         PuppetLint.configuration.display_version = true
+      end
+
+      opts.on('--no-config', 'Do not load default puppet-lint option files.') do
+        noconfig = true
       end
 
       opts.on('-c', '--config FILE', 'Load puppet-lint options from file.') do |file|
@@ -119,13 +124,17 @@ class PuppetLint::OptParser
           PuppetLint.configuration.send("enable_#{check}")
         end
       end
-
-      opts.load('/etc/puppet-lint.rc')
+    end
+    opt_parser.parse!(args)
+    unless noconfig
+      opt_parser.load('/etc/puppet-lint.rc')
       if ENV.key?('HOME') && File.readable?(ENV['HOME'])
         home_dotfile_path = File.expand_path('~/.puppet-lint.rc')
-        opts.load(home_dotfile_path) if File.readable?(home_dotfile_path)
+        opt_parser.load(home_dotfile_path) if File.readable?(home_dotfile_path)
       end
-      opts.load('.puppet-lint.rc')
+      opt_parser.load('.puppet-lint.rc')
     end
+
+    opt_parser
   end
 end
