@@ -165,6 +165,7 @@ is split up into multiple tokens.
 | :NUMBER          | A number expressed in decimal (`123`), in hexidecimal (`0x123`) or in scientific notation ('12e3') |
 | :NAME            | A lowercase bare word or sequence of bare words joined by double colons (`::`) (e.g. `foo::bar`, `thing2`) |
 | :CLASSREF        | A special case for the `:NAME` token where the word starts with capital letter (e.g. `Foo`, `Foo::Bar`) |
+| :FUNCTION_NAME   | A special case for the `:NAME` token where the value is suffixed with a left parentheses (e.g. `hiera(, template(`) |
 | :VARIABLE        | A special case for the `:NAME` token where the value is prefixed with a dollar sign (`$`) (e.g. `$foo`, `$::foo::bar`) |
 | :UNENC\_VARIABLE | A special case for the `:VARIABLE` token which can only exist in a double quoted string (i.e. between `:DQPRE` and `:DQPOST` tokens). Variables found inside those strings will have a token type of :VARIABLE if they are enclosed in braces (e.g. `${foo}`), if not, they will have the type `:UNENC_VARIABLE` |
 {: .table .table-striped .table-condensed }
