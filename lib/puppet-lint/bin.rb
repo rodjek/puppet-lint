@@ -33,6 +33,19 @@ class PuppetLint::Bin
       return 0
     end
 
+    if PuppetLint.configuration.list_checks
+      puts "Available Puppet-Lint Checks\n\n"
+      puts "To run only specific checks, use the `--only-checks` option, with a comma-separated list of arguments specifying which checks to make.\n\n"
+      puts "To disable any of the checks when running the `puppet-lint` command, add a `--no-<check_name>-check` flag to the command.\n\n"
+      puts "To disable a check with a control comment in a file, add the line '# lint:ignore:<check_name>' where you'd like to begin ignoring the check."
+      puts "Add the line '# lint:endignore' where you'd like to re-enable linting for the check in question."
+      puts "Control comments documentation: http://puppet-lint.com/controlcomments/\n\n"
+      puts "List of available checks:"
+      puts PuppetLint.configuration.checks
+      puts
+      return 0
+    end
+
     if @args[0].nil?
       puts 'puppet-lint: no file specified'
       puts "puppet-lint: try 'puppet-lint --help' for more information"
