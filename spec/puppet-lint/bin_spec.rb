@@ -55,7 +55,6 @@ describe PuppetLint::Bin do
     its(:stdout) { is_expected.to eq("puppet-lint #{PuppetLint::VERSION}") }
   end
 
-
   context 'when asked to display available checks' do
     let(:args) { '--list-checks' }
     all_checks = PuppetLint.configuration.checks.map(&:to_s)

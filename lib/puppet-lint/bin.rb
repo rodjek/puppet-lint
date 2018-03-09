@@ -40,7 +40,7 @@ class PuppetLint::Bin
       puts "To disable a check with a control comment in a file, add the line '# lint:ignore:<check_name>' where you'd like to begin ignoring the check."
       puts "Add the line '# lint:endignore' where you'd like to re-enable linting for the check in question."
       puts "Control comments documentation: http://puppet-lint.com/controlcomments/\n\n"
-      puts "List of available checks:"
+      puts 'List of available checks:'
       puts PuppetLint.configuration.checks
       puts
       return 0
