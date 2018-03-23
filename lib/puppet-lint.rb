@@ -13,6 +13,15 @@ require 'puppet-lint/monkeypatches'
 class PuppetLint::NoCodeError < StandardError; end
 class PuppetLint::NoFix < StandardError; end
 
+# Parser Syntax Errors
+class PuppetLint::SyntaxError < StandardError
+  attr_reader :token
+
+  def initialize(token)
+    @token = token
+  end
+end
+
 # Public: The public interface to puppet-lint.
 class PuppetLint
   # Public: Gets/Sets the String manifest code to be checked.

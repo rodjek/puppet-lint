@@ -176,6 +176,8 @@ class PuppetLint::Data
           end_token = colon_token.next_token_of([:SEMIC, :RBRACE])
           end_idx = tokens.index(end_token)
 
+          raise PuppetLint::SyntaxError, colon_token if end_idx.nil?
+
           result << {
             :start        => start_idx + 1,
             :end          => end_idx,

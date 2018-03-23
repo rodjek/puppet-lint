@@ -4,6 +4,24 @@ describe PuppetLint::Data do
   subject(:data) { PuppetLint::Data }
   let(:lexer) { PuppetLint::Lexer.new }
 
+  describe '.resource_indexes' do
+    before(:each) do
+      data.tokens = lexer.tokenise(manifest)
+    end
+
+    context 'when a namespaced class name contains a single colon' do
+      let(:manifest) { 'class foo:bar { }' }
+
+      it 'raises a SyntaxError' do
+        expect {
+          data.resource_indexes
+        }.to raise_error(PuppetLint::SyntaxError) { |error|
+          expect(error.token).to eq(data.tokens[3])
+        }
+      end
+    end
+  end
+
   describe '.insert' do
     let(:manifest) { '$x = $a' }
     let(:new_token) { PuppetLint::Lexer::Token.new(:PLUS, '+', 0, 0) }
