@@ -67,6 +67,19 @@ class PuppetLint::Checks
     end
 
     @problems
+  rescue PuppetLint::SyntaxError => e
+    @problems << {
+      :kind     => :error,
+      :check    => :syntax,
+      :message  => 'Syntax error',
+      :fullpath => File.expand_path(fileinfo, ENV['PWD']),
+      :filename => File.basename(fileinfo),
+      :path     => fileinfo,
+      :line     => e.token.line,
+      :column   => e.token.column,
+    }
+
+    @problems
   rescue => e
     $stdout.puts <<-END.gsub(%r{^ {6}}, '')
       Whoops! It looks like puppet-lint has encountered an error that it doesn't
