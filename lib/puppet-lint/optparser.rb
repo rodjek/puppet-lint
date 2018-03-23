@@ -113,6 +113,10 @@ class PuppetLint::OptParser
         end
       end
 
+      opts.on('--ignore-paths PATHS', 'A comma separated list of patterns to ignore') do |paths|
+        PuppetLint.configuration.ignore_paths = paths.split(',')
+      end
+
       PuppetLint.configuration.checks.each do |check|
         opts.on("--no-#{check}-check", "Skip the #{check} check.") do
           PuppetLint.configuration.send("disable_#{check}")
