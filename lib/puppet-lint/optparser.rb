@@ -99,6 +99,10 @@ class PuppetLint::OptParser
         PuppetLint.configuration.json = true
       end
 
+      opts.on('--list-checks', 'List available check names.') do
+        PuppetLint.configuration.list_checks = true
+      end
+
       opts.separator('')
       opts.separator('    Checks:')
 
