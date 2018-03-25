@@ -1,5 +1,28 @@
 # Change Log
 
+## [2.3.4](https://github.com/rodjek/puppet-lint/tree/2.3.4) (2018-03-26)
+[Full Changelog](https://github.com/rodjek/puppet-lint/compare/2.3.3...2.3.4)
+
+**Implemented enhancements:**
+
+- Allow ignoring default configurations files on the command line [\#787](https://github.com/rodjek/puppet-lint/issues/787)
+- Implement --list-checks feature, to list the names of all available checks from the cli. [\#804](https://github.com/rodjek/puppet-lint/pull/804) ([xraystyle](https://github.com/xraystyle))
+- Option to disable loading default configurations files [\#789](https://github.com/rodjek/puppet-lint/pull/789) ([dioni21](https://github.com/dioni21))
+- Allow passing ignore\_paths from cli [\#783](https://github.com/rodjek/puppet-lint/pull/783) ([keymone](https://github.com/keymone))
+
+**Fixed bugs:**
+
+- Bad value for range [\#801](https://github.com/rodjek/puppet-lint/issues/801)
+- puppet-lint doesn't handle CRLFs very well [\#778](https://github.com/rodjek/puppet-lint/issues/778)
+- Configuration's ignore\_paths is not respected [\#774](https://github.com/rodjek/puppet-lint/issues/774)
+
+**Merged pull requests:**
+
+- Handle single colon in resource name syntax error [\#809](https://github.com/rodjek/puppet-lint/pull/809) ([rodjek](https://github.com/rodjek))
+- \(\#778\) Don't include line ending in single line comment token values [\#782](https://github.com/rodjek/puppet-lint/pull/782) ([rodjek](https://github.com/rodjek))
+- Fix setting ignore\_paths in Rake task [\#777](https://github.com/rodjek/puppet-lint/pull/777) ([alzabo](https://github.com/alzabo))
+- Add support for passing backslash separated paths to puppet-lint [\#769](https://github.com/rodjek/puppet-lint/pull/769) ([rodjek](https://github.com/rodjek))
+
 ## [2.3.3](https://github.com/rodjek/puppet-lint/tree/2.3.3) (2017-09-28)
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/2.3.2...2.3.3)
 
