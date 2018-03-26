@@ -1,7 +1,7 @@
 require 'rake'
 require 'rspec/core/rake_task'
 require 'puppet-lint'
-require 'puppet-lint/tasks/release_test'
+require 'puppet-lint/tasks/release_test' unless RUBY_VERSION.start_with?('1')
 
 task :default => :test
 
@@ -24,6 +24,14 @@ begin
 
   RuboCop::RakeTask.new(:rubocop) do |task|
     task.options = %w[-D -E]
+    task.patterns = [
+      'lib/**/*.rb',
+      'spec/**/*.rb',
+      'bin/*',
+      '*.gemspec',
+      'Gemfile',
+      'Rakefile',
+    ]
   end
 rescue LoadError
   $stderr.puts 'Rubocop is not available for this version of Ruby.'

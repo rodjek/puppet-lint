@@ -1,6 +1,7 @@
 require 'rake'
 require 'open3'
 require 'English'
+require 'parser/current'
 
 def run_cmd(message, *cmd)
   print("  #{message}... ")
@@ -25,6 +26,33 @@ def run_cmd(message, *cmd)
   end
 
   [output.strip, status.success?]
+end
+
+def with_puppet_lint_head
+  print('  Updating Gemfile to use puppet-lint HEAD... ')
+
+  buffer = Parser::Source::Buffer.new('Gemfile')
+  buffer.source = File.read('Gemfile')
+  parser = Parser::CurrentRuby.new
+  ast = parser.parse(buffer)
+
+  modified_gemfile = GemfileRewrite.new.rewrite(buffer, ast)
+  if modified_gemfile == buffer.source
+    puppet_lint_root = File.expand_path(File.join(__FILE__, '..', '..', '..', '..'))
+    File.open('Gemfile', 'a') do |f|
+      f.puts "gem 'puppet-lint', :path => '#{puppet_lint_root}'"
+    end
+  else
+    File.open('Gemfile', 'w') do |f|
+      f.puts modified_gemfile
+    end
+  end
+
+  puts 'Done'
+
+  Bundler.with_clean_env { yield }
+
+  run_cmd('Restoring Gemfile', 'git', 'checkout', '--', 'Gemfile')
 end
 
 task :release_test do
@@ -72,13 +100,44 @@ task :release_test do
       end
 
       Dir.chdir(module_dir) do
-        output, success = run_cmd('Running puppet-lint', 'bundle', 'exec', 'puppet-lint', '--relative', '--no-documentation-check', 'manifests')
-        unless output.empty?
-          output.split("\n").each do |line|
-            puts "    #{line}"
+        with_puppet_lint_head do
+          _, success = run_cmd('Installing dependencies', 'bundle', 'install', '--path', File.join('..', 'vendor', 'gems'))
+          next unless success
+
+          output, success = run_cmd('Running puppet-lint CLI', 'bundle', 'exec', 'puppet-lint', '--relative', '--no-documentation-check', 'manifests')
+          unless output.empty?
+            output.split("\n").each do |line|
+              puts "    #{line}"
+            end
+          end
+
+          output, success = run_cmd('Running puppet-lint Rake task', 'bundle', 'exec', 'rake', 'lint')
+          unless output.empty?
+            output.split("\n").each do |line|
+              puts "    #{line}"
+            end
           end
         end
       end
     end
+  end
+end
+
+# Simple rewriter using whitequark/parser that rewrites the "gem 'puppet-lint'"
+# entry in the module's Gemfile (if present) to instead use the local
+# puppet-lint working directory.
+class GemfileRewrite < Parser::TreeRewriter
+  def on_send(node)
+    _, method_name, *args = *node
+
+    if method_name == :gem
+      gem_name = args.first
+      if gem_name.type == :str && gem_name.children.first == 'puppet-lint'
+        puppet_lint_root = File.expand_path(File.join(__FILE__, '..', '..', '..', '..'))
+        replace(node.location.expression, "gem 'puppet-lint', :path => '#{puppet_lint_root}'")
+      end
+    end
+
+    super
   end
 end
