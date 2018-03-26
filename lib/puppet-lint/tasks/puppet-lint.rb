@@ -52,8 +52,8 @@ class PuppetLint
 
       # clear any (auto-)pre-existing task
       Rake::Task[@name].clear if Rake::Task.task_defined?(@name)
-      task @name do
-        PuppetLint::OptParser.build
+      task @name do |_t, rake_args|
+        PuppetLint::OptParser.build(rake_args)
 
         Array(@disable_checks).each do |check|
           PuppetLint.configuration.send("disable_#{check}")
