@@ -17,7 +17,7 @@ class PuppetLint::OptParser
   # Public: Initialise a new puppet-lint OptionParser.
   #
   # Returns an OptionParser object.
-  def self.build(args)
+  def self.build(args = [])
     noconfig = false
     opt_parser = OptionParser.new do |opts|
       opts.banner = HELP_TEXT
@@ -133,7 +133,9 @@ class PuppetLint::OptParser
         end
       end
     end
-    opt_parser.parse!(args)
+
+    opt_parser.parse!(args) unless args.empty?
+
     unless noconfig
       opt_parser.load('/etc/puppet-lint.rc')
       if ENV.key?('HOME') && File.readable?(ENV['HOME'])

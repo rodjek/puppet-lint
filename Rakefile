@@ -24,6 +24,14 @@ begin
 
   RuboCop::RakeTask.new(:rubocop) do |task|
     task.options = %w[-D -E]
+    task.patterns = [
+      'lib/**/*.rb',
+      'spec/**/*.rb',
+      'bin/*',
+      '*.gemspec',
+      'Gemfile',
+      'Rakefile',
+    ]
   end
 rescue LoadError
   $stderr.puts 'Rubocop is not available for this version of Ruby.'

@@ -27,6 +27,33 @@ def run_cmd(message, *cmd)
   [output.strip, status.success?]
 end
 
+def with_puppet_lint_head
+  print('  Updating Gemfile to use puppet-lint HEAD... ')
+
+  buffer = Parser::Source::Buffer.new('Gemfile')
+  buffer.source = File.read('Gemfile')
+  parser = Parser::CurrentRuby.new
+  ast = parser.parse(buffer)
+
+  modified_gemfile = GemfileRewrite.new.rewrite(buffer, ast)
+  if modified_gemfile == buffer.source
+    puppet_lint_root = File.expand_path(File.join(__FILE__, '..', '..', '..', '..'))
+    File.open('Gemfile', 'a') do |f|
+      f.puts "gem 'puppet-lint', :path => '#{puppet_lint_root}'"
+    end
+  else
+    File.open('Gemfile', 'w') do |f|
+      f.puts modified_gemfile
+    end
+  end
+
+  puts 'Done'
+
+  Bundler.with_clean_env { yield }
+
+  run_cmd('Restoring Gemfile', 'git', 'checkout', '--', 'Gemfile')
+end
+
 task :release_test do
   branch = if ENV['APPVEYOR']
              ENV['APPVEYOR_PULL_REQUEST_HEAD_REPO_BRANCH']
@@ -40,6 +67,13 @@ task :release_test do
     puts 'Skipping release tests on feature branch'
     exit
   end
+
+  if RUBY_VERSION.start_with?('1')
+    puts 'Unable to run release_tests on Ruby < 2.0'
+    exit
+  end
+
+  require 'puppet-lint/tasks/gemfile_rewrite'
 
   modules_to_test = [
     'puppetlabs/puppetlabs-apt',
@@ -72,10 +106,22 @@ task :release_test do
       end
 
       Dir.chdir(module_dir) do
-        output, success = run_cmd('Running puppet-lint', 'bundle', 'exec', 'puppet-lint', '--relative', '--no-documentation-check', 'manifests')
-        unless output.empty?
-          output.split("\n").each do |line|
-            puts "    #{line}"
+        with_puppet_lint_head do
+          _, success = run_cmd('Installing dependencies', 'bundle', 'install', '--path', File.join('..', 'vendor', 'gems'))
+          next unless success
+
+          output, success = run_cmd('Running puppet-lint CLI', 'bundle', 'exec', 'puppet-lint', '--relative', '--no-documentation-check', 'manifests')
+          unless output.empty?
+            output.split("\n").each do |line|
+              puts "    #{line}"
+            end
+          end
+
+          output, success = run_cmd('Running puppet-lint Rake task', 'bundle', 'exec', 'rake', 'lint')
+          unless output.empty?
+            output.split("\n").each do |line|
+              puts "    #{line}"
+            end
           end
         end
       end
