@@ -1,5 +1,16 @@
 # Change Log
 
+## [2.3.5](https://github.com/rodjek/puppet-lint/tree/2.3.5) (2018-03-27)
+[Full Changelog](https://github.com/rodjek/puppet-lint/compare/2.3.4...2.3.5)
+
+**Fixed bugs:**
+
+- v2.3.4 breakage - 'wrong number of arguments' when using Rake task [\#812](https://github.com/rodjek/puppet-lint/issues/812)
+
+**Merged pull requests:**
+
+- Make PuppetLint::OptParser.build argument optional [\#813](https://github.com/rodjek/puppet-lint/pull/813) ([rodjek](https://github.com/rodjek))
+
 ## [2.3.4](https://github.com/rodjek/puppet-lint/tree/2.3.4) (2018-03-26)
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/2.3.3...2.3.4)
 
@@ -15,6 +26,7 @@
 - Bad value for range [\#801](https://github.com/rodjek/puppet-lint/issues/801)
 - puppet-lint doesn't handle CRLFs very well [\#778](https://github.com/rodjek/puppet-lint/issues/778)
 - Configuration's ignore\_paths is not respected [\#774](https://github.com/rodjek/puppet-lint/issues/774)
+- Error when including class and missing a colon [\#507](https://github.com/rodjek/puppet-lint/issues/507)
 
 **Merged pull requests:**
 
