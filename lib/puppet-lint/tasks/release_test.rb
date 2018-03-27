@@ -1,7 +1,6 @@
 require 'rake'
 require 'open3'
 require 'English'
-require 'parser/current'
 
 def run_cmd(message, *cmd)
   print("  #{message}... ")
@@ -69,6 +68,13 @@ task :release_test do
     exit
   end
 
+  if RUBY_VERSION.start_with?('1')
+    puts 'Unable to run release_tests on Ruby < 2.0'
+    exit
+  end
+
+  require 'puppet-lint/tasks/gemfile_rewrite'
+
   modules_to_test = [
     'puppetlabs/puppetlabs-apt',
     'puppetlabs/puppetlabs-tomcat',
@@ -120,24 +126,5 @@ task :release_test do
         end
       end
     end
-  end
-end
-
-# Simple rewriter using whitequark/parser that rewrites the "gem 'puppet-lint'"
-# entry in the module's Gemfile (if present) to instead use the local
-# puppet-lint working directory.
-class GemfileRewrite < Parser::TreeRewriter
-  def on_send(node)
-    _, method_name, *args = *node
-
-    if method_name == :gem
-      gem_name = args.first
-      if gem_name.type == :str && gem_name.children.first == 'puppet-lint'
-        puppet_lint_root = File.expand_path(File.join(__FILE__, '..', '..', '..', '..'))
-        replace(node.location.expression, "gem 'puppet-lint', :path => '#{puppet_lint_root}'")
-      end
-    end
-
-    super
   end
 end

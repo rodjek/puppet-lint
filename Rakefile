@@ -1,7 +1,7 @@
 require 'rake'
 require 'rspec/core/rake_task'
 require 'puppet-lint'
-require 'puppet-lint/tasks/release_test' unless RUBY_VERSION.start_with?('1')
+require 'puppet-lint/tasks/release_test'
 
 task :default => :test
 
