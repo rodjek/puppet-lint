@@ -54,11 +54,15 @@ class PuppetLint::Checks
   def run(fileinfo, data)
     load_data(fileinfo, data)
 
+    checks_run = []
     enabled_checks.each do |check|
       klass = PuppetLint.configuration.check_object[check].new
       # FIXME: shadowing #problems
       problems = klass.run
+      checks_run << [klass, problems]
+    end
 
+    checks_run.each do |klass, problems|
       if PuppetLint.configuration.fix
         @problems.concat(klass.fix_problems)
       else
