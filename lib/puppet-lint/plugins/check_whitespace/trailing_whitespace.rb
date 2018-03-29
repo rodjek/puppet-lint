@@ -20,6 +20,8 @@ PuppetLint.new_check(:trailing_whitespace) do
   end
 
   def fix(problem)
+    return if problem[:token].nil?
+
     prev_token = problem[:token].prev_token
     next_token = problem[:token].next_token
     prev_token.next_token = next_token
