@@ -43,7 +43,7 @@ describe 'arrow_on_right_operand_line' do
           end
 
           let(:fixed) do
-            <<-END.gsub(/^ {2}/, '')
+            <<-END.gsub(%r{^ {2}}, '')
               Package['httpd']
               #{operator} Service['httpd']
             END
@@ -101,7 +101,7 @@ describe 'arrow_on_right_operand_line' do
           end
 
           let(:fixed) do
-            <<-END.gsub(/^ {2}/, '')
+            <<-END.gsub(%r{^ {2}}, '')
               Package['httpd']
 
               # a comment
@@ -146,7 +146,7 @@ describe 'arrow_on_right_operand_line' do
           end
 
           let(:fixed) do
-            <<-END.gsub(/^ {2}/, '')
+            <<-END.gsub(%r{^ {2}}, '')
               Package['httpd'] # something
               #{operator} Service['httpd']
             END
