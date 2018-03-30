@@ -9,7 +9,7 @@ PuppetLint.new_check(:arrow_on_right_operand_line) do
 
       notify(
         :warning,
-        :message =>  'arrow should be on the right operand\'s line',
+        :message => "arrow should be on the right operand's line",
         :line    => token.line,
         :column  => token.column,
         :token   => token

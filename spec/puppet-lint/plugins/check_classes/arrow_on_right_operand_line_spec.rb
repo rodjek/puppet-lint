@@ -6,19 +6,32 @@ describe 'arrow_on_right_operand_line' do
   { 'chain' => '->', 'subscribe chain' => '~>' }.each do |name, operator|
     context "#{name} operator" do
       context 'both operands on same line' do
-        let(:code) { "Package['httpd'] #{operator} Service['httpd']" }
+        let(:code) do
+          <<-END
+            Package['httpd'] #{operator} Service['httpd']
+          END
+        end
 
-        it { expect(problems).to have(0).problems }
+        it 'should not detect any problems' do
+          expect(problems).to have(0).problems
+        end
       end
 
       context 'arrow on the line of left operand' do
         let(:code) do
-          "
+          <<-END
             Package['httpd']  #{operator}
-            Service['httpd']"
+            Service['httpd']
+          END
         end
 
-        it { expect(problems).to have(1).problems }
+        it 'should detect a problem' do
+          expect(problems).to have(1).problem
+        end
+
+        it 'should create a warning' do
+          expect(problems).to contain_warning(msg).on_line(1).in_column(31)
+        end
 
         context 'with fix enabled' do
           before do
@@ -30,12 +43,19 @@ describe 'arrow_on_right_operand_line' do
           end
 
           let(:fixed) do
-            "
-            Package['httpd']
-            #{operator} Service['httpd']"
+            <<-END.gsub(/^ {2}/, '')
+              Package['httpd']
+              #{operator} Service['httpd']
+            END
           end
 
-          it { expect(manifest).to eq(fixed) }
+          it 'should fix the problem' do
+            expect(problems).to contain_fixed(msg).on_line(1).in_column(31)
+          end
+
+          it 'should move the arrow to before the right operand' do
+            expect(manifest).to eq(fixed)
+          end
         end
       end
 
@@ -47,7 +67,9 @@ describe 'arrow_on_right_operand_line' do
           END
         end
 
-        it { expect(problems).to have(0).problems }
+        it 'should not detect any problems' do
+          expect(problems).to have(0).problems
+        end
       end
 
       context 'arrow on the line of left operand with comment in between' do
