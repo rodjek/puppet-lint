@@ -967,5 +967,42 @@ describe 'arrow_alignment' do
         expect(manifest).to eq(fixed)
       end
     end
+
+    context 'negative argument' do
+      let(:code) do
+        <<-END
+          res { 'a':
+            x => { 'a' => '',
+              'ab' => '',
+            }
+          }
+        END
+      end
+
+      # TODO: This is not the desired behaviour, but adjusting the check to
+      # properly format the hashes will need to wait until a major version
+      # bump.
+      let(:fixed) do
+        <<-END
+          res { 'a':
+            x => { 'a' => '',
+              'ab'     => '',
+            }
+          }
+        END
+      end
+
+      it 'should detect a problem' do
+        expect(problems).to have(1).problem
+      end
+
+      it 'should fix the problems' do
+        expect(problems).to contain_fixed(format(msg, 24, 20)).on_line(3).in_column(20)
+      end
+
+      it 'should realign the arrows' do
+        expect(manifest).to eq(fixed)
+      end
+    end
   end
 end

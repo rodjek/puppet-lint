@@ -25,7 +25,6 @@ PuppetLint.new_check(:arrow_alignment) do
 
       resource_tokens.each do |token|
         if token.type == :FARROW
-          (level_tokens[level_idx] ||= []) << token
           param_token = token.prev_code_token
 
           if param_token.type == :DQPOST
@@ -48,12 +47,18 @@ PuppetLint.new_check(:arrow_alignment) do
                                       end
           end
 
-          this_arrow_column = param_column[level_idx] + param_length + 1
+          if (level_tokens[level_idx] ||= []).any? { |t| t.line == token.line }
+            this_arrow_column = param_column[level_idx] + param_length + 1
+          else
+            this_arrow_column = param_token.column + param_token.to_manifest.length
+            this_arrow_column += 1 unless param_token.type == :DQPOST
+          end
 
           if arrow_column[level_idx] < this_arrow_column
             arrow_column[level_idx] = this_arrow_column
           end
 
+          (level_tokens[level_idx] ||= []) << token
         elsif token.type == :LBRACE
           level_idx += 1
           arrow_column << 0
@@ -96,12 +101,21 @@ PuppetLint.new_check(:arrow_alignment) do
       # indent the parameter to the correct depth
       problem[:token].prev_code_token.prev_token.type = :INDENT
       problem[:token].prev_code_token.prev_token.value = ' ' * problem[:newline_indent]
+
+      end_param_idx = tokens.index(problem[:token].prev_code_token)
+      start_param_idx = tokens.index(problem[:token].prev_token_of([:INDENT, :NEWLINE]))
+      param_length = tokens[start_param_idx..end_param_idx].map { |r| r.to_manifest.length }.reduce(0) { |sum, x| sum + x } + 1
+      new_ws_len = problem[:arrow_column] - param_length
+    else
+      new_ws_len = if problem[:token].prev_token.type == :WHITESPACE
+                     problem[:token].prev_token.to_manifest.length
+                   else
+                     0
+                   end
+      new_ws_len += (problem[:arrow_column] - problem[:token].column)
     end
 
-    end_param_idx = tokens.index(problem[:token].prev_code_token)
-    start_param_idx = tokens.index(problem[:token].prev_token_of([:INDENT, :NEWLINE])) + 1
-    param_length = tokens[start_param_idx..end_param_idx].map { |r| r.to_manifest.length }.reduce(0) { |sum, x| sum + x }
-    new_ws_len = (problem[:arrow_column] - (problem[:newline_indent] + param_length + 1))
+    raise PuppetLint::NoFix if new_ws_len < 0
     new_ws = ' ' * new_ws_len
 
     if problem[:token].prev_token.type == :WHITESPACE
