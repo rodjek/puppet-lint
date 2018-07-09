@@ -1,5 +1,25 @@
 # Change Log
 
+## [2.3.6](https://github.com/rodjek/puppet-lint/tree/2.3.6) (2018-07-09)
+[Full Changelog](https://github.com/rodjek/puppet-lint/compare/2.3.5...2.3.6)
+
+**Fixed bugs:**
+
+- --fix does not work with require arrows in certain situations [\#799](https://github.com/rodjek/puppet-lint/issues/799)
+- Error with --fix when no whitespace before hashrocket in resource attribute list [\#798](https://github.com/rodjek/puppet-lint/issues/798)
+- puppet-lint --fix strips comments when fixing arrow\_on\_right\_operand\_line [\#792](https://github.com/rodjek/puppet-lint/issues/792)
+- Crash report, reason unclear [\#781](https://github.com/rodjek/puppet-lint/issues/781)
+- crash in fix mode with multiple trailing arrows [\#776](https://github.com/rodjek/puppet-lint/issues/776)
+- Error negative argument if opening brace on the same line and following element longer [\#771](https://github.com/rodjek/puppet-lint/issues/771)
+- ArgumentError: negative argument [\#723](https://github.com/rodjek/puppet-lint/issues/723)
+
+**Merged pull requests:**
+
+- \(\#771\) Handle arrow alignment when arrow column \< opening brace column... [\#819](https://github.com/rodjek/puppet-lint/pull/819) ([rodjek](https://github.com/rodjek))
+- Less aggressive fix method for arrow\_on\_right\_operand\_line [\#817](https://github.com/rodjek/puppet-lint/pull/817) ([rodjek](https://github.com/rodjek))
+- Check if token still exists before fixing trailing\_whitespace [\#816](https://github.com/rodjek/puppet-lint/pull/816) ([rodjek](https://github.com/rodjek))
+- Run all the checks before fixing problems [\#815](https://github.com/rodjek/puppet-lint/pull/815) ([rodjek](https://github.com/rodjek))
+
 ## [2.3.5](https://github.com/rodjek/puppet-lint/tree/2.3.5) (2018-03-27)
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/2.3.4...2.3.5)
 
