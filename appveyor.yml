@@ -14,6 +14,10 @@ environment:
     - RUBY_VERSION: 23-x64
     - RUBY_VERSION: 24-x64
 
+matrix:
+  allow_failures:
+    - RUBY_VERSION: 193
+
 install:
   - SET PATH=C:\Ruby%RUBY_VERSION%\bin;%PATH%
   - SET LOG_SPEC_ORDER=true
