@@ -138,8 +138,7 @@ class PuppetLint::OptParser
 
     unless noconfig
       opt_parser.load('/etc/puppet-lint.rc')
-      if ENV.key?('HOME') && File.readable?(ENV['HOME'])
-        home_dotfile_path = File.expand_path('~/.puppet-lint.rc')
+      if home_exists?
         opt_parser.load(home_dotfile_path) if File.readable?(home_dotfile_path)
       end
       opt_parser.load('.puppet-lint.rc')
@@ -147,4 +146,14 @@ class PuppetLint::OptParser
 
     opt_parser
   end
+
+  def self.home_exists?
+    ENV.key?('HOME') && File.readable?(ENV['HOME'])
+  end
+  private_class_method :home_exists?
+
+  def self.home_dotfile_path
+    @home_dotfile_path ||= File.expand_path('~/.puppet-lint.rc')
+  end
+  private_class_method :home_dotfile_path
 end

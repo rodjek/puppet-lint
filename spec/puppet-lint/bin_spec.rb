@@ -50,7 +50,6 @@ describe PuppetLint::Bin do
 
   context 'when using puppet lint configuration files' do
     let(:args) { ['spec/fixtures/test/manifests/fail.pp'] }
-
     context 'when running with --no--config' do
       let(:args) { ['--no-config', 'spec/fixtures/test/manifests/fail.pp'] }
       it 'should ignore lint configuration files' do
@@ -70,6 +69,22 @@ describe PuppetLint::Bin do
       allow_any_instance_of(OptionParser).to receive(:load).and_call_original
       expect(subject.exitstatus).to eq(1)
     end
+
+    it 'should attempt to load the home configuration file ~/.puppet-lint.rc when it exists' do
+      this_file = File.expand_path(__FILE__)
+      expect(PuppetLint::OptParser).to recieve(:home_exists?).and_return(true)
+#       expect_any_instance_of(File).to receive(:expand_path).with('~/.puppet-lint.rc').and_return(this_file)
+
+# puts ENV.key?('HOME')
+# puts File.readable?(ENV['HOME'])
+
+#       #expect_any_instance_of(OptionParser).to receive(:load).with(this_file).and_return(nil)
+#       allow_any_instance_of(OptionParser).to receive(:load).and_call_original
+#       result = subject
+#       puts "@@ " + result.stdout
+#       expect(result.exitstatus).to eq(1)
+    end
+
   end
 
   context 'when asked to display version' do
