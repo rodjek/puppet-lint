@@ -72,3 +72,5 @@ Style/FileName:
         - 'lib/puppet-lint.rb'
         - 'lib/puppet-lint/tasks/puppet-lint.rb'
         - 'spec/puppet-lint_spec.rb'
+Layout/EndOfLine:
+  Enabled: false
