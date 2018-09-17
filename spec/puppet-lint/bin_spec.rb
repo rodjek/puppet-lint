@@ -48,6 +48,30 @@ describe PuppetLint::Bin do
     its(:exitstatus) { is_expected.to eq(1) }
   end
 
+  context 'when using puppet lint configuration files' do
+    let(:args) { ['spec/fixtures/test/manifests/fail.pp'] }
+
+    context 'when running with --no--config' do
+      let(:args) { ['--no-config', 'spec/fixtures/test/manifests/fail.pp'] }
+      it 'should ignore lint configuration files' do
+        allow_any_instance_of(OptionParser).to receive(:load).and_raise('Should not load any configuration files')
+        expect(subject.exitstatus).to eq(1)
+      end
+    end
+
+    it 'should attempt to load the configuration file in the current directory' do
+      expect_any_instance_of(OptionParser).to receive(:load).with('.puppet-lint.rc').and_call_original
+      allow_any_instance_of(OptionParser).to receive(:load).and_call_original
+      expect(subject.exitstatus).to eq(1)
+    end
+
+    it 'should attempt to load the configuration file /etc/puppet-lint.rc' do
+      expect_any_instance_of(OptionParser).to receive(:load).with('/etc/puppet-lint.rc').and_call_original
+      allow_any_instance_of(OptionParser).to receive(:load).and_call_original
+      expect(subject.exitstatus).to eq(1)
+    end
+  end
+
   context 'when asked to display version' do
     let(:args) { '--version' }
 
