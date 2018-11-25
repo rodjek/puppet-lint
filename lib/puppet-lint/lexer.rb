@@ -2,8 +2,9 @@
 
 require 'pp'
 require 'strscan'
-require 'puppet-lint/lexer/token'
 require 'set'
+require 'puppet-lint/lexer/token'
+require 'puppet-lint/lexer/string_slurper'
 
 class PuppetLint
   # Internal: A generic error thrown by the lexer when it encounters something
@@ -28,11 +29,15 @@ class PuppetLint
       @column = column
       @reason = reason
     end
+
+    def to_s
+      "PuppetLint::LexerError: Line:#{line_no} Column: #{column} Reason: #{reason}"
+    end
   end
 
   # Internal: The puppet-lint lexer. Converts your manifest into its tokenised
   # form.
-  class Lexer # rubocop:disable Metrics/ClassLength
+  class Lexer
     def initialize
       @line_no = 1
       @column = 1
@@ -215,7 +220,12 @@ class PuppetLint
 
         if var_name = chunk[%r{\A\$((::)?(\w+(-\w+)*::)*\w+(-\w+)*(\[.+?\])*)}, 1]
           length = var_name.size + 1
-          tokens << new_token(:VARIABLE, var_name)
+          opts = if chunk.start_with?('$')
+                   { :raw => "$#{var_name}" }
+                 else
+                   {}
+                 end
+          tokens << new_token(:VARIABLE, var_name, opts)
 
         elsif chunk =~ %r{\A'.*?'}m
           str_content = StringScanner.new(code[i + 1..-1]).scan_until(%r{(\A|[^\\])(\\\\)*'}m)
@@ -223,10 +233,14 @@ class PuppetLint
           tokens << new_token(:SSTRING, str_content[0..-2])
 
         elsif chunk.start_with?('"')
-          str_contents = slurp_string(code[i + 1..-1])
-          lines_parsed = code[0..i].split(LINE_END_RE)
-          interpolate_string(str_contents, lines_parsed.count, lines_parsed.last.length)
-          length = str_contents.size + 1
+          slurper = PuppetLint::Lexer::StringSlurper.new(code[i + 1..-1])
+          begin
+            string_segments = slurper.parse
+            process_string_segments(string_segments)
+            length = slurper.consumed_bytes + 1
+          rescue PuppetLint::Lexer::StringSlurper::UnterminatedStringError
+            raise PuppetLint::LexerError, @line_no, @column, 'unterminated string'
+          end
 
         elsif heredoc_name = chunk[%r{\A@\(("?.+?"?(:.+?)?#{WHITESPACE_RE}*(/.*?)?)\)}, 1]
           heredoc_queue << heredoc_name
@@ -308,22 +322,6 @@ class PuppetLint
       tokens
     end
 
-    def slurp_string(string)
-      dq_str_regexp = %r{(\$\{|(\A|[^\\])(\\\\)*")}m
-      scanner = StringScanner.new(string)
-      contents = scanner.scan_until(dq_str_regexp)
-
-      if scanner.matched.nil?
-        raise LexerError.new(@line_no, @column, 'Double quoted string missing closing quote')
-      end
-
-      until scanner.matched.end_with?('"')
-        contents += scanner.scan_until(%r{\}}m)
-        contents += scanner.scan_until(dq_str_regexp)
-      end
-      contents
-    end
-
     # Internal: Given the tokens already processed, determine if the next token
     # could be a regular expression.
     #
@@ -403,86 +401,34 @@ class PuppetLint
       token
     end
 
-    # Internal: Split a string on multiple terminators, excluding escaped
-    # terminators.
-    #
-    # string      - The String to be split.
-    # terminators - The String of terminators that the String should be split
-    #               on.
-    #
-    # Returns an Array consisting of two Strings, the String up to the first
-    # terminator and the terminator that was found.
-    def get_string_segment(string, terminators)
-      str = string.scan_until(%r{([^\\]|^|[^\\])([\\]{2})*[#{terminators}]+})
-      begin
-        [str[0..-2], str[-1, 1]]
-      rescue
-        [nil, nil]
-      end
-    end
+    def process_string_segments(segments)
+      return if segments.empty?
 
-    # Internal: Tokenise the contents of a double quoted string.
-    #
-    # string - The String to be tokenised.
-    # line   - The Integer line number of the start of the passed string.
-    # column - The Integer column number of the start of the passed string.
-    #
-    # Returns nothing.
-    def interpolate_string(string, line, column)
-      ss = StringScanner.new(string)
-      first = true
-      value, terminator = get_string_segment(ss, '"$')
-      until value.nil?
-        if terminator == '"'
-          if first
-            tokens << new_token(:STRING, value, :line => line, :column => column)
-            first = false
-          else
-            token_column = column + (ss.pos - value.size)
-            tokens << new_token(:DQPOST, value, :line => line, :column => token_column)
-            line += value.scan(LINE_END_RE).size
-            @column = column + ss.pos + 1
-            @line_no = line
-          end
-        else
-          if first
-            tokens << new_token(:DQPRE, value, :line => line, :column => column)
-            first = false
-          else
-            token_column = column + (ss.pos - value.size)
-            tokens << new_token(:DQMID, value, :line => line, :column => token_column)
-            line += value.scan(LINE_END_RE).size
-          end
-          if ss.scan(%r{\{}).nil?
-            var_name = ss.scan(%r{(::)?(\w+(-\w+)*::)*\w+(-\w+)*})
-            if var_name.nil?
-              token_column = column + ss.pos - 1
-              tokens << new_token(:DQMID, '$', :line => line, :column => token_column)
-            else
-              token_column = column + (ss.pos - var_name.size)
-              tokens << new_token(:UNENC_VARIABLE, var_name, :line => line, :column => token_column)
-            end
-          else
-            line += value.scan(LINE_END_RE).size
-            contents = ss.scan_until(%r{\}})[0..-2]
-            raw = contents.dup
-            if contents.match(%r{\A(::)?([\w-]+::)*[\w-]+(\[.+?\])*}) && !contents.match(%r{\A\w+\(})
-              contents = "$#{contents}"
-            end
-            lexer = PuppetLint::Lexer.new
-            lexer.tokenise(contents)
-            lexer.tokens.each do |token|
-              tok_col = column + token.column + (ss.pos - contents.size - 1)
-              tok_line = token.line + line - 1
-              tokens << new_token(token.type, token.value, :line => tok_line, :column => tok_col)
-            end
-            if lexer.tokens.length == 1 && lexer.tokens[0].type == :VARIABLE
-              tokens.last.raw = raw
-            end
-          end
-        end
-        value, terminator = get_string_segment(ss, '"$')
+      if segments.length == 1
+        tokens << new_token(:STRING, segments[0][1])
+        return
       end
+
+      pre_segment = segments.delete_at(0)
+      post_segment = segments.delete_at(-1)
+
+      tokens << new_token(:DQPRE, pre_segment[1])
+      segments.each do |segment|
+        case segment[0]
+        when :INTERP
+          lexer = PuppetLint::Lexer.new
+          lexer.tokenise(segment[1])
+          lexer.tokens.each_with_index do |t, i|
+            type = i.zero? && t.type == :NAME ? :VARIABLE : t.type
+            tokens << new_token(type, t.value, :raw => t.raw)
+          end
+        when :UNENC_VAR
+          tokens << new_token(:UNENC_VARIABLE, segment[1].gsub(%r{\A\$}, ''))
+        else
+          tokens << new_token(:DQMID, segment[1])
+        end
+      end
+      tokens << new_token(:DQPOST, post_segment[1])
     end
 
     # Internal: Tokenise the contents of a heredoc.

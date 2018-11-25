@@ -12,7 +12,7 @@ describe 'only_variable_string' do
       end
 
       it 'should create a warning' do
-        expect(problems).to contain_warning(msg).on_line(1).in_column(3)
+        expect(problems).to contain_warning(msg).on_line(1).in_column(4)
       end
     end
 
@@ -24,7 +24,7 @@ describe 'only_variable_string' do
       end
 
       it 'should create a warning' do
-        expect(problems).to contain_warning(msg).on_line(1).in_column(3)
+        expect(problems).to contain_warning(msg).on_line(1).in_column(4)
       end
     end
 
@@ -36,7 +36,7 @@ describe 'only_variable_string' do
       end
 
       it 'should create a warning' do
-        expect(problems).to contain_warning(msg).on_line(1).in_column(3)
+        expect(problems).to contain_warning(msg).on_line(1).in_column(4)
       end
     end
 
@@ -73,7 +73,7 @@ describe 'only_variable_string' do
       end
 
       it 'should fix the manifest' do
-        expect(problems).to contain_fixed(msg).on_line(1).in_column(3)
+        expect(problems).to contain_fixed(msg).on_line(1).in_column(4)
       end
 
       it 'should unquote the variable' do
@@ -89,7 +89,7 @@ describe 'only_variable_string' do
       end
 
       it 'should fix the manifest' do
-        expect(problems).to contain_fixed(msg).on_line(1).in_column(3)
+        expect(problems).to contain_fixed(msg).on_line(1).in_column(4)
       end
 
       it 'should unquoted the variable' do
@@ -105,7 +105,7 @@ describe 'only_variable_string' do
       end
 
       it 'should fix the manifest' do
-        expect(problems).to contain_fixed(msg).on_line(1).in_column(3)
+        expect(problems).to contain_fixed(msg).on_line(1).in_column(4)
       end
 
       it 'should unquote the variable' do
