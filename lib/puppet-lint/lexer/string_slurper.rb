@@ -56,27 +56,27 @@ class PuppetLint
       end
 
       def start_interp
-        scanner.skip(START_INTERP_PATTERN)
-
         if interp_stack.empty?
+          scanner.skip(START_INTERP_PATTERN)
           results << [:STRING, @segment.join]
           @segment = []
+        else
+          @segment << scanner.scan(START_INTERP_PATTERN)
         end
 
         interp_stack.push(true)
       end
 
       def end_interp
-        unless interp_stack.empty?
-          interp_stack.pop
+        interp_stack.pop unless interp_stack.empty?
 
-          if interp_stack.empty?
-            results << [:INTERP, @segment.join]
-            @segment = []
-          end
+        if interp_stack.empty?
+          results << [:INTERP, @segment.join]
+          @segment = []
+          scanner.skip(END_INTERP_PATTERN)
+        else
+          @segment << scanner.scan(END_INTERP_PATTERN)
         end
-
-        scanner.skip(END_INTERP_PATTERN)
       end
 
       def unenclosed_variable

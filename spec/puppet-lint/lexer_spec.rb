@@ -826,6 +826,117 @@ describe PuppetLint::Lexer do # rubocop:disable Metrics/BlockLength
         expect(manifest).to eq('"${key} ${flatten([$value]).join("\nkey ")}"')
       end
     end
+
+    context 'nested interpolations' do
+      let(:segments) do
+        [
+          [:STRING, ''],
+          [:INTERP, 'facts["network_${iface}"]'],
+          [:STRING, '/'],
+          [:INTERP, 'facts["netmask_${iface}"]'],
+          [:STRING, ''],
+        ]
+      end
+
+      it 'creates a tokenised string' do
+        expect(tokens).to have(15).tokens
+
+        expect(tokens[0]).to have_attributes(
+          :type   => :DQPRE,
+          :value  => '',
+          :line   => 1,
+          :column => 1
+        )
+        expect(tokens[1]).to have_attributes(
+          :type   => :VARIABLE,
+          :value  => 'facts',
+          :line   => 1,
+          :column => 4
+        )
+        expect(tokens[2]).to have_attributes(
+          :type   => :LBRACK,
+          :value  => '[',
+          :line   => 1,
+          :column => 9
+        )
+        expect(tokens[3]).to have_attributes(
+          :type   => :DQPRE,
+          :value  => 'network_',
+          :line   => 1,
+          :column => 10
+        )
+        expect(tokens[4]).to have_attributes(
+          :type   => :VARIABLE,
+          :value  => 'iface',
+          :line   => 1,
+          :column => 21
+        )
+        expect(tokens[5]).to have_attributes(
+          :type   => :DQPOST,
+          :value  => '',
+          :line   => 1,
+          :column => 26
+        )
+        expect(tokens[6]).to have_attributes(
+          :type   => :RBRACK,
+          :value  => ']',
+          :line   => 1,
+          :column => 28
+        )
+        expect(tokens[7]).to have_attributes(
+          :type   => :DQMID,
+          :value  => '/',
+          :line   => 1,
+          :column => 29
+        )
+        expect(tokens[8]).to have_attributes(
+          :type   => :VARIABLE,
+          :value  => 'facts',
+          :line   => 1,
+          :column => 33
+        )
+        expect(tokens[9]).to have_attributes(
+          :type   => :LBRACK,
+          :value  => '[',
+          :line   => 1,
+          :column => 38
+        )
+        expect(tokens[10]).to have_attributes(
+          :type   => :DQPRE,
+          :value  => 'netmask_',
+          :line   => 1,
+          :column => 39
+        )
+        expect(tokens[11]).to have_attributes(
+          :type   => :VARIABLE,
+          :value  => 'iface',
+          :line   => 1,
+          :column => 50
+        )
+        expect(tokens[12]).to have_attributes(
+          :type   => :DQPOST,
+          :value  => '',
+          :line   => 1,
+          :column => 55
+        )
+        expect(tokens[13]).to have_attributes(
+          :type   => :RBRACK,
+          :value  => ']',
+          :line   => 1,
+          :column => 57
+        )
+        expect(tokens[14]).to have_attributes(
+          :type   => :DQPOST,
+          :value  => '',
+          :line   => 1,
+          :column => 58
+        )
+      end
+
+      it 'can render the result back into a manifest' do
+        expect(manifest).to eq('"${facts["network_${iface}"]}/${facts["netmask_${iface}"]}"')
+      end
+    end
   end
 
   context ':STRING / :DQ' do

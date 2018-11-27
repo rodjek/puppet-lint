@@ -243,6 +243,20 @@ describe PuppetLint::Lexer::StringSlurper do
             ])
           end
         end
+
+        context 'nested interpolations' do
+          let(:string) { '${facts["network_${iface}"]}/${facts["netmask_${iface}"]}"' }
+
+          it 'keeps each full interpolation in its own segment' do
+            expect(segments).to eq([
+              [:STRING, ''],
+              [:INTERP, 'facts["network_${iface}"]'],
+              [:STRING, '/'],
+              [:INTERP, 'facts["netmask_${iface}"]'],
+              [:STRING, ''],
+            ])
+          end
+        end
       end
     end
   end
