@@ -715,6 +715,117 @@ describe PuppetLint::Lexer do # rubocop:disable Metrics/BlockLength
         expect(manifest).to eq('"foo$bar$"')
       end
     end
+
+    context 'an interpolation with a complex function chain' do
+      let(:segments) do
+        [
+          [:STRING, ''],
+          [:INTERP, 'key'],
+          [:STRING, ' '],
+          [:INTERP, 'flatten([$value]).join("\nkey ")'],
+          [:STRING, ''],
+        ]
+      end
+
+      it 'creates a tokenised string' do
+        expect(tokens).to have(15).tokens
+
+        expect(tokens[0]).to have_attributes(
+          :type   => :DQPRE,
+          :value  => '',
+          :line   => 1,
+          :column => 1
+        )
+        expect(tokens[1]).to have_attributes(
+          :type   => :VARIABLE,
+          :value  => 'key',
+          :line   => 1,
+          :column => 4
+        )
+        expect(tokens[2]).to have_attributes(
+          :type   => :DQMID,
+          :value  => ' ',
+          :line   => 1,
+          :column => 7
+        )
+        expect(tokens[3]).to have_attributes(
+          :type   => :FUNCTION_NAME,
+          :value  => 'flatten',
+          :line   => 1,
+          :column => 11
+        )
+        expect(tokens[4]).to have_attributes(
+          :type   => :LPAREN,
+          :value  => '(',
+          :line   => 1,
+          :column => 18
+        )
+        expect(tokens[5]).to have_attributes(
+          :type   => :LBRACK,
+          :value  => '[',
+          :line   => 1,
+          :column => 19
+        )
+        expect(tokens[6]).to have_attributes(
+          :type   => :VARIABLE,
+          :value  => 'value',
+          :line   => 1,
+          :column => 20
+        )
+        expect(tokens[7]).to have_attributes(
+          :type   => :RBRACK,
+          :value  => ']',
+          :line   => 1,
+          :column => 26
+        )
+        expect(tokens[8]).to have_attributes(
+          :type   => :RPAREN,
+          :value  => ')',
+          :line   => 1,
+          :column => 27
+        )
+        expect(tokens[9]).to have_attributes(
+          :type   => :DOT,
+          :value  => '.',
+          :line   => 1,
+          :column => 28
+        )
+        expect(tokens[10]).to have_attributes(
+          :type   => :FUNCTION_NAME,
+          :value  => 'join',
+          :line   => 1,
+          :column => 29
+        )
+        expect(tokens[11]).to have_attributes(
+          :type   => :LPAREN,
+          :value  => '(',
+          :line   => 1,
+          :column => 33
+        )
+        expect(tokens[12]).to have_attributes(
+          :type   => :STRING,
+          :value  => '\nkey ',
+          :line   => 1,
+          :column => 34
+        )
+        expect(tokens[13]).to have_attributes(
+          :type   => :RPAREN,
+          :value  => ')',
+          :line   => 1,
+          :column => 42
+        )
+        expect(tokens[14]).to have_attributes(
+          :type   => :DQPOST,
+          :value  => '',
+          :line   => 1,
+          :column => 43
+        )
+      end
+
+      it 'can render the result back into a manifest' do
+        expect(manifest).to eq('"${key} ${flatten([$value]).join("\nkey ")}"')
+      end
+    end
   end
 
   context ':STRING / :DQ' do

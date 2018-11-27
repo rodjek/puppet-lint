@@ -229,6 +229,20 @@ describe PuppetLint::Lexer::StringSlurper do
             ])
           end
         end
+
+        context 'an interpolation with a complex function chain' do
+          let(:string) { '${key} ${flatten([$value]).join("\nkey ")}"' }
+
+          it 'keeps the whole function chain in a single interpolation segment' do
+            expect(segments).to eq([
+              [:STRING, ''],
+              [:INTERP, 'key'],
+              [:STRING, ' '],
+              [:INTERP, 'flatten([$value]).join("\nkey ")'],
+              [:STRING, ''],
+            ])
+          end
+        end
       end
     end
   end
