@@ -257,6 +257,18 @@ describe PuppetLint::Lexer::StringSlurper do
             ])
           end
         end
+
+        context 'interpolation with nested braces' do
+          let(:string) { '${$foo.map |$bar| { something($bar) }}"' }
+
+          it do
+            expect(segments).to eq([
+              [:STRING, ''],
+              [:INTERP, '$foo.map |$bar| { something($bar) }'],
+              [:STRING, ''],
+            ])
+          end
+        end
       end
     end
   end

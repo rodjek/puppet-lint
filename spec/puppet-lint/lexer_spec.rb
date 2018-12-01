@@ -937,6 +937,133 @@ describe PuppetLint::Lexer do # rubocop:disable Metrics/BlockLength
         expect(manifest).to eq('"${facts["network_${iface}"]}/${facts["netmask_${iface}"]}"')
       end
     end
+
+    context 'interpolation with nested braces' do
+      let(:segments) do
+        [
+          [:STRING, ''],
+          [:INTERP, '$foo.map |$bar| { something($bar) }'],
+          [:STRING, ''],
+        ]
+      end
+
+      it 'creates a tokenised string' do
+        expect(tokens).to have(18).tokens
+
+        expect(tokens[0]).to have_attributes(
+          :type   => :DQPRE,
+          :value  => '',
+          :line   => 1,
+          :column => 1
+        )
+        expect(tokens[1]).to have_attributes(
+          :type   => :VARIABLE,
+          :value  => 'foo',
+          :line   => 1,
+          :column => 4
+        )
+        expect(tokens[2]).to have_attributes(
+          :type   => :DOT,
+          :value  => '.',
+          :line   => 1,
+          :column => 8
+        )
+        expect(tokens[3]).to have_attributes(
+          :type   => :NAME,
+          :value  => 'map',
+          :line   => 1,
+          :column => 9
+        )
+        expect(tokens[4]).to have_attributes(
+          :type   => :WHITESPACE,
+          :value  => ' ',
+          :line   => 1,
+          :column => 12
+        )
+        expect(tokens[5]).to have_attributes(
+          :type   => :PIPE,
+          :value  => '|',
+          :line   => 1,
+          :column => 13
+        )
+        expect(tokens[6]).to have_attributes(
+          :type   => :VARIABLE,
+          :value  => 'bar',
+          :line   => 1,
+          :column => 14
+        )
+        expect(tokens[7]).to have_attributes(
+          :type   => :PIPE,
+          :value  => '|',
+          :line   => 1,
+          :column => 18
+        )
+        expect(tokens[8]).to have_attributes(
+          :type   => :WHITESPACE,
+          :value  => ' ',
+          :line   => 1,
+          :column => 19
+        )
+        expect(tokens[9]).to have_attributes(
+          :type   => :LBRACE,
+          :value  => '{',
+          :line   => 1,
+          :column => 20
+        )
+        expect(tokens[10]).to have_attributes(
+          :type   => :WHITESPACE,
+          :value  => ' ',
+          :line   => 1,
+          :column => 21
+        )
+        expect(tokens[11]).to have_attributes(
+          :type   => :FUNCTION_NAME,
+          :value  => 'something',
+          :line   => 1,
+          :column => 22
+        )
+        expect(tokens[12]).to have_attributes(
+          :type   => :LPAREN,
+          :value  => '(',
+          :line   => 1,
+          :column => 31
+        )
+        expect(tokens[13]).to have_attributes(
+          :type   => :VARIABLE,
+          :value  => 'bar',
+          :line   => 1,
+          :column => 32
+        )
+        expect(tokens[14]).to have_attributes(
+          :type   => :RPAREN,
+          :value  => ')',
+          :line   => 1,
+          :column => 36
+        )
+        expect(tokens[15]).to have_attributes(
+          :type   => :WHITESPACE,
+          :value  => ' ',
+          :line   => 1,
+          :column => 37
+        )
+        expect(tokens[16]).to have_attributes(
+          :type   => :RBRACE,
+          :value  => '}',
+          :line   => 1,
+          :column => 38
+        )
+        expect(tokens[17]).to have_attributes(
+          :type   => :DQPOST,
+          :value  => '',
+          :line   => 1,
+          :column => 39
+        )
+      end
+
+      it 'can render the result back into a manifest' do
+        expect(manifest).to eq('"${$foo.map |$bar| { something($bar) }}"')
+      end
+    end
   end
 
   context ':STRING / :DQ' do

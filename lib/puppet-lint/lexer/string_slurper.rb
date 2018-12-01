@@ -16,6 +16,7 @@ class PuppetLint
       END_STRING_PATTERN = %r{(\A|[^\\])(\\\\)*"}
       UNENC_VAR_PATTERN = %r{(\A|[^\\])\$(::)?(\w+(-\w+)*::)*\w+(-\w+)*}
       ESC_DQUOTE_PATTERN = %r{\\+"}
+      LBRACE_PATTERN = %r{\{}
 
       def initialize(string)
         @scanner = StringScanner.new(string)
@@ -28,6 +29,8 @@ class PuppetLint
         until scanner.eos?
           if scanner.match?(START_INTERP_PATTERN)
             start_interp
+          elsif !interp_stack.empty? && scanner.match?(LBRACE_PATTERN)
+            read_char
           elsif scanner.match?(END_INTERP_PATTERN)
             end_interp
           elsif interp_stack.empty? && scanner.match?(UNENC_VAR_PATTERN)
@@ -49,6 +52,13 @@ class PuppetLint
 
       def read_char
         @segment << scanner.getch
+
+        case @segment.last
+        when '{'
+          interp_stack.push(true)
+        when '}'
+          interp_stack.pop
+        end
       end
 
       def consumed_bytes
