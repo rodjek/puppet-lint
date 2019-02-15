@@ -110,7 +110,7 @@ class PuppetLint
       [:TYPE, %r{\A(Integer|Float|Boolean|Regexp|String|Array|Hash|Resource|Class|Collection|Scalar|Numeric|CatalogEntry|Data|Tuple|Struct|Optional|NotUndef|Variant|Enum|Pattern|Any|Callable|Type|Runtime|Undef|Default)\b}],
       [:CLASSREF, %r{\A(((::){0,1}[A-Z][-\w]*)+)}],
       [:NUMBER, %r{\A\b((?:0[xX][0-9A-Fa-f]+|0?\d+(?:\.\d+)?(?:[eE]-?\d+)?))\b}],
-      [:FUNCTION_NAME, %r{#{NAME_RE}\(}],
+      [:FUNCTION_NAME, %r{#{NAME_RE}(?=\()}],
       [:NAME, NAME_RE],
       [:LBRACK, %r{\A(\[)}],
       [:RBRACK, %r{\A(\])}],
