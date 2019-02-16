@@ -101,12 +101,23 @@ class PuppetLint
       :LPAREN  => true,
     }.freeze
 
+    # Internal: some commonly used regular expressions
+    # \t == tab
+    # \v == vertical tab
+    # \f == form feed
+    # \p{Zs} == ASCII + Unicode non-linebreaking whitespace
+    WHITESPACE_RE = RUBY_VERSION == '1.8.7' ? %r{[\t\v\f ]} : %r{[\t\v\f\p{Zs}]}
+
+    LINE_END_RE = %r{(?:\r\n|\r|\n)}
+
+    NAME_RE = %r{\A((?:(?:::)?[_a-z0-9][-\w]*)(?:::[a-z0-9][-\w]*)*)}
+
     # Internal: An Array of Arrays containing tokens that can be described by
     # a single regular expression.  Each sub-Array contains 2 elements, the
     # name of the token as a Symbol and a regular expression describing the
     # value of the token.
-    NAME_RE = %r{\A(((::)?[_a-z0-9][-\w]*)(::[a-z0-9][-\w]*)*)}
     KNOWN_TOKENS = [
+      [:WHITESPACE, %r{\A(#{WHITESPACE_RE}+)}],
       [:TYPE, %r{\A(Integer|Float|Boolean|Regexp|String|Array|Hash|Resource|Class|Collection|Scalar|Numeric|CatalogEntry|Data|Tuple|Struct|Optional|NotUndef|Variant|Enum|Pattern|Any|Callable|Type|Runtime|Undef|Default)\b}],
       [:CLASSREF, %r{\A(((::){0,1}[A-Z][-\w]*)+)}],
       [:NUMBER, %r{\A\b((?:0[xX][0-9A-Fa-f]+|0?\d+(?:\.\d+)?(?:[eE]-?\d+)?))\b}],
@@ -165,14 +176,6 @@ class PuppetLint
       :SLASH_COMMENT => true,
       :INDENT        => true,
     }.freeze
-
-    # \t == tab
-    # \v == vertical tab
-    # \f == form feed
-    # \p{Zs} == ASCII + Unicode non-linebreaking whitespace
-    WHITESPACE_RE = RUBY_VERSION == '1.8.7' ? %r{[\t\v\f ]} : %r{[\t\v\f\p{Zs}]}
-
-    LINE_END_RE = %r{(?:\r\n|\r|\n)}
 
     # Internal: Access the internal token storage.
     #
@@ -272,10 +275,6 @@ class PuppetLint
             interpolate_heredoc(str_contents, heredoc_tag)
             length += str_contents.size
           end
-
-        elsif whitespace = chunk[%r{\A(#{WHITESPACE_RE}+)}, 1]
-          length = whitespace.size
-          tokens << new_token(:WHITESPACE, whitespace)
 
         elsif eol = chunk[%r{\A(#{LINE_END_RE})}, 1]
           length = eol.size
