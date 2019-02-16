@@ -203,13 +203,12 @@ class PuppetLint
           value = chunk[regex, 1]
           next if value.nil?
 
-          length = value.size
+          i += value.size
           tokens << if type == :NAME && KEYWORDS.include?(value)
                       new_token(value.upcase.to_sym, value)
                     else
                       new_token(type, value)
                     end
-          i += length
           found = true
           break
         end
