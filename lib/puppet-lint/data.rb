@@ -201,6 +201,9 @@ class PuppetLint::Data
       lbrace_idx = tokens[0..index].rindex do |token|
         token.type == :LBRACE && token.prev_code_token.type != :QMARK
       end
+
+      raise PuppetLint::SyntaxError, tokens[index] if lbrace_idx.nil?
+
       tokens[lbrace_idx].prev_code_token
     end
 

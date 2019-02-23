@@ -20,6 +20,18 @@ describe PuppetLint::Data do
         }
       end
     end
+
+    context 'when typo in namespace separator makes parser look for resource' do
+      let(:manifest) { '$testparam = $::module:;testparam' }
+
+      it 'raises a SyntaxError' do
+        expect {
+          data.resource_indexes
+        }.to raise_error(PuppetLint::SyntaxError) { |error|
+          expect(error.token).to eq(data.tokens[5])
+        }
+      end
+    end
   end
 
   describe '.insert' do
