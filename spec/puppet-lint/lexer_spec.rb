@@ -875,10 +875,17 @@ END
       expect(token.value).to eq('Collection')
     end
 
-    it 'should match Platform Types' do
-      token = @lexer.tokenise('Callable').first
-      expect(token.type).to eq(:TYPE)
-      expect(token.value).to eq('Callable')
+    describe 'Platform Types' do
+      it 'should match Callable' do
+        token = @lexer.tokenise('Callable').first
+        expect(token.type).to eq(:TYPE)
+        expect(token.value).to eq('Callable')
+      end
+      it 'should match Sensitive' do
+        token = @lexer.tokenise('Sensitive').first
+        expect(token.type).to eq(:TYPE)
+        expect(token.value).to eq('Sensitive')
+      end
     end
   end
 

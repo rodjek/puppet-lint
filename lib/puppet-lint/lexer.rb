@@ -107,7 +107,7 @@ class PuppetLint
     # value of the token.
     NAME_RE = %r{\A(((::)?[_a-z0-9][-\w]*)(::[a-z0-9][-\w]*)*)}
     KNOWN_TOKENS = [
-      [:TYPE, %r{\A(Integer|Float|Boolean|Regexp|String|Array|Hash|Resource|Class|Collection|Scalar|Numeric|CatalogEntry|Data|Tuple|Struct|Optional|NotUndef|Variant|Enum|Pattern|Any|Callable|Type|Runtime|Undef|Default)\b}],
+      [:TYPE, %r{\A(Integer|Float|Boolean|Regexp|String|Array|Hash|Resource|Class|Collection|Scalar|Numeric|CatalogEntry|Data|Tuple|Struct|Optional|NotUndef|Variant|Enum|Pattern|Any|Callable|Type|Runtime|Undef|Default|Sensitive)\b}], # rubocop:disable Metrics/LineLength
       [:CLASSREF, %r{\A(((::){0,1}[A-Z][-\w]*)+)}],
       [:NUMBER, %r{\A\b((?:0[xX][0-9A-Fa-f]+|0?\d+(?:\.\d+)?(?:[eE]-?\d+)?))\b}],
       [:FUNCTION_NAME, %r{#{NAME_RE}\(}],
