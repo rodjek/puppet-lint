@@ -1642,7 +1642,7 @@ END
       manifest = <<-END.gsub(%r{^ {6}}, '')
       $str = @("myheredoc"/)
         SOMETHING
-        ${else}
+        ${here}
         AND :
         $another
         THING
@@ -1681,10 +1681,10 @@ END
       expect(tokens[6].line).to eq(2)
       expect(tokens[6].column).to eq(1)
       expect(tokens[7].type).to eq(:VARIABLE)
-      expect(tokens[7].value).to eq('else')
+      expect(tokens[7].value).to eq('here')
       expect(tokens[7].line).to eq(3)
       expect(tokens[7].column).to eq(5)
-      expect(tokens[7].to_manifest).to eq('else')
+      expect(tokens[7].to_manifest).to eq('here')
       expect(tokens[8].type).to eq(:HEREDOC_MID)
       expect(tokens[8].value).to eq("\n  AND :\n  ")
       expect(tokens[8].line).to eq(3)

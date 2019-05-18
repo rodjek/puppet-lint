@@ -272,4 +272,128 @@ describe PuppetLint::Lexer::StringSlurper do
       end
     end
   end
+
+  describe '#parse_heredoc' do
+    subject(:segments) { described_class.new(heredoc).parse_heredoc(heredoc_tag) }
+
+    context 'when parsing a heredoc with interpolation disabled' do
+      context 'that is a plain heredoc' do
+        let(:heredoc) { %(  SOMETHING\n  ELSE\n  :\n  |-myheredoc) }
+        let(:heredoc_tag) { 'myheredoc' }
+
+        it 'splits the heredoc into two segments' do
+          expect(segments).to eq([
+            [:HEREDOC, "  SOMETHING\n  ELSE\n  :\n  "],
+            [:HEREDOC_TERM, '|-myheredoc'],
+          ])
+        end
+      end
+
+      context 'that contains a value enclosed in ${}' do
+        let(:heredoc) { %(  SOMETHING\n  ${else}\n  :\n  |-myheredoc) }
+        let(:heredoc_tag) { 'myheredoc' }
+
+        it 'does not create an interpolation segment' do
+          expect(segments).to eq([
+            [:HEREDOC, "  SOMETHING\n  ${else}\n  :\n  "],
+            [:HEREDOC_TERM, '|-myheredoc'],
+          ])
+        end
+      end
+
+      context 'that contains an unenclosed variable' do
+        let(:heredoc) { %(  SOMETHING\n  $else\n  :\n  |-myheredoc) }
+        let(:heredoc_tag) { 'myheredoc' }
+
+        it 'does not create a segment for the unenclosed variable' do
+          expect(segments).to eq([
+            [:HEREDOC, "  SOMETHING\n  $else\n  :\n  "],
+            [:HEREDOC_TERM, '|-myheredoc'],
+          ])
+        end
+      end
+    end
+
+    context 'when parsing a heredoc with interpolation enabled' do
+      context 'that is a plain heredoc' do
+        let(:heredoc) { %(  SOMETHING\n  ELSE\n  :\n  |-myheredoc) }
+        let(:heredoc_tag) { '"myheredoc"' }
+
+        it 'splits the heredoc into two segments' do
+          expect(segments).to eq([
+            [:HEREDOC, "  SOMETHING\n  ELSE\n  :\n  "],
+            [:HEREDOC_TERM, '|-myheredoc'],
+          ])
+        end
+      end
+
+      context 'that contains a value enclosed in ${}' do
+        let(:heredoc) { %(  SOMETHING\n  ${else}\n  :\n  |-myheredoc) }
+        let(:heredoc_tag) { '"myheredoc"' }
+
+        it 'creates an interpolation segment' do
+          expect(segments).to eq([
+            [:HEREDOC, "  SOMETHING\n  "],
+            [:INTERP, 'else'],
+            [:HEREDOC, "\n  :\n  "],
+            [:HEREDOC_TERM, '|-myheredoc'],
+          ])
+        end
+      end
+
+      context 'that contains an unenclosed variable' do
+        let(:heredoc) { %(  SOMETHING\n  $else\n  :\n  |-myheredoc) }
+        let(:heredoc_tag) { '"myheredoc"' }
+
+        it 'does not create a segment for the unenclosed variable' do
+          expect(segments).to eq([
+            [:HEREDOC, "  SOMETHING\n  "],
+            [:UNENC_VAR, '$else'],
+            [:HEREDOC, "\n  :\n  "],
+            [:HEREDOC_TERM, '|-myheredoc'],
+          ])
+        end
+      end
+
+      context 'that contains a nested interpolation' do
+        let(:heredoc) { %(  SOMETHING\n  ${facts["other_${thing}"]}\n  :\n  |-myheredoc) }
+        let(:heredoc_tag) { '"myheredoc"' }
+
+        it 'does not create a segment for the unenclosed variable' do
+          expect(segments).to eq([
+            [:HEREDOC, "  SOMETHING\n  "],
+            [:INTERP, 'facts["other_${thing}"]'],
+            [:HEREDOC, "\n  :\n  "],
+            [:HEREDOC_TERM, '|-myheredoc'],
+          ])
+        end
+      end
+
+      context 'that contains an interpolation with nested braces' do
+        let(:heredoc) { %(  SOMETHING\n  ${$foo.map |$bar| { something($bar) }}\n  :\n  |-myheredoc) }
+        let(:heredoc_tag) { '"myheredoc"' }
+
+        it 'does not create a segment for the unenclosed variable' do
+          expect(segments).to eq([
+            [:HEREDOC, "  SOMETHING\n  "],
+            [:INTERP, '$foo.map |$bar| { something($bar) }'],
+            [:HEREDOC, "\n  :\n  "],
+            [:HEREDOC_TERM, '|-myheredoc'],
+          ])
+        end
+      end
+
+      context 'that contains braces' do
+        let(:heredoc) { %(  {\n    "foo": "bar"\n  }\n  |-end) }
+        let(:heredoc_tag) { '"end":json/' }
+
+        it do
+          expect(segments).to eq([
+            [:HEREDOC, %(  {\n    "foo": "bar"\n  }\n  )],
+            [:HEREDOC_TERM, '|-end'],
+          ])
+        end
+      end
+    end
+  end
 end

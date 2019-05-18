@@ -281,10 +281,10 @@ class PuppetLint
             length += indent.size
           else
             heredoc_tag = heredoc_queue.shift
-            heredoc_name = heredoc_tag[%r{\A"?(.+?)"?(:.+?)?#{WHITESPACE_RE}*(/.*)?\Z}, 1]
-            str_contents = StringScanner.new(code[(i + length)..-1]).scan_until(%r{\|?\s*-?\s*#{heredoc_name}})
-            interpolate_heredoc(str_contents, heredoc_tag)
-            length += str_contents.size
+            slurper = PuppetLint::Lexer::StringSlurper.new(code[i + length..-1])
+            heredoc_segments = slurper.parse_heredoc(heredoc_tag)
+            process_heredoc_segments(heredoc_segments)
+            length += slurper.consumed_bytes
           end
 
         elsif whitespace = chunk[%r{\A(#{WHITESPACE_RE}+)}, 1]
@@ -294,15 +294,6 @@ class PuppetLint
         elsif eol = chunk[%r{\A(#{LINE_END_RE})}, 1]
           length = eol.size
           tokens << new_token(:NEWLINE, eol)
-
-          unless heredoc_queue.empty?
-            heredoc_tag = heredoc_queue.shift
-            heredoc_name = heredoc_tag[%r{\A"?(.+?)"?(:.+?)?#{WHITESPACE_RE}*(/.*)?\Z}, 1]
-            str_contents = StringScanner.new(code[(i + length)..-1]).scan_until(%r{\|?\s*-?\s*#{heredoc_name}})
-            _ = code[0..(i + length)].split(LINE_END_RE)
-            interpolate_heredoc(str_contents, heredoc_tag)
-            length += str_contents.size
-          end
 
         elsif chunk.start_with?('/')
           length = 1
@@ -431,85 +422,36 @@ class PuppetLint
       tokens << new_token(:DQPOST, post_segment[1])
     end
 
-    # Internal: Tokenise the contents of a heredoc.
-    #
-    # string - The String to be tokenised.
-    # name   - The String name/endtext of the heredoc.
-    #
-    # Returns nothing.
-    def interpolate_heredoc(string, name)
-      ss = StringScanner.new(string)
-      eos_text = name[%r{\A"?(.+?)"?(:.+?)?#{WHITESPACE_RE}*(/.*)?\Z}, 1]
-      first = true
-      interpolate = name.start_with?('"')
-      value, terminator = get_heredoc_segment(ss, eos_text, interpolate)
-      until value.nil?
-        if terminator =~ %r{\A\|?\s*-?\s*#{Regexp.escape(eos_text)}}
-          if first
-            tokens << new_token(:HEREDOC, value, :raw => "#{value}#{terminator}")
-            first = false
-          else
-            tokens << new_token(:HEREDOC_POST, value, :raw => "#{value}#{terminator}")
+    def process_heredoc_segments(segments)
+      return if segments.empty?
+
+      end_tag = segments.delete_at(-1)
+
+      if segments.length == 1
+        tokens << new_token(:HEREDOC, segments[0][1], :raw => "#{segments[0][1]}#{end_tag[1]}")
+        return
+      end
+
+      pre_segment = segments.delete_at(0)
+      post_segment = segments.delete_at(-1)
+
+      tokens << new_token(:HEREDOC_PRE, pre_segment[1])
+      segments.each do |segment|
+        case segment[0]
+        when :INTERP
+          lexer = PuppetLint::Lexer.new
+          lexer.tokenise(segment[1])
+          lexer.tokens.each_with_index do |t, i|
+            type = i.zero? && t.type == :NAME ? :VARIABLE : t.type
+            tokens << new_token(type, t.value, :raw => t.raw)
           end
+        when :UNENC_VAR
+          tokens << new_token(:UNENC_VARIABLE, segment[1].gsub(%r{\A\$}, ''))
         else
-          if first
-            tokens << new_token(:HEREDOC_PRE, value)
-            first = false
-          else
-            tokens << new_token(:HEREDOC_MID, value)
-          end
-          if ss.scan(%r{\{}).nil?
-            var_name = ss.scan(%r{(::)?(\w+(-\w+)*::)*\w+(-\w+)*})
-            tokens << if var_name.nil?
-                        new_token(:HEREDOC_MID, '$')
-                      else
-                        new_token(:UNENC_VARIABLE, var_name)
-                      end
-          else
-            contents = ss.scan_until(%r{\}})[0..-2]
-            raw = contents.dup
-            if contents.match(%r{\A(::)?([\w-]+::)*[\w-]|(\[.+?\])*}) && !contents.match(%r{\A\w+\(})
-              contents = "$#{contents}" unless contents.start_with?('$')
-            end
-
-            lexer = PuppetLint::Lexer.new
-            lexer.tokenise(contents)
-            lexer.tokens.each do |token|
-              tokens << new_token(token.type, token.value)
-            end
-            if lexer.tokens.length == 1 && lexer.tokens[0].type == :VARIABLE
-              tokens.last.raw = raw
-            end
-          end
+          tokens << new_token(:HEREDOC_MID, segment[1])
         end
-        value, terminator = get_heredoc_segment(ss, eos_text, interpolate)
       end
-    end
-
-    # Internal: Splits a heredoc String into segments if it is to be
-    # interpolated.
-    #
-    # string      - The String heredoc.
-    # eos_text    - The String endtext for the heredoc.
-    # interpolate - A Boolean that specifies whether this heredoc can contain
-    #               interpolated values (defaults to True).
-    #
-    # Returns an Array consisting of two Strings, the String up to the first
-    # terminator and the terminator that was found.
-    def get_heredoc_segment(string, eos_text, interpolate = true)
-      regexp = if interpolate
-                 %r{(([^\\]|^|[^\\])([\\]{2})*[$]+|\|?\s*-?#{Regexp.escape(eos_text)})}
-               else
-                 %r{\|?\s*-?#{Regexp.escape(eos_text)}}
-               end
-
-      str = string.scan_until(regexp)
-      begin
-        str =~ %r{\A(.*?)([$]+|\|?\s*-?#{Regexp.escape(eos_text)})\Z}m
-        [Regexp.last_match(1), Regexp.last_match(2)]
-      rescue
-        [nil, nil]
-      end
+      tokens << new_token(:HEREDOC_POST, post_segment[1], :raw => "#{post_segment[1]}#{end_tag[1]}")
     end
   end
 end
