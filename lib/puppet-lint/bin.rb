@@ -33,11 +33,6 @@ class PuppetLint::Bin
       return 0
     end
 
-    if PuppetLint.configuration.list_checks
-      puts PuppetLint.configuration.checks
-      return 0
-    end
-
     if @args[0].nil?
       puts 'puppet-lint: no file specified'
       puts "puppet-lint: try 'puppet-lint --help' for more information"
