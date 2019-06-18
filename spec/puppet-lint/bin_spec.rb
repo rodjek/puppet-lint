@@ -55,19 +55,6 @@ describe PuppetLint::Bin do
     its(:stdout) { is_expected.to eq("puppet-lint #{PuppetLint::VERSION}") }
   end
 
-  context 'when asked to display available checks' do
-    let(:args) { '--list-checks' }
-    all_checks = PuppetLint.configuration.checks.map(&:to_s)
-
-    its(:exitstatus) { is_expected.to eq(0) }
-
-    all_checks.each do |c|
-      it "includes check #{c} in its output" do
-        expect(subject.stdout).to include c
-      end
-    end
-  end
-
   context 'when passed a backslash separated path on Windows', :if => Gem.win_platform? do
     let(:args) do
       [
