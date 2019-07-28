@@ -1,5 +1,6 @@
 ---
 language: ruby
+dist: trusty
 sudo: false
 branches:
   only:
