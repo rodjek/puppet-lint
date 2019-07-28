@@ -29,9 +29,12 @@ PuppetLint.new_check(:ensure_first_param) do
     first_param_name_token = tokens[problem[:resource][:start]].next_token_of(:NAME)
     first_param_comma_token = first_param_name_token.next_token_of(:COMMA)
     ensure_param_name_token = first_param_comma_token.next_token_of(:NAME, :value => 'ensure')
+
+    raise PuppetLint::NoFix if ensure_param_name_token.nil?
+
     ensure_param_comma_token = ensure_param_name_token.next_token_of([:COMMA, :SEMIC])
 
-    if first_param_name_token.nil? || first_param_comma_token.nil? || ensure_param_name_token.nil? || ensure_param_comma_token.nil?
+    if first_param_name_token.nil? || first_param_comma_token.nil? || ensure_param_comma_token.nil?
       raise PuppetLint::NoFix
     end
 
