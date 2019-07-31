@@ -195,6 +195,12 @@ You can also disable checks when running Puppet Lint through the supplied Rake t
   PuppetLint.configuration.pattern = "modules"
   ```
 
+## Testing with Puppet Lint as a GitHub Action
+
+There is a GitHub Actions action available to get linter feedback in workflows:
+
+* [puppet-lint-action](https://github.com/marketplace/actions/puppet-lint-action)
+
 ## Options
 
 See `puppet-lint --help` for a full list of command line options and checks.
