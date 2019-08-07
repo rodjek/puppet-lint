@@ -224,5 +224,21 @@ describe 'ensure_first_param' do
         expect(manifest).to eq(fixed)
       end
     end
+
+    context 'ensure in nested hash' do
+      let(:code) do
+        <<-END
+          foo::bar { 'bar':
+            opts   => {
+              ensure => present,
+            },
+          },
+        END
+      end
+
+      it 'should create a warning' do
+        expect(problems).to contain_warning(msg).on_line(3).in_column(15)
+      end
+    end
   end
 end

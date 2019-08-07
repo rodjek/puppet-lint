@@ -875,10 +875,17 @@ END
       expect(token.value).to eq('Collection')
     end
 
-    it 'should match Platform Types' do
-      token = @lexer.tokenise('Callable').first
-      expect(token.type).to eq(:TYPE)
-      expect(token.value).to eq('Callable')
+    describe 'Platform Types' do
+      it 'should match Callable' do
+        token = @lexer.tokenise('Callable').first
+        expect(token.type).to eq(:TYPE)
+        expect(token.value).to eq('Callable')
+      end
+      it 'should match Sensitive' do
+        token = @lexer.tokenise('Sensitive').first
+        expect(token.type).to eq(:TYPE)
+        expect(token.value).to eq('Sensitive')
+      end
     end
   end
 
@@ -1090,6 +1097,21 @@ END
       expect(tokens[7].value).to eq("\n")
       expect(tokens[7].line).to eq(5)
       expect(tokens[7].column).to eq(8)
+    end
+
+    it 'should handle a heredoc with spaces in the tag' do
+      manifest = <<-END.gsub(%r{^ {6}}, '')
+      $str = @("myheredoc"     /)
+        foo
+        |-myheredoc
+      END
+      tokens = @lexer.tokenise(manifest)
+      expect(tokens.length).to eq(8)
+
+      expect(tokens[4].type).to eq(:HEREDOC_OPEN)
+      expect(tokens[4].value).to eq('"myheredoc"     /')
+      expect(tokens[6].type).to eq(:HEREDOC)
+      expect(tokens[6].value).to eq("  foo\n  ")
     end
   end
 

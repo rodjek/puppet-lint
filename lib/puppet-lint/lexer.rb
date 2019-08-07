@@ -118,7 +118,7 @@ class PuppetLint
     # value of the token.
     KNOWN_TOKENS = [
       [:WHITESPACE, %r{\A(#{WHITESPACE_RE}+)}],
-      [:TYPE, %r{\A(Integer|Float|Boolean|Regexp|String|Array|Hash|Resource|Class|Collection|Scalar|Numeric|CatalogEntry|Data|Tuple|Struct|Optional|NotUndef|Variant|Enum|Pattern|Any|Callable|Type|Runtime|Undef|Default)\b}],
+      [:TYPE, %r{\A(Integer|Float|Boolean|Regexp|String|Array|Hash|Resource|Class|Collection|Scalar|Numeric|CatalogEntry|Data|Tuple|Struct|Optional|NotUndef|Variant|Enum|Pattern|Any|Callable|Type|Runtime|Undef|Default|Sensitive)\b}], # rubocop:disable Metrics/LineLength
       [:CLASSREF, %r{\A(((::){0,1}[A-Z][-\w]*)+)}],
       [:NUMBER, %r{\A\b((?:0[xX][0-9A-Fa-f]+|0?\d+(?:\.\d+)?(?:[eE]-?\d+)?))\b}],
       [:FUNCTION_NAME, %r{#{NAME_RE}(?=\()}],
@@ -230,7 +230,7 @@ class PuppetLint
           interpolate_string(str_contents, lines_parsed.count, lines_parsed.last.length)
           length = str_contents.size + 1
 
-        elsif heredoc_name = chunk[%r{\A@\(("?.+?"?(:.+?)?(/.*?)?)\)}, 1]
+        elsif heredoc_name = chunk[%r{\A@\(("?.+?"?(:.+?)?#{WHITESPACE_RE}*(/.*?)?)\)}, 1]
           heredoc_queue << heredoc_name
           tokens << new_token(:HEREDOC_OPEN, heredoc_name)
           length = heredoc_name.size + 3
@@ -269,7 +269,7 @@ class PuppetLint
             length += indent.size
           else
             heredoc_tag = heredoc_queue.shift
-            heredoc_name = heredoc_tag[%r{\A"?(.+?)"?(:.+?)?(/.*)?\Z}, 1]
+            heredoc_name = heredoc_tag[%r{\A"?(.+?)"?(:.+?)?#{WHITESPACE_RE}*(/.*)?\Z}, 1]
             str_contents = StringScanner.new(code[(i + length)..-1]).scan_until(%r{\|?\s*-?\s*#{heredoc_name}})
             interpolate_heredoc(str_contents, heredoc_tag)
             length += str_contents.size
@@ -281,7 +281,7 @@ class PuppetLint
 
           unless heredoc_queue.empty?
             heredoc_tag = heredoc_queue.shift
-            heredoc_name = heredoc_tag[%r{\A"?(.+?)"?(:.+?)?(/.*)?\Z}, 1]
+            heredoc_name = heredoc_tag[%r{\A"?(.+?)"?(:.+?)?#{WHITESPACE_RE}*(/.*)?\Z}, 1]
             str_contents = StringScanner.new(code[(i + length)..-1]).scan_until(%r{\|?\s*-?\s*#{heredoc_name}})
             _ = code[0..(i + length)].split(LINE_END_RE)
             interpolate_heredoc(str_contents, heredoc_tag)
@@ -491,7 +491,7 @@ class PuppetLint
     # Returns nothing.
     def interpolate_heredoc(string, name)
       ss = StringScanner.new(string)
-      eos_text = name[%r{\A"?(.+?)"?(:.+?)?(/.*)?\Z}, 1]
+      eos_text = name[%r{\A"?(.+?)"?(:.+?)?#{WHITESPACE_RE}*(/.*)?\Z}, 1]
       first = true
       interpolate = name.start_with?('"')
       value, terminator = get_heredoc_segment(ss, eos_text, interpolate)
