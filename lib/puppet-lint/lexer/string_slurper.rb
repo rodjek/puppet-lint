@@ -35,7 +35,7 @@ class PuppetLint
             read_char
           elsif scanner.match?(END_INTERP_PATTERN)
             end_interp
-          elsif interp_stack.empty? && scanner.match?(UNENC_VAR_PATTERN)
+          elsif unenclosed_variable?
             unenclosed_variable
           elsif scanner.match?(ESC_DQUOTE_PATTERN)
             @segment << scanner.scan(ESC_DQUOTE_PATTERN)
@@ -50,6 +50,12 @@ class PuppetLint
         raise UnterminatedStringError if results.empty? && scanner.matched?
 
         results
+      end
+
+      def unenclosed_variable?
+        interp_stack.empty? &&
+          scanner.match?(UNENC_VAR_PATTERN) &&
+          (@segment.last.nil? ? true : !@segment.last.end_with?('\\'))
       end
 
       def parse_heredoc(heredoc_tag)
@@ -67,7 +73,7 @@ class PuppetLint
             start_interp
           elsif interpolation && !interp_stack.empty? && scanner.match?(LBRACE_PATTERN)
             read_char
-          elsif interpolation && interp_stack.empty? && scanner.match?(UNENC_VAR_PATTERN)
+          elsif interpolation && unenclosed_variable?
             unenclosed_variable
           elsif interpolation && scanner.match?(END_INTERP_PATTERN)
             end_interp
