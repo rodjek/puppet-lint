@@ -313,7 +313,7 @@ describe 'variable_scope' do
     end
 
     it 'should create one warning' do
-      expect(problems).to contain_warning(msg).on_line(2).in_column(13)
+      expect(problems).to contain_warning(msg).on_line(2).in_column(14)
     end
   end
 end

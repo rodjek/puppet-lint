@@ -51,7 +51,7 @@ PuppetLint.new_check(:arrow_alignment) do
             this_arrow_column = param_column[level_idx] + param_length + 1
           else
             this_arrow_column = param_token.column + param_token.to_manifest.length
-            this_arrow_column += 1 unless param_token.type == :DQPOST
+            this_arrow_column += 1
           end
 
           if arrow_column[level_idx] < this_arrow_column

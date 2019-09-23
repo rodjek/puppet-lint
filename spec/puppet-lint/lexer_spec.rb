@@ -63,82 +63,1010 @@ describe PuppetLint::Lexer do # rubocop:disable Metrics/BlockLength
     end
   end
 
-  describe '#slurp_string' do
-    it 'raises a LexerError if the string is not terminated' do
-      expect {
-        @lexer.slurp_string('unterminated string')
-      }.to raise_error(PuppetLint::LexerError)
+  context '#process_string_segments' do
+    subject(:tokens) { @lexer.tokens }
+    subject(:manifest) { @lexer.tokens.map(&:to_manifest).join }
+
+    before(:each) do
+      @lexer.process_string_segments(segments)
+    end
+
+    context 'an empty string segment' do
+      let(:segments) do
+        [
+          [:STRING, ''],
+        ]
+      end
+
+      it 'creates a :STRING token' do
+        expect(tokens).to have(1).token
+        expect(tokens[0]).to have_attributes(
+          :type   => :STRING,
+          :value  => '',
+          :line   => 1,
+          :column => 1
+        )
+      end
+
+      it 'can render the result back into a manifest' do
+        expect(manifest).to eq('""')
+      end
+    end
+
+    context 'an interpolated variable with a suffix' do
+      let(:segments) do
+        [
+          [:STRING, ''],
+          [:INTERP, 'foo'],
+          [:STRING, 'bar'],
+        ]
+      end
+
+      it 'creates a tokenised string with an interpolated variable' do
+        expect(tokens).to have(3).tokens
+        expect(tokens[0]).to have_attributes(
+          :type   => :DQPRE,
+          :value  => '',
+          :line   => 1,
+          :column => 1
+        )
+        expect(tokens[1]).to have_attributes(
+          :type   => :VARIABLE,
+          :value  => 'foo',
+          :line   => 1,
+          :column => 4
+        )
+        expect(tokens[2]).to have_attributes(
+          :type   => :DQPOST,
+          :value  => 'bar',
+          :line   => 1,
+          :column => 7
+        )
+      end
+
+      it 'can render the result back into a manifest' do
+        expect(manifest).to eq('"${foo}bar"')
+      end
+    end
+
+    context 'an interpolated variable surrounded by string segments' do
+      let(:segments) do
+        [
+          [:STRING, 'foo'],
+          [:INTERP, 'bar'],
+          [:STRING, 'baz'],
+        ]
+      end
+
+      it 'creates a tokenised string with an interpolated variable' do
+        expect(tokens).to have(3).tokens
+        expect(tokens[0]).to have_attributes(
+          :type   => :DQPRE,
+          :value  => 'foo',
+          :line   => 1,
+          :column => 1
+        )
+        expect(tokens[1]).to have_attributes(
+          :type   => :VARIABLE,
+          :value  => 'bar',
+          :line   => 1,
+          :column => 7
+        )
+        expect(tokens[2]).to have_attributes(
+          :type   => :DQPOST,
+          :value  => 'baz',
+          :line   => 1,
+          :column => 10
+        )
+      end
+
+      it 'can render the result back into a manifest' do
+        expect(manifest).to eq('"foo${bar}baz"')
+      end
+    end
+
+    context 'multiple interpolated variables with surrounding text' do
+      let(:segments) do
+        [
+          [:STRING, 'foo'],
+          [:INTERP, 'bar'],
+          [:STRING, 'baz'],
+          [:INTERP, 'gronk'],
+          [:STRING, 'meh'],
+        ]
+      end
+
+      it 'creates a tokenised string with the interpolated variables' do
+        expect(tokens).to have(5).tokens
+
+        expect(tokens[0]).to have_attributes(
+          :type   => :DQPRE,
+          :value  => 'foo',
+          :line   => 1,
+          :column => 1
+        )
+        expect(tokens[1]).to have_attributes(
+          :type   => :VARIABLE,
+          :value  => 'bar',
+          :line   => 1,
+          :column => 7
+        )
+        expect(tokens[2]).to have_attributes(
+          :type   => :DQMID,
+          :value  => 'baz',
+          :line   => 1,
+          :column => 10
+        )
+        expect(tokens[3]).to have_attributes(
+          :type   => :VARIABLE,
+          :value  => 'gronk',
+          :line   => 1,
+          :column => 16
+        )
+        expect(tokens[4]).to have_attributes(
+          :type   => :DQPOST,
+          :value  => 'meh',
+          :line   => 1,
+          :column => 21
+        )
+      end
+
+      it 'can render the result back into a manifest' do
+        expect(manifest).to eq('"foo${bar}baz${gronk}meh"')
+      end
+    end
+
+    context 'only a single interpolated variable' do
+      let(:segments) do
+        [
+          [:STRING, ''],
+          [:INTERP, 'foo'],
+          [:STRING, ''],
+        ]
+      end
+
+      it 'creates a tokenised string' do
+        expect(tokens).to have(3).tokens
+
+        expect(tokens[0]).to have_attributes(
+          :type   => :DQPRE,
+          :value  => '',
+          :line   => 1,
+          :column => 1
+        )
+        expect(tokens[1]).to have_attributes(
+          :type   => :VARIABLE,
+          :value  => 'foo',
+          :line   => 1,
+          :column => 4
+        )
+        expect(tokens[2]).to have_attributes(
+          :type   => :DQPOST,
+          :value  => '',
+          :line   => 1,
+          :column => 7
+        )
+      end
+
+      it 'can render the result back into a manifest' do
+        expect(manifest).to eq('"${foo}"')
+      end
+    end
+
+    context 'an interpolated variable with an unnecessary $' do
+      let(:segments) do
+        [
+          [:STRING, ''],
+          [:INTERP, '$bar'],
+          [:STRING, ''],
+        ]
+      end
+
+      it 'creates a tokenised string' do
+        expect(tokens).to have(3).tokens
+
+        expect(tokens[0]).to have_attributes(
+          :type   => :DQPRE,
+          :value  => '',
+          :line   => 1,
+          :column => 1
+        )
+        expect(tokens[1]).to have_attributes(
+          :type   => :VARIABLE,
+          :value  => 'bar',
+          :line   => 1,
+          :column => 4
+        )
+        expect(tokens[2]).to have_attributes(
+          :type   => :DQPOST,
+          :value  => '',
+          :line   => 1,
+          :column => 8
+        )
+      end
+
+      it 'includes the extra $ in the rendered manifest' do
+        expect(manifest).to eq('"${$bar}"')
+      end
+    end
+
+    context 'an interpolated variable with an array reference' do
+      let(:segments) do
+        [
+          [:STRING, ''],
+          [:INTERP, 'foo[bar][baz]'],
+          [:STRING, ''],
+        ]
+      end
+
+      it 'creates a tokenised string' do
+        expect(tokens).to have(9).tokens
+
+        expect(tokens[0]).to have_attributes(
+          :type   => :DQPRE,
+          :value  => '',
+          :line   => 1,
+          :column => 1
+        )
+        expect(tokens[1]).to have_attributes(
+          :type   => :VARIABLE,
+          :value  => 'foo',
+          :line   => 1,
+          :column => 4
+        )
+        expect(tokens[2]).to have_attributes(
+          :type   => :LBRACK,
+          :value  => '[',
+          :line   => 1,
+          :column => 7
+        )
+        expect(tokens[3]).to have_attributes(
+          :type   => :NAME,
+          :value  => 'bar',
+          :line   => 1,
+          :column => 8
+        )
+        expect(tokens[4]).to have_attributes(
+          :type   => :RBRACK,
+          :value  => ']',
+          :line   => 1,
+          :column => 11
+        )
+        expect(tokens[5]).to have_attributes(
+          :type   => :LBRACK,
+          :value  => '[',
+          :line   => 1,
+          :column => 12
+        )
+        expect(tokens[6]).to have_attributes(
+          :type   => :NAME,
+          :value  => 'baz',
+          :line   => 1,
+          :column => 13
+        )
+        expect(tokens[7]).to have_attributes(
+          :type   => :RBRACK,
+          :value  => ']',
+          :line   => 1,
+          :column => 16
+        )
+        expect(tokens[8]).to have_attributes(
+          :type   => :DQPOST,
+          :value  => '',
+          :line   => 1,
+          :column => 17
+        )
+      end
+
+      it 'can render the result back into a manifest' do
+        expect(manifest).to eq('"${foo[bar][baz]}"')
+      end
+    end
+
+    context 'multiple interpreted variables' do
+      let(:segments) do
+        [
+          [:STRING, ''],
+          [:INTERP, 'foo'],
+          [:STRING, ''],
+          [:INTERP, 'bar'],
+          [:STRING, ''],
+        ]
+      end
+
+      it 'creates a tokenised string' do
+        expect(tokens).to have(5).tokens
+
+        expect(tokens[0]).to have_attributes(
+          :type   => :DQPRE,
+          :value  => '',
+          :line   => 1,
+          :column => 1
+        )
+        expect(tokens[1]).to have_attributes(
+          :type   => :VARIABLE,
+          :value  => 'foo',
+          :line   => 1,
+          :column => 4
+        )
+        expect(tokens[2]).to have_attributes(
+          :type   => :DQMID,
+          :value  => '',
+          :line   => 1,
+          :column => 7
+        )
+        expect(tokens[3]).to have_attributes(
+          :type   => :VARIABLE,
+          :value  => 'bar',
+          :line   => 1,
+          :column => 10
+        )
+        expect(tokens[4]).to have_attributes(
+          :type   => :DQPOST,
+          :value  => '',
+          :line   => 1,
+          :column => 13
+        )
+      end
+
+      it 'can render the result back into a manifest' do
+        expect(manifest).to eq('"${foo}${bar}"')
+      end
+    end
+
+    context 'an unenclosed variable' do
+      let(:segments) do
+        [
+          [:STRING, ''],
+          [:UNENC_VAR, '$foo'],
+          [:STRING, ''],
+        ]
+      end
+
+      it 'creates a tokenised string' do
+        expect(tokens).to have(3).tokens
+
+        expect(tokens[0]).to have_attributes(
+          :type   => :DQPRE,
+          :value  => '',
+          :line   => 1,
+          :column => 1
+        )
+        expect(tokens[1]).to have_attributes(
+          :type   => :UNENC_VARIABLE,
+          :value  => 'foo',
+          :line   => 1,
+          :column => 2
+        )
+        expect(tokens[2]).to have_attributes(
+          :type   => :DQPOST,
+          :value  => '',
+          :line   => 1,
+          :column => 6
+        )
+      end
+
+      it 'can render the result back into a manifest' do
+        expect(manifest).to eq('"$foo"')
+      end
+    end
+
+    context 'an interpolation with a nested single quote string' do
+      let(:segments) do
+        [
+          [:STRING, 'string with '],
+          [:INTERP, "'a nested single quoted string'"],
+          [:STRING, ' inside it'],
+        ]
+      end
+
+      it 'creates a tokenised string' do
+        expect(tokens).to have(3).tokens
+
+        expect(tokens[0]).to have_attributes(
+          :type   => :DQPRE,
+          :value  => 'string with ',
+          :line   => 1,
+          :column => 1
+        )
+        expect(tokens[1]).to have_attributes(
+          :type   => :SSTRING,
+          :value  => 'a nested single quoted string',
+          :line   => 1,
+          :column => 16
+        )
+        expect(tokens[2]).to have_attributes(
+          :type   => :DQPOST,
+          :value  => ' inside it',
+          :line   => 1,
+          :column => 47
+        )
+      end
+
+      it 'can render the result back into a manifest' do
+        expect(manifest).to eq(%("string with ${'a nested single quoted string'} inside it"))
+      end
+    end
+
+    context 'an interpolation with a nested math expression' do
+      let(:segments) do
+        [
+          [:STRING, 'string with '],
+          [:INTERP, '(3+5)/4'],
+          [:STRING, ' nested math'],
+        ]
+      end
+
+      it 'creates a tokenised string' do
+        expect(tokens).to have(9).tokens
+
+        expect(tokens[0]).to have_attributes(
+          :type   => :DQPRE,
+          :value  => 'string with ',
+          :line   => 1,
+          :column => 1
+        )
+        expect(tokens[1]).to have_attributes(
+          :type   => :LPAREN,
+          :value  => '(',
+          :line   => 1,
+          :column => 16
+        )
+        expect(tokens[2]).to have_attributes(
+          :type   => :NUMBER,
+          :value  => '3',
+          :line   => 1,
+          :column => 17
+        )
+        expect(tokens[3]).to have_attributes(
+          :type   => :PLUS,
+          :value  => '+',
+          :line   => 1,
+          :column => 18
+        )
+        expect(tokens[4]).to have_attributes(
+          :type   => :NUMBER,
+          :value  => '5',
+          :line   => 1,
+          :column => 19
+        )
+        expect(tokens[5]).to have_attributes(
+          :type   => :RPAREN,
+          :value  => ')',
+          :line   => 1,
+          :column => 20
+        )
+        expect(tokens[6]).to have_attributes(
+          :type   => :DIV,
+          :value  => '/',
+          :line   => 1,
+          :column => 21
+        )
+        expect(tokens[7]).to have_attributes(
+          :type   => :NUMBER,
+          :value  => '4',
+          :line   => 1,
+          :column => 22
+        )
+        expect(tokens[8]).to have_attributes(
+          :type   => :DQPOST,
+          :value  => ' nested math',
+          :line   => 1,
+          :column => 23
+        )
+      end
+
+      it 'can render the result back into a manifest' do
+        expect(manifest).to eq('"string with ${(3+5)/4} nested math"')
+      end
+    end
+
+    context 'an interpolation with a nested array' do
+      let(:segments) do
+        [
+          [:STRING, 'string with '],
+          [:INTERP, "['an array ', $v2]"],
+          [:STRING, ' in it'],
+        ]
+      end
+
+      it 'creates a tokenised string' do
+        expect(tokens).to have(8).tokens
+
+        expect(tokens[0]).to have_attributes(
+          :type   => :DQPRE,
+          :value  => 'string with ',
+          :line   => 1,
+          :column => 1
+        )
+        expect(tokens[1]).to have_attributes(
+          :type   => :LBRACK,
+          :value  => '[',
+          :line   => 1,
+          :column => 16
+        )
+        expect(tokens[2]).to have_attributes(
+          :type   => :SSTRING,
+          :value  => 'an array ',
+          :line   => 1,
+          :column => 17
+        )
+        expect(tokens[3]).to have_attributes(
+          :type   => :COMMA,
+          :value  => ',',
+          :line   => 1,
+          :column => 28
+        )
+        expect(tokens[4]).to have_attributes(
+          :type   => :WHITESPACE,
+          :value  => ' ',
+          :line   => 1,
+          :column => 29
+        )
+        expect(tokens[5]).to have_attributes(
+          :type   => :VARIABLE,
+          :value  => 'v2',
+          :line   => 1,
+          :column => 30
+        )
+        expect(tokens[6]).to have_attributes(
+          :type   => :RBRACK,
+          :value  => ']',
+          :line   => 1,
+          :column => 33
+        )
+        expect(tokens[7]).to have_attributes(
+          :type   => :DQPOST,
+          :value  => ' in it',
+          :line   => 1,
+          :column => 34
+        )
+      end
+
+      it 'can render the result back into a manifest' do
+        expect(manifest).to eq(%("string with ${['an array ', $v2]} in it"))
+      end
+    end
+
+    context 'multiple unenclosed variables' do
+      let(:segments) do
+        [
+          [:STRING, ''],
+          [:UNENC_VAR, '$foo'],
+          [:STRING, ''],
+          [:UNENC_VAR, '$bar'],
+          [:STRING, ''],
+        ]
+      end
+
+      it 'creates a tokenised string' do
+        expect(tokens).to have(5).tokens
+
+        expect(tokens[0]).to have_attributes(
+          :type   => :DQPRE,
+          :value  => '',
+          :line   => 1,
+          :column => 1
+        )
+        expect(tokens[1]).to have_attributes(
+          :type   => :UNENC_VARIABLE,
+          :value  => 'foo',
+          :line   => 1,
+          :column => 2
+        )
+        expect(tokens[2]).to have_attributes(
+          :type   => :DQMID,
+          :value  => '',
+          :line   => 1,
+          :column => 6
+        )
+        expect(tokens[3]).to have_attributes(
+          :type   => :UNENC_VARIABLE,
+          :value  => 'bar',
+          :line   => 1,
+          :column => 6
+        )
+        expect(tokens[4]).to have_attributes(
+          :type   => :DQPOST,
+          :value  => '',
+          :line   => 1,
+          :column => 10
+        )
+      end
+
+      it 'can render the result back into a manifest' do
+        expect(manifest).to eq('"$foo$bar"')
+      end
+    end
+
+    context 'an unenclosed variable with a trailing $' do
+      let(:segments) do
+        [
+          [:STRING, 'foo'],
+          [:UNENC_VAR, '$bar'],
+          [:STRING, '$'],
+        ]
+      end
+
+      it 'creates a tokenised string' do
+        expect(tokens).to have(3).tokens
+
+        expect(tokens[0]).to have_attributes(
+          :type   => :DQPRE,
+          :value  => 'foo',
+          :line   => 1,
+          :column => 1
+        )
+        expect(tokens[1]).to have_attributes(
+          :type   => :UNENC_VARIABLE,
+          :value  => 'bar',
+          :line   => 1,
+          :column => 5
+        )
+        expect(tokens[2]).to have_attributes(
+          :type   => :DQPOST,
+          :value  => '$',
+          :line   => 1,
+          :column => 9
+        )
+      end
+
+      it 'can render the result back into a manifest' do
+        expect(manifest).to eq('"foo$bar$"')
+      end
+    end
+
+    context 'an interpolation with a complex function chain' do
+      let(:segments) do
+        [
+          [:STRING, ''],
+          [:INTERP, 'key'],
+          [:STRING, ' '],
+          [:INTERP, 'flatten([$value]).join("\nkey ")'],
+          [:STRING, ''],
+        ]
+      end
+
+      it 'creates a tokenised string' do
+        expect(tokens).to have(15).tokens
+
+        expect(tokens[0]).to have_attributes(
+          :type   => :DQPRE,
+          :value  => '',
+          :line   => 1,
+          :column => 1
+        )
+        expect(tokens[1]).to have_attributes(
+          :type   => :VARIABLE,
+          :value  => 'key',
+          :line   => 1,
+          :column => 4
+        )
+        expect(tokens[2]).to have_attributes(
+          :type   => :DQMID,
+          :value  => ' ',
+          :line   => 1,
+          :column => 7
+        )
+        expect(tokens[3]).to have_attributes(
+          :type   => :FUNCTION_NAME,
+          :value  => 'flatten',
+          :line   => 1,
+          :column => 11
+        )
+        expect(tokens[4]).to have_attributes(
+          :type   => :LPAREN,
+          :value  => '(',
+          :line   => 1,
+          :column => 18
+        )
+        expect(tokens[5]).to have_attributes(
+          :type   => :LBRACK,
+          :value  => '[',
+          :line   => 1,
+          :column => 19
+        )
+        expect(tokens[6]).to have_attributes(
+          :type   => :VARIABLE,
+          :value  => 'value',
+          :line   => 1,
+          :column => 20
+        )
+        expect(tokens[7]).to have_attributes(
+          :type   => :RBRACK,
+          :value  => ']',
+          :line   => 1,
+          :column => 26
+        )
+        expect(tokens[8]).to have_attributes(
+          :type   => :RPAREN,
+          :value  => ')',
+          :line   => 1,
+          :column => 27
+        )
+        expect(tokens[9]).to have_attributes(
+          :type   => :DOT,
+          :value  => '.',
+          :line   => 1,
+          :column => 28
+        )
+        expect(tokens[10]).to have_attributes(
+          :type   => :FUNCTION_NAME,
+          :value  => 'join',
+          :line   => 1,
+          :column => 29
+        )
+        expect(tokens[11]).to have_attributes(
+          :type   => :LPAREN,
+          :value  => '(',
+          :line   => 1,
+          :column => 33
+        )
+        expect(tokens[12]).to have_attributes(
+          :type   => :STRING,
+          :value  => '\nkey ',
+          :line   => 1,
+          :column => 34
+        )
+        expect(tokens[13]).to have_attributes(
+          :type   => :RPAREN,
+          :value  => ')',
+          :line   => 1,
+          :column => 42
+        )
+        expect(tokens[14]).to have_attributes(
+          :type   => :DQPOST,
+          :value  => '',
+          :line   => 1,
+          :column => 43
+        )
+      end
+
+      it 'can render the result back into a manifest' do
+        expect(manifest).to eq('"${key} ${flatten([$value]).join("\nkey ")}"')
+      end
+    end
+
+    context 'nested interpolations' do
+      let(:segments) do
+        [
+          [:STRING, ''],
+          [:INTERP, 'facts["network_${iface}"]'],
+          [:STRING, '/'],
+          [:INTERP, 'facts["netmask_${iface}"]'],
+          [:STRING, ''],
+        ]
+      end
+
+      it 'creates a tokenised string' do
+        expect(tokens).to have(15).tokens
+
+        expect(tokens[0]).to have_attributes(
+          :type   => :DQPRE,
+          :value  => '',
+          :line   => 1,
+          :column => 1
+        )
+        expect(tokens[1]).to have_attributes(
+          :type   => :VARIABLE,
+          :value  => 'facts',
+          :line   => 1,
+          :column => 4
+        )
+        expect(tokens[2]).to have_attributes(
+          :type   => :LBRACK,
+          :value  => '[',
+          :line   => 1,
+          :column => 9
+        )
+        expect(tokens[3]).to have_attributes(
+          :type   => :DQPRE,
+          :value  => 'network_',
+          :line   => 1,
+          :column => 10
+        )
+        expect(tokens[4]).to have_attributes(
+          :type   => :VARIABLE,
+          :value  => 'iface',
+          :line   => 1,
+          :column => 21
+        )
+        expect(tokens[5]).to have_attributes(
+          :type   => :DQPOST,
+          :value  => '',
+          :line   => 1,
+          :column => 26
+        )
+        expect(tokens[6]).to have_attributes(
+          :type   => :RBRACK,
+          :value  => ']',
+          :line   => 1,
+          :column => 28
+        )
+        expect(tokens[7]).to have_attributes(
+          :type   => :DQMID,
+          :value  => '/',
+          :line   => 1,
+          :column => 29
+        )
+        expect(tokens[8]).to have_attributes(
+          :type   => :VARIABLE,
+          :value  => 'facts',
+          :line   => 1,
+          :column => 33
+        )
+        expect(tokens[9]).to have_attributes(
+          :type   => :LBRACK,
+          :value  => '[',
+          :line   => 1,
+          :column => 38
+        )
+        expect(tokens[10]).to have_attributes(
+          :type   => :DQPRE,
+          :value  => 'netmask_',
+          :line   => 1,
+          :column => 39
+        )
+        expect(tokens[11]).to have_attributes(
+          :type   => :VARIABLE,
+          :value  => 'iface',
+          :line   => 1,
+          :column => 50
+        )
+        expect(tokens[12]).to have_attributes(
+          :type   => :DQPOST,
+          :value  => '',
+          :line   => 1,
+          :column => 55
+        )
+        expect(tokens[13]).to have_attributes(
+          :type   => :RBRACK,
+          :value  => ']',
+          :line   => 1,
+          :column => 57
+        )
+        expect(tokens[14]).to have_attributes(
+          :type   => :DQPOST,
+          :value  => '',
+          :line   => 1,
+          :column => 58
+        )
+      end
+
+      it 'can render the result back into a manifest' do
+        expect(manifest).to eq('"${facts["network_${iface}"]}/${facts["netmask_${iface}"]}"')
+      end
+    end
+
+    context 'interpolation with nested braces' do
+      let(:segments) do
+        [
+          [:STRING, ''],
+          [:INTERP, '$foo.map |$bar| { something($bar) }'],
+          [:STRING, ''],
+        ]
+      end
+
+      it 'creates a tokenised string' do
+        expect(tokens).to have(18).tokens
+
+        expect(tokens[0]).to have_attributes(
+          :type   => :DQPRE,
+          :value  => '',
+          :line   => 1,
+          :column => 1
+        )
+        expect(tokens[1]).to have_attributes(
+          :type   => :VARIABLE,
+          :value  => 'foo',
+          :line   => 1,
+          :column => 4
+        )
+        expect(tokens[2]).to have_attributes(
+          :type   => :DOT,
+          :value  => '.',
+          :line   => 1,
+          :column => 8
+        )
+        expect(tokens[3]).to have_attributes(
+          :type   => :NAME,
+          :value  => 'map',
+          :line   => 1,
+          :column => 9
+        )
+        expect(tokens[4]).to have_attributes(
+          :type   => :WHITESPACE,
+          :value  => ' ',
+          :line   => 1,
+          :column => 12
+        )
+        expect(tokens[5]).to have_attributes(
+          :type   => :PIPE,
+          :value  => '|',
+          :line   => 1,
+          :column => 13
+        )
+        expect(tokens[6]).to have_attributes(
+          :type   => :VARIABLE,
+          :value  => 'bar',
+          :line   => 1,
+          :column => 14
+        )
+        expect(tokens[7]).to have_attributes(
+          :type   => :PIPE,
+          :value  => '|',
+          :line   => 1,
+          :column => 18
+        )
+        expect(tokens[8]).to have_attributes(
+          :type   => :WHITESPACE,
+          :value  => ' ',
+          :line   => 1,
+          :column => 19
+        )
+        expect(tokens[9]).to have_attributes(
+          :type   => :LBRACE,
+          :value  => '{',
+          :line   => 1,
+          :column => 20
+        )
+        expect(tokens[10]).to have_attributes(
+          :type   => :WHITESPACE,
+          :value  => ' ',
+          :line   => 1,
+          :column => 21
+        )
+        expect(tokens[11]).to have_attributes(
+          :type   => :FUNCTION_NAME,
+          :value  => 'something',
+          :line   => 1,
+          :column => 22
+        )
+        expect(tokens[12]).to have_attributes(
+          :type   => :LPAREN,
+          :value  => '(',
+          :line   => 1,
+          :column => 31
+        )
+        expect(tokens[13]).to have_attributes(
+          :type   => :VARIABLE,
+          :value  => 'bar',
+          :line   => 1,
+          :column => 32
+        )
+        expect(tokens[14]).to have_attributes(
+          :type   => :RPAREN,
+          :value  => ')',
+          :line   => 1,
+          :column => 36
+        )
+        expect(tokens[15]).to have_attributes(
+          :type   => :WHITESPACE,
+          :value  => ' ',
+          :line   => 1,
+          :column => 37
+        )
+        expect(tokens[16]).to have_attributes(
+          :type   => :RBRACE,
+          :value  => '}',
+          :line   => 1,
+          :column => 38
+        )
+        expect(tokens[17]).to have_attributes(
+          :type   => :DQPOST,
+          :value  => '',
+          :line   => 1,
+          :column => 39
+        )
+      end
+
+      it 'can render the result back into a manifest' do
+        expect(manifest).to eq('"${$foo.map |$bar| { something($bar) }}"')
+      end
     end
   end
 
-  context '#get_string_segment' do
-    it 'should get a segment with a single terminator' do
-      data = StringScanner.new('foo"bar')
-      value, terminator = @lexer.get_string_segment(data, '"')
-      expect(value).to eq('foo')
-      expect(terminator).to eq('"')
-    end
-
-    it 'should get a segment with multiple terminators' do
-      data = StringScanner.new('foo"bar$baz')
-      value, terminator = @lexer.get_string_segment(data, "'$")
-      expect(value).to eq('foo"bar')
-      expect(terminator).to eq('$')
-    end
-
-    it 'should not get a segment with an escaped terminator' do
-      data = StringScanner.new('foo"bar')
-      value, terminator = @lexer.get_string_segment(data, '$')
-      expect(value).to be_nil
-      expect(terminator).to be_nil
-    end
-  end
-
-  context '#interpolate_string' do
-    it 'should handle a string with no variables' do
-      @lexer.interpolate_string('foo bar baz"', 1, 1)
-      token = @lexer.tokens.first
-
-      expect(@lexer.tokens.length).to eq(1)
-      expect(token.type).to eq(:STRING)
-      expect(token.value).to eq('foo bar baz')
-      expect(token.line).to eq(1)
-      expect(token.column).to eq(1)
-    end
-
-    it 'should handle a string with a newline' do
-      @lexer.interpolate_string(%(foo\nbar"), 1, 1)
-      token = @lexer.tokens.first
-
-      expect(@lexer.tokens.length).to eq(1)
-      expect(token.type).to eq(:STRING)
-      expect(token.value).to eq("foo\nbar")
-      expect(token.line).to eq(1)
-      expect(token.column).to eq(1)
-    end
-
-    it 'should handle a string with a single variable and suffix' do
-      @lexer.interpolate_string('${foo}bar"', 1, 1)
-      tokens = @lexer.tokens
-
-      expect(tokens.length).to eq(3)
-
-      expect(tokens[0].type).to eq(:DQPRE)
-      expect(tokens[0].value).to eq('')
-      expect(tokens[0].line).to eq(1)
-      expect(tokens[0].column).to eq(1)
-
-      expect(tokens[1].type).to eq(:VARIABLE)
-      expect(tokens[1].value).to eq('foo')
-      expect(tokens[1].line).to eq(1)
-      expect(tokens[1].column).to eq(3)
-
-      expect(tokens[2].type).to eq(:DQPOST)
-      expect(tokens[2].value).to eq('bar')
-      expect(tokens[2].line).to eq(1)
-      expect(tokens[2].column).to eq(8)
-    end
-
+  context ':STRING / :DQ' do
     it 'should handle a string with newline characters' do
       # rubocop:disable Layout/TrailingWhitespace
       manifest = <<END
@@ -147,14 +1075,14 @@ describe PuppetLint::Lexer do # rubocop:disable Metrics/BlockLength
       command     => "echo > /home/bar/.token; 
                                 kdestroy; 
                                 kinit ${pseudouser}@EXAMPLE.COM -kt ${keytab_path}; 
-                                test $(klist | egrep '^Default principal:' | sed 's/Default principal:\s//') = '${pseudouser}'@EXAMPLE.COM",
+                                test $(klist | egrep '^Default principal:' | sed 's/Default principal:\\s//') = '${pseudouser}'@EXAMPLE.COM",
       refreshonly => true;
   }
 END
       # rubocop:enable Layout/TrailingWhitespace
       tokens = @lexer.tokenise(manifest)
 
-      expect(tokens.length).to eq(36)
+      expect(tokens.length).to eq(34)
 
       expect(tokens[0].type).to eq(:WHITESPACE)
       expect(tokens[0].value).to eq('  ')
@@ -219,530 +1147,79 @@ END
       expect(tokens[15].type).to eq(:VARIABLE)
       expect(tokens[15].value).to eq('pseudouser')
       expect(tokens[15].line).to eq(5)
-      expect(tokens[15].column).to eq(131)
+      expect(tokens[15].column).to eq(41)
       expect(tokens[16].type).to eq(:DQMID)
       expect(tokens[16].value).to eq('@EXAMPLE.COM -kt ')
       expect(tokens[16].line).to eq(5)
-      expect(tokens[16].column).to eq(143)
+      expect(tokens[16].column).to eq(51)
       expect(tokens[17].type).to eq(:VARIABLE)
       expect(tokens[17].value).to eq('keytab_path')
       expect(tokens[17].line).to eq(5)
-      expect(tokens[17].column).to eq(161)
+      expect(tokens[17].column).to eq(71)
       expect(tokens[18].type).to eq(:DQMID)
-      expect(tokens[18].value).to eq("; \n                                test ")
+      expect(tokens[18].value).to eq("; \n                                test $(klist | egrep '^Default principal:' | sed 's/Default principal:\\s//') = '")
       expect(tokens[18].line).to eq(5)
-      expect(tokens[18].column).to eq(174)
-      expect(tokens[19].type).to eq(:DQMID)
-      expect(tokens[19].value).to eq('$')
+      expect(tokens[18].column).to eq(82)
+      expect(tokens[19].type).to eq(:VARIABLE)
+      expect(tokens[19].value).to eq('pseudouser')
       expect(tokens[19].line).to eq(6)
-      expect(tokens[19].column).to eq(213)
-      expect(tokens[20].type).to eq(:DQMID)
-      expect(tokens[20].value).to eq("(klist | egrep '^Default principal:' | sed 's/Default principal: //') = '")
+      expect(tokens[19].column).to eq(115)
+      expect(tokens[20].type).to eq(:DQPOST)
+      expect(tokens[20].value).to eq("'@EXAMPLE.COM")
       expect(tokens[20].line).to eq(6)
-      expect(tokens[20].column).to eq(215)
-      expect(tokens[21].type).to eq(:VARIABLE)
-      expect(tokens[21].value).to eq('pseudouser')
+      expect(tokens[20].column).to eq(125)
+      expect(tokens[21].type).to eq(:COMMA)
+      expect(tokens[21].value).to eq(',')
       expect(tokens[21].line).to eq(6)
-      expect(tokens[21].column).to eq(289)
-      expect(tokens[22].type).to eq(:DQPOST)
-      expect(tokens[22].value).to eq("'@EXAMPLE.COM")
+      expect(tokens[21].column).to eq(140)
+      expect(tokens[22].type).to eq(:NEWLINE)
+      expect(tokens[22].value).to eq("\n")
       expect(tokens[22].line).to eq(6)
-      expect(tokens[22].column).to eq(301)
-      expect(tokens[23].type).to eq(:COMMA)
-      expect(tokens[23].value).to eq(',')
-      expect(tokens[23].line).to eq(6)
-      expect(tokens[23].column).to eq(315)
-      expect(tokens[24].type).to eq(:NEWLINE)
-      expect(tokens[24].value).to eq("\n")
-      expect(tokens[24].line).to eq(6)
-      expect(tokens[24].column).to eq(316)
-      expect(tokens[25].type).to eq(:INDENT)
-      expect(tokens[25].value).to eq('      ')
+      expect(tokens[22].column).to eq(141)
+      expect(tokens[23].type).to eq(:INDENT)
+      expect(tokens[23].value).to eq('      ')
+      expect(tokens[23].line).to eq(7)
+      expect(tokens[23].column).to eq(1)
+      expect(tokens[24].type).to eq(:NAME)
+      expect(tokens[24].value).to eq('refreshonly')
+      expect(tokens[24].line).to eq(7)
+      expect(tokens[24].column).to eq(7)
+      expect(tokens[25].type).to eq(:WHITESPACE)
+      expect(tokens[25].value).to eq(' ')
       expect(tokens[25].line).to eq(7)
-      expect(tokens[25].column).to eq(1)
-      expect(tokens[26].type).to eq(:NAME)
-      expect(tokens[26].value).to eq('refreshonly')
+      expect(tokens[25].column).to eq(18)
+      expect(tokens[26].type).to eq(:FARROW)
+      expect(tokens[26].value).to eq('=>')
       expect(tokens[26].line).to eq(7)
-      expect(tokens[26].column).to eq(7)
+      expect(tokens[26].column).to eq(19)
       expect(tokens[27].type).to eq(:WHITESPACE)
       expect(tokens[27].value).to eq(' ')
       expect(tokens[27].line).to eq(7)
-      expect(tokens[27].column).to eq(18)
-      expect(tokens[28].type).to eq(:FARROW)
-      expect(tokens[28].value).to eq('=>')
+      expect(tokens[27].column).to eq(21)
+      expect(tokens[28].type).to eq(:TRUE)
+      expect(tokens[28].value).to eq('true')
       expect(tokens[28].line).to eq(7)
-      expect(tokens[28].column).to eq(19)
-      expect(tokens[29].type).to eq(:WHITESPACE)
-      expect(tokens[29].value).to eq(' ')
+      expect(tokens[28].column).to eq(22)
+      expect(tokens[29].type).to eq(:SEMIC)
+      expect(tokens[29].value).to eq(';')
       expect(tokens[29].line).to eq(7)
-      expect(tokens[29].column).to eq(21)
-      expect(tokens[30].type).to eq(:TRUE)
-      expect(tokens[30].value).to eq('true')
+      expect(tokens[29].column).to eq(26)
+      expect(tokens[30].type).to eq(:NEWLINE)
+      expect(tokens[30].value).to eq("\n")
       expect(tokens[30].line).to eq(7)
-      expect(tokens[30].column).to eq(22)
-      expect(tokens[31].type).to eq(:SEMIC)
-      expect(tokens[31].value).to eq(';')
-      expect(tokens[31].line).to eq(7)
-      expect(tokens[31].column).to eq(26)
-      expect(tokens[32].type).to eq(:NEWLINE)
-      expect(tokens[32].value).to eq("\n")
-      expect(tokens[32].line).to eq(7)
-      expect(tokens[32].column).to eq(27)
-      expect(tokens[33].type).to eq(:INDENT)
-      expect(tokens[33].value).to eq('  ')
+      expect(tokens[30].column).to eq(27)
+      expect(tokens[31].type).to eq(:INDENT)
+      expect(tokens[31].value).to eq('  ')
+      expect(tokens[31].line).to eq(8)
+      expect(tokens[31].column).to eq(1)
+      expect(tokens[32].type).to eq(:RBRACE)
+      expect(tokens[32].value).to eq('}')
+      expect(tokens[32].line).to eq(8)
+      expect(tokens[32].column).to eq(3)
+      expect(tokens[33].type).to eq(:NEWLINE)
+      expect(tokens[33].value).to eq("\n")
       expect(tokens[33].line).to eq(8)
-      expect(tokens[33].column).to eq(1)
-      expect(tokens[34].type).to eq(:RBRACE)
-      expect(tokens[34].value).to eq('}')
-      expect(tokens[34].line).to eq(8)
-      expect(tokens[34].column).to eq(3)
-      expect(tokens[35].type).to eq(:NEWLINE)
-      expect(tokens[35].value).to eq("\n")
-      expect(tokens[35].line).to eq(8)
-      expect(tokens[35].column).to eq(4)
-    end
-
-    it 'should handle a string with a single variable and newline characters' do
-      manifest = <<-END
-    foo
-    /bin/${foo} >>
-    /bar/baz"
-      END
-      @lexer.interpolate_string(manifest, 1, 1)
-      tokens = @lexer.tokens
-
-      expect(tokens.length).to eq(3)
-
-      expect(tokens[0].type).to eq(:DQPRE)
-      expect(tokens[0].value).to eq("    foo\n    /bin/")
-      expect(tokens[0].line).to eq(1)
-      expect(tokens[0].column).to eq(1)
-
-      expect(tokens[1].type).to eq(:VARIABLE)
-      expect(tokens[1].value).to eq('foo')
-      expect(tokens[1].line).to eq(2)
-      expect(tokens[1].column).to eq(20)
-
-      expect(tokens[2].type).to eq(:DQPOST)
-      expect(tokens[2].value).to eq(" >>\n    /bar/baz")
-      expect(tokens[2].line).to eq(2)
-      expect(tokens[2].column).to eq(25)
-    end
-
-    it 'should handle a string with a single variable and surrounding text' do
-      @lexer.interpolate_string('foo${bar}baz"', 1, 1)
-      tokens = @lexer.tokens
-
-      expect(tokens.length).to eq(3)
-
-      expect(tokens[0].type).to eq(:DQPRE)
-      expect(tokens[0].value).to eq('foo')
-      expect(tokens[0].line).to eq(1)
-      expect(tokens[0].column).to eq(1)
-
-      expect(tokens[1].type).to eq(:VARIABLE)
-      expect(tokens[1].value).to eq('bar')
-      expect(tokens[1].line).to eq(1)
-      expect(tokens[1].column).to eq(6)
-
-      expect(tokens[2].type).to eq(:DQPOST)
-      expect(tokens[2].value).to eq('baz')
-      expect(tokens[2].line).to eq(1)
-      expect(tokens[2].column).to eq(11)
-    end
-
-    it 'should handle a string with multiple variables and surrounding text' do
-      @lexer.interpolate_string('foo${bar}baz${gronk}meh"', 1, 1)
-      tokens = @lexer.tokens
-
-      expect(tokens.length).to eq(5)
-
-      expect(tokens[0].type).to eq(:DQPRE)
-      expect(tokens[0].value).to eq('foo')
-      expect(tokens[0].line).to eq(1)
-      expect(tokens[0].column).to eq(1)
-
-      expect(tokens[1].type).to eq(:VARIABLE)
-      expect(tokens[1].value).to eq('bar')
-      expect(tokens[1].line).to eq(1)
-      expect(tokens[1].column).to eq(6)
-
-      expect(tokens[2].type).to eq(:DQMID)
-      expect(tokens[2].value).to eq('baz')
-      expect(tokens[2].line).to eq(1)
-      expect(tokens[2].column).to eq(11)
-
-      expect(tokens[3].type).to eq(:VARIABLE)
-      expect(tokens[3].value).to eq('gronk')
-      expect(tokens[3].line).to eq(1)
-      expect(tokens[3].column).to eq(15)
-
-      expect(tokens[4].type).to eq(:DQPOST)
-      expect(tokens[4].value).to eq('meh')
-      expect(tokens[4].line).to eq(1)
-      expect(tokens[4].column).to eq(22)
-    end
-
-    it 'should handle a string with only a single variable' do
-      @lexer.interpolate_string('${bar}"', 1, 1)
-      tokens = @lexer.tokens
-
-      expect(tokens.length).to eq(3)
-
-      expect(tokens[0].type).to eq(:DQPRE)
-      expect(tokens[0].value).to eq('')
-      expect(tokens[0].line).to eq(1)
-      expect(tokens[0].column).to eq(1)
-
-      expect(tokens[1].type).to eq(:VARIABLE)
-      expect(tokens[1].value).to eq('bar')
-      expect(tokens[1].line).to eq(1)
-      expect(tokens[1].column).to eq(3)
-      expect(tokens[1].to_manifest).to eq('bar')
-
-      expect(tokens[2].type).to eq(:DQPOST)
-      expect(tokens[2].value).to eq('')
-      expect(tokens[2].line).to eq(1)
-      expect(tokens[2].column).to eq(8)
-
-      expect(tokens.map(&:to_manifest).join('')).to eq('"${bar}"')
-    end
-
-    it 'should not remove the unnecessary $ from enclosed variables' do
-      tokens = @lexer.tokenise('"${$bar}"')
-
-      expect(tokens.length).to eq(3)
-
-      expect(tokens[0].type).to eq(:DQPRE)
-      expect(tokens[0].value).to eq('')
-      expect(tokens[0].line).to eq(1)
-      expect(tokens[0].column).to eq(1)
-
-      expect(tokens[1].type).to eq(:VARIABLE)
-      expect(tokens[1].value).to eq('bar')
-      expect(tokens[1].raw).to eq('$bar')
-      expect(tokens[1].line).to eq(1)
-      expect(tokens[1].column).to eq(4)
-      expect(tokens[1].to_manifest).to eq('$bar')
-
-      expect(tokens[2].type).to eq(:DQPOST)
-      expect(tokens[2].value).to eq('')
-      expect(tokens[2].line).to eq(1)
-      expect(tokens[2].column).to eq(9)
-
-      expect(tokens.map(&:to_manifest).join('')).to eq('"${$bar}"')
-    end
-
-    it 'should handle a variable with an array reference' do
-      @lexer.interpolate_string('${foo[bar][baz]}"', 1, 1)
-      tokens = @lexer.tokens
-
-      expect(tokens.length).to eq(3)
-
-      expect(tokens[0].type).to eq(:DQPRE)
-      expect(tokens[0].value).to eq('')
-      expect(tokens[0].line).to eq(1)
-      expect(tokens[0].column).to eq(1)
-
-      expect(tokens[1].type).to eq(:VARIABLE)
-      expect(tokens[1].value).to eq('foo[bar][baz]')
-      expect(tokens[1].line).to eq(1)
-      expect(tokens[1].column).to eq(3)
-
-      expect(tokens[2].type).to eq(:DQPOST)
-      expect(tokens[2].value).to eq('')
-      expect(tokens[2].line).to eq(1)
-      expect(tokens[2].column).to eq(18)
-    end
-
-    it 'should handle a string with only many variables' do
-      @lexer.interpolate_string('${bar}${gronk}"', 1, 1)
-      tokens = @lexer.tokens
-
-      expect(tokens.length).to eq(5)
-
-      expect(tokens[0].type).to eq(:DQPRE)
-      expect(tokens[0].value).to eq('')
-      expect(tokens[0].line).to eq(1)
-      expect(tokens[0].column).to eq(1)
-
-      expect(tokens[1].type).to eq(:VARIABLE)
-      expect(tokens[1].value).to eq('bar')
-      expect(tokens[1].line).to eq(1)
-      expect(tokens[1].column).to eq(3)
-
-      expect(tokens[2].type).to eq(:DQMID)
-      expect(tokens[2].value).to eq('')
-      expect(tokens[2].line).to eq(1)
-      expect(tokens[2].column).to eq(8)
-
-      expect(tokens[3].type).to eq(:VARIABLE)
-      expect(tokens[3].value).to eq('gronk')
-      expect(tokens[3].line).to eq(1)
-      expect(tokens[3].column).to eq(9)
-
-      expect(tokens[4].type).to eq(:DQPOST)
-      expect(tokens[4].value).to eq('')
-      expect(tokens[4].line).to eq(1)
-      expect(tokens[4].column).to eq(16)
-    end
-
-    it 'should handle a string with only an unenclosed variable' do
-      @lexer.interpolate_string('$foo"', 1, 1)
-      tokens = @lexer.tokens
-
-      expect(tokens.length).to eq(3)
-
-      expect(tokens[0].type).to eq(:DQPRE)
-      expect(tokens[0].value).to eq('')
-      expect(tokens[0].line).to eq(1)
-      expect(tokens[0].column).to eq(1)
-
-      expect(tokens[1].type).to eq(:UNENC_VARIABLE)
-      expect(tokens[1].value).to eq('foo')
-      expect(tokens[1].line).to eq(1)
-      expect(tokens[1].column).to eq(2)
-
-      expect(tokens[2].type).to eq(:DQPOST)
-      expect(tokens[2].value).to eq('')
-      expect(tokens[2].line).to eq(1)
-      expect(tokens[2].column).to eq(6)
-    end
-
-    it 'should handle a string with a nested string inside it' do
-      @lexer.interpolate_string(%q(string with ${'a nested single quoted string'} inside it"), 1, 1)
-      tokens = @lexer.tokens
-
-      expect(tokens.length).to eq(3)
-
-      expect(tokens[0].type).to eq(:DQPRE)
-      expect(tokens[0].value).to eq('string with ')
-      expect(tokens[0].line).to eq(1)
-      expect(tokens[0].column).to eq(1)
-
-      expect(tokens[1].type).to eq(:SSTRING)
-      expect(tokens[1].value).to eq('a nested single quoted string')
-      expect(tokens[1].line).to eq(1)
-      expect(tokens[1].column).to eq(16)
-
-      expect(tokens[2].type).to eq(:DQPOST)
-      expect(tokens[2].value).to eq(' inside it')
-      expect(tokens[2].line).to eq(1)
-      expect(tokens[2].column).to eq(48)
-    end
-
-    it 'should handle a string with nested math' do
-      @lexer.interpolate_string('string with ${(3+5)/4} nested math"', 1, 1)
-      tokens = @lexer.tokens
-
-      expect(tokens.length).to eq(9)
-
-      expect(tokens[0].type).to eq(:DQPRE)
-      expect(tokens[0].value).to eq('string with ')
-      expect(tokens[0].line).to eq(1)
-      expect(tokens[0].column).to eq(1)
-
-      expect(tokens[1].type).to eq(:LPAREN)
-      expect(tokens[1].line).to eq(1)
-      expect(tokens[1].column).to eq(16)
-
-      expect(tokens[2].type).to eq(:NUMBER)
-      expect(tokens[2].value).to eq('3')
-      expect(tokens[2].line).to eq(1)
-      expect(tokens[2].column).to eq(17)
-
-      expect(tokens[3].type).to eq(:PLUS)
-      expect(tokens[3].line).to eq(1)
-      expect(tokens[3].column).to eq(18)
-
-      expect(tokens[4].type).to eq(:NUMBER)
-      expect(tokens[4].value).to eq('5')
-      expect(tokens[4].line).to eq(1)
-      expect(tokens[4].column).to eq(19)
-
-      expect(tokens[5].type).to eq(:RPAREN)
-      expect(tokens[5].line).to eq(1)
-      expect(tokens[5].column).to eq(20)
-
-      expect(tokens[6].type).to eq(:DIV)
-      expect(tokens[6].line).to eq(1)
-      expect(tokens[6].column).to eq(21)
-
-      expect(tokens[7].type).to eq(:NUMBER)
-      expect(tokens[7].value).to eq('4')
-      expect(tokens[7].line).to eq(1)
-      expect(tokens[7].column).to eq(22)
-
-      expect(tokens[8].type).to eq(:DQPOST)
-      expect(tokens[8].value).to eq(' nested math')
-      expect(tokens[8].line).to eq(1)
-      expect(tokens[8].column).to eq(24)
-    end
-
-    it 'should handle a string with a nested array' do
-      @lexer.interpolate_string(%q(string with ${['an array ', $v2]} in it"), 1, 1)
-      tokens = @lexer.tokens
-
-      expect(tokens.length).to eq(8)
-
-      expect(tokens[0].type).to eq(:DQPRE)
-      expect(tokens[0].value).to eq('string with ')
-      expect(tokens[0].line).to eq(1)
-      expect(tokens[0].column).to eq(1)
-
-      expect(tokens[1].type).to eq(:LBRACK)
-      expect(tokens[1].line).to eq(1)
-      expect(tokens[1].column).to eq(16)
-
-      expect(tokens[2].type).to eq(:SSTRING)
-      expect(tokens[2].value).to eq('an array ')
-      expect(tokens[2].line).to eq(1)
-      expect(tokens[2].column).to eq(17)
-
-      expect(tokens[3].type).to eq(:COMMA)
-      expect(tokens[3].line).to eq(1)
-      expect(tokens[3].column).to eq(28)
-
-      expect(tokens[4].type).to eq(:WHITESPACE)
-      expect(tokens[4].value).to eq(' ')
-      expect(tokens[4].line).to eq(1)
-      expect(tokens[4].column).to eq(29)
-
-      expect(tokens[5].type).to eq(:VARIABLE)
-      expect(tokens[5].value).to eq('v2')
-      expect(tokens[5].line).to eq(1)
-      expect(tokens[5].column).to eq(30)
-
-      expect(tokens[6].type).to eq(:RBRACK)
-      expect(tokens[6].line).to eq(1)
-      expect(tokens[6].column).to eq(33)
-
-      expect(tokens[7].type).to eq(:DQPOST)
-      expect(tokens[7].value).to eq(' in it')
-      expect(tokens[7].line).to eq(1)
-      expect(tokens[7].column).to eq(35)
-    end
-
-    it 'should handle a string of $s' do
-      @lexer.interpolate_string('$$$$"', 1, 1)
-      tokens = @lexer.tokens
-
-      expect(tokens.length).to eq(1)
-
-      expect(tokens[0].type).to eq(:STRING)
-      expect(tokens[0].value).to eq('$$$$')
-      expect(tokens[0].line).to eq(1)
-      expect(tokens[0].column).to eq(1)
-    end
-
-    it 'should handle "$foo$bar"' do
-      @lexer.interpolate_string('$foo$bar"', 1, 1)
-      tokens = @lexer.tokens
-
-      expect(tokens.length).to eq(5)
-
-      expect(tokens[0].type).to eq(:DQPRE)
-      expect(tokens[0].value).to eq('')
-      expect(tokens[0].line).to eq(1)
-      expect(tokens[0].column).to eq(1)
-
-      expect(tokens[1].type).to eq(:UNENC_VARIABLE)
-      expect(tokens[1].value).to eq('foo')
-      expect(tokens[1].line).to eq(1)
-      expect(tokens[1].column).to eq(2)
-
-      expect(tokens[2].type).to eq(:DQMID)
-      expect(tokens[2].value).to eq('')
-      expect(tokens[2].line).to eq(1)
-      expect(tokens[2].column).to eq(6)
-
-      expect(tokens[3].type).to eq(:UNENC_VARIABLE)
-      expect(tokens[3].value).to eq('bar')
-      expect(tokens[3].line).to eq(1)
-      expect(tokens[3].column).to eq(6)
-
-      expect(tokens[4].type).to eq(:DQPOST)
-      expect(tokens[4].value).to eq('')
-      expect(tokens[4].line).to eq(1)
-      expect(tokens[4].column).to eq(10)
-    end
-
-    it 'should handle "foo$bar$"' do
-      @lexer.interpolate_string('foo$bar$"', 1, 1)
-      tokens = @lexer.tokens
-
-      expect(tokens.length).to eq(3)
-
-      expect(tokens[0].type).to eq(:DQPRE)
-      expect(tokens[0].value).to eq('foo')
-      expect(tokens[0].line).to eq(1)
-      expect(tokens[0].column).to eq(1)
-
-      expect(tokens[1].type).to eq(:UNENC_VARIABLE)
-      expect(tokens[1].value).to eq('bar')
-      expect(tokens[1].line).to eq(1)
-      expect(tokens[1].column).to eq(5)
-
-      expect(tokens[2].type).to eq(:DQPOST)
-      expect(tokens[2].value).to eq('$')
-      expect(tokens[2].line).to eq(1)
-      expect(tokens[2].column).to eq(9)
-    end
-
-    it 'should handle "foo$$bar"' do
-      @lexer.interpolate_string('foo$$bar"', 1, 1)
-      tokens = @lexer.tokens
-
-      expect(tokens.length).to eq(3)
-
-      expect(tokens[0].type).to eq(:DQPRE)
-      expect(tokens[0].value).to eq('foo$')
-      expect(tokens[0].line).to eq(1)
-      expect(tokens[0].column).to eq(1)
-
-      expect(tokens[1].type).to eq(:UNENC_VARIABLE)
-      expect(tokens[1].value).to eq('bar')
-      expect(tokens[1].line).to eq(1)
-      expect(tokens[1].column).to eq(6)
-
-      expect(tokens[2].type).to eq(:DQPOST)
-      expect(tokens[2].value).to eq('')
-      expect(tokens[2].line).to eq(1)
-      expect(tokens[2].column).to eq(10)
-    end
-
-    it 'should handle an empty string' do
-      @lexer.interpolate_string('"', 1, 1)
-      tokens = @lexer.tokens
-
-      expect(tokens.length).to eq(1)
-
-      expect(tokens[0].type).to eq(:STRING)
-      expect(tokens[0].value).to eq('')
-      expect(tokens[0].line).to eq(1)
-      expect(tokens[0].column).to eq(1)
-    end
-
-    it 'should handle "$foo::::bar"' do
-      @lexer.interpolate_string('$foo::::bar"', 1, 1)
-      tokens = @lexer.tokens
-
-      expect(tokens.length).to eq(3)
-
-      expect(tokens[0].type).to eq(:DQPRE)
-      expect(tokens[0].value).to eq('')
-      expect(tokens[0].line).to eq(1)
-      expect(tokens[0].column).to eq(1)
-
-      expect(tokens[1].type).to eq(:UNENC_VARIABLE)
-      expect(tokens[1].value).to eq('foo')
-      expect(tokens[1].line).to eq(1)
-      expect(tokens[1].column).to eq(2)
-
-      expect(tokens[2].type).to eq(:DQPOST)
-      expect(tokens[2].value).to eq('::::bar')
-      expect(tokens[2].line).to eq(1)
-      expect(tokens[2].column).to eq(6)
+      expect(tokens[33].column).to eq(4)
     end
 
     it 'should calculate the column number correctly after an enclosed variable' do
@@ -1019,7 +1496,7 @@ END
       expect(tokens[6].type).to eq(:DQMID)
       expect(tokens[6].value).to eq(' ')
       expect(tokens[6].line).to eq(1)
-      expect(tokens[6].column).to eq(19)
+      expect(tokens[6].column).to eq(18)
       expect(tokens[7].type).to eq(:HEREDOC_OPEN)
       expect(tokens[7].value).to eq('end2')
       expect(tokens[7].line).to eq(1)
@@ -1027,7 +1504,7 @@ END
       expect(tokens[8].type).to eq(:DQPOST)
       expect(tokens[8].value).to eq('')
       expect(tokens[8].line).to eq(1)
-      expect(tokens[8].column).to eq(30)
+      expect(tokens[8].column).to eq(29)
       expect(tokens[9].type).to eq(:NEWLINE)
       expect(tokens[9].value).to eq("\n")
       expect(tokens[9].line).to eq(1)
@@ -1165,7 +1642,7 @@ END
       manifest = <<-END.gsub(%r{^ {6}}, '')
       $str = @("myheredoc"/)
         SOMETHING
-        ${else}
+        ${here}
         AND :
         $another
         THING
@@ -1204,10 +1681,10 @@ END
       expect(tokens[6].line).to eq(2)
       expect(tokens[6].column).to eq(1)
       expect(tokens[7].type).to eq(:VARIABLE)
-      expect(tokens[7].value).to eq('else')
+      expect(tokens[7].value).to eq('here')
       expect(tokens[7].line).to eq(3)
       expect(tokens[7].column).to eq(5)
-      expect(tokens[7].to_manifest).to eq('else')
+      expect(tokens[7].to_manifest).to eq('here')
       expect(tokens[8].type).to eq(:HEREDOC_MID)
       expect(tokens[8].value).to eq("\n  AND :\n  ")
       expect(tokens[8].line).to eq(3)

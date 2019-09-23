@@ -64,7 +64,7 @@ Metrics/MethodLength:
 
 # Offense count: 18
 Metrics/PerceivedComplexity:
-  Max: 25
+  Max: 28
 
 # Offense count: 1
 # Cop supports --auto-correct.
