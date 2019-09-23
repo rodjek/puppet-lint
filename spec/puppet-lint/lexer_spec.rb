@@ -1952,9 +1952,10 @@ END
       expect(token.value).to eq('this is a regex')
     end
 
-    it 'should not match if there is \n in the regex' do
-      token = @lexer.tokenise("/this is \n a regex/").first
-      expect(token.type).to_not eq(:REGEX)
+    it 'should match even if there is \n in the regex' do
+      token = @lexer.tokenise("/this is a regex,\ntoo/").first
+      expect(token.type).to eq(:REGEX)
+      expect(token.value).to eq("this is a regex,\ntoo")
     end
 
     it 'should not consider \/ to be the end of the regex' do
@@ -1995,6 +1996,13 @@ END
       tokens = @lexer.tokenise('$somevar = $other_var.match(/([\w\.]+(:\d+)?(\/\w+)?)(:(\w+))?/)')
       expect(tokens[8].type).to eq(:REGEX)
       expect(tokens[8].value).to eq('([\w\.]+(:\d+)?(\/\w+)?)(:(\w+))?')
+    end
+
+    it 'should discriminate between division and regexes' do
+      tokens = @lexer.tokenise('if $a/10==0 or $b=~/{}/')
+      expect(tokens[3].type).to eq(:DIV)
+      expect(tokens[12].type).to eq(:REGEX)
+      expect(tokens[12].value).to eq('{}')
     end
   end
 

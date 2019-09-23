@@ -265,7 +265,7 @@ class PuppetLint
           mlcomment.gsub!(%r{^ *\*}, '')
           tokens << new_token(:MLCOMMENT, mlcomment, :raw => mlcomment_raw)
 
-        elsif chunk.match(%r{\A/.*?/}) && possible_regex?
+        elsif chunk.match(%r{\A/.*?/}m) && possible_regex?
           str_content = StringScanner.new(code[i + 1..-1]).scan_until(%r{(\A|[^\\])(\\\\)*/}m)
           length = str_content.size + 1
           tokens << new_token(:REGEX, str_content[0..-2])
