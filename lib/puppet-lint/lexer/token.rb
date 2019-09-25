@@ -193,6 +193,8 @@ class PuppetLint
               token_iter = token_iter.send("#{direction}_token_of".to_sym, ["#{closing_token}PAREN".to_sym, opts])
             end
           end
+
+          return nil if token_iter.nil?
           token_iter = token_iter.send("#{direction}_token".to_sym)
         end
         nil
