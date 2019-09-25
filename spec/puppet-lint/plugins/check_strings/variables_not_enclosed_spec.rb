@@ -86,5 +86,21 @@ describe 'variables_not_enclosed' do
         expect(manifest).to eq('"${foo}-${bar}"')
       end
     end
+
+    context 'variable with a hash or array reference not enclosed' do
+      let(:code) { %("$foo['bar'][2]something") }
+
+      it 'should only detect a single problem' do
+        expect(problems).to have(1).problem
+      end
+
+      it 'should fix the manifest' do
+        expect(problems).to contain_fixed(msg).on_line(1).in_column(2)
+      end
+
+      it 'should enclose the variable with the references' do
+        expect(manifest).to eq(%("${foo['bar'][2]}something"))
+      end
+    end
   end
 end
