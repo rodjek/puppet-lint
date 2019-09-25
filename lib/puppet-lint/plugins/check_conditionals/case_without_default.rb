@@ -31,7 +31,21 @@ PuppetLint.new_check(:case_without_default) do
         case_tokens -= tokens[successor_kase[:start]..successor_kase[:end]]
       end
 
-      next if case_tokens.index { |r| r.type == :DEFAULT }
+      found_matching_default = false
+      depth = 0
+
+      case_tokens.each do |token|
+        if token.type == :LBRACE
+          depth += 1
+        elsif token.type == :RBRACE
+          depth -= 1
+        elsif token.type == :DEFAULT && depth == 1
+          found_matching_default = true
+          break
+        end
+      end
+
+      next if found_matching_default
 
       notify(
         :warning,
