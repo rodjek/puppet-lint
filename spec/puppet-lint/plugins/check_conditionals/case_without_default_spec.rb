@@ -105,4 +105,43 @@ describe 'case_without_default' do
       expect(problems).to have(0).problems
     end
   end
+
+  context 'issue-829 nested selector with default in case without default' do
+    let(:code) do
+      <<-END
+        case $::operatingsystem {
+          'centos': {
+            $variable = $::operatingsystemmajrelease ? {
+              '7'     => 'value1'
+              default => 'value2',
+            }
+          }
+        }
+      END
+    end
+
+    it 'should create one warning' do
+      expect(problems).to contain_warning(msg).on_line(1).in_column(9)
+    end
+  end
+
+  context 'issue-829 nested selector with default in case with default' do
+    let(:code) do
+      <<-END
+        case $::operatingsystem {
+          'centos': {
+            $variable = $::operatingsystemmajrelease ? {
+              '7'     => 'value1'
+              default => 'value2',
+            }
+          }
+          default: {}
+        }
+      END
+    end
+
+    it 'should not detect any problems' do
+      expect(problems).to have(0).problems
+    end
+  end
 end
