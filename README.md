@@ -120,6 +120,18 @@ Or to specify a whitelist of allowed checks, include a line like:
 --only-checks=trailing_whitespace,hard_tabs,duplicate_params,double_quoted_strings,unquoted_file_mode,only_variable_string,variables_not_enclosed,single_quote_string_with_variables,variable_contains_dash,ensure_not_symlink_target,unquoted_resource_title,relative_classname_inclusion,file_mode,resource_reference_without_title_capital,leading_zero,arrow_alignment,variable_is_lowercase,ensure_first_param,resource_reference_without_whitespace,file_ensure,trailing_comma,leading_zero
 ```
 
+Please note that there is an important difference between reading options from the command line and reading options from a configuration file: In the former case the shell interprets one level of quotes. That does not happen in the latter case. So, it would make sense to quote some configuration values on the command line, like so:
+
+```
+$ puppet-lint --ignore-paths 'modules/stdlib/*' modules/
+```
+
+When reading from a configuration file those quotes would be passed on to the option parser -- probably not giving the expected result. Instead the line should read
+
+```
+--ignore-paths=modules/stdlib/*
+```
+
 ## Testing with Puppet Lint as a Rake task
 
 To test your entire Puppet manifest directory, add `require 'puppet-lint/tasks/puppet-lint'` to your Rakefile and then run:
