@@ -18,7 +18,6 @@ class PuppetLint::OptParser
   #
   # Returns an OptionParser object.
   def self.build(args = [])
-    noconfig = false
     opt_parser = OptionParser.new do |opts|
       opts.banner = HELP_TEXT
 
@@ -27,7 +26,7 @@ class PuppetLint::OptParser
       end
 
       opts.on('--no-config', 'Do not load default puppet-lint option files.') do
-        noconfig = true
+        # nothing to do, option is handled differently
       end
 
       opts.on('-c', '--config FILE', 'Load puppet-lint options from file.') do |file|
@@ -134,9 +133,7 @@ class PuppetLint::OptParser
       end
     end
 
-    opt_parser.parse!(args) unless args.empty?
-
-    unless noconfig
+    unless args.include?('--no-config')
       opt_parser.load('/etc/puppet-lint.rc')
       if ENV.key?('HOME') && File.readable?(ENV['HOME'])
         home_dotfile_path = File.expand_path('~/.puppet-lint.rc')
@@ -144,6 +141,8 @@ class PuppetLint::OptParser
       end
       opt_parser.load('.puppet-lint.rc')
     end
+
+    opt_parser.parse!(args) unless args.empty?
 
     opt_parser
   end
