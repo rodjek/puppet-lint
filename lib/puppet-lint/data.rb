@@ -215,9 +215,21 @@ class PuppetLint::Data
     #
     # Returns an Array of Token objects.
     def find_resource_param_tokens(resource_tokens)
-      resource_tokens.select do |token|
-        token.type == :NAME && token.next_code_token.type == :FARROW
+      param_tokens = []
+
+      iter_token = resource_tokens.first.prev_token
+
+      until iter_token.nil?
+        iter_token = iter_token.next_token_of(:NAME)
+
+        break unless resource_tokens.include?(iter_token)
+
+        if iter_token && iter_token.next_code_token.type == :FARROW
+          param_tokens << iter_token
+        end
       end
+
+      param_tokens
     end
 
     # Internal: Calculate the positions of all class definitions within the
