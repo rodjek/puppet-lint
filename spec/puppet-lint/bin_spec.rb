@@ -526,4 +526,45 @@ describe PuppetLint::Bin do
       end
     end
   end
+
+  context 'when overriding config file options with command line options' do
+    context 'and config file sets "--only-checks=variable_contains_dash"' do
+      around(:context) do |example|
+        Dir.mktmpdir do |tmpdir|
+          Dir.chdir(tmpdir) do
+            File.open('.puppet-lint.rc', 'wb') do |f|
+              f.puts('--only-checks=variable_contains_dash')
+            end
+
+            example.run
+          end
+        end
+      end
+
+      context 'and command-line does not override "--only-checks"' do
+        let(:args) do
+          File.join(File.dirname(__FILE__), '..', 'fixtures', 'test', 'manifests', 'two_warnings.pp')
+        end
+
+        its(:exitstatus) { is_expected.to eq(0) }
+        its(:stdout) do
+          is_expected.to eq('WARNING: variable contains a dash on line 3')
+        end
+      end
+
+      context 'and command-line sets "--only-checks=variable_is_lowercase"' do
+        let(:args) do
+          [
+            '--only-checks=variable_is_lowercase',
+            File.join(File.dirname(__FILE__), '..', 'fixtures', 'test', 'manifests', 'two_warnings.pp'),
+          ]
+        end
+
+        its(:exitstatus) { is_expected.to eq(0) }
+        its(:stdout) do
+          is_expected.to eq('WARNING: variable contains an uppercase letter on line 4')
+        end
+      end
+    end
+  end
 end
