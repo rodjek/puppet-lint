@@ -102,5 +102,21 @@ describe 'variables_not_enclosed' do
         expect(manifest).to eq(%("${foo['bar'][2]}something"))
       end
     end
+
+    context 'unenclosed variable followed by a dash and then text' do
+      let(:code) { '"$hostname-keystore"' }
+
+      it 'should only detect a single problem' do
+        expect(problems).to have(1).problem
+      end
+
+      it 'should fix the manifest' do
+        expect(problems).to contain_fixed(msg).on_line(1).in_column(2)
+      end
+
+      it 'should enclose the variable but not the text' do
+        expect(manifest).to eq('"${hostname}-keystore"')
+      end
+    end
   end
 end

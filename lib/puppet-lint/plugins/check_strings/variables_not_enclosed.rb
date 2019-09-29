@@ -59,21 +59,37 @@ PuppetLint.new_check(:variables_not_enclosed) do
     result
   end
 
+  def variable_contains_dash?(token)
+    token.value.include?('-')
+  end
+
+  def handle_variable_containing_dash(var_token)
+    str_token = var_token.next_token
+
+    var_name, text = var_token.value.split('-', 2)
+    var_token.value = var_name
+
+    return if str_token.nil?
+    str_token.value = "-#{text}#{str_token.value}"
+  end
+
   def fix(problem)
     problem[:token].type = :VARIABLE
 
-    return unless hash_or_array_ref?(problem[:token])
+    if hash_or_array_ref?(problem[:token])
+      string_token = problem[:token].next_token
+      tokens_index = tokens.index(string_token)
 
-    string_token = problem[:token].next_token
-    tokens_index = tokens.index(string_token)
+      hash_or_array_ref = extract_hash_or_array_ref(string_token)
 
-    hash_or_array_ref = extract_hash_or_array_ref(string_token)
+      ref_tokens = PuppetLint::Lexer.new.tokenise(hash_or_array_ref[:ref])
+      ref_tokens.each_with_index do |token, i|
+        add_token(tokens_index + i, token)
+      end
 
-    ref_tokens = PuppetLint::Lexer.new.tokenise(hash_or_array_ref[:ref])
-    ref_tokens.each_with_index do |token, i|
-      add_token(tokens_index + i, token)
+      string_token.value = hash_or_array_ref[:remainder]
     end
 
-    string_token.value = hash_or_array_ref[:remainder]
+    handle_variable_containing_dash(problem[:token]) if variable_contains_dash?(problem[:token])
   end
 end
