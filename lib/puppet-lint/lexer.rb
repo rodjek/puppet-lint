@@ -104,6 +104,7 @@ class PuppetLint
       :IF      => true,
       :ELSIF   => true,
       :LPAREN  => true,
+      :EQUALS  => true,
     }.freeze
 
     # Internal: some commonly used regular expressions
