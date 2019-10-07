@@ -91,8 +91,8 @@ describe PuppetLint::Bin do
     its(:stdout) do
       is_expected.to eq(
         [
-          "#{args[0]} - WARNING: optional parameter listed before required parameter on line 2",
-          "#{args[1]} - ERROR: test::foo not in autoload module layout on line 2",
+          "#{args[0]} - WARNING: optional parameter listed before required parameter on line 2 (check: parameter_order)",
+          "#{args[1]} - ERROR: test::foo not in autoload module layout on line 2 (check: autoloader_layout)",
         ].join("\n")
       )
     end
@@ -102,7 +102,7 @@ describe PuppetLint::Bin do
     let(:args) { 'spec/fixtures/test/manifests/malformed.pp' }
 
     its(:exitstatus) { is_expected.to eq(1) }
-    its(:stdout) { is_expected.to eq('ERROR: Syntax error on line 1') }
+    its(:stdout) { is_expected.to eq('ERROR: Syntax error on line 1 (check: syntax)') }
     its(:stderr) { is_expected.to eq('Try running `puppet parser validate <file>`') }
   end
 
@@ -198,7 +198,7 @@ describe PuppetLint::Bin do
     its(:stdout) do
       is_expected.to eq(
         [
-          'WARNING: optional parameter listed before required parameter on line 2',
+          'WARNING: optional parameter listed before required parameter on line 2 (check: parameter_order)',
           '',
           "  define test::warning($foo='bar', $baz) { }",
           '                                   ^',
@@ -432,7 +432,7 @@ describe PuppetLint::Bin do
     its(:stdout) do
       is_expected.to eq(
         [
-          'IGNORED: double quoted string containing no variables on line 3',
+          'IGNORED: double quoted string containing no variables on line 3 (check: double_quoted_strings)',
           '  for a good reason',
         ].join("\n")
       )
@@ -457,7 +457,7 @@ describe PuppetLint::Bin do
     end
 
     its(:exitstatus) { is_expected.to eq(0) }
-    its(:stdout) { is_expected.to match(%r{^.*line 6$}) }
+    its(:stdout) { is_expected.to match(%r{^.*line 6(?!\d)}) }
   end
 
   context 'when an lint:endignore control comment exists with no opening lint:ignore comment' do
@@ -548,7 +548,7 @@ describe PuppetLint::Bin do
 
         its(:exitstatus) { is_expected.to eq(0) }
         its(:stdout) do
-          is_expected.to eq('WARNING: variable contains a dash on line 3')
+          is_expected.to eq('WARNING: variable contains a dash on line 3 (check: variable_contains_dash)')
         end
       end
 
@@ -562,7 +562,7 @@ describe PuppetLint::Bin do
 
         its(:exitstatus) { is_expected.to eq(0) }
         its(:stdout) do
-          is_expected.to eq('WARNING: variable contains an uppercase letter on line 4')
+          is_expected.to eq('WARNING: variable contains an uppercase letter on line 4 (check: variable_is_lowercase)')
         end
       end
     end
