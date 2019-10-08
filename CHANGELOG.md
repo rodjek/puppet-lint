@@ -1,5 +1,58 @@
 # Change Log
 
+## [2.4.0](https://github.com/rodjek/puppet-lint/tree/2.4.0) (2019-10-08)
+[Full Changelog](https://github.com/rodjek/puppet-lint/compare/2.3.6...2.4.0)
+
+**Fixed bugs:**
+
+- Command line options do not override options from config files [\#879](https://github.com/rodjek/puppet-lint/issues/879)
+- Fix for variables\_not\_enclosed incorrectly handles variables followed by a dash [\#836](https://github.com/rodjek/puppet-lint/issues/836)
+- Syntax error on Pattern data type [\#833](https://github.com/rodjek/puppet-lint/issues/833)
+- Error with puppet-lint --fix: NoMethodError: undefined method `next\_token' for nil:NilClass [\#831](https://github.com/rodjek/puppet-lint/issues/831)
+- TypeError: no implicit conversion of nil into String [\#830](https://github.com/rodjek/puppet-lint/issues/830)
+- Selector with 'default' case disables check for missing default in outer case statement [\#829](https://github.com/rodjek/puppet-lint/issues/829)
+- undefined method `next\_token' for nil:NilClass [\#824](https://github.com/rodjek/puppet-lint/issues/824)
+- NoMethodError: undefined method `next\_token' for nil:NilClass [\#790](https://github.com/rodjek/puppet-lint/issues/790)
+- Puppet-lint --fix silently removes necessary $ inside double quoted strings [\#773](https://github.com/rodjek/puppet-lint/issues/773)
+- It looks like puppet-lint has encountered an error that it doesn't know how to handle [\#768](https://github.com/rodjek/puppet-lint/issues/768)
+- puppet-lint lexer string interpolation needs to be updated to match PUP-5887 changes [\#747](https://github.com/rodjek/puppet-lint/issues/747)
+- Syntax error causes 'Whoops!' [\#740](https://github.com/rodjek/puppet-lint/issues/740)
+- "quoted boolean value found" in hash value should not raise a warning. [\#474](https://github.com/rodjek/puppet-lint/issues/474)
+
+**Closed issues:**
+
+- Error when running puppet-lint [\#862](https://github.com/rodjek/puppet-lint/issues/862)
+- puppet-lint crashes with mispelled namespace seperators [\#853](https://github.com/rodjek/puppet-lint/issues/853)
+- NoMethodError: undefined method `prev\_token' for nil:NilClass [\#845](https://github.com/rodjek/puppet-lint/issues/845)
+- Lint incorrectly errors on quoted bool [\#844](https://github.com/rodjek/puppet-lint/issues/844)
+- Type\[\]\] raises NoMethodError [\#843](https://github.com/rodjek/puppet-lint/issues/843)
+- Whoops! It looks like puppet-lint has encountered an error that it doesn't know how to handle. [\#842](https://github.com/rodjek/puppet-lint/issues/842)
+- Whoops! It looks like puppet-lint has encountered an error that it doesn't [\#838](https://github.com/rodjek/puppet-lint/issues/838)
+- Incorrectly wrapped hash variable inside double quotes [\#826](https://github.com/rodjek/puppet-lint/issues/826)
+- Test puppet-lint against Ruby 2.5.x [\#818](https://github.com/rodjek/puppet-lint/issues/818)
+- nested ensure misdetected as not coming first. [\#410](https://github.com/rodjek/puppet-lint/issues/410)
+
+**Merged pull requests:**
+
+- Handle unenclosed variables followed by dashes when fixing [\#881](https://github.com/rodjek/puppet-lint/pull/881) ([rodjek](https://github.com/rodjek))
+- Let command line args override config from files [\#880](https://github.com/rodjek/puppet-lint/pull/880) ([usev6](https://github.com/usev6))
+- Ignore hash keys when checking resource parameter order [\#877](https://github.com/rodjek/puppet-lint/pull/877) ([rodjek](https://github.com/rodjek))
+- Only look for 'default' at first level of 'case' statement [\#876](https://github.com/rodjek/puppet-lint/pull/876) ([usev6](https://github.com/usev6))
+- Report syntax error on unbalanced braces [\#875](https://github.com/rodjek/puppet-lint/pull/875) ([rodjek](https://github.com/rodjek))
+- Include hash/array references when enclosing variables [\#874](https://github.com/rodjek/puppet-lint/pull/874) ([rodjek](https://github.com/rodjek))
+- Disable quoted\_booleans check by default [\#873](https://github.com/rodjek/puppet-lint/pull/873) ([rodjek](https://github.com/rodjek))
+- Test against Ruby 2.5 & 2.6 [\#872](https://github.com/rodjek/puppet-lint/pull/872) ([rodjek](https://github.com/rodjek))
+- README - Add GitHub Actions action [\#868](https://github.com/rodjek/puppet-lint/pull/868) ([ScottBrenner](https://github.com/ScottBrenner))
+- Update TravisCI config to use trusty image [\#867](https://github.com/rodjek/puppet-lint/pull/867) ([rodjek](https://github.com/rodjek))
+- Use the default travis rubygems & bundler [\#860](https://github.com/rodjek/puppet-lint/pull/860) ([rodjek](https://github.com/rodjek))
+- Add `Sensitive` to the list of KNOWN\_TOKEN TYPES [\#858](https://github.com/rodjek/puppet-lint/pull/858) ([alexjfisher](https://github.com/alexjfisher))
+- Avoid internal error for typoed namespace [\#855](https://github.com/rodjek/puppet-lint/pull/855) ([usev6](https://github.com/usev6))
+- Use lookahead assertion for matching function name [\#854](https://github.com/rodjek/puppet-lint/pull/854) ([usev6](https://github.com/usev6))
+- Resource: fix nested ensure error. [\#848](https://github.com/rodjek/puppet-lint/pull/848) ([keur](https://github.com/keur))
+- Rewrite double quoted string handling for nested interpolation [\#846](https://github.com/rodjek/puppet-lint/pull/846) ([rodjek](https://github.com/rodjek))
+- Allow for spaces in the heredoc tag [\#841](https://github.com/rodjek/puppet-lint/pull/841) ([jarretlavallee](https://github.com/jarretlavallee))
+- Recognizes multiline regexes [\#835](https://github.com/rodjek/puppet-lint/pull/835) ([jcbollinger](https://github.com/jcbollinger))
+
 ## [2.3.6](https://github.com/rodjek/puppet-lint/tree/2.3.6) (2018-07-09)
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/2.3.5...2.3.6)
 
