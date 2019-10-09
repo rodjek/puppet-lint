@@ -36,11 +36,19 @@ describe PuppetLint::Lexer::StringSlurper do
           end
         end
 
-        context 'an escaped $' do
+        context 'an escaped $var' do
           let(:string) { '\$foo"' }
 
-          it 'does not create an interpolation segment' do
+          it 'does not create an unenclosed variable segment' do
             expect(segments).to eq([[:STRING, '\$foo']])
+          end
+        end
+
+        context 'an escaped ${} enclosure' do
+          let(:string) { '\"\${\"string\"}\""' }
+
+          it 'does not create an interpolation segment' do
+            expect(segments).to eq([[:STRING, '\"\${\"string\"}\"']])
           end
         end
 

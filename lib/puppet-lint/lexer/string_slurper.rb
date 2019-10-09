@@ -103,6 +103,11 @@ class PuppetLint
       end
 
       def start_interp
+        if @segment.last && @segment.last == '\\'
+          read_char
+          return
+        end
+
         if interp_stack.empty?
           scanner.skip(START_INTERP_PATTERN)
           results << [@segment_type, @segment.join]
