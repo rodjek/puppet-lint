@@ -293,6 +293,14 @@ class PuppetLint
           length = eol.size
           tokens << new_token(:NEWLINE, eol)
 
+          unless heredoc_queue.empty?
+            heredoc_tag = heredoc_queue.shift
+            slurper = PuppetLint::Lexer::StringSlurper.new(code[i + length..-1])
+            heredoc_segments = slurper.parse_heredoc(heredoc_tag)
+            process_heredoc_segments(heredoc_segments)
+            length += slurper.consumed_bytes
+          end
+
         elsif chunk.start_with?('/')
           length = 1
           tokens << new_token(:DIV, '/')
