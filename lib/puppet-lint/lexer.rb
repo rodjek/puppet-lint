@@ -241,7 +241,7 @@ class PuppetLint
             process_string_segments(string_segments)
             length = slurper.consumed_bytes + 1
           rescue PuppetLint::Lexer::StringSlurper::UnterminatedStringError
-            raise PuppetLint::LexerError, @line_no, @column, 'unterminated string'
+            raise PuppetLint::LexerError.new(@line_no, @column, 'unterminated string')
           end
 
         elsif heredoc_name = chunk[%r{\A@\(("?.+?"?(:.+?)?#{WHITESPACE_RE}*(/.*?)?)\)}, 1]
