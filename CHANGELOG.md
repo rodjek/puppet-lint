@@ -1,5 +1,19 @@
 # Change Log
 
+## [2.4.1](https://github.com/rodjek/puppet-lint/tree/2.4.1) (2019-10-09)
+[Full Changelog](https://github.com/rodjek/puppet-lint/compare/2.4.0...2.4.1)
+
+**Fixed bugs:**
+
+- Puppet-lint 2.4.0 - ERROR: Syntax error on line x [\#887](https://github.com/rodjek/puppet-lint/issues/887)
+- Puppet-lint 2.4.0 throws misleading warning on double-quoted strings with escaped variables [\#886](https://github.com/rodjek/puppet-lint/issues/886)
+- Breaks after 2.4.0 upgrade [\#885](https://github.com/rodjek/puppet-lint/issues/885)
+
+**Merged pull requests:**
+
+- Fix escaped ${} enclosure handling when slurping double quoted strings [\#889](https://github.com/rodjek/puppet-lint/pull/889) ([rodjek](https://github.com/rodjek))
+- Fix non-indented heredoc parsing [\#888](https://github.com/rodjek/puppet-lint/pull/888) ([rodjek](https://github.com/rodjek))
+
 ## [2.4.0](https://github.com/rodjek/puppet-lint/tree/2.4.0) (2019-10-08)
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/2.3.6...2.4.0)
 
