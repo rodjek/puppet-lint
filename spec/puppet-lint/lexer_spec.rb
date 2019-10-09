@@ -1590,6 +1590,21 @@ END
       expect(tokens[6].type).to eq(:HEREDOC)
       expect(tokens[6].value).to eq("  foo\n  ")
     end
+
+    it 'should handle a heredoc with no indentation' do
+      manifest = <<-END.gsub(%r{^ {6}}, '')
+      $str = @(EOT)
+      something
+      EOT
+      END
+      tokens = @lexer.tokenise(manifest)
+
+      expect(tokens.length).to eq(8)
+      expect(tokens[4].type).to eq(:HEREDOC_OPEN)
+      expect(tokens[4].value).to eq('EOT')
+      expect(tokens[6].type).to eq(:HEREDOC)
+      expect(tokens[6].value).to eq('something')
+    end
   end
 
   context ':HEREDOC with interpolation' do
