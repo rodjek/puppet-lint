@@ -246,6 +246,30 @@ describe PuppetLint::Lexer::StringSlurper do
           end
         end
 
+        context 'a variable followed by an odd number of backslashes before a double quote' do
+          let(:string) { '${foo}\"bar"' }
+
+          it 'does not let this double quote terminate the string' do
+            expect(segments).to eq([
+              [:STRING, ''],
+              [:INTERP, 'foo'],
+              [:STRING, '\\"bar'],
+            ])
+          end
+        end
+
+        context 'a variable followed by an even number of backslashes before a double quote' do
+          let(:string) { '${foo}\\\\"bar"' }
+
+          it 'recognizes this double quote as the terminator' do
+            expect(segments).to eq([
+              [:STRING, ''],
+              [:INTERP, 'foo'],
+              [:STRING, '\\\\'],
+            ])
+          end
+        end
+
         context 'an interpolation with a complex function chain' do
           let(:string) { '${key} ${flatten([$value]).join("\nkey ")}"' }
 

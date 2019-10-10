@@ -37,11 +37,11 @@ class PuppetLint
             end_interp
           elsif unenclosed_variable?
             unenclosed_variable
-          elsif scanner.match?(ESC_DQUOTE_PATTERN)
-            @segment << scanner.scan(ESC_DQUOTE_PATTERN)
           elsif scanner.match?(END_STRING_PATTERN)
             end_string
             break if interp_stack.empty?
+          elsif scanner.match?(ESC_DQUOTE_PATTERN)
+            @segment << scanner.scan(ESC_DQUOTE_PATTERN)
           else
             read_char
           end
