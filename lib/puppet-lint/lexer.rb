@@ -416,7 +416,7 @@ class PuppetLint
           lexer = PuppetLint::Lexer.new
           lexer.tokenise(segment[1])
           lexer.tokens.each_with_index do |t, i|
-            type = i.zero? && t.type == :NAME ? :VARIABLE : t.type
+            type = i.zero? && (t.type == :NAME || KEYWORDS.include?(t.type.to_s.downcase)) ? :VARIABLE : t.type
             tokens << new_token(type, t.value, :raw => t.raw)
           end
         when :UNENC_VAR

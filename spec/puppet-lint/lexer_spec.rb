@@ -253,6 +253,47 @@ describe PuppetLint::Lexer do # rubocop:disable Metrics/BlockLength
       end
     end
 
+    context 'treats a variable named the same as the keyword as a variable' do
+      PuppetLint::Lexer::KEYWORDS.keys.each do |keyword|
+        context "for '#{keyword}'" do
+          let(:segments) do
+            [
+              [:STRING, ''],
+              [:INTERP, keyword],
+              [:STRING, ''],
+            ]
+          end
+
+          it 'creates a tokenised string' do
+            expect(tokens).to have(3).tokens
+
+            expect(tokens[0]).to have_attributes(
+              :type   => :DQPRE,
+              :value  => '',
+              :line   => 1,
+              :column => 1
+            )
+            expect(tokens[1]).to have_attributes(
+              :type   => :VARIABLE,
+              :value  => keyword,
+              :line   => 1,
+              :column => 4
+            )
+            expect(tokens[2]).to have_attributes(
+              :type   => :DQPOST,
+              :value  => '',
+              :line   => 1,
+              :column => keyword.size + 4
+            )
+          end
+
+          it 'can render the result back into a manifest' do
+            expect(manifest).to eq("\"${#{keyword}}\"")
+          end
+        end
+      end
+    end
+
     context 'an interpolated variable with an unnecessary $' do
       let(:segments) do
         [
