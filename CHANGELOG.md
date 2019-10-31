@@ -1,6 +1,29 @@
-# Change Log
+# Changelog
+
+## [2.4.2](https://github.com/rodjek/puppet-lint/tree/2.4.2) (2019-10-31)
+
+[Full Changelog](https://github.com/rodjek/puppet-lint/compare/2.4.1...2.4.2)
+
+**Fixed bugs:**
+
+- `ERROR: Syntax error \(unterminated string\)` with 2.4.1 [\#899](https://github.com/rodjek/puppet-lint/issues/899)
+- Double quoted string containing variable named "node" mis-tokenized [\#897](https://github.com/rodjek/puppet-lint/issues/897)
+- 2.4.1 says Syntax error, but code runs fine [\#891](https://github.com/rodjek/puppet-lint/issues/891)
+- Error with regex variable with multiple `|`s. [\#859](https://github.com/rodjek/puppet-lint/issues/859)
+
+**Closed issues:**
+
+- WARNING: double quoted string containing no variables [\#895](https://github.com/rodjek/puppet-lint/issues/895)
+
+**Merged pull requests:**
+
+- Fix regression in tokenization in double-quoted strings [\#898](https://github.com/rodjek/puppet-lint/pull/898) ([seanmil](https://github.com/seanmil))
+- Speed up calculation of resource indexes [\#893](https://github.com/rodjek/puppet-lint/pull/893) ([usev6](https://github.com/usev6))
+- Search end of string before assuming escaped quote [\#892](https://github.com/rodjek/puppet-lint/pull/892) ([usev6](https://github.com/usev6))
+- Allow parsing of regexes as rvalues [\#882](https://github.com/rodjek/puppet-lint/pull/882) ([usev6](https://github.com/usev6))
 
 ## [2.4.1](https://github.com/rodjek/puppet-lint/tree/2.4.1) (2019-10-09)
+
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/2.4.0...2.4.1)
 
 **Fixed bugs:**
@@ -15,6 +38,7 @@
 - Fix non-indented heredoc parsing [\#888](https://github.com/rodjek/puppet-lint/pull/888) ([rodjek](https://github.com/rodjek))
 
 ## [2.4.0](https://github.com/rodjek/puppet-lint/tree/2.4.0) (2019-10-08)
+
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/2.3.6...2.4.0)
 
 **Fixed bugs:**
@@ -68,6 +92,7 @@
 - Recognizes multiline regexes [\#835](https://github.com/rodjek/puppet-lint/pull/835) ([jcbollinger](https://github.com/jcbollinger))
 
 ## [2.3.6](https://github.com/rodjek/puppet-lint/tree/2.3.6) (2018-07-09)
+
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/2.3.5...2.3.6)
 
 **Fixed bugs:**
@@ -88,6 +113,7 @@
 - Run all the checks before fixing problems [\#815](https://github.com/rodjek/puppet-lint/pull/815) ([rodjek](https://github.com/rodjek))
 
 ## [2.3.5](https://github.com/rodjek/puppet-lint/tree/2.3.5) (2018-03-27)
+
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/2.3.4...2.3.5)
 
 **Fixed bugs:**
@@ -99,6 +125,7 @@
 - Make PuppetLint::OptParser.build argument optional [\#813](https://github.com/rodjek/puppet-lint/pull/813) ([rodjek](https://github.com/rodjek))
 
 ## [2.3.4](https://github.com/rodjek/puppet-lint/tree/2.3.4) (2018-03-26)
+
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/2.3.3...2.3.4)
 
 **Implemented enhancements:**
@@ -123,6 +150,7 @@
 - Add support for passing backslash separated paths to puppet-lint [\#769](https://github.com/rodjek/puppet-lint/pull/769) ([rodjek](https://github.com/rodjek))
 
 ## [2.3.3](https://github.com/rodjek/puppet-lint/tree/2.3.3) (2017-09-28)
+
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/2.3.2...2.3.3)
 
 **Closed issues:**
@@ -140,6 +168,7 @@
 - Fix setup of default log\_format in PuppetLink.configuration when it is empty. [\#757](https://github.com/rodjek/puppet-lint/pull/757) ([zekefast](https://github.com/zekefast))
 
 ## [2.3.2](https://github.com/rodjek/puppet-lint/tree/2.3.2) (2017-09-27)
+
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/2.3.1...2.3.2)
 
 **Fixed bugs:**
@@ -147,6 +176,7 @@
 - configuration, method_missing had faulty logic [\#754](https://github.com/rodjek/puppet-lint/issues/754)
 
 ## [2.3.1](https://github.com/rodjek/puppet-lint/tree/2.3.1) (2017-09-27)
+
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/2.3.0...2.3.1)
 
 **Fixed bugs:**
@@ -201,6 +231,7 @@
 - Plugins: Improve code readability [\#658](https://github.com/rodjek/puppet-lint/pull/658) ([Darhazer](https://github.com/Darhazer))
 
 ## [2.3.0](https://github.com/rodjek/puppet-lint/tree/2.3.0) (2017-07-12)
+
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/2.2.1...2.3.0)
 
 **Closed issues:**
@@ -224,6 +255,7 @@
 - One file per plugin. Fixes \#657 [\#671](https://github.com/rodjek/puppet-lint/pull/671) ([Darhazer](https://github.com/Darhazer))
 
 ## [2.2.1](https://github.com/rodjek/puppet-lint/tree/2.2.1) (2017-03-29)
+
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/2.2.0...2.2.1)
 
 **Closed issues:**
@@ -239,6 +271,7 @@
 - level\_tokens\[0\] can be nil if there is no params in the top level block [\#682](https://github.com/rodjek/puppet-lint/pull/682) ([rodjek](https://github.com/rodjek))
 
 ## [2.2.0](https://github.com/rodjek/puppet-lint/tree/2.2.0) (2017-03-29)
+
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/2.1.1...2.2.0)
 
 **Closed issues:**
@@ -300,6 +333,7 @@
 - Add LoadError to fix broken tests [\#631](https://github.com/rodjek/puppet-lint/pull/631) ([davidmogar](https://github.com/davidmogar))
 
 ## [2.1.1](https://github.com/rodjek/puppet-lint/tree/2.1.1) (2017-02-15)
+
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/2.1.0...2.1.1)
 
 **Closed issues:**
@@ -321,6 +355,7 @@
 - Do not test against Ruby 2.2 [\#613](https://github.com/rodjek/puppet-lint/pull/613) ([ghoneycutt](https://github.com/ghoneycutt))
 
 ## [2.1.0](https://github.com/rodjek/puppet-lint/tree/2.1.0) (2016-12-30)
+
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/2.0.2...2.1.0)
 
 **Closed issues:**
@@ -378,6 +413,7 @@
 - Adding support for logging to STDOUT as JSON [\#487](https://github.com/rodjek/puppet-lint/pull/487) ([binford2k](https://github.com/binford2k))
 
 ## [2.0.2](https://github.com/rodjek/puppet-lint/tree/2.0.2) (2016-08-19)
+
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/2.0.1...2.0.2)
 
 **Closed issues:**
@@ -389,6 +425,7 @@
 - Revert "Bugfix: properly handling $gronk-$grouik with --fix \(fix \#442\)" [\#535](https://github.com/rodjek/puppet-lint/pull/535) ([rnelson0](https://github.com/rnelson0))
 
 ## [2.0.1](https://github.com/rodjek/puppet-lint/tree/2.0.1) (2016-08-18)
+
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/2.0.0...2.0.1)
 
 **Closed issues:**
@@ -575,6 +612,7 @@ If the additional gems you use for checks are pinned to 1.x, you should pin pupp
 - Alternative to \#289: :error on either class names and defines [\#290](https://github.com/rodjek/puppet-lint/pull/290) ([ppp0](https://github.com/ppp0))
 
 ## [1.1.0](https://github.com/rodjek/puppet-lint/tree/1.1.0) (2014-09-23)
+
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/1.0.1...1.1.0)
 
 **Closed issues:**
@@ -605,6 +643,7 @@ If the additional gems you use for checks are pinned to 1.x, you should pin pupp
 - Cache parsing state in Lexer rather than recalculating [\#317](https://github.com/rodjek/puppet-lint/pull/317) ([rodjek](https://github.com/rodjek))
 
 ## [1.0.1](https://github.com/rodjek/puppet-lint/tree/1.0.1) (2014-08-20)
+
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/1.0.0...1.0.1)
 
 **Closed issues:**
@@ -623,6 +662,7 @@ If the additional gems you use for checks are pinned to 1.x, you should pin pupp
 - \[Fixes \#291\] Ignore index braces for scope variables [\#303](https://github.com/rodjek/puppet-lint/pull/303) ([dcarley](https://github.com/dcarley))
 
 ## [1.0.0](https://github.com/rodjek/puppet-lint/tree/1.0.0) (2014-08-18)
+
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/0.4.0.pre1...1.0.0)
 
 **Closed issues:**
@@ -737,6 +777,7 @@ If the additional gems you use for checks are pinned to 1.x, you should pin pupp
 - Add check for puppet:/// URIs without modules/ [\#166](https://github.com/rodjek/puppet-lint/pull/166) ([rodjek](https://github.com/rodjek))
 
 ## [0.4.0.pre1](https://github.com/rodjek/puppet-lint/tree/0.4.0.pre1) (2013-01-28)
+
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/0.3.2...0.4.0.pre1)
 
 **Closed issues:**
@@ -752,6 +793,7 @@ If the additional gems you use for checks are pinned to 1.x, you should pin pupp
 - Update README.md [\#168](https://github.com/rodjek/puppet-lint/pull/168) ([levilovelock](https://github.com/levilovelock))
 
 ## [0.3.2](https://github.com/rodjek/puppet-lint/tree/0.3.2) (2012-10-19)
+
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/0.3.1...0.3.2)
 
 **Closed issues:**
@@ -771,6 +813,7 @@ If the additional gems you use for checks are pinned to 1.x, you should pin pupp
 - fixes \#154 string monkeypatch failure [\#155](https://github.com/rodjek/puppet-lint/pull/155) ([vStone](https://github.com/vStone))
 
 ## [0.3.1](https://github.com/rodjek/puppet-lint/tree/0.3.1) (2012-09-26)
+
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/0.3.0...0.3.1)
 
 **Closed issues:**
@@ -782,6 +825,7 @@ If the additional gems you use for checks are pinned to 1.x, you should pin pupp
 - Fixes \#150 class inherits from params class exception [\#151](https://github.com/rodjek/puppet-lint/pull/151) ([vStone](https://github.com/vStone))
 
 ## [0.3.0](https://github.com/rodjek/puppet-lint/tree/0.3.0) (2012-09-25)
+
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/0.2.1...0.3.0)
 
 **Closed issues:**
@@ -803,6 +847,7 @@ If the additional gems you use for checks are pinned to 1.x, you should pin pupp
 - use .puppet-lint.rc, as .puppet-lintrc is deprecated [\#143](https://github.com/rodjek/puppet-lint/pull/143) ([ghoneycutt](https://github.com/ghoneycutt))
 
 ## [0.2.1](https://github.com/rodjek/puppet-lint/tree/0.2.1) (2012-08-27)
+
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/0.2.0...0.2.1)
 
 **Closed issues:**
@@ -811,6 +856,7 @@ If the additional gems you use for checks are pinned to 1.x, you should pin pupp
 - False warning : parameterised class parameter without a default value [\#137](https://github.com/rodjek/puppet-lint/issues/137)
 
 ## [0.2.0](https://github.com/rodjek/puppet-lint/tree/0.2.0) (2012-08-23)
+
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/0.2.0.pre1...0.2.0)
 
 **Closed issues:**
@@ -844,6 +890,7 @@ If the additional gems you use for checks are pinned to 1.x, you should pin pupp
 - Multiline string should not be checked for double quotes [\#51](https://github.com/rodjek/puppet-lint/issues/51)
 
 ## [0.2.0.pre1](https://github.com/rodjek/puppet-lint/tree/0.2.0.pre1) (2012-07-11)
+
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/0.1.13...0.2.0.pre1)
 
 **Closed issues:**
@@ -873,6 +920,7 @@ If the additional gems you use for checks are pinned to 1.x, you should pin pupp
 - Fix bug introduced in \#81 [\#98](https://github.com/rodjek/puppet-lint/pull/98) ([deizel](https://github.com/deizel))
 
 ## [0.1.13](https://github.com/rodjek/puppet-lint/tree/0.1.13) (2012-03-26)
+
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/0.1.12...0.1.13)
 
 **Closed issues:**
@@ -893,6 +941,7 @@ If the additional gems you use for checks are pinned to 1.x, you should pin pupp
 - Feature/symbolic filemodes \(cfr ticket \#60\) [\#62](https://github.com/rodjek/puppet-lint/pull/62) ([vStone](https://github.com/vStone))
 
 ## [0.1.12](https://github.com/rodjek/puppet-lint/tree/0.1.12) (2012-01-27)
+
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/0.1.11...0.1.12)
 
 **Closed issues:**
@@ -904,9 +953,11 @@ If the additional gems you use for checks are pinned to 1.x, you should pin pupp
 - turn off particular tests?  .puppet-lintrc? [\#34](https://github.com/rodjek/puppet-lint/issues/34)
 
 ## [0.1.11](https://github.com/rodjek/puppet-lint/tree/0.1.11) (2012-01-11)
+
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/0.1.10...0.1.11)
 
 ## [0.1.10](https://github.com/rodjek/puppet-lint/tree/0.1.10) (2012-01-11)
+
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/0.1.9...0.1.10)
 
 **Closed issues:**
@@ -920,6 +971,7 @@ If the additional gems you use for checks are pinned to 1.x, you should pin pupp
 - Feature/unified problems [\#52](https://github.com/rodjek/puppet-lint/pull/52) ([vStone](https://github.com/vStone))
 
 ## [0.1.9](https://github.com/rodjek/puppet-lint/tree/0.1.9) (2011-12-27)
+
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/0.1.8...0.1.9)
 
 **Merged pull requests:**
@@ -927,6 +979,7 @@ If the additional gems you use for checks are pinned to 1.x, you should pin pupp
 - Consolidated option checking logic [\#48](https://github.com/rodjek/puppet-lint/pull/48) ([jamtur01](https://github.com/jamtur01))
 
 ## [0.1.8](https://github.com/rodjek/puppet-lint/tree/0.1.8) (2011-12-27)
+
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/0.1.7...0.1.8)
 
 **Closed issues:**
@@ -947,6 +1000,7 @@ If the additional gems you use for checks are pinned to 1.x, you should pin pupp
 - Add filename as first test\(\) argument so plugins can use that too [\#39](https://github.com/rodjek/puppet-lint/pull/39) ([vStone](https://github.com/vStone))
 
 ## [0.1.7](https://github.com/rodjek/puppet-lint/tree/0.1.7) (2011-10-18)
+
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/0.1.4...0.1.7)
 
 **Closed issues:**
@@ -958,6 +1012,7 @@ If the additional gems you use for checks are pinned to 1.x, you should pin pupp
 - "mode should be represented as a 4 digit octal value" when variable [\#28](https://github.com/rodjek/puppet-lint/issues/28)
 
 ## [0.1.4](https://github.com/rodjek/puppet-lint/tree/0.1.4) (2011-09-09)
+
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/0.1.3...0.1.4)
 
 **Closed issues:**
@@ -966,9 +1021,11 @@ If the additional gems you use for checks are pinned to 1.x, you should pin pupp
 - False alignment positives [\#21](https://github.com/rodjek/puppet-lint/issues/21)
 
 ## [0.1.3](https://github.com/rodjek/puppet-lint/tree/0.1.3) (2011-09-09)
+
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/0.1.2...0.1.3)
 
 ## [0.1.2](https://github.com/rodjek/puppet-lint/tree/0.1.2) (2011-09-09)
+
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/0.1.1...0.1.2)
 
 **Closed issues:**
@@ -977,6 +1034,7 @@ If the additional gems you use for checks are pinned to 1.x, you should pin pupp
 - False positive in commented line [\#22](https://github.com/rodjek/puppet-lint/issues/22)
 
 ## [0.1.1](https://github.com/rodjek/puppet-lint/tree/0.1.1) (2011-09-07)
+
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/0.1.0...0.1.1)
 
 **Closed issues:**
@@ -985,6 +1043,7 @@ If the additional gems you use for checks are pinned to 1.x, you should pin pupp
 - Not detecting comma and semicolon being mixed up [\#13](https://github.com/rodjek/puppet-lint/issues/13)
 
 ## [0.1.0](https://github.com/rodjek/puppet-lint/tree/0.1.0) (2011-08-23)
+
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/0.0.7...0.1.0)
 
 **Closed issues:**
@@ -998,9 +1057,11 @@ If the additional gems you use for checks are pinned to 1.x, you should pin pupp
 - =\> alignment warnings in selectors is broken [\#11](https://github.com/rodjek/puppet-lint/issues/11)
 
 ## [0.0.7](https://github.com/rodjek/puppet-lint/tree/0.0.7) (2011-08-21)
+
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/0.0.6...0.0.7)
 
 ## [0.0.6](https://github.com/rodjek/puppet-lint/tree/0.0.6) (2011-08-19)
+
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/0.0.5...0.0.6)
 
 **Closed issues:**
@@ -1008,6 +1069,7 @@ If the additional gems you use for checks are pinned to 1.x, you should pin pupp
 - Please add logic to the \>80 chars check [\#12](https://github.com/rodjek/puppet-lint/issues/12)
 
 ## [0.0.5](https://github.com/rodjek/puppet-lint/tree/0.0.5) (2011-08-19)
+
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/0.0.4...0.0.5)
 
 **Closed issues:**
@@ -1017,6 +1079,7 @@ If the additional gems you use for checks are pinned to 1.x, you should pin pupp
 - "single quoted string containing a variable" should check for nested quotes [\#7](https://github.com/rodjek/puppet-lint/issues/7)
 
 ## [0.0.4](https://github.com/rodjek/puppet-lint/tree/0.0.4) (2011-08-18)
+
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/0.0.3...0.0.4)
 
 **Closed issues:**
@@ -1026,6 +1089,7 @@ If the additional gems you use for checks are pinned to 1.x, you should pin pupp
 - Nasty stacktrace when trying to run lint against a non existance file [\#4](https://github.com/rodjek/puppet-lint/issues/4)
 
 ## [0.0.3](https://github.com/rodjek/puppet-lint/tree/0.0.3) (2011-08-17)
+
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/0.0.2...0.0.3)
 
 **Closed issues:**
@@ -1034,6 +1098,7 @@ If the additional gems you use for checks are pinned to 1.x, you should pin pupp
 - Empty variables break check\_strings plugin [\#2](https://github.com/rodjek/puppet-lint/issues/2)
 
 ## [0.0.2](https://github.com/rodjek/puppet-lint/tree/0.0.2) (2011-08-17)
+
 [Full Changelog](https://github.com/rodjek/puppet-lint/compare/0.0.1...0.0.2)
 
 **Merged pull requests:**
@@ -1042,5 +1107,8 @@ If the additional gems you use for checks are pinned to 1.x, you should pin pupp
 
 ## [0.0.1](https://github.com/rodjek/puppet-lint/tree/0.0.1) (2011-08-15)
 
+[Full Changelog](https://github.com/rodjek/puppet-lint/compare/2dd42b803a4dfc3a2398a509d26f285c9427ba41...0.0.1)
 
-\* *This Change Log was automatically generated by [github_changelog_generator](https://github.com/skywinder/Github-Changelog-Generator)*
+
+
+\* *This Changelog was automatically generated by [github_changelog_generator](https://github.com/github-changelog-generator/github-changelog-generator)*
