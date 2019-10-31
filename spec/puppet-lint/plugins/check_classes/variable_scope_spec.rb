@@ -316,4 +316,18 @@ describe 'variable_scope' do
       expect(problems).to contain_warning(msg).on_line(2).in_column(14)
     end
   end
+
+  context 'assigning regex with multiple alternations to variable' do
+    let(:code) do
+      <<-END
+        class gh::issue859 {
+          $regex = /5|6|7/
+        }
+      END
+    end
+
+    it 'should not detect any problems' do
+      expect(problems).to have(0).problems
+    end
+  end
 end
