@@ -316,6 +316,18 @@ describe PuppetLint::Lexer::StringSlurper do
   describe '#parse_heredoc' do
     subject(:segments) { described_class.new(heredoc).parse_heredoc(heredoc_tag) }
 
+    context 'when the heredoc text contains the tag' do
+      let(:heredoc) { %(  SOMETHING else\n  |-THING) }
+      let(:heredoc_tag) { 'THING' }
+
+      it 'terminates the heredoc at the closing tag' do
+        expect(segments).to eq([
+          [:HEREDOC, "  SOMETHING else\n  "],
+          [:HEREDOC_TERM, '|-THING'],
+        ])
+      end
+    end
+
     context 'when parsing a heredoc with interpolation disabled' do
       context 'that is a plain heredoc' do
         let(:heredoc) { %(  SOMETHING\n  ELSE\n  :\n  |-myheredoc) }
