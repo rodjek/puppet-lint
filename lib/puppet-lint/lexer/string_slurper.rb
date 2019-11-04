@@ -60,7 +60,7 @@ class PuppetLint
 
       def parse_heredoc(heredoc_tag)
         heredoc_name = heredoc_tag[%r{\A"?(.+?)"?(:.+?)?#{PuppetLint::Lexer::WHITESPACE_RE}*(/.*)?\Z}, 1]
-        end_heredoc_pattern = %r{\A\|?\s*-?\s*#{Regexp.escape(heredoc_name)}}
+        end_heredoc_pattern = %r{^\|?\s*-?\s*#{Regexp.escape(heredoc_name)}$}
         interpolation = heredoc_tag.start_with?('"')
 
         @segment_type = :HEREDOC
