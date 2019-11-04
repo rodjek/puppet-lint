@@ -9,9 +9,9 @@ Gem::Specification.new do |s|
   s.description = 'Checks your Puppet manifests against the Puppetlabs
   style guide and alerts you to any discrepancies.'
 
-  s.files = `git ls-files`.split("\n")
-  s.test_files = `git ls-files -- {test,spec,features}/*`.split("\n")
-  s.executables = `git ls-files -- bin/*`.split("\n").map { |f| File.basename(f) }
+  s.files = Dir['CHANGELOG.md', 'README.md', 'LICENSE', 'lib/**/*', 'bin/**/*', 'spec/**/*']
+  s.test_files = s.files.grep(%r{\Aspec/})
+  s.executables = s.files.grep(%r{\Abin/}) { |f| File.basename(f) }
   s.require_paths = ['lib']
 
   s.authors = ['Tim Sharpe']
