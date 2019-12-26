@@ -93,15 +93,15 @@ describe 'double_quoted_strings' do
       end
     end
 
-    context 'double quoted stings containing supported escape patterns' do
+    context 'double quoted strings containing supported escape patterns' do
       let(:code) do
         <<-END
-          $string1 = "this string contins \n newline"
-          $string2 = "this string contains \ttab"
+          $string1 = "this string contains \n newline"
+          $string2 = "this string contains \t tab"
           $string3 = "this string contains \${escaped} var"
           $string4 = "this string contains \\"escaped \\" double quotes"
           $string5 = "this string contains \\'escaped \\' single quotes"
-          $string6 = "this string contains \r line return"
+          $string6 = "this string contains \r carriage return"
           $string7 = "this string contains \\\\ an escaped backslash"
         END
       end
@@ -112,7 +112,7 @@ describe 'double_quoted_strings' do
     end
 
     context 'double quoted string with random escape should be rejected' do
-      let(:code) { %( $ztring = "this string contains \l random esape" ) }
+      let(:code) { %( $ztring = "this string contains \l random escape" ) }
 
       it 'should only detect a single problem' do
         expect(problems).to have(1).problem
