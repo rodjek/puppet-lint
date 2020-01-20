@@ -16,5 +16,5 @@ Gem::Specification.new do |s|
 
   s.authors = ['Tim Sharpe']
   s.email = 'tim@sharpe.id.au'
-  spec.license = 'MIT'
+  s.license = 'MIT'
 end
