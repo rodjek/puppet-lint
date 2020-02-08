@@ -26,7 +26,7 @@ PuppetLint.new_check(:ensure_first_param) do
   end
 
   def fix(problem)
-    first_param_name_token = tokens[problem[:resource][:start]].next_token_of(:NAME)
+    first_param_name_token = problem[:resource][:param_tokens].first
     first_param_comma_token = first_param_name_token.next_token_of(:COMMA)
     ensure_param_name_token = first_param_comma_token.next_token_of(:NAME, :value => 'ensure')
 
