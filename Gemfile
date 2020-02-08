@@ -27,7 +27,7 @@ group :test do
   end
 
   gem 'rubocop', '0.49.1' if RUBY_VERSION > '2.0'
-  gem 'simplecov', :require => false
+  gem 'simplecov', :require => false if ENV['COVERAGE'] == 'yes'
 end
 
 group :development do
