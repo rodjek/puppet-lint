@@ -79,6 +79,7 @@ class PuppetLint
           matched_files = matched_files.exclude(*@ignore_paths)
 
           matched_files.to_a.each do |puppet_file|
+            next unless File.file?(puppet_file)
             linter.file = puppet_file
             linter.run
             linter.print_problems

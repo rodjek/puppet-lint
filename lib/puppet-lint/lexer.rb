@@ -240,7 +240,7 @@ class PuppetLint
           begin
             string_segments = slurper.parse
             process_string_segments(string_segments)
-            length = slurper.consumed_bytes + 1
+            length = slurper.consumed_chars + 1
           rescue PuppetLint::Lexer::StringSlurper::UnterminatedStringError
             raise PuppetLint::LexerError.new(@line_no, @column, 'unterminated string')
           end
@@ -287,7 +287,7 @@ class PuppetLint
             slurper = PuppetLint::Lexer::StringSlurper.new(code[i + length..-1])
             heredoc_segments = slurper.parse_heredoc(heredoc_tag)
             process_heredoc_segments(heredoc_segments)
-            length += slurper.consumed_bytes
+            length += slurper.consumed_chars
           end
 
         elsif eol = chunk[%r{\A(#{LINE_END_RE})}, 1]
@@ -299,7 +299,7 @@ class PuppetLint
             slurper = PuppetLint::Lexer::StringSlurper.new(code[i + length..-1])
             heredoc_segments = slurper.parse_heredoc(heredoc_tag)
             process_heredoc_segments(heredoc_segments)
-            length += slurper.consumed_bytes
+            length += slurper.consumed_chars
           end
 
         elsif chunk.start_with?('/')

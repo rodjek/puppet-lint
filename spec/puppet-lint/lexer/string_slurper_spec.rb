@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require 'spec_helper'
 
 describe PuppetLint::Lexer::StringSlurper do
@@ -445,6 +447,26 @@ describe PuppetLint::Lexer::StringSlurper do
             [:HEREDOC_TERM, '|-end'],
           ])
         end
+      end
+    end
+  end
+
+  describe '#consumed_chars' do
+    subject { described_class.new(string).tap(&:parse).consumed_chars }
+
+    context 'when slurping a string containing multibyte characters' do
+      let(:string) { 'accentués"' }
+
+      it 'counts the multibyte character as a single consumed character' do
+        is_expected.to eq(10)
+      end
+    end
+
+    context 'when slurping an empty string' do
+      let(:string) { '"' }
+
+      it 'consumes only the closing quote' do
+        is_expected.to eq(1)
       end
     end
   end

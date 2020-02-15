@@ -98,8 +98,19 @@ class PuppetLint
         end
       end
 
-      def consumed_bytes
-        scanner.pos
+      # Get the number of characters consumed by the StringSlurper.
+      #
+      # StringScanner from Ruby 2.0 onwards supports #charpos which returns
+      # the number of characters and is multibyte character aware.
+      #
+      # Prior to this, Ruby's multibyte character support in Strings was a
+      # bit unusual and neither String#length nor String#split behave as
+      # expected, so we use String#scan to split all the consumed text using
+      # a UTF-8 aware regex and use the length of the result
+      def consumed_chars
+        return scanner.charpos if scanner.respond_to?(:charpos)
+
+        (scanner.pre_match + scanner.matched).scan(%r{.}mu).length
       end
 
       def start_interp
