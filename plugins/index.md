@@ -224,3 +224,11 @@ Check the plugin's URL for more information on use of its check(s).
 | **Install** | `gem install puppet-lint-template_file_extension-check`   |
 {: .table .table-condensed }
 
+### racism_terminology
+
+> Warn for uses of "racist" terms that you may want to stop using: master/slave, whitelist/blacklist.
+
+| **URL**     | <https://github.com/tskirvin/puppet-lint-template_terminology-check> |
+| **Install** | `gem install puppet-lint-racism_terminology-check`   |
+{: .table .table-condensed }
+
