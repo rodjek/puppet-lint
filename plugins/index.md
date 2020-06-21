@@ -235,3 +235,13 @@ Check the plugin's URL for more information on use of its check(s).
 | **Install** | `gem install puppet-lint-racism_terminology-check`   |
 {: .table .table-condensed }
 
+---
+
+
+### manifest_whitespace
+
+> Verify a number of whitespace issues (newlines etc.)
+
+| **URL**     | <https://github.com/kuleuven/puppet-lint-manifest_whitespace-check> |
+| **Install** | gem install puppet-lint-manifest_whitespace-check                   |
+{: .table .table-condensed }
