@@ -1,11 +1,14 @@
 name: CI
 on:
     push:
+        branches:
+            - master
     pull_request:
     schedule:
         - cron: '3 0 * * *'
 jobs:
     lint:
+        name: RuboCop
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v2
@@ -31,8 +34,11 @@ jobs:
                     - 2.5
                     - 2.6
                     - 2.7
+        needs: lint
         name: RSpec - ${{ matrix.os }} - Ruby ${{ matrix.ruby }} 
         runs-on: ${{ matrix.os }}-latest
+        env:
+            COVERAGE: yes
         steps:
             - uses: actions/checkout@v2
             - uses: ruby/setup-ruby@v1
