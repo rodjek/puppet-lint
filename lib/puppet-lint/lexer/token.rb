@@ -199,6 +199,12 @@ class PuppetLint
         end
         nil
       end
+
+      def interpolated_variable?
+        return false if type == :TYPE && value != 'type'
+        return true if type == :NAME
+        PuppetLint::Lexer::KEYWORDS.include?(type.to_s.downcase)
+      end
     end
   end
 end

@@ -124,6 +124,8 @@ class PuppetLint
     # value of the token.
     KNOWN_TOKENS = [
       [:WHITESPACE, %r{\A(#{WHITESPACE_RE}+)}],
+      # FIXME: Future breaking change, the following :TYPE tokens conflict with
+      #        the :TYPE keyword token.
       [:TYPE, %r{\A(Integer|Float|Boolean|Regexp|String|Array|Hash|Resource|Class|Collection|Scalar|Numeric|CatalogEntry|Data|Tuple|Struct|Optional|NotUndef|Variant|Enum|Pattern|Any|Callable|Type|Runtime|Undef|Default|Sensitive)\b}], # rubocop:disable Metrics/LineLength
       [:CLASSREF, %r{\A(((::){0,1}[A-Z][-\w]*)+)}],
       [:NUMBER, %r{\A\b((?:0[xX][0-9A-Fa-f]+|0?\d+(?:\.\d+)?(?:[eE]-?\d+)?))\b}],
@@ -417,7 +419,7 @@ class PuppetLint
           lexer = PuppetLint::Lexer.new
           lexer.tokenise(segment[1])
           lexer.tokens.each_with_index do |t, i|
-            type = i.zero? && (t.type == :NAME || KEYWORDS.include?(t.type.to_s.downcase)) ? :VARIABLE : t.type
+            type = i.zero? && t.interpolated_variable? ? :VARIABLE : t.type
             tokens << new_token(type, t.value, :raw => t.raw)
           end
         when :UNENC_VAR
@@ -449,7 +451,7 @@ class PuppetLint
           lexer = PuppetLint::Lexer.new
           lexer.tokenise(segment[1])
           lexer.tokens.each_with_index do |t, i|
-            type = i.zero? && t.type == :NAME ? :VARIABLE : t.type
+            type = i.zero? && t.interpolated_variable? ? :VARIABLE : t.type
             tokens << new_token(type, t.value, :raw => t.raw)
           end
         when :UNENC_VAR

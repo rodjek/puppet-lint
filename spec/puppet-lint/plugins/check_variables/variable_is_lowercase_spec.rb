@@ -22,4 +22,32 @@ describe 'variable_is_lowercase' do
       expect(problems).to have(0).problems
     end
   end
+
+  context 'when typecasting inside an interpolation' do
+    let(:code) { %("${Integer(fact('memory.system.total_bytes'))}") }
+
+    it 'should not detect any problems' do
+      expect(problems).to have(0).problems
+    end
+  end
+
+  context 'when an interpolated variable contains an uppercase letter' do
+    let(:code) { '"${fooBar}"' }
+
+    it 'should only detect a single problem' do
+      expect(problems).to have(1).problem
+    end
+
+    it 'should create a warning' do
+      expect(problems).to contain_warning(msg).on_line(1).in_column(4)
+    end
+  end
+
+  context 'when an interpolated variable only contains lowercase letters' do
+    let(:code) { '"${foobar}"' }
+
+    it 'should not detect any problems' do
+      expect(problems).to have(0).problems
+    end
+  end
 end
