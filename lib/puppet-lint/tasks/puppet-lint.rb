@@ -20,6 +20,7 @@ class PuppetLint
     attr_accessor :ignore_paths
     attr_accessor :with_filename
     attr_accessor :disable_checks
+    attr_accessor :only_checks
     attr_accessor :fail_on_warnings
     attr_accessor :error_level
     attr_accessor :log_format
@@ -40,6 +41,7 @@ class PuppetLint
       @pattern = DEFAULT_PATTERN
       @with_filename = true
       @disable_checks = []
+      @only_checks = []
       @ignore_paths = []
 
       define(args, &task_block)
@@ -54,6 +56,17 @@ class PuppetLint
       Rake::Task[@name].clear if Rake::Task.task_defined?(@name)
       task @name do
         PuppetLint::OptParser.build
+
+        if Array(@only_checks).any?
+          enable_checks = Array(@only_checks).map(&:to_sym)
+          PuppetLint.configuration.checks.each do |check|
+            if enable_checks.include?(check)
+              PuppetLint.configuration.send("enable_#{check}")
+            else
+              PuppetLint.configuration.send("disable_#{check}")
+            end
+          end
+        end
 
         Array(@disable_checks).each do |check|
           PuppetLint.configuration.send("disable_#{check}")
@@ -79,6 +92,7 @@ class PuppetLint
           matched_files = matched_files.exclude(*@ignore_paths)
 
           matched_files.to_a.each do |puppet_file|
+            next unless File.file?(puppet_file)
             linter.file = puppet_file
             linter.run
             linter.print_problems
