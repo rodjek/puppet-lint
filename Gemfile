@@ -31,10 +31,15 @@ group :test do
 end
 
 group :development do
-  # For Changelog generation
   if RUBY_VERSION > '1.9'
-    gem 'github_changelog_generator',                                 :require => false if RUBY_VERSION >= '2.2.2'
-    gem 'github_changelog_generator', '~> 1.13.0',                    :require => false if RUBY_VERSION < '2.2.2'
-    gem 'rack', '~> 1.0',                                             :require => false if RUBY_VERSION < '2.2.2'
+    # For Changelog generation
+    if RUBY_VERSION >= '2.2.2'
+      gem 'github_changelog_generator', :require => false
+    else
+      gem 'github_changelog_generator', '~> 1.13.0', :require => false
+      gem 'rack', '~> 1.0', :require => false
+    end
+
+    gem 'pry'
   end
 end
