@@ -22,6 +22,7 @@ PuppetLint.new_check(:parameter_order) do
         end
 
         next unless hash_or_array_stack.empty? && paren_stack.empty?
+        next unless parameter?(token)
         next unless required_parameter?(token)
 
         prev_tokens = class_idx[:param_tokens][0..i]
@@ -38,9 +39,19 @@ PuppetLint.new_check(:parameter_order) do
     end
   end
 
-  def required_parameter?(token)
+  def parameter?(token)
     return false unless token.type == :VARIABLE
+    return false unless token.prev_code_token
 
+    [
+      :LPAREN, # First parameter, no type specification
+      :COMMA,  # Subsequent parameter, no type specification
+      :TYPE,   # Parameter with simple type specification
+      :RBRACK, # Parameter with complex type specification
+    ].include?(token.prev_code_token.type)
+  end
+
+  def required_parameter?(token)
     data_type = token.prev_token_of(:TYPE, :skip_blocks => true)
     return false if data_type && data_type.value == 'Optional'
 

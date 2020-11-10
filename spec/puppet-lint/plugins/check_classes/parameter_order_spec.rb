@@ -147,5 +147,23 @@ describe 'parameter_order' do
 
       it { expect(problems).to have(0).problems }
     end
+
+    context "#{type} parameter with array operation" do
+      let(:code) do
+        <<-END
+          #{type} ntp (
+            # XXX: remove self from list
+            Array[String] $ntp_servers = [
+              'foo',
+              'bar',
+              'baz',
+            ] - $::fqdn,
+            Array[String] $pools       = [],
+          ) { }
+        END
+      end
+
+      it { expect(problems).to have(0).problems }
+    end
   end
 end
