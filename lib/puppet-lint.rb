@@ -100,9 +100,9 @@ class PuppetLint
   # Returns a format String to be used with String#%.
   def log_format
     if configuration.log_format.nil? || configuration.log_format.empty?
-      ## recreate previous old log format as far as thats possible.
       format = '%{KIND}: %{message} on line %{line}'
       format.prepend('%{path} - ') if configuration.with_filename
+      format.concat(' (check: %{check})')
       configuration.log_format = format
     end
 
