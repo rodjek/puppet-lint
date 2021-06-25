@@ -55,7 +55,9 @@ def with_puppet_lint_head
 end
 
 task :release_test do
-  branch = if ENV['APPVEYOR']
+  branch = if ENV['GITHUB_REF']
+             ENV['GITHUB_REF']
+           elsif ENV['APPVEYOR']
              ENV['APPVEYOR_PULL_REQUEST_HEAD_REPO_BRANCH']
            elsif ENV['TRAVIS']
              ENV['TRAVIS_PULL_REQUEST_BRANCH']
