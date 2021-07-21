@@ -7,8 +7,8 @@ branches:
 # ruby versions under test
 environment:
   matrix:
-    - RUBY_VERSION: 193
-    - RUBY_VERSION: 200
+    - RUBY_VERSION: 250
+    - RUBY_VERSION: 270
 
 matrix:
   allow_failures:
