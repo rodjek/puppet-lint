@@ -10,3 +10,4 @@ coverage/
 .idea
 /*.pp
 /tmp/
+.vendor/
