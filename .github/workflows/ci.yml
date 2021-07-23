@@ -1,49 +1,66 @@
 name: CI
-on:
-    push:
-        branches:
-            - master
-    pull_request:
-    schedule:
-        - cron: '3 0 * * *'
-jobs:
-    lint:
-        name: RuboCop
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v2
-            - uses: ruby/setup-ruby@v1
-              with:
-                  ruby-version: 2.6
-                  bundler-cache: true
-            - run: bundle install
-            - run: bundle exec rake rubocop
 
-    spec:
-        strategy:
-            fail-fast: false
-            matrix:
-                os:
-                    - ubuntu
-                    - windows
-                ruby:
-                    - 2.1
-                    - 2.2
-                    - 2.3
-                    - 2.4
-                    - 2.5
-                    - 2.6
-                    - 2.7
-        needs: lint
-        name: RSpec - ${{ matrix.os }} - Ruby ${{ matrix.ruby }} 
-        runs-on: ${{ matrix.os }}-latest
-        env:
-            COVERAGE: yes
-        steps:
-            - uses: actions/checkout@v2
-            - uses: ruby/setup-ruby@v1
-              with:
-                  ruby-version: ${{ matrix.ruby }}
-                  bundler-cache: true
-            - run: bundle install
-            - run: bundle exec rake
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  schedule:
+    - cron: "3 0 * * *"
+
+jobs:
+  lint:
+    name: RuboCop
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+          bundler-cache: true
+      - run: bundle exec rake rubocop
+
+  spec:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ["ubuntu-latest", "windows-latest"]
+        ruby:
+          - "2.4"
+          - "2.5"
+          - "2.7"
+    needs: lint
+    name: RSpec - ${{ matrix.os }} - Ruby ${{ matrix.ruby }}
+    runs-on: ${{ matrix.os }}
+    env:
+      COVERAGE: yes
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+      - run: bundle exec rake
+
+  release_tests:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ["ubuntu-latest", "windows-latest"]
+        ruby:
+          - "2.4"
+          - "2.5"
+          - "2.7"
+    needs: lint
+    name: Release Tests - ${{ matrix.os }} - Ruby ${{ matrix.ruby }}
+    runs-on: ${{ matrix.os }}
+    env:
+      BUNDLE_WITHOUT: development system_tests
+      CHECK: ci
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+      - run: bundle exec rake ci
