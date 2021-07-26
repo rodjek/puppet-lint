@@ -2,6 +2,7 @@ require 'rake'
 require 'rspec/core/rake_task'
 require 'puppet-lint'
 require 'puppet-lint/tasks/release_test'
+require 'bundler/gem_tasks'
 
 task :default => :test
 
