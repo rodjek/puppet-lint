@@ -12,8 +12,9 @@ begin
   require 'github_changelog_generator/task'
   GitHubChangelogGenerator::RakeTask.new(:changelog) do |config|
     version = PuppetLint::VERSION
-    config.user = 'rodjek'
+    config.user = 'puppetlabs'
     config.project = 'puppet-lint'
+    config.since_tag = '2.5.0'
     config.future_release = version.to_s
     config.exclude_labels = %w[duplicate question invalid wontfix release-pr documentation]
     config.enhancement_labels = %w[feature]
