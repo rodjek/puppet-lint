@@ -4,7 +4,7 @@
 #
 # https://puppet.com/docs/puppet/latest/style_guide.html#quoting
 PuppetLint.new_check(:double_quoted_strings) do
-  ESCAPE_CHAR_RE = %r{(\\\$|\\"|\\'|'|\r|\t|\\t|\n|\\n|\\\\)}
+  ESCAPE_CHAR_RE = %r{(\\\$|\\"|\\'|'|\r|\t|\\t|\\s|\n|\\n|\\\\)}
 
   def check
     tokens.select { |token|
