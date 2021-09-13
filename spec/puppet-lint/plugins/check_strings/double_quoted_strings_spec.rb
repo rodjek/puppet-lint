@@ -103,6 +103,7 @@ describe 'double_quoted_strings' do
           $string5 = "this string contains \\'escaped \\' single quotes"
           $string6 = "this string contains \r carriage return"
           $string7 = "this string contains \\\\ an escaped backslash"
+          $string8 = "this string contains \\s"
         END
       end
 
