@@ -1,6 +1,6 @@
 # Changelog
 
-## [2.5.2](https://github.com/puppetlabs/puppet-lint/tree/2.5.2) (2021-09-13)
+## [2.5.2](https://github.com/puppetlabs/puppet-lint/tree/2.5.2) (2021-09-14)
 
 [Full Changelog](https://github.com/puppetlabs/puppet-lint/compare/2.5.1...2.5.2)
 
