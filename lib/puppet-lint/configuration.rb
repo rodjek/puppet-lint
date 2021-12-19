@@ -152,6 +152,7 @@ class PuppetLint
       self.json = false
       self.show_ignored = false
       self.ignore_paths = ['vendor/**/*.pp']
+      self.github_actions = ENV.key?('GITHUB_ACTION')
     end
   end
 end
