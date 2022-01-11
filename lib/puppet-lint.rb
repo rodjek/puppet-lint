@@ -7,6 +7,7 @@ require 'puppet-lint/lexer'
 require 'puppet-lint/configuration'
 require 'puppet-lint/data'
 require 'puppet-lint/checks'
+require 'puppet-lint/report/github'
 require 'puppet-lint/bin'
 require 'puppet-lint/monkeypatches'
 
@@ -121,6 +122,16 @@ class PuppetLint
     puts "  #{message[:reason]}" if message[:kind] == :ignored && !message[:reason].nil?
   end
 
+  # Internal: Format a problem message and print it to STDOUT so GitHub Actions
+  # recognizes it as an annotation.
+  #
+  # message - A Hash containing all the information about a problem.
+  #
+  # Returns nothing.
+  def print_github_annotation(message)
+    puts PuppetLint::Report::GitHubActionsReporter.format_problem(path, message)
+  end
+
   # Internal: Get the line of the manifest on which the problem was found
   #
   # message - A Hash containing all the information about a problem.
@@ -158,15 +169,17 @@ class PuppetLint
 
       message[:KIND] = message[:kind].to_s.upcase
 
-      if message[:kind] == :fixed || [message[:kind], :all].include?(configuration.error_level)
-        if configuration.json
-          message['context'] = get_context(message) if configuration.with_context
-          json << message
-        else
-          format_message(message)
-          print_context(message) if configuration.with_context
-        end
+      next unless message[:kind] == :fixed || [message[:kind], :all].include?(configuration.error_level)
+
+      if configuration.json
+        message['context'] = get_context(message) if configuration.with_context
+        json << message
+      else
+        format_message(message)
+        print_context(message) if configuration.with_context
       end
+
+      print_github_annotation(message) if configuration.github_actions
     end
     puts JSON.pretty_generate(json) if configuration.json
 

@@ -49,7 +49,10 @@ describe PuppetLint::Configuration do
   end
 
   it 'should be able to set sane defaults' do
-    subject.defaults
+    override_env do
+      ENV.delete('GITHUB_ACTION')
+      subject.defaults
+    end
 
     expect(subject.settings).to eq(
       'with_filename'    => false,
@@ -58,9 +61,27 @@ describe PuppetLint::Configuration do
       'log_format'       => '',
       'with_context'     => false,
       'fix'              => false,
+      'github_actions'   => false,
       'show_ignored'     => false,
       'json'             => false,
       'ignore_paths'     => ['vendor/**/*.pp']
     )
+  end
+
+  it 'detects github actions' do
+    override_env do
+      ENV['GITHUB_ACTION'] = 'action'
+      subject.defaults
+    end
+
+    expect(subject.settings['github_actions']).to be(true)
+  end
+
+  def override_env
+    old_env = ENV.clone
+    yield
+  ensure
+    ENV.clear
+    ENV.update(old_env)
   end
 end
