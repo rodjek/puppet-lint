@@ -158,14 +158,14 @@ class PuppetLint
 
       message[:KIND] = message[:kind].to_s.upcase
 
-      if message[:kind] == :fixed || [message[:kind], :all].include?(configuration.error_level)
-        if configuration.json
-          message['context'] = get_context(message) if configuration.with_context
-          json << message
-        else
-          format_message(message)
-          print_context(message) if configuration.with_context
-        end
+      next unless message[:kind] == :fixed || [message[:kind], :all].include?(configuration.error_level)
+
+      if configuration.json
+        message['context'] = get_context(message) if configuration.with_context
+        json << message
+      else
+        format_message(message)
+        print_context(message) if configuration.with_context
       end
     end
     puts JSON.pretty_generate(json) if configuration.json
