@@ -177,9 +177,8 @@ class PuppetLint
       else
         format_message(message)
         print_context(message) if configuration.with_context
+        print_github_annotation(message) if configuration.github_actions
       end
-
-      print_github_annotation(message) if configuration.github_actions
     end
     puts JSON.pretty_generate(json) if configuration.json
 
