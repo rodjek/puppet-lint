@@ -1,7 +1,7 @@
 # Disable GitHub Actions reporting since it breaks the test suite
 ENV.delete('GITHUB_ACTION')
 
-if ENV['COVERAGE'] == 'yes' && RUBY_VERSION.start_with?('2.6.')
+if ENV['COVERAGE'] == 'yes' && RUBY_VERSION.start_with?('2.7.')
   require 'simplecov'
   SimpleCov.start do
     add_filter('/spec/')
