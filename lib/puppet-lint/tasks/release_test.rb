@@ -86,9 +86,12 @@ task :release_test do
     'puppetlabs/puppetlabs-chocolatey',
     'voxpupuli/puppet-archive',
     'voxpupuli/puppet-collectd',
+    'voxpupuli/puppet-prometheus',
+    'voxpupuli/puppet-borg',
+    'voxpupuli/puppet-nginx',
+    'voxpupuli/puppet-jenkins',
     'garethr/garethr-docker',
     'sensu/sensu-puppet',
-    'jenkinsci/puppet-jenkins',
   ]
 
   FileUtils.mkdir_p('tmp')
