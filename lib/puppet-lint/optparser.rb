@@ -98,6 +98,10 @@ class PuppetLint::OptParser
         PuppetLint.configuration.json = true
       end
 
+      opts.on('--sarif', 'Log output as SARIF') do
+        PuppetLint.configuration.sarif = true
+      end
+
       opts.on('--list-checks', 'List available check names.') do
         PuppetLint.configuration.list_checks = true
       end

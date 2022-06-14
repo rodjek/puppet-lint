@@ -9,10 +9,12 @@ PuppetLint.new_check(:arrow_on_right_operand_line) do
 
       notify(
         :warning,
-        :message => "arrow should be on the right operand's line",
-        :line    => token.line,
-        :column  => token.column,
-        :token   => token
+        :message     => "arrow should be on the right operand's line",
+        :line        => token.line,
+        :column      => token.column,
+        :token       => token,
+        :description => 'Test the manifest tokens for chaining arrow that is on the line of the left operand when the right operand is on another line.',
+        :help_uri    => 'https://puppet.com/docs/puppet/latest/style_guide.html#chaining-arrow-syntax'
       )
     end
   end

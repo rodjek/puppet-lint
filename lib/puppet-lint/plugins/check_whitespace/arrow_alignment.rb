@@ -78,7 +78,9 @@ PuppetLint.new_check(:arrow_alignment) do
                 :token          => arrow_tok,
                 :arrow_column   => arrow_column[level_idx],
                 :newline        => arrows_on_line.index(arrow_tok) != 0,
-                :newline_indent => param_column[level_idx] - 1
+                :newline_indent => param_column[level_idx] - 1,
+                :description    => 'Check the manifest tokens for any arrows (=>) in a grouping ({}) that are not aligned with other arrows in that grouping.',
+                :help_uri       => 'https://puppet.com/docs/puppet/latest/style_guide.html#spacing-indentation-and-whitespace'
               )
             end
           end

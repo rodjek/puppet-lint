@@ -22,9 +22,11 @@ PuppetLint.new_check(:documentation) do
 
       notify(
         :warning,
-        :message => "#{type} not documented",
-        :line    => first_token.line,
-        :column  => first_token.column
+        :message     => "#{type} not documented",
+        :line        => first_token.line,
+        :column      => first_token.column,
+        :description => 'Check the manifest tokens for any class or defined type that does not have a comment directly above it (hopefully, explaining the usage of it) and record a warning for each instance found.',
+        :help_uri    => 'https://puppet.com/docs/puppet/latest/style_guide.html#public-and-private'
       )
     end
   end

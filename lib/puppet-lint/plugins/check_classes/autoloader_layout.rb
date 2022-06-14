@@ -25,9 +25,11 @@ PuppetLint.new_check(:autoloader_layout) do
 
       notify(
         :error,
-        :message => "#{title_token.value} not in autoload module layout",
-        :line    => title_token.line,
-        :column  => title_token.column
+        :message     => "#{title_token.value} not in autoload module layout",
+        :line        => title_token.line,
+        :column      => title_token.column,
+        :description => 'Test the manifest tokens for any classes or defined types that are not in an appropriately named file for the autoloader to detect and record an error of each instance found.',
+        :help_uri    => 'https://puppet.com/docs/puppet/latest/style_guide.html#separate-files'
       )
     end
   end

@@ -9,10 +9,12 @@ PuppetLint.new_check(:unquoted_resource_title) do
 
       notify(
         :warning,
-        :message => 'unquoted resource title',
-        :line    => token.line,
-        :column  => token.column,
-        :token   => token
+        :message     => 'unquoted resource title',
+        :line        => token.line,
+        :column      => token.column,
+        :token       => token,
+        :description => 'Check the manifest tokens for any resource titles / namevars that are not quoted and record a warning for each instance found.',
+        :help_uri    => 'https://puppet.com/docs/puppet/latest/style_guide.html#resource-names'
       )
     end
   end

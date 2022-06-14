@@ -11,10 +11,12 @@ PuppetLint.new_check(:hard_tabs) do
     }.each do |token|
       notify(
         :error,
-        :message => 'tab character found',
-        :line    => token.line,
-        :column  => token.column,
-        :token   => token
+        :message     => 'tab character found',
+        :line        => token.line,
+        :column      => token.column,
+        :token       => token,
+        :description => 'Check the raw manifest string for lines containing hard tab characters and record an error for each instance found.',
+        :help_uri    => 'https://puppet.com/docs/puppet/latest/style_guide.html#spacing-indentation-and-whitespace'
       )
     end
   end

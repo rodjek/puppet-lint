@@ -11,9 +11,11 @@ PuppetLint.new_check(:'80chars') do
 
       notify(
         :warning,
-        :message => 'line has more than 80 characters',
-        :line    => idx + 1,
-        :column  => 80
+        :message     => 'line has more than 80 characters',
+        :line        => idx + 1,
+        :column      => 80,
+        :description => 'Test the raw manifest string for lines containing more than 80 characters. This is DISABLED by default and behaves like the default 140chars check by excepting URLs and template() calls.',
+        :help_uri    => 'https://puppet.com/docs/puppet/latest/style_guide.html#spacing-indentation-and-whitespace'
       )
     end
   end

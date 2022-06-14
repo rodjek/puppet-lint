@@ -14,9 +14,11 @@ PuppetLint.new_check(:inherits_across_namespaces) do
 
       notify(
         :warning,
-        :message => 'class inherits across module namespaces',
-        :line    => class_idx[:inherited_token].line,
-        :column  => class_idx[:inherited_token].column
+        :message     => 'class inherits across module namespaces',
+        :line        => class_idx[:inherited_token].line,
+        :column      => class_idx[:inherited_token].column,
+        :description => 'Test the manifest tokens for any classes that inherit across namespaces and record a warning for each instance found.',
+        :help_uri    => 'https://puppet.com/docs/puppet/latest/style_guide.html#class-inheritance'
       )
     end
   end

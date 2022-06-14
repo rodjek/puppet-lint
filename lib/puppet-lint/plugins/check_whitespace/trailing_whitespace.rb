@@ -11,10 +11,12 @@ PuppetLint.new_check(:trailing_whitespace) do
     }.each do |token|
       notify(
         :error,
-        :message => 'trailing whitespace found',
-        :line    => token.line,
-        :column  => token.column,
-        :token   => token
+        :message     => 'trailing whitespace found',
+        :line        => token.line,
+        :column      => token.column,
+        :token       => token,
+        :description => 'Check the manifest tokens for lines ending with whitespace and record an error for each instance found.',
+        :help_uri    => 'https://puppet.com/docs/puppet/latest/style_guide.html#spacing-indentation-and-whitespace'
       )
     end
   end

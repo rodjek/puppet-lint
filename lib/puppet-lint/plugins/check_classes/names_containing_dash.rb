@@ -15,9 +15,11 @@ PuppetLint.new_check(:names_containing_dash) do
 
       notify(
         :error,
-        :message => "#{obj_type} name containing a dash",
-        :line    => class_idx[:name_token].line,
-        :column  => class_idx[:name_token].column
+        :message     => "#{obj_type} name containing a dash",
+        :line        => class_idx[:name_token].line,
+        :column      => class_idx[:name_token].column,
+        :description => 'Check the manifest tokens for any classes or defined types that have a dash in their name and record an error for each instance found.',
+        :help_uri    => nil
       )
     end
   end

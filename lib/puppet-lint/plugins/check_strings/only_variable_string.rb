@@ -30,7 +30,9 @@ PuppetLint.new_check(:only_variable_string) do
               :column      => var_token.column,
               :start_token => start_token,
               :var_token   => var_token,
-              :end_token   => eos_token
+              :end_token   => eos_token,
+              :description => 'Check the manifest tokens for double quoted strings that contain a single variable only and record a warning for each instance found.',
+              :help_uri    => 'https://puppet.com/docs/puppet/latest/style_guide.html#quoting'
             )
           end
           break

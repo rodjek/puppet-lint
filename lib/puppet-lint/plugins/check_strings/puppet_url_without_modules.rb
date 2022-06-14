@@ -12,10 +12,12 @@ PuppetLint.new_check(:puppet_url_without_modules) do
     }.each do |token|
       notify(
         :warning,
-        :message => 'puppet:// URL without modules/ found',
-        :line    => token.line,
-        :column  => token.column,
-        :token   => token
+        :message     => 'puppet:// URL without modules/ found',
+        :line        => token.line,
+        :column      => token.column,
+        :token       => token,
+        :description => 'Check the manifest tokens for any puppet:// URL strings where the path section doesn\'t start with modules/ and record a warning for each instance found.',
+        :help_uri    => nil
       )
     end
   end

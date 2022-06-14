@@ -11,9 +11,11 @@ PuppetLint.new_check(:code_on_top_scope) do
 
       notify(
         :warning,
-        :message => "code outside of class or define block - #{token.value}",
-        :line    => token.line,
-        :column  => token.column
+        :message     => "code outside of class or define block - #{token.value}",
+        :line        => token.line,
+        :column      => token.column,
+        :description => 'Test that no code is outside of a class or define scope.',
+        :help_uri    => nil
       )
     end
   end

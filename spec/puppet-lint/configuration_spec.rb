@@ -59,6 +59,7 @@ describe PuppetLint::Configuration do
       'fail_on_warnings' => false,
       'error_level'      => :all,
       'log_format'       => '',
+      'sarif'            => false,
       'with_context'     => false,
       'fix'              => false,
       'github_actions'   => false,

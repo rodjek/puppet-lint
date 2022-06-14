@@ -397,6 +397,41 @@ describe PuppetLint::Bin do
     end
   end
 
+  context 'when displaying results as SARIF' do
+    let(:args) do
+      [
+        '--sarif',
+        'spec/fixtures/test/manifests/warning.pp',
+      ]
+    end
+
+    its(:exitstatus) { is_expected.to eq(0) }
+
+    its(:stdout) do
+      is_expected.to match(%r{"ruleId": "parameter_order"})
+      is_expected.to match(%r{"uri": "warning.pp"})
+    end
+  end
+
+  context 'when displaying results for multiple targets as SARIF' do
+    let(:args) do
+      [
+        '--sarif',
+        'spec/fixtures/test/manifests/fail.pp',
+        'spec/fixtures/test/manifests/warning.pp',
+      ]
+    end
+
+    its(:exitstatus) { is_expected.to eq(1) }
+
+    its(:stdout) do
+      is_expected.to match(%r{"ruleId": "autoloader_layout"})
+      is_expected.to match(%r{"uri": "fail.pp"})
+      is_expected.to match(%r{"ruleId": "parameter_order"})
+      is_expected.to match(%r{"uri": "warning.pp"})
+    end
+  end
+
   context 'when hiding ignored problems' do
     let(:args) do
       [
@@ -468,7 +503,7 @@ describe PuppetLint::Bin do
     end
 
     its(:exitstatus) { is_expected.to eq(0) }
-    its(:stdout) { is_expected.to match(%r{WARNING: lint:endignore comment with no opening lint:ignore:<check> comment found on line 1}) }
+    its(:stderr) { is_expected.to match(%r{WARNING: lint:endignore comment with no opening lint:ignore:<check> comment found on line 1}) }
   end
 
   context 'when a lint:ignore control comment block is not terminated properly' do
@@ -478,7 +513,7 @@ describe PuppetLint::Bin do
       ]
     end
 
-    its(:stdout) { is_expected.to match(%r{WARNING: lint:ignore:140chars comment on line 2 with no closing lint:endignore comment}) }
+    its(:stderr) { is_expected.to match(%r{WARNING: lint:ignore:140chars comment on line 2 with no closing lint:endignore comment}) }
   end
 
   context 'when fixing a file with \n line endings' do

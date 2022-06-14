@@ -20,7 +20,9 @@ PuppetLint.new_check(:ensure_not_symlink_target) do
           :line        => value_token.line,
           :column      => value_token.column,
           :param_token => ensure_token,
-          :value_token => value_token
+          :value_token => value_token,
+          :description => 'Check the tokens of each File resource instance for an ensure parameter and record a warning if the value of that parameter looks like a symlink target (starts with a \'/\').',
+          :help_uri    => 'https://puppet.com/docs/puppet/latest/style_guide.html#symbolic-links'
         )
       end
     end

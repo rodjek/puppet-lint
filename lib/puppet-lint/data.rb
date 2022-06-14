@@ -591,7 +591,7 @@ class PuppetLint::Data
             if top_override.nil?
               # TODO: refactor to provide a way to expose problems from
               # PuppetLint::Data via the normal problem reporting mechanism.
-              puts "WARNING: lint:endignore comment with no opening lint:ignore:<check> comment found on line #{token.line}"
+              $stderr.puts "WARNING: lint:endignore comment with no opening lint:ignore:<check> comment found on line #{token.line}"
             else
               top_override.each do |start|
                 next if start.nil?
@@ -607,7 +607,7 @@ class PuppetLint::Data
       end
 
       stack.each do |control|
-        puts "WARNING: lint:ignore:#{control[0][2]} comment on line #{control[0][0]} with no closing lint:endignore comment"
+        $stderr.puts "WARNING: lint:ignore:#{control[0][2]} comment on line #{control[0][0]} with no closing lint:endignore comment"
       end
     end
   end

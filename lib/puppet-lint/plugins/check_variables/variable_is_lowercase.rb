@@ -13,9 +13,11 @@ PuppetLint.new_check(:variable_is_lowercase) do
 
       notify(
         :warning,
-        :message => 'variable contains an uppercase letter',
-        :line    => token.line,
-        :column  => token.column
+        :message     => 'variable contains an uppercase letter',
+        :line        => token.line,
+        :column      => token.column,
+        :description => 'Test the manifest tokens for variables that contain an uppercase letter and record a warning for each instance found.',
+        :help_uri    => nil
       )
     end
   end

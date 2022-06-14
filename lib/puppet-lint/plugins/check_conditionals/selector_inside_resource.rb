@@ -12,9 +12,11 @@ PuppetLint.new_check(:selector_inside_resource) do
 
         notify(
           :warning,
-          :message => 'selector inside resource block',
-          :line    => token.line,
-          :column  => token.column
+          :message     => 'selector inside resource block',
+          :line        => token.line,
+          :column      => token.column,
+          :description => 'Test the manifest tokens for any selectors embedded within resource declarations and record a warning for each instance found.',
+          :help_uri    => 'https://puppet.com/docs/puppet/latest/style_guide.html#keep-resource-declarations-simple'
         )
       end
     end

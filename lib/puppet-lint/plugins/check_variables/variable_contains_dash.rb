@@ -13,9 +13,11 @@ PuppetLint.new_check(:variable_contains_dash) do
 
       notify(
         :warning,
-        :message => 'variable contains a dash',
-        :line    => token.line,
-        :column  => token.column
+        :message     => 'variable contains a dash',
+        :line        => token.line,
+        :column      => token.column,
+        :description => 'Test the manifest tokens for variables that contain a dash and record a warning for each instance found.',
+        :help_uri    => nil
       )
     end
   end

@@ -31,9 +31,11 @@ PuppetLint.new_check(:parameter_order) do
         msg = 'optional parameter listed before required parameter'
         notify(
           :warning,
-          :message => msg,
-          :line    => token.line,
-          :column  => token.column
+          :message     => msg,
+          :line        => token.line,
+          :column      => token.column,
+          :description => 'Test the manifest tokens for any parameterised classes or defined types that take parameters and record a warning if there are any optional parameters listed before required parameters.',
+          :help_uri    => 'https://puppet.com/docs/puppet/latest/style_guide.html#display-order-of-parameters'
         )
       end
     end

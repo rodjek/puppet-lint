@@ -161,7 +161,7 @@ class PuppetLint
   # problems - An Array of problem Hashes as returned by
   #            PuppetLint::Checks#run.
   #
-  # Returns nothing.
+  # Returns array of problem.
   def report(problems)
     json = []
     problems.each do |message|
@@ -171,7 +171,7 @@ class PuppetLint
 
       next unless message[:kind] == :fixed || [message[:kind], :all].include?(configuration.error_level)
 
-      if configuration.json
+      if configuration.json || configuration.sarif
         message['context'] = get_context(message) if configuration.with_context
         json << message
       else
@@ -180,9 +180,8 @@ class PuppetLint
         print_github_annotation(message) if configuration.github_actions
       end
     end
-    puts JSON.pretty_generate(json) if configuration.json
-
     $stderr.puts 'Try running `puppet parser validate <file>`' if problems.any? { |p| p[:check] == :syntax }
+    json
   end
 
   # Public: Determine if PuppetLint found any errors in the manifest.

@@ -24,9 +24,11 @@ PuppetLint.new_check(:duplicate_params) do
           if (seen_params[level] ||= Set.new).include?(prev_token.value)
             notify(
               :error,
-              :message => 'duplicate parameter found in resource',
-              :line    => prev_token.line,
-              :column  => prev_token.column
+              :message     => 'duplicate parameter found in resource',
+              :line        => prev_token.line,
+              :column      => prev_token.column,
+              :description => 'Check the tokens of each resource instance for any duplicate parameters and record a warning for each instance found.',
+              :help_uri    => nil
             )
           else
             seen_params[level] << prev_token.value
