@@ -1,66 +1,20 @@
-name: CI
+name: "ci"
 
 on:
   push:
-    branches: [master]
+    branches:
+      - master
   pull_request:
-    branches: [master]
+    branches:
+      - master
   schedule:
-    - cron: "3 0 * * *"
+    - cron: "0 0 * * *"
+  workflow_dispatch:
 
 jobs:
-  lint:
-    name: RuboCop
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 2.7
-          bundler-cache: true
-      - run: bundle exec rake rubocop
+  ci:
+    uses: "puppetlabs/cat-github-actions/.github/workflows/gem_ci.yml@main"
+    with:
+      with_acceptance: false
+    secrets: "inherit"
 
-  spec:
-    strategy:
-      fail-fast: false
-      matrix:
-        os: ["ubuntu-latest", "windows-latest"]
-        ruby:
-          - "2.4"
-          - "2.5"
-          - "2.7"
-    needs: lint
-    name: RSpec - ${{ matrix.os }} - Ruby ${{ matrix.ruby }}
-    runs-on: ${{ matrix.os }}
-    env:
-      COVERAGE: yes
-    steps:
-      - uses: actions/checkout@v2
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: ${{ matrix.ruby }}
-          bundler-cache: true
-      - run: bundle exec rake
-
-  release_tests:
-    strategy:
-      fail-fast: false
-      matrix:
-        os: ["ubuntu-latest", "windows-latest"]
-        ruby:
-          - "2.4"
-          - "2.5"
-          - "2.7"
-    needs: lint
-    name: Release Tests - ${{ matrix.os }} - Ruby ${{ matrix.ruby }}
-    runs-on: ${{ matrix.os }}
-    env:
-      BUNDLE_WITHOUT: development system_tests
-      CHECK: ci
-    steps:
-      - uses: actions/checkout@v2
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: ${{ matrix.ruby }}
-          bundler-cache: true
-      - run: bundle exec rake ci

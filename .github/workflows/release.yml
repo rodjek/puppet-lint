@@ -1,0 +1,16 @@
+name: "Release"
+
+on:
+  workflow_dispatch:
+   inputs:
+    target:
+      description: "The target for the release. This can be a commit sha or a branch."
+      required: false
+      default: "main"
+
+jobs:
+  release:
+    uses: "puppetlabs/cat-github-actions/.github/workflows/gem_release.yml@main"
+    with:
+      target: "${{ github.event.inputs.target }}"
+    secrets: "inherit"
