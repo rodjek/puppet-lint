@@ -8,17 +8,19 @@ PuppetLint.new_check(:quoted_booleans) do
   BOOLEANS = Set['true', 'false']
 
   def check
-    tokens.select { |r|
-      STRING_TYPES.include?(r.type) && BOOLEANS.include?(r.value)
-    }.each do |token|
+    invalid_tokens = tokens.select do |token|
+      STRING_TYPES.include?(token.type) && BOOLEANS.include?(token.value)
+    end
+
+    invalid_tokens.each do |token|
       notify(
         :warning,
-        :message     => 'quoted boolean value found',
-        :line        => token.line,
-        :column      => token.column,
-        :token       => token,
-        :description => 'Check the manifest tokens for any double or single quoted strings containing only a boolean value and record a warning for each instance found.',
-        :help_uri    => nil
+        message: 'quoted boolean value found',
+        line: token.line,
+        column: token.column,
+        token: token,
+        description: 'Check the manifest tokens for any double or single quoted strings containing only a boolean value and record a warning for each instance found.',
+        help_uri: nil,
       )
     end
   end
