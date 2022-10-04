@@ -4,17 +4,17 @@
 # https://puppet.com/docs/puppet/latest/style_guide.html#comments
 PuppetLint.new_check(:star_comments) do
   def check
-    tokens.select { |token|
-      token.type == :MLCOMMENT
-    }.each do |token|
+    invalid_tokens = tokens.select { |token| token.type == :MLCOMMENT }
+
+    invalid_tokens.each do |token|
       notify(
         :warning,
-        :message     => '/* */ comment found',
-        :line        => token.line,
-        :column      => token.column,
-        :token       => token,
-        :description => 'Check the manifest tokens for any comments encapsulated with slash-asterisks (/* */) and record a warning for each instance found.',
-        :help_uri    => 'https://puppet.com/docs/puppet/latest/style_guide.html#comments'
+        message: '/* */ comment found',
+        line: token.line,
+        column: token.column,
+        token: token,
+        description: 'Check the manifest tokens for any comments encapsulated with slash-asterisks (/* */) and record a warning for each instance found.',
+        help_uri: 'https://puppet.com/docs/puppet/latest/style_guide.html#comments',
       )
     end
   end
@@ -27,7 +27,7 @@ PuppetLint.new_check(:star_comments) do
     problem[:token].value = " #{first_line}"
 
     index = tokens.index(problem[:token].next_token) || 1
-    comment_lines.reverse.each do |line|
+    comment_lines.reverse_each do |line|
       indent = problem[:token].prev_token.nil? ? nil : problem[:token].prev_token.value.dup
       add_token(index, PuppetLint::Lexer::Token.new(:COMMENT, " #{line}", 0, 0))
       add_token(index, PuppetLint::Lexer::Token.new(:INDENT, indent, 0, 0)) if indent
