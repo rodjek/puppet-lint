@@ -7,19 +7,10 @@
 PuppetLint.new_check(:'140chars') do
   def check
     manifest_lines.each_with_index do |line, idx|
-      next if line.include? '://'
-      next if line.include? 'template('
-      next unless line.scan(%r{.}mu).size > 140
+      result = PuppetLint::LineLengthCheck.check(idx+1, line, 140)
 
-      notify(
-        :warning,
-        message: 'line has more than 140 characters',
-        line: idx + 1,
-        column: 140,
-        description: 'Test the raw manifest string for lines containing more than 140 characters and record a warning for each instance found. ' \
-                        'The only exceptions to this rule are lines containing URLs and template() calls which would hurt readability if split.',
-        help_uri: 'https://puppet.com/docs/puppet/latest/style_guide.html#spacing-indentation-and-whitespace',
-      )
+      next if result.nil?
+      notify(*result)
     end
   end
 end
