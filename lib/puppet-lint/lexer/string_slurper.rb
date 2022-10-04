@@ -11,12 +11,12 @@ class PuppetLint
       attr_accessor :results
       attr_accessor :interp_stack
 
-      START_INTERP_PATTERN = %r{\$\{}
-      END_INTERP_PATTERN = %r{\}}
-      END_STRING_PATTERN = %r{(\A|[^\\])(\\\\)*"}
-      UNENC_VAR_PATTERN = %r{(\A|[^\\])\$(::)?(\w+(-\w+)*::)*\w+(-\w+)*}
-      ESC_DQUOTE_PATTERN = %r{\\+"}
-      LBRACE_PATTERN = %r{\{}
+      START_INTERP_PATTERN = %r{\$\{}.freeze
+      END_INTERP_PATTERN = %r{\}}.freeze
+      END_STRING_PATTERN = %r{(\A|[^\\])(\\\\)*"}.freeze
+      UNENC_VAR_PATTERN = %r{(\A|[^\\])\$(::)?(\w+(-\w+)*::)*\w+(-\w+)*}.freeze
+      ESC_DQUOTE_PATTERN = %r{\\+"}.freeze
+      LBRACE_PATTERN = %r{\{}.freeze
 
       def initialize(string)
         @scanner = StringScanner.new(string)
@@ -59,7 +59,7 @@ class PuppetLint
       end
 
       def parse_heredoc(heredoc_tag)
-        heredoc_name = heredoc_tag[%r{\A"?(.+?)"?(:.+?)?#{PuppetLint::Lexer::WHITESPACE_RE}*(/.*)?\Z}, 1]
+        heredoc_name = heredoc_tag[%r{\A"?(.+?)"?(:.+?)?#{PuppetLint::Lexer::WHITESPACE_RE}*(/.*)?\Z}o, 1]
         end_heredoc_pattern = %r{^\|?\s*-?\s*#{Regexp.escape(heredoc_name)}$}
         interpolation = heredoc_tag.start_with?('"')
 

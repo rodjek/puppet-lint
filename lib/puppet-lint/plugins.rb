@@ -56,7 +56,7 @@ class PuppetLint
         # Load prerelease plugins (which ruby defines as any gem which has a letter in its version number).
         # Can't use puppet-lint configuration object here because this code executes before the command line is parsed.
         if ENV['PUPPET_LINT_LOAD_PRERELEASE_PLUGINS']
-          return %w[true yes].include?(ENV['PUPPET_LINT_LOAD_PRERELEASE_PLUGINS'].downcase)
+          return ['true', 'yes'].include?(ENV['PUPPET_LINT_LOAD_PRERELEASE_PLUGINS'].downcase)
         end
         false
       end

@@ -143,7 +143,7 @@ class PuppetLint::Data
               end
               title_array_tokens = tokens[(array_start_idx + 1)..(token_idx - 2)]
               result += title_array_tokens.select do |token|
-                { :STRING => true, :NAME => true }.include?(token.type)
+                { STRING: true, NAME: true }.include?(token.type)
               end
             else
               next_token = tokens[token_idx].next_code_token
@@ -180,11 +180,11 @@ class PuppetLint::Data
           marker = rel_end_idx + start_idx
 
           result << {
-            :start        => start_idx + 1,
-            :end          => marker,
-            :tokens       => tokens[start_idx..marker],
-            :type         => find_resource_type_token(start_idx),
-            :param_tokens => find_resource_param_tokens(tokens[start_idx..marker]),
+            start: start_idx + 1,
+            end: marker,
+            tokens: tokens[start_idx..marker],
+            type: find_resource_type_token(start_idx),
+            param_tokens: find_resource_param_tokens(tokens[start_idx..marker]),
           }
         end
         result
@@ -310,13 +310,13 @@ class PuppetLint::Data
             if brace_depth.zero? && !in_params
               if token.next_code_token.type != :LBRACE
                 result << {
-                  :start           => i,
-                  :end             => i + j + 1,
-                  :tokens          => tokens[i..(i + j + 1)],
-                  :param_tokens    => param_tokens(tokens[i..(i + j + 1)]),
-                  :type            => type,
-                  :name_token      => token.next_code_token,
-                  :inherited_token => inherited_class,
+                  start: i,
+                  end: i + j + 1,
+                  tokens: tokens[i..(i + j + 1)],
+                  param_tokens: param_tokens(tokens[i..(i + j + 1)]),
+                  type: type,
+                  name_token: token.next_code_token,
+                  inherited_token: inherited_class,
                 }
                 break
               end
@@ -367,9 +367,9 @@ class PuppetLint::Data
           end
 
           functions << {
-            :start  => token_idx,
-            :end    => real_idx,
-            :tokens => tokens[token_idx..real_idx],
+            start: token_idx,
+            end: real_idx,
+            tokens: tokens[token_idx..real_idx],
           }
         end
         functions
@@ -403,9 +403,9 @@ class PuppetLint::Data
                   token.prev_code_token.type == :CLASSREF
 
           arrays << {
-            :start  => token_idx,
-            :end    => real_idx,
-            :tokens => tokens[token_idx..real_idx],
+            start: token_idx,
+            end: real_idx,
+            tokens: tokens[token_idx..real_idx],
           }
         end
         arrays
@@ -441,9 +441,9 @@ class PuppetLint::Data
           end
 
           hashes << {
-            :start  => token_idx,
-            :end    => real_idx,
-            :tokens => tokens[token_idx..real_idx],
+            start: token_idx,
+            end: real_idx,
+            tokens: tokens[token_idx..real_idx],
           }
         end
         hashes
@@ -475,9 +475,9 @@ class PuppetLint::Data
           end
 
           defaults << {
-            :start  => token_idx,
-            :end    => real_idx,
-            :tokens => tokens[token_idx..real_idx],
+            start: token_idx,
+            end: real_idx,
+            tokens: tokens[token_idx..real_idx],
           }
         end
         defaults
@@ -561,7 +561,7 @@ class PuppetLint::Data
 
         comment_words = token.value.strip.split(%r{\s+})
         comment_words.each_with_index do |word, i|
-          if word =~ %r{\Alint\:(ignore|endignore)}
+          if %r{\Alint\:(ignore|endignore)}.match?(word)
             comment_data << word
           else
             # Once we reach the first non-controlcomment word, assume the rest

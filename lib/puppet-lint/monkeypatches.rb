@@ -1,5 +1,5 @@
 begin
-  '%{test}' % { :test => 'replaced' } == 'replaced' # rubocop:disable Style/FormatString
+  '%{test}' % { test: 'replaced' } == 'replaced'
 rescue
   # monkeypatch String#% into Ruby 1.8.7
   class String
