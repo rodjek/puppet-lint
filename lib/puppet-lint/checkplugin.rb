@@ -105,6 +105,38 @@ class PuppetLint::CheckPlugin
     PuppetLint::Data.node_indexes
   end
 
+  # Public: Provides positional information for any array definitions in the
+  # tokens array to the check plugins.
+  #
+  # Returns an array of hashes containing the position information.
+  def array_indexes
+    PuppetLint::Data.array_indexes
+  end
+
+  # Public: Provides positional information for any hash definitions in the
+  # tokens array to the check plugins.
+  #
+  # Returns an array of hashes containing the position information.
+  def hash_indexes
+    PuppetLint::Data.hash_indexes
+  end
+
+  # Public: Provides positional information for any default definitions in the
+  # tokens array to the check plugins.
+  #
+  # Returns an Array of Hashes containing the position information.
+  def defaults_indexes
+    PuppetLint::Data.defaults_indexes
+  end
+
+  # Public: Provides positional information for any function definition in the
+  # tokens array to the check plugins.
+  #
+  # Returns an Array of Hashes containing the position information.
+  def function_indexes
+    PuppetLint::Data.function_indexes
+  end
+
   # Public: Provides the expanded path of the file being analysed to check
   # plugins.
   #
