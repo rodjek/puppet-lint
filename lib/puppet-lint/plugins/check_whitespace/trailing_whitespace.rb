@@ -4,19 +4,23 @@
 # https://puppet.com/docs/puppet/latest/style_guide.html#spacing-indentation-and-whitespace
 PuppetLint.new_check(:trailing_whitespace) do
   def check
-    tokens.select { |token|
+    whitespace = tokens.select do |token|
       [:WHITESPACE, :INDENT].include?(token.type)
-    }.select { |token|
+    end
+
+    whitespace_at_eol = whitespace.select do |token|
       token.next_token.nil? || token.next_token.type == :NEWLINE
-    }.each do |token|
+    end
+
+    whitespace_at_eol.each do |token|
       notify(
         :error,
-        :message     => 'trailing whitespace found',
-        :line        => token.line,
-        :column      => token.column,
-        :token       => token,
-        :description => 'Check the manifest tokens for lines ending with whitespace and record an error for each instance found.',
-        :help_uri    => 'https://puppet.com/docs/puppet/latest/style_guide.html#spacing-indentation-and-whitespace'
+        message: 'trailing whitespace found',
+        line: token.line,
+        column: token.column,
+        token: token,
+        description: 'Check the manifest tokens for lines ending with whitespace and record an error for each instance found.',
+        help_uri: 'https://puppet.com/docs/puppet/latest/style_guide.html#spacing-indentation-and-whitespace',
       )
     end
   end
