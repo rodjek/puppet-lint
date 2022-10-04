@@ -5,15 +5,15 @@
 PuppetLint.new_check(:class_inherits_from_params_class) do
   def check
     class_indexes.each do |class_idx|
-      next unless class_idx[:inherited_token] && class_idx[:inherited_token].value.end_with?('::params')
+      next unless class_idx[:inherited_token] && class_idx[:inherited_token]&.value&.end_with?('::params')
 
       notify(
         :warning,
-        :message     => 'class inheriting from params class',
-        :line        => class_idx[:inherited_token].line,
-        :column      => class_idx[:inherited_token].column,
-        :description => 'Check the manifest tokens for any classes that inherit a params subclass and record a warning for each instance found.',
-        :help_uri    => nil
+        message: 'class inheriting from params class',
+        line: class_idx[:inherited_token].line,
+        column: class_idx[:inherited_token].column,
+        description: 'Check the manifest tokens for any classes that inherit a params subclass and record a warning for each instance found.',
+        help_uri: nil,
       )
     end
   end

@@ -41,13 +41,11 @@ PuppetLint.new_check(:variable_scope) do
       referenced_variables = Set[]
       object_tokens = idx[:tokens]
 
-      unless idx[:param_tokens].nil?
-        idx[:param_tokens].each do |token|
-          next unless token.type == :VARIABLE
-          next unless POST_VAR_TOKENS.include?(token.next_code_token.type)
+      idx[:param_tokens]&.each do |token|
+        next unless token.type == :VARIABLE
+        next unless POST_VAR_TOKENS.include?(token.next_code_token.type)
 
-          variables_in_scope << token.value
-        end
+        variables_in_scope << token.value
       end
 
       future_parser_scopes = {}
@@ -63,7 +61,7 @@ PuppetLint.new_check(:variable_scope) do
             temp_token = token
 
             brack_depth = 0
-            while temp_token = temp_token.prev_code_token
+            while (temp_token = temp_token.prev_code_token)
               case temp_token.type
               when :VARIABLE
                 variables_in_scope << temp_token.value
@@ -72,7 +70,7 @@ PuppetLint.new_check(:variable_scope) do
               when :LBRACK
                 brack_depth -= 1
                 break if brack_depth.zero?
-              when :COMMA # rubocop:disable Lint/EmptyWhen
+              when :COMMA
                 # ignore
               else # unexpected
                 break
@@ -124,19 +122,19 @@ PuppetLint.new_check(:variable_scope) do
         end
 
         next if token.value.include?('::')
-        next if token.value =~ %r{^(facts|trusted)\[.+\]}
+        next if %r{^(facts|trusted)\[.+\]}.match?(token.value)
         next if variables_in_scope.include?(token.value.gsub(%r{\[.+\]\Z}, ''))
-        next if token.value =~ %r{\A\d+\Z}
+        next if %r{\A\d+\Z}.match?(token.value)
 
         notify(
           :warning,
-          :message     => msg,
-          :line        => token.line,
-          :column      => token.column,
-          :description => 'Test the manifest tokens for any variables that are referenced in the manifest. ' \
+          message: msg,
+          line: token.line,
+          column: token.column,
+          description: 'Test the manifest tokens for any variables that are referenced in the manifest. ' \
                           'If the variables are not fully qualified or one of the variables automatically created in the scope, ' \
                           'check that they have been defined in the local scope and record a warning for each variable that has not.',
-          :help_uri    => 'https://puppet.com/docs/puppet/latest/style_guide.html#namespacing-variables'
+          help_uri: 'https://puppet.com/docs/puppet/latest/style_guide.html#namespacing-variables',
         )
       end
     end

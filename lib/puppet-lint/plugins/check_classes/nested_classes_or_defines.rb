@@ -17,11 +17,11 @@ PuppetLint.new_check(:nested_classes_or_defines) do
 
         notify(
           :warning,
-          :message     => "#{type} defined inside a class",
-          :line        => token.line,
-          :column      => token.column,
-          :description => 'Test the manifest tokens for any classes or defined types that are defined inside another class.',
-          :help_uri    => 'https://puppet.com/docs/puppet/latest/style_guide.html#nested-classes-or-defined-types'
+          message: "#{type} defined inside a class",
+          line: token.line,
+          column: token.column,
+          description: 'Test the manifest tokens for any classes or defined types that are defined inside another class.',
+          help_uri: 'https://puppet.com/docs/puppet/latest/style_guide.html#nested-classes-or-defined-types',
         )
       end
     end
