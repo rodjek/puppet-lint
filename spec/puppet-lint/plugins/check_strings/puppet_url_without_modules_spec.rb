@@ -6,7 +6,7 @@ describe 'puppet_url_without_modules' do
   context 'puppet:// url with modules' do
     let(:code) { "'puppet:///modules/foo'" }
 
-    it 'should not detect any problems' do
+    it 'does not detect any problems' do
       expect(problems).to have(0).problems
     end
   end
@@ -15,37 +15,37 @@ describe 'puppet_url_without_modules' do
     context 'puppet:// url without modules' do
       let(:code) { "'puppet:///foo'" }
 
-      it 'should only detect a single problem' do
+      it 'only detects a single problem' do
         expect(problems).to have(1).problem
       end
 
-      it 'should create a warning' do
+      it 'creates a warning' do
         expect(problems).to contain_warning(msg).on_line(1).in_column(1)
       end
     end
   end
 
   context 'with fix enabled' do
-    before do
+    before(:each) do
       PuppetLint.configuration.fix = true
     end
 
-    after do
+    after(:each) do
       PuppetLint.configuration.fix = false
     end
 
     context 'puppet:// url without modules' do
       let(:code) { "'puppet:///foo'" }
 
-      it 'should only detect a single problem' do
+      it 'only detects a single problem' do
         expect(problems).to have(1).problem
       end
 
-      it 'should fix the manifest' do
+      it 'fixes the manifest' do
         expect(problems).to contain_fixed(msg).on_line(1).in_column(1)
       end
 
-      it 'should insert modules into the path' do
+      it 'inserts modules into the path' do
         expect(manifest).to eq("'puppet:///modules/foo'")
       end
     end
@@ -54,7 +54,7 @@ describe 'puppet_url_without_modules' do
   context 'double string wrapped puppet:// urls' do
     let(:code) { File.read('spec/fixtures/test/manifests/url_interpolation.pp') }
 
-    it 'should detect several problems' do
+    it 'detects several problems' do
       expect(problems).to have(4).problem
     end
   end

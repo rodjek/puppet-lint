@@ -12,11 +12,11 @@ describe 'variable_scope' do
       END
     end
 
-    it 'should only detect a single problem' do
+    it 'only detects a single problem' do
       expect(problems).to have(1).problem
     end
 
-    it 'should create a warning' do
+    it 'creates a warning' do
       expect(problems).to contain_warning(msg).on_line(2).in_column(18)
     end
   end
@@ -30,7 +30,7 @@ describe 'variable_scope' do
       END
     end
 
-    it 'should not detect any problems' do
+    it 'does not detect any problems' do
       expect(problems).to have(0).problems
     end
   end
@@ -45,7 +45,7 @@ describe 'variable_scope' do
       END
     end
 
-    it 'should not detect any problems' do
+    it 'does not detect any problems' do
       expect(problems).to have(0).problems
     end
   end
@@ -64,7 +64,7 @@ describe 'variable_scope' do
       END
     end
 
-    it 'should not detect any problems' do
+    it 'does not detect any problems' do
       expect(problems).to have(0).problems
     end
   end
@@ -79,7 +79,7 @@ describe 'variable_scope' do
       END
     end
 
-    it 'should not detect any problems' do
+    it 'does not detect any problems' do
       expect(problems).to have(0).problems
     end
   end
@@ -93,7 +93,7 @@ describe 'variable_scope' do
       END
     end
 
-    it 'should not detect any problems' do
+    it 'does not detect any problems' do
       expect(problems).to have(0).problems
     end
   end
@@ -107,11 +107,11 @@ describe 'variable_scope' do
       END
     end
 
-    it 'should only detect a single problem' do
+    it 'only detects a single problem' do
       expect(problems).to have(1).problem
     end
 
-    it 'should create a warning' do
+    it 'creates a warning' do
       expect(problems).to contain_warning(msg).on_line(2).in_column(18)
     end
   end
@@ -125,7 +125,7 @@ describe 'variable_scope' do
       END
     end
 
-    it 'should not detect any problems' do
+    it 'does not detect any problems' do
       expect(problems).to have(0).problems
     end
   end
@@ -142,7 +142,7 @@ describe 'variable_scope' do
       END
     end
 
-    it 'should not detect any problems' do
+    it 'does not detect any problems' do
       expect(problems).to have(0).problems
     end
   end
@@ -158,7 +158,7 @@ describe 'variable_scope' do
       END
     end
 
-    it 'should not detect any problems' do
+    it 'does not detect any problems' do
       expect(problems).to have(0).problems
     end
   end
@@ -180,11 +180,11 @@ describe 'variable_scope' do
       END
     end
 
-    it 'should only detect two problems' do
+    it 'only detects two problems' do
       expect(problems).to have(2).problem
     end
 
-    it 'should create two warnings' do
+    it 'creates two warnings' do
       expect(problems).to contain_warning(msg).on_line(7).in_column(11)
       expect(problems).to contain_warning(msg).on_line(5).in_column(13)
     end
@@ -212,18 +212,18 @@ describe 'variable_scope' do
       END
     end
 
-    it 'should only detect three problems' do
+    it 'only detects three problems' do
       expect(problems).to have(3).problem
     end
 
-    it 'should create three warnings' do
+    it 'creates three warnings' do
       expect(problems).to contain_warning(msg).on_line(7).in_column(13)
       expect(problems).to contain_warning(msg).on_line(12).in_column(15)
       expect(problems).to contain_warning(msg).on_line(14).in_column(13)
     end
   end
 
-  %w[alias audit before loglevel noop notify require schedule stage subscribe tag].each do |metaparam|
+  ['alias', 'audit', 'before', 'loglevel', 'noop', 'notify', 'require', 'schedule', 'stage', 'subscribe', 'tag'].each do |metaparam|
     context "referencing #{metaparam} metaparam value as a variable" do
       let(:code) do
         <<-END
@@ -233,7 +233,7 @@ describe 'variable_scope' do
         END
       end
 
-      it 'should not detect any problems' do
+      it 'does not detect any problems' do
         expect(problems).to have(0).problems
       end
     end
@@ -250,7 +250,7 @@ describe 'variable_scope' do
       END
     end
 
-    it 'should not detect any problems' do
+    it 'does not detect any problems' do
       expect(problems).to have(0).problems
     end
   end
@@ -264,7 +264,7 @@ describe 'variable_scope' do
       END
     end
 
-    it 'should not detect any problems' do
+    it 'does not detect any problems' do
       expect(problems).to have(0).problems
     end
   end
@@ -278,7 +278,7 @@ describe 'variable_scope' do
       END
     end
 
-    it 'should not detect any problems' do
+    it 'does not detect any problems' do
       expect(problems).to have(0).problems
     end
   end
@@ -293,7 +293,7 @@ describe 'variable_scope' do
       END
     end
 
-    it 'should not detect any problems' do
+    it 'does not detect any problems' do
       expect(problems).to have(0).problems
     end
   end
@@ -308,11 +308,11 @@ describe 'variable_scope' do
       END
     end
 
-    it 'should only detect one problem' do
+    it 'only detects one problem' do
       expect(problems).to have(1).problems
     end
 
-    it 'should create one warning' do
+    it 'creates one warning' do
       expect(problems).to contain_warning(msg).on_line(2).in_column(14)
     end
   end
@@ -326,7 +326,7 @@ describe 'variable_scope' do
       END
     end
 
-    it 'should not detect any problems' do
+    it 'does not detect any problems' do
       expect(problems).to have(0).problems
     end
   end

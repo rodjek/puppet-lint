@@ -7,11 +7,11 @@ describe 'file_mode' do
     context '3 digit file mode' do
       let(:code) { "file { 'foo': mode => '777' }" }
 
-      it 'should only detect a single problem' do
+      it 'only detects a single problem' do
         expect(problems).to have(1).problem
       end
 
-      it 'should create a warning' do
+      it 'creates a warning' do
         expect(problems).to contain_warning(msg).on_line(1).in_column(23)
       end
     end
@@ -19,7 +19,7 @@ describe 'file_mode' do
     context '4 digit file mode' do
       let(:code) { "file { 'foo': mode => '0777' }" }
 
-      it 'should not detect any problems' do
+      it 'does not detect any problems' do
         expect(problems).to have(0).problems
       end
     end
@@ -27,7 +27,7 @@ describe 'file_mode' do
     context 'file mode as a variable' do
       let(:code) { "file { 'foo': mode => $file_mode }" }
 
-      it 'should not detect any problems' do
+      it 'does not detect any problems' do
         expect(problems).to have(0).problems
       end
     end
@@ -35,7 +35,7 @@ describe 'file_mode' do
     context 'symbolic file mode' do
       let(:code) { "file { 'foo': mode => 'u=rw,og=r' }" }
 
-      it 'should not detect any problems' do
+      it 'does not detect any problems' do
         expect(problems).to have(0).problems
       end
     end
@@ -43,7 +43,7 @@ describe 'file_mode' do
     context 'file mode undef unquoted' do
       let(:code) { "file { 'foo': mode => undef }" }
 
-      it 'should not detect any problems' do
+      it 'does not detect any problems' do
         expect(problems).to have(0).problems
       end
     end
@@ -51,11 +51,11 @@ describe 'file_mode' do
     context 'file mode undef quoted' do
       let(:code) { "file { 'foo': mode => 'undef' }" }
 
-      it 'should only detect a single problem' do
+      it 'only detects a single problem' do
         expect(problems).to have(1).problem
       end
 
-      it 'should create a warning' do
+      it 'creates a warning' do
         expect(problems).to contain_warning(msg).on_line(1).in_column(23)
       end
     end
@@ -63,7 +63,7 @@ describe 'file_mode' do
     context 'mode as audit value' do
       let(:code) { "file { '/etc/passwd': audit => [ owner, mode ], }" }
 
-      it 'should not detect any problems' do
+      it 'does not detect any problems' do
         expect(problems).to have(0).problems
       end
     end
@@ -71,11 +71,11 @@ describe 'file_mode' do
     context '3 digit concat mode' do
       let(:code) { "concat { 'foo': mode => '777' }" }
 
-      it 'should only detect a single problem' do
+      it 'only detects a single problem' do
         expect(problems).to have(1).problem
       end
 
-      it 'should create a warning' do
+      it 'creates a warning' do
         expect(problems).to contain_warning(msg).on_line(1).in_column(25)
       end
     end
@@ -83,7 +83,7 @@ describe 'file_mode' do
     context '4 digit concat mode' do
       let(:code) { "concat { 'foo': mode => '0777' }" }
 
-      it 'should not detect any problems' do
+      it 'does not detect any problems' do
         expect(problems).to have(0).problems
       end
     end
@@ -91,7 +91,7 @@ describe 'file_mode' do
     context 'concat mode as a variable' do
       let(:code) { "concat { 'foo': mode => $concat_mode }" }
 
-      it 'should not detect any problems' do
+      it 'does not detect any problems' do
         expect(problems).to have(0).problems
       end
     end
@@ -99,7 +99,7 @@ describe 'file_mode' do
     context 'symbolic concat mode' do
       let(:code) { "concat { 'foo': mode => 'u=rw,og=r' }" }
 
-      it 'should not detect any problems' do
+      it 'does not detect any problems' do
         expect(problems).to have(0).problems
       end
     end
@@ -107,7 +107,7 @@ describe 'file_mode' do
     context 'concat mode undef unquoted' do
       let(:code) { "concat { 'foo': mode => undef }" }
 
-      it 'should not detect any problems' do
+      it 'does not detect any problems' do
         expect(problems).to have(0).problems
       end
     end
@@ -115,11 +115,11 @@ describe 'file_mode' do
     context 'concat mode undef quoted' do
       let(:code) { "concat { 'foo': mode => 'undef' }" }
 
-      it 'should only detect a single problem' do
+      it 'only detects a single problem' do
         expect(problems).to have(1).problem
       end
 
-      it 'should create a warning' do
+      it 'creates a warning' do
         expect(problems).to contain_warning(msg).on_line(1).in_column(25)
       end
     end
@@ -127,7 +127,7 @@ describe 'file_mode' do
     context 'mode as audit value' do
       let(:code) { "concat { '/etc/passwd': audit => [ owner, mode ], }" }
 
-      it 'should not detect any problems' do
+      it 'does not detect any problems' do
         expect(problems).to have(0).problems
       end
     end
@@ -135,7 +135,7 @@ describe 'file_mode' do
     context 'mode as a function return value' do
       let(:code) { "file { 'foo': mode => lookup('bar'), }" }
 
-      it 'should not detect any problems' do
+      it 'does not detect any problems' do
         expect(problems).to have(0).problems
       end
     end
@@ -155,11 +155,11 @@ describe 'file_mode' do
         END
       end
 
-      it 'should detect 3 problems' do
+      it 'detects 3 problems' do
         expect(problems).to have(3).problems
       end
 
-      it 'should create three warnings' do
+      it 'creates three warnings' do
         expect(problems).to contain_warning(sprintf(msg)).on_line(4).in_column(23)
         expect(problems).to contain_warning(sprintf(msg)).on_line(6).in_column(23)
         expect(problems).to contain_warning(sprintf(msg)).on_line(8).in_column(23)
@@ -168,26 +168,26 @@ describe 'file_mode' do
   end
 
   context 'with fix enabled' do
-    before do
+    before(:each) do
       PuppetLint.configuration.fix = true
     end
 
-    after do
+    after(:each) do
       PuppetLint.configuration.fix = false
     end
 
     context '3 digit file mode' do
       let(:code) { "file { 'foo': mode => '777' }" }
 
-      it 'should only detect a single problem' do
+      it 'only detects a single problem' do
         expect(problems).to have(1).problem
       end
 
-      it 'should fix the manifest' do
+      it 'fixes the manifest' do
         expect(problems).to contain_fixed(msg).on_line(1).in_column(23)
       end
 
-      it 'should zero pad the file mode' do
+      it 'zeroe pads the file mode' do
         expect(manifest).to eq("file { 'foo': mode => '0777' }")
       end
     end
@@ -195,15 +195,15 @@ describe 'file_mode' do
     context 'file mode undef quoted' do
       let(:code) { "file { 'foo': mode => 'undef' }" }
 
-      it 'should only detect a single problem' do
+      it 'only detects a single problem' do
         expect(problems).to have(1).problem
       end
 
-      it 'should create a warning' do
+      it 'creates a warning' do
         expect(problems).to contain_warning(msg).on_line(1).in_column(23)
       end
 
-      it 'should not modify the original manifest' do
+      it 'does not modify the original manifest' do
         expect(manifest).to eq(code)
       end
     end
@@ -211,15 +211,15 @@ describe 'file_mode' do
     context '3 digit concat mode' do
       let(:code) { "concat { 'foo': mode => '777' }" }
 
-      it 'should only detect a single problem' do
+      it 'only detects a single problem' do
         expect(problems).to have(1).problem
       end
 
-      it 'should fix the manifest' do
+      it 'fixes the manifest' do
         expect(problems).to contain_fixed(msg).on_line(1).in_column(25)
       end
 
-      it 'should zero pad the concat mode' do
+      it 'zero pads the concat mode' do
         expect(manifest).to eq("concat { 'foo': mode => '0777' }")
       end
     end
@@ -227,15 +227,15 @@ describe 'file_mode' do
     context 'concat mode undef quoted' do
       let(:code) { "concat { 'foo': mode => 'undef' }" }
 
-      it 'should only detect a single problem' do
+      it 'only detects a single problem' do
         expect(problems).to have(1).problem
       end
 
-      it 'should create a warning' do
+      it 'creates a warning' do
         expect(problems).to contain_warning(msg).on_line(1).in_column(25)
       end
 
-      it 'should not modify the original manifest' do
+      it 'does not modify the original manifest' do
         expect(manifest).to eq(code)
       end
     end
@@ -243,11 +243,11 @@ describe 'file_mode' do
     context 'mode as a function return value' do
       let(:code) { "file { 'foo': mode => lookup('bar'), }" }
 
-      it 'should not detect any problems' do
+      it 'does not detect any problems' do
         expect(problems).to have(0).problems
       end
 
-      it 'should not change the manifest' do
+      it 'does not change the manifest' do
         expect(manifest).to eq(code)
       end
     end
@@ -281,17 +281,17 @@ describe 'file_mode' do
         END
       end
 
-      it 'should detect 3 problems' do
+      it 'detects 3 problems' do
         expect(problems).to have(3).problems
       end
 
-      it 'should fix 3 problems' do
+      it 'fixes 3 problems' do
         expect(problems).to contain_fixed(msg).on_line(4).in_column(23)
         expect(problems).to contain_fixed(msg).on_line(6).in_column(23)
         expect(problems).to contain_fixed(msg).on_line(8).in_column(23)
       end
 
-      it 'should zero pad the file modes and change them to strings' do
+      it 'zero pads the file modes and change them to strings' do
         expect(manifest).to eq(fixed)
       end
     end

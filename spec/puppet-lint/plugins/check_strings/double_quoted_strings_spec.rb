@@ -7,7 +7,7 @@ describe 'double_quoted_strings' do
     context 'double quoted string containing a variable inside single quotes' do
       let(:code) { "exec { \"/usr/bin/wget -O - '${source}' | /usr/bin/apt-key add -\": }" }
 
-      it 'should not detect any problems' do
+      it 'does not detect any problems' do
         expect(problems).to have(0).problems
       end
     end
@@ -15,11 +15,11 @@ describe 'double_quoted_strings' do
     context 'multiple strings in a line' do
       let(:code) { "\"aoeu\" '${foo}'" }
 
-      it 'should only detect a single problem' do
+      it 'only detects a single problem' do
         expect(problems).to have(1).problem
       end
 
-      it 'should create a warning' do
+      it 'creates a warning' do
         expect(problems).to contain_warning(msg).on_line(1).in_column(1)
       end
     end
@@ -27,7 +27,7 @@ describe 'double_quoted_strings' do
     context 'double quoted string nested in a single quoted string' do
       let(:code) { "'grep \"status=sent\" /var/log/mail.log'" }
 
-      it 'should not detect any problems' do
+      it 'does not detect any problems' do
         expect(problems).to have(0).problems
       end
     end
@@ -35,7 +35,7 @@ describe 'double_quoted_strings' do
     context 'double quoted string after a comment' do
       let(:code) { "service { 'foo': } # \"bar\"" }
 
-      it 'should not detect any problems' do
+      it 'does not detect any problems' do
         expect(problems).to have(0).problems
       end
     end
@@ -43,7 +43,7 @@ describe 'double_quoted_strings' do
     context 'double quoted string containing newline but no variables' do
       let(:code) { %("foo\n") }
 
-      it 'should not detect any problems' do
+      it 'does not detect any problems' do
         expect(problems).to have(0).problems
       end
     end
@@ -64,7 +64,7 @@ describe 'double_quoted_strings' do
         END
       end
 
-      it 'should not detect any problems' do
+      it 'does not detect any problems' do
         expect(problems).to have(0).problems
       end
     end
@@ -72,11 +72,11 @@ describe 'double_quoted_strings' do
     context 'double quoted true' do
       let(:code) { "class { 'foo': boolFlag => \"true\" }" }
 
-      it 'should only detect a single problem' do
+      it 'only detects a single problem' do
         expect(problems).to have(1).problem
       end
 
-      it 'should create a warning' do
+      it 'creates a warning' do
         expect(problems).to contain_warning(msg).on_line(1).in_column(28)
       end
     end
@@ -84,11 +84,11 @@ describe 'double_quoted_strings' do
     context 'double quoted false' do
       let(:code) { "class { 'foo': boolFlag => \"false\" }" }
 
-      it 'should only detect a single problem' do
+      it 'only detects a single problem' do
         expect(problems).to have(1).problem
       end
 
-      it 'should create a warning' do
+      it 'creates a warning' do
         expect(problems).to contain_warning(msg).on_line(1).in_column(28)
       end
     end
@@ -107,7 +107,7 @@ describe 'double_quoted_strings' do
         END
       end
 
-      it 'should not detect any problems' do
+      it 'does not detect any problems' do
         expect(problems).to have(0).problems
       end
     end
@@ -115,11 +115,11 @@ describe 'double_quoted_strings' do
     context 'double quoted string with random escape should be rejected' do
       let(:code) { %( $ztring = "this string contains \l random escape" ) }
 
-      it 'should only detect a single problem' do
+      it 'only detects a single problem' do
         expect(problems).to have(1).problem
       end
 
-      it 'should create a warning' do
+      it 'creates a warning' do
         expect(problems).to contain_warning(msg).on_line(1).in_column(12)
       end
     end
@@ -127,7 +127,7 @@ describe 'double_quoted_strings' do
     context 'single quotes in a double quoted string' do
       let(:code) { "\"this 'string' 'has' lots of 'quotes'\"" }
 
-      it 'should not detect any problems' do
+      it 'does not detect any problems' do
         expect(problems).to have(0).problems
       end
     end
@@ -135,29 +135,29 @@ describe 'double_quoted_strings' do
     context 'double quoted string containing single quoted string' do
       let(:code) { %(notify { "'foo'": }) }
 
-      it 'should not detect any problems' do
+      it 'does not detect any problems' do
         expect(problems).to have(0).problems
       end
     end
   end
 
   context 'with fix enabled' do
-    before do
+    before(:each) do
       PuppetLint.configuration.fix = true
     end
 
-    after do
+    after(:each) do
       PuppetLint.configuration.fix = false
     end
 
     context 'double quoted string containing a variable inside single quotes' do
       let(:code) { "exec { \"/usr/bin/wget -O - '${source}' | /usr/bin/apt-key add -\": }" }
 
-      it 'should not detect any problems' do
+      it 'does not detect any problems' do
         expect(problems).to have(0).problems
       end
 
-      it 'should not modify the manifest' do
+      it 'does not modify the manifest' do
         expect(manifest).to eq(code)
       end
     end
@@ -165,11 +165,11 @@ describe 'double_quoted_strings' do
     context 'double quoted string containing a lone dollar' do
       let(:code) { "\"sed -i 's/^;*[[:space:]]*${name}[[:space:]]*=.*$/${name} = ${value}/g' file\"" }
 
-      it 'should not detect any problems' do
+      it 'does not detect any problems' do
         expect(problems).to have(0).problems
       end
 
-      it 'should not modify the manifest' do
+      it 'does not modify the manifest' do
         expect(manifest).to eq(code)
       end
     end
@@ -177,15 +177,15 @@ describe 'double_quoted_strings' do
     context 'multiple strings in a line' do
       let(:code) { "\"aoeu\" '${foo}'" }
 
-      it 'should only detect a single problem' do
+      it 'only detects a single problem' do
         expect(problems).to have(1).problem
       end
 
-      it 'should fix the manifest' do
+      it 'fixes the manifest' do
         expect(problems).to contain_fixed(msg).on_line(1).in_column(1)
       end
 
-      it 'should convert the double quoted string into single quotes' do
+      it 'converts the double quoted string into single quotes' do
         expect(manifest).to eq("'aoeu' '${foo}'")
       end
     end
@@ -193,11 +193,11 @@ describe 'double_quoted_strings' do
     context 'single quotes in a double quoted string' do
       let(:code) { "\"this 'string' 'has' lots of 'quotes'\"" }
 
-      it 'should not detect any problems' do
+      it 'does not detect any problems' do
         expect(problems).to have(0).problems
       end
 
-      it 'should not modify the manifest' do
+      it 'does not modify the manifest' do
         expect(manifest).to eq(code)
       end
     end

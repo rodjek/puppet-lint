@@ -14,7 +14,7 @@ describe '140chars' do
       END
     end
 
-    it 'should not detect any problems' do
+    it 'does not detect any problems' do
       expect(problems).to have(0).problems
     end
   end
@@ -28,7 +28,7 @@ describe '140chars' do
       END
     end
 
-    it 'should not detect any problems' do
+    it 'does not detect any problems' do
       expect(problems).to have(0).problems
     end
   end
@@ -42,7 +42,7 @@ describe '140chars' do
       END
     end
 
-    it 'should not detect any problems' do
+    it 'does not detect any problems' do
       expect(problems).to have(0).problems
     end
   end
@@ -50,11 +50,11 @@ describe '140chars' do
   context '141 character line' do
     let(:code) { 'a' * 141 }
 
-    it 'should only detect a single problem' do
+    it 'only detects a single problem' do
       expect(problems).to have(1).problem
     end
 
-    it 'should create a warning' do
+    it 'creates a warning' do
       expect(problems).to contain_warning(msg).on_line(1).in_column(140)
     end
   end

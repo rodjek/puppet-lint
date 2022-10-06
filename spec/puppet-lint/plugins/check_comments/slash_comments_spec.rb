@@ -7,37 +7,37 @@ describe 'slash_comments' do
     context 'slash comments' do
       let(:code) { '// foo' }
 
-      it 'should only detect a single problem' do
+      it 'only detects a single problem' do
         expect(problems).to have(1).problem
       end
 
-      it 'should create a warning' do
+      it 'creates a warning' do
         expect(problems).to contain_warning(msg).on_line(1).in_column(1)
       end
     end
   end
 
   context 'with fix enabled' do
-    before do
+    before(:each) do
       PuppetLint.configuration.fix = true
     end
 
-    after do
+    after(:each) do
       PuppetLint.configuration.fix = false
     end
 
     context 'slash comments' do
       let(:code) { '// foo' }
 
-      it 'should only detect a single problem' do
+      it 'only detects a single problem' do
         expect(problems).to have(1).problem
       end
 
-      it 'should fix the manifest' do
+      it 'fixes the manifest' do
         expect(problems).to contain_fixed(msg).on_line(1).in_column(1)
       end
 
-      it 'should replace the double slash with a hash' do
+      it 'replaces the double slash with a hash' do
         expect(manifest).to eq('# foo')
       end
     end

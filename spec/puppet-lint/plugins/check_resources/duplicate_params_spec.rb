@@ -15,11 +15,11 @@ describe 'duplicate_params' do
       END
     end
 
-    it 'should only detect a single problem' do
+    it 'only detects a single problem' do
       expect(problems).to have(1).problem
     end
 
-    it 'should create an error' do
+    it 'creates an error' do
       expect(problems).to contain_error(msg).on_line(5).in_column(11)
     end
   end
@@ -36,7 +36,7 @@ describe 'duplicate_params' do
       END
     end
 
-    it 'should not detect any errors' do
+    it 'does not detect any errors' do
       expect(problems).to have(0).problems
     end
   end
@@ -53,11 +53,11 @@ describe 'duplicate_params' do
       END
     end
 
-    it 'should only detect a single error' do
+    it 'only detects a single error' do
       expect(problems).to have(1).problem
     end
 
-    it 'should create an error' do
+    it 'creates an error' do
       expect(problems).to contain_error(msg).on_line(4).in_column(15)
     end
   end
@@ -76,11 +76,11 @@ describe 'duplicate_params' do
       END
     end
 
-    it 'should only detect a single problem' do
+    it 'only detects a single problem' do
       expect(problems).to have(1).problem
     end
 
-    it 'should create an error' do
+    it 'creates an error' do
       expect(problems).to contain_error(msg).on_line(7).in_column(11)
     end
   end
@@ -95,7 +95,7 @@ describe 'duplicate_params' do
       END
     end
 
-    it 'should not detect any problems' do
+    it 'does not detect any problems' do
       expect(problems).to have(0).problems
     end
   end
@@ -103,7 +103,7 @@ describe 'duplicate_params' do
   context 'colon as last token in file' do
     let(:code) { '}:' }
 
-    it 'should not detect any problems' do
+    it 'does not detect any problems' do
       expect(problems).to have(0).problems
     end
   end

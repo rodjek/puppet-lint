@@ -6,7 +6,7 @@ describe 'inherits_across_namespaces' do
   context 'class inheriting from parent in same module namespace' do
     let(:code) { 'class foo::bar inherits foo { }' }
 
-    it 'should not detect any problems' do
+    it 'does not detect any problems' do
       expect(problems).to have(0).problems
     end
   end
@@ -14,7 +14,7 @@ describe 'inherits_across_namespaces' do
   context 'class inheriting from sister in same module namespace' do
     let(:code) { 'class foo::bar inherits foo::baz { }' }
 
-    it 'should not detect any problems' do
+    it 'does not detect any problems' do
       expect(problems).to have(0).problems
     end
   end
@@ -22,11 +22,11 @@ describe 'inherits_across_namespaces' do
   context 'class inheriting from another module namespace' do
     let(:code) { 'class foo::bar inherits baz { }' }
 
-    it 'should only detect a single problem' do
+    it 'only detects a single problem' do
       expect(problems).to have(1).problem
     end
 
-    it 'should create a warning' do
+    it 'creates a warning' do
       expect(problems).to contain_warning(msg).on_line(1).in_column(25)
     end
   end

@@ -10,7 +10,7 @@ describe 'code_on_top_scope' do
       END
     end
 
-    its(:problems) { should be_empty }
+    its(:problems) { is_expected.to be_empty }
   end
 
   describe 'new lines outside of class-define block' do
@@ -23,7 +23,7 @@ describe 'code_on_top_scope' do
       END
     end
 
-    its(:problems) { should be_empty }
+    its(:problems) { is_expected.to be_empty }
   end
 
   describe 'code outside class block' do
@@ -41,8 +41,8 @@ describe 'code_on_top_scope' do
     end
 
     its(:problems) do
-      should contain_warning('code outside of class or define block - include')
-      should have(4).problems
+      is_expected.to contain_warning('code outside of class or define block - include')
+      is_expected.to have(4).problems
     end
   end
 end

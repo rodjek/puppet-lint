@@ -7,11 +7,11 @@ describe 'variables_not_enclosed' do
     context 'variable not enclosed in {}' do
       let(:code) { '" $gronk"' }
 
-      it 'should only detect a single problem' do
+      it 'only detects a single problem' do
         expect(problems).to have(1).problem
       end
 
-      it 'should create a warning' do
+      it 'creates a warning' do
         expect(problems).to contain_warning(msg).on_line(1).in_column(3)
       end
     end
@@ -19,37 +19,37 @@ describe 'variables_not_enclosed' do
     context 'variable not enclosed in {} after many tokens' do
       let(:code) { ("'groovy'\n" * 20) + '" $gronk"' }
 
-      it 'should only detect a single problem' do
+      it 'only detects a single problem' do
         expect(problems).to have(1).problem
       end
 
-      it 'should create a warning' do
+      it 'creates a warning' do
         expect(problems).to contain_warning(msg).on_line(21).in_column(3)
       end
     end
   end
 
   context 'with fix enabled' do
-    before do
+    before(:each) do
       PuppetLint.configuration.fix = true
     end
 
-    after do
+    after(:each) do
       PuppetLint.configuration.fix = false
     end
 
     context 'variable not enclosed in {}' do
       let(:code) { '" $gronk"' }
 
-      it 'should only detect a single problem' do
+      it 'only detects a single problem' do
         expect(problems).to have(1).problem
       end
 
-      it 'should fix the manifest' do
+      it 'fixes the manifest' do
         expect(problems).to contain_fixed(msg).on_line(1).in_column(3)
       end
 
-      it 'should enclose the variable in braces' do
+      it 'encloses the variable in braces' do
         expect(manifest).to eq('" ${gronk}"')
       end
     end
@@ -57,15 +57,15 @@ describe 'variables_not_enclosed' do
     context 'variable not enclosed in {} after many tokens' do
       let(:code) { ("'groovy'\n" * 20) + '" $gronk"' }
 
-      it 'should only detect a single problem' do
+      it 'only detects a single problem' do
         expect(problems).to have(1).problem
       end
 
-      it 'should fix the manifest' do
+      it 'fixes the manifest' do
         expect(problems).to contain_fixed(msg).on_line(21).in_column(3)
       end
 
-      it 'should enclose the variable in braces' do
+      it 'encloses the variable in braces' do
         expect(manifest).to eq(("'groovy'\n" * 20) + '" ${gronk}"')
       end
     end
@@ -73,16 +73,16 @@ describe 'variables_not_enclosed' do
     context 'variables not enclosed in {}, delimited by -' do
       let(:code) { '"$foo-$bar"' }
 
-      it 'should only detect two problems' do
+      it 'only detects two problems' do
         expect(problems).to have(2).problems
       end
 
-      it 'should fix the manifest' do
+      it 'fixes the manifest' do
         expect(problems).to contain_fixed(msg).on_line(1).in_column(2)
         expect(problems).to contain_fixed(msg).on_line(1).in_column(7)
       end
 
-      it 'should enclose both variables in braces' do
+      it 'encloses both variables in braces' do
         expect(manifest).to eq('"${foo}-${bar}"')
       end
     end
@@ -90,15 +90,15 @@ describe 'variables_not_enclosed' do
     context 'variable with a hash or array reference not enclosed' do
       let(:code) { %("$foo['bar'][2]something") }
 
-      it 'should only detect a single problem' do
+      it 'only detects a single problem' do
         expect(problems).to have(1).problem
       end
 
-      it 'should fix the manifest' do
+      it 'fixes the manifest' do
         expect(problems).to contain_fixed(msg).on_line(1).in_column(2)
       end
 
-      it 'should enclose the variable with the references' do
+      it 'encloses the variable with the references' do
         expect(manifest).to eq(%("${foo['bar'][2]}something"))
       end
     end
@@ -106,15 +106,15 @@ describe 'variables_not_enclosed' do
     context 'unenclosed variable followed by a dash and then text' do
       let(:code) { '"$hostname-keystore"' }
 
-      it 'should only detect a single problem' do
+      it 'only detects a single problem' do
         expect(problems).to have(1).problem
       end
 
-      it 'should fix the manifest' do
+      it 'fixes the manifest' do
         expect(problems).to contain_fixed(msg).on_line(1).in_column(2)
       end
 
-      it 'should enclose the variable but not the text' do
+      it 'encloses the variable but not the text' do
         expect(manifest).to eq('"${hostname}-keystore"')
       end
     end

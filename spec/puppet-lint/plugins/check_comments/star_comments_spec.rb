@@ -12,22 +12,22 @@ describe 'star_comments' do
         END
       end
 
-      it 'should only detect a single problem' do
+      it 'only detects a single problem' do
         expect(problems).to have(1).problem
       end
 
-      it 'should create a warning' do
+      it 'creates a warning' do
         expect(problems).to contain_warning(msg).on_line(1).in_column(11)
       end
     end
   end
 
   context 'with fix enabled' do
-    before do
+    before(:each) do
       PuppetLint.configuration.fix = true
     end
 
-    after do
+    after(:each) do
       PuppetLint.configuration.fix = false
     end
 
@@ -48,15 +48,15 @@ describe 'star_comments' do
         END
       end
 
-      it 'should only detect a single problem' do
+      it 'only detects a single problem' do
         expect(problems).to have(1).problem
       end
 
-      it 'should create a warning' do
+      it 'creates a warning' do
         expect(problems).to contain_fixed(msg).on_line(1).in_column(1)
       end
 
-      it 'should convert the multiline comment' do
+      it 'converts the multiline comment' do
         expect(manifest).to eq(fixed)
       end
     end
@@ -75,15 +75,15 @@ describe 'star_comments' do
         END
       end
 
-      it 'should only detect a single problem' do
+      it 'only detects a single problem' do
         expect(problems).to have(1).problem
       end
 
-      it 'should create a warning' do
+      it 'creates a warning' do
         expect(problems).to contain_fixed(msg).on_line(1).in_column(11)
       end
 
-      it 'should convert the multiline comment' do
+      it 'converts the multiline comment' do
         expect(manifest).to eq(fixed)
       end
     end
@@ -108,15 +108,15 @@ describe 'star_comments' do
         END
       end
 
-      it 'should only detect a single problem' do
+      it 'only detects a single problem' do
         expect(problems).to have(1).problem
       end
 
-      it 'should create a warning' do
+      it 'creates a warning' do
         expect(problems).to contain_fixed(msg).on_line(1).in_column(11)
       end
 
-      it 'should convert the multiline comment' do
+      it 'converts the multiline comment' do
         expect(manifest).to eq(fixed)
       end
     end

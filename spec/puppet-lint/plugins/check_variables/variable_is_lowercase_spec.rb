@@ -6,11 +6,11 @@ describe 'variable_is_lowercase' do
   context 'a variable containing an uppercase letter' do
     let(:code) { '$fooBar' }
 
-    it 'should only detect a single problem' do
+    it 'only detects a single problem' do
       expect(problems).to have(1).problem
     end
 
-    it 'should create a warning' do
+    it 'creates a warning' do
       expect(problems).to contain_warning(msg).on_line(1).in_column(1)
     end
   end
@@ -18,7 +18,7 @@ describe 'variable_is_lowercase' do
   context 'a variable containing only lowercase letters' do
     let(:code) { '$foobar' }
 
-    it 'should not detect any problems' do
+    it 'does not detect any problems' do
       expect(problems).to have(0).problems
     end
   end
@@ -26,7 +26,7 @@ describe 'variable_is_lowercase' do
   context 'when typecasting inside an interpolation' do
     let(:code) { %("${Integer(fact('memory.system.total_bytes'))}") }
 
-    it 'should not detect any problems' do
+    it 'does not detect any problems' do
       expect(problems).to have(0).problems
     end
   end
@@ -34,11 +34,11 @@ describe 'variable_is_lowercase' do
   context 'when an interpolated variable contains an uppercase letter' do
     let(:code) { '"${fooBar}"' }
 
-    it 'should only detect a single problem' do
+    it 'only detects a single problem' do
       expect(problems).to have(1).problem
     end
 
-    it 'should create a warning' do
+    it 'creates a warning' do
       expect(problems).to contain_warning(msg).on_line(1).in_column(4)
     end
   end
@@ -46,7 +46,7 @@ describe 'variable_is_lowercase' do
   context 'when an interpolated variable only contains lowercase letters' do
     let(:code) { '"${foobar}"' }
 
-    it 'should not detect any problems' do
+    it 'does not detect any problems' do
       expect(problems).to have(0).problems
     end
   end

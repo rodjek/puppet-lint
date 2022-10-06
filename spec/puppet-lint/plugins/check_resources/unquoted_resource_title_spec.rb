@@ -7,7 +7,7 @@ describe 'unquoted_resource_title' do
     context 'quoted resource title on single line resource' do
       let(:code) { "file { 'foo': }" }
 
-      it 'should not detect any problems' do
+      it 'does not detect any problems' do
         expect(problems).to have(0).problems
       end
     end
@@ -15,11 +15,11 @@ describe 'unquoted_resource_title' do
     context 'unquoted resource title on single line resource' do
       let(:code) { 'file { foo: }' }
 
-      it 'should only detect a single problem' do
+      it 'only detects a single problem' do
         expect(problems).to have(1).problem
       end
 
-      it 'should create a warning' do
+      it 'creates a warning' do
         expect(problems).to contain_warning(msg).on_line(1).in_column(8)
       end
     end
@@ -32,7 +32,7 @@ describe 'unquoted_resource_title' do
         END
       end
 
-      it 'should not detect any problems' do
+      it 'does not detect any problems' do
         expect(problems).to have(0).problems
       end
     end
@@ -45,11 +45,11 @@ describe 'unquoted_resource_title' do
         END
       end
 
-      it 'should only detect a single problem' do
+      it 'only detects a single problem' do
         expect(problems).to have(1).problem
       end
 
-      it 'should create a warning' do
+      it 'creates a warning' do
         expect(problems).to contain_warning(msg).on_line(1).in_column(18)
       end
     end
@@ -64,7 +64,7 @@ describe 'unquoted_resource_title' do
         END
       end
 
-      it 'should not detect any problems' do
+      it 'does not detect any problems' do
         expect(problems).to have(0).problems
       end
     end
@@ -79,11 +79,11 @@ describe 'unquoted_resource_title' do
         END
       end
 
-      it 'should only detect a single problem' do
+      it 'only detects a single problem' do
         expect(problems).to have(1).problem
       end
 
-      it 'should create a warning' do
+      it 'creates a warning' do
         expect(problems).to contain_warning(msg).on_line(3).in_column(13)
       end
     end
@@ -91,7 +91,7 @@ describe 'unquoted_resource_title' do
     context 'single line resource with an array of titles (all quoted)' do
       let(:code) { "file { ['foo', 'bar']: }" }
 
-      it 'should not detect any problems' do
+      it 'does not detect any problems' do
         expect(problems).to have(0).problems
       end
     end
@@ -109,7 +109,7 @@ describe 'unquoted_resource_title' do
         END
       end
 
-      it 'should not detect any problems' do
+      it 'does not detect any problems' do
         expect(problems).to have(0).problems
       end
     end
@@ -124,7 +124,7 @@ describe 'unquoted_resource_title' do
         END
       end
 
-      it 'should not detect any problems' do
+      it 'does not detect any problems' do
         expect(problems).to have(0).problems
       end
     end
@@ -146,33 +146,33 @@ describe 'unquoted_resource_title' do
         END
       end
 
-      it 'should not detect any problems' do
+      it 'does not detect any problems' do
         expect(problems).to have(0).problems
       end
     end
   end
 
   context 'with fix enabled' do
-    before do
+    before(:each) do
       PuppetLint.configuration.fix = true
     end
 
-    after do
+    after(:each) do
       PuppetLint.configuration.fix = false
     end
 
     context 'unquoted resource title on single line resource' do
       let(:code) { 'file { foo: }' }
 
-      it 'should only detect a single problem' do
+      it 'only detects a single problem' do
         expect(problems).to have(1).problem
       end
 
-      it 'should fix the manifest' do
+      it 'fixes the manifest' do
         expect(problems).to contain_fixed(msg).on_line(1).in_column(8)
       end
 
-      it 'should single quote the resource title' do
+      it 'singles quote the resource title' do
         expect(manifest).to eq("file { 'foo': }")
       end
     end
@@ -192,15 +192,15 @@ describe 'unquoted_resource_title' do
         END
       end
 
-      it 'should only detect a single problem' do
+      it 'only detects a single problem' do
         expect(problems).to have(1).problem
       end
 
-      it 'should fix the manifest' do
+      it 'fixes the manifest' do
         expect(problems).to contain_fixed(msg).on_line(1).in_column(18)
       end
 
-      it 'should single quote the resource title' do
+      it 'singles quote the resource title' do
         expect(manifest).to eq(fixed)
       end
     end
@@ -224,15 +224,15 @@ describe 'unquoted_resource_title' do
         END
       end
 
-      it 'should only detect a single problem' do
+      it 'only detects a single problem' do
         expect(problems).to have(1).problem
       end
 
-      it 'should fix the manifest' do
+      it 'fixes the manifest' do
         expect(problems).to contain_fixed(msg).on_line(3).in_column(13)
       end
 
-      it 'should single quote the resource title' do
+      it 'singles quote the resource title' do
         expect(manifest).to eq(fixed)
       end
     end

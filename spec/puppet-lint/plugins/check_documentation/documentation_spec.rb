@@ -7,11 +7,11 @@ describe 'documentation' do
   describe 'undocumented class' do
     let(:code) { 'class test {}' }
 
-    it 'should only detect a single problem' do
+    it 'only detects a single problem' do
       expect(problems).to have(1).problem
     end
 
-    it 'should create a warning' do
+    it 'creates a warning' do
       expect(problems).to contain_warning(class_msg).on_line(1).in_column(1)
     end
   end
@@ -24,7 +24,7 @@ describe 'documentation' do
       END
     end
 
-    it 'should not detect any problems' do
+    it 'does not detect any problems' do
       expect(problems).to have(0).problems
     end
   end
@@ -38,11 +38,11 @@ describe 'documentation' do
       END
     end
 
-    it 'should only detect a single problem' do
+    it 'only detects a single problem' do
       expect(problems).to have(1).problem
     end
 
-    it 'should create a warning' do
+    it 'creates a warning' do
       expect(problems).to contain_warning(class_msg).on_line(3).in_column(9)
     end
   end
@@ -50,11 +50,11 @@ describe 'documentation' do
   describe 'undocumented defined type' do
     let(:code) { 'define test {}' }
 
-    it 'should only detect a single problem' do
+    it 'only detects a single problem' do
       expect(problems).to have(1).problem
     end
 
-    it 'should create a warning' do
+    it 'creates a warning' do
       expect(problems).to contain_warning(define_msg).on_line(1).in_column(1)
     end
   end
@@ -67,7 +67,7 @@ describe 'documentation' do
       END
     end
 
-    it 'should not detect any problems' do
+    it 'does not detect any problems' do
       expect(problems).to have(0).problems
     end
   end
