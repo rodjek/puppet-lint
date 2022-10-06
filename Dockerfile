@@ -1,7 +1,6 @@
-FROM alpine:3.10
+FROM ruby:2.7-alpine
 
-RUN apk add --no-cache ruby=2.5.7-r0 ruby-json=2.5.7-r0 && \
-    mkdir /puppet-lint /puppet
+RUN mkdir /puppet-lint /puppet
 
 VOLUME /puppet
 WORKDIR /puppet
