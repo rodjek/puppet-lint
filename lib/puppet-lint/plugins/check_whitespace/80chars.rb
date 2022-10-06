@@ -6,7 +6,7 @@
 PuppetLint.new_check(:'80chars') do
   def check
     manifest_lines.each_with_index do |line, idx|
-      result = PuppetLint::LineLengthCheck.check(idx+1, line, 80)
+      result = PuppetLint::LineLengthCheck.check(idx + 1, line, 80)
 
       next if result.nil?
       notify(*result)
