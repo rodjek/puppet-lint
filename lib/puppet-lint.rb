@@ -1,3 +1,5 @@
+# rubocop:disable Naming/FileName
+
 # encoding: utf-8
 
 require 'set'
@@ -12,6 +14,7 @@ require 'puppet-lint/bin'
 require 'puppet-lint/monkeypatches'
 
 class PuppetLint::NoCodeError < StandardError; end
+
 class PuppetLint::NoFix < StandardError; end
 
 # Parser Syntax Errors
@@ -20,6 +23,7 @@ class PuppetLint::SyntaxError < StandardError
 
   def initialize(token)
     @token = token
+    super
   end
 end
 
@@ -59,7 +63,7 @@ class PuppetLint
   # Public: Initialise a new PuppetLint object.
   def initialize
     @code = nil
-    @statistics = { :error => 0, :warning => 0, :fixed => 0, :ignored => 0 }
+    @statistics = { error: 0, warning: 0, fixed: 0, ignored: 0 }
     @manifest = ''
   end
 

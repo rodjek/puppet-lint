@@ -41,7 +41,7 @@ class PuppetLint::CheckPlugin
       begin
         fix(problem)
         problem[:kind] = :fixed
-      rescue PuppetLint::NoFix # rubocop:disable Lint/HandleExceptions
+      rescue PuppetLint::NoFix
         # noop
       end
     end
@@ -179,10 +179,10 @@ class PuppetLint::CheckPlugin
   # Returns a Hash of default problem information.
   def default_info
     @default_info ||= {
-      :check      => self.class.const_get('NAME'),
-      :fullpath   => fullpath,
-      :path       => path,
-      :filename   => filename,
+      check: self.class.const_get('NAME'),
+      fullpath: fullpath,
+      path: path,
+      filename: filename,
     }
   end
 

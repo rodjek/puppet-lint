@@ -15,17 +15,19 @@ PuppetLint.new_check(:variables_not_enclosed) do
   ]
 
   def check
-    tokens.select { |r|
-      r.type == :UNENC_VARIABLE
-    }.each do |token|
+    invalid_tokens = tokens.select do |token|
+      token.type == :UNENC_VARIABLE
+    end
+
+    invalid_tokens.each do |token|
       notify(
         :warning,
-        :message     => 'variable not enclosed in {}',
-        :line        => token.line,
-        :column      => token.column,
-        :token       => token,
-        :description => 'Check the manifest tokens for any variables in a string that have not been enclosed by braces ({}) and record a warning for each instance found.',
-        :help_uri    => 'https://puppet.com/docs/puppet/latest/style_guide.html#quoting'
+        message: 'variable not enclosed in {}',
+        line: token.line,
+        column: token.column,
+        token: token,
+        description: 'Check the manifest tokens for any variables in a string that have not been enclosed by braces ({}) and record a warning for each instance found.',
+        help_uri: 'https://puppet.com/docs/puppet/latest/style_guide.html#quoting',
       )
     end
   end
@@ -40,7 +42,7 @@ PuppetLint.new_check(:variables_not_enclosed) do
     scanner = StringScanner.new(token.value)
 
     brack_depth = 0
-    result = { :ref => '' }
+    result = { ref: '' }
 
     until scanner.eos?
       result[:ref] += scanner.getch

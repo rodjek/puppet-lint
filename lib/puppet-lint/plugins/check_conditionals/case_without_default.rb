@@ -17,7 +17,7 @@ PuppetLint.new_check(:case_without_default) do
         elsif tokens[idx].type == :RBRACE
           depth -= 1
           if depth.zero?
-            case_indexes << { :start => token_idx, :end => idx }
+            case_indexes << { start: token_idx, end: idx }
             break
           end
         end
@@ -49,11 +49,11 @@ PuppetLint.new_check(:case_without_default) do
 
       notify(
         :warning,
-        :message     => 'case statement without a default case',
-        :line        => case_tokens.first.line,
-        :column      => case_tokens.first.column,
-        :description => 'Test the manifest tokens for any case statements that do not contain a "default" case and record a warning for each instance found.',
-        :help_uri    => 'https://puppet.com/docs/puppet/latest/style_guide.html#defaults-for-case-statements-and-selectors'
+        message: 'case statement without a default case',
+        line: case_tokens.first.line,
+        column: case_tokens.first.column,
+        description: 'Test the manifest tokens for any case statements that do not contain a "default" case and record a warning for each instance found.',
+        help_uri: 'https://puppet.com/docs/puppet/latest/style_guide.html#defaults-for-case-statements-and-selectors',
       )
     end
   end

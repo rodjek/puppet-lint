@@ -104,11 +104,11 @@ class PuppetLint::Bin
         puts JSON.pretty_generate(all_problems)
       end
 
-      return return_val
+      return_val
     rescue PuppetLint::NoCodeError
       puts 'puppet-lint: no file specified or specified file does not exist'
       puts "puppet-lint: try 'puppet-lint --help' for more information"
-      return 1
+      1
     end
   end
 
@@ -133,7 +133,7 @@ class PuppetLint::Bin
           new_rule = { 'id' => message[:check] }
           new_rule['fullDescription'] = { 'text' => message[:description] } unless message[:description].nil?
           new_rule['fullDescription'] = { 'text' => 'Check for any syntax error and record an error of each instance found.' } if new_rule['fullDescription'].nil? && message[:check] == :syntax
-          new_rule['defaultConfiguration'] = { 'level' => message[:KIND].downcase } if %w[error warning].include?(message[:KIND].downcase)
+          new_rule['defaultConfiguration'] = { 'level' => message[:KIND].downcase } if ['error', 'warning'].include?(message[:KIND].downcase)
           new_rule['helpUri'] = message[:help_uri] unless message[:help_uri].nil?
           rules << new_rule
         end
@@ -142,7 +142,8 @@ class PuppetLint::Bin
           'ruleId' => message[:check],
           'ruleIndex' => rule_index,
           'message' => { 'text' => message[:message] },
-          'locations' => [{ 'physicalLocation' => { 'artifactLocation' => { 'uri' => relative_path, 'uriBaseId' => 'ROOTPATH' }, 'region' => { 'startLine' => message[:line], 'startColumn' => message[:column] } } }],
+          'locations' => [{ 'physicalLocation' => { 'artifactLocation' => { 'uri' => relative_path, 'uriBaseId' => 'ROOTPATH' },
+'region' => { 'startLine' => message[:line], 'startColumn' => message[:column] } } }],
         }
         results << result
       end

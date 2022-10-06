@@ -32,14 +32,14 @@ class PuppetLint::Checks
                 end
 
       problems << {
-        :kind     => :error,
-        :check    => :syntax,
-        :message  => message,
-        :line     => e.line_no,
-        :column   => e.column,
-        :fullpath => PuppetLint::Data.fullpath,
-        :path     => PuppetLint::Data.path,
-        :filename => PuppetLint::Data.filename,
+        kind: :error,
+        check: :syntax,
+        message: message,
+        line: e.line_no,
+        column: e.column,
+        fullpath: PuppetLint::Data.fullpath,
+        path: PuppetLint::Data.path,
+        filename: PuppetLint::Data.filename,
       }
       PuppetLint::Data.tokens = []
     end
@@ -73,14 +73,14 @@ class PuppetLint::Checks
     @problems
   rescue PuppetLint::SyntaxError => e
     @problems << {
-      :kind     => :error,
-      :check    => :syntax,
-      :message  => 'Syntax error',
-      :fullpath => File.expand_path(fileinfo, ENV['PWD']),
-      :filename => File.basename(fileinfo),
-      :path     => fileinfo,
-      :line     => e.token.line,
-      :column   => e.token.column,
+      kind: :error,
+      check: :syntax,
+      message: 'Syntax error',
+      fullpath: File.expand_path(fileinfo, ENV['PWD']),
+      filename: File.basename(fileinfo),
+      path: fileinfo,
+      line: e.token.line,
+      column: e.token.column,
     }
 
     @problems
