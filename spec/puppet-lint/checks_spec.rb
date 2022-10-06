@@ -7,18 +7,18 @@ describe PuppetLint::Checks do
   let(:content) { "notify { 'test': }" }
 
   describe '#initialize' do
-    it { is_expected.to have_attributes(:problems => []) }
+    it { is_expected.to have_attributes(problems: []) }
   end
 
   describe '#load_data' do
     let(:lexer) { PuppetLint::Lexer.new }
 
-    before do
+    before(:each) do
       allow(PuppetLint::Lexer).to receive(:new).and_return(lexer)
     end
 
     context 'when the tokeniser encounters an error' do
-      before do
+      before(:each) do
         allow(lexer).to receive(:tokenise).with(content).and_raise(lexer_error)
         instance.load_data(path, content)
       end
@@ -33,14 +33,14 @@ describe PuppetLint::Checks do
         it 'creates a syntax error problem for the file' do
           expect(instance.problems).to have(1).problem
           expect(instance.problems.first).to include(
-            :kind     => :error,
-            :check    => :syntax,
-            :message  => 'Syntax error',
-            :line     => 1,
-            :column   => 2,
-            :path     => anything,
-            :fullpath => anything,
-            :filename => anything
+            kind: :error,
+            check: :syntax,
+            message: 'Syntax error',
+            line: 1,
+            column: 2,
+            path: anything,
+            fullpath: anything,
+            filename: anything,
           )
         end
       end
@@ -55,14 +55,14 @@ describe PuppetLint::Checks do
         it 'creates a syntax error problem for the file' do
           expect(instance.problems).to have(1).problem
           expect(instance.problems.first).to include(
-            :kind     => :error,
-            :check    => :syntax,
-            :message  => 'Syntax error (some reason)',
-            :line     => 1,
-            :column   => 2,
-            :path     => anything,
-            :fullpath => anything,
-            :filename => anything
+            kind: :error,
+            check: :syntax,
+            message: 'Syntax error (some reason)',
+            line: 1,
+            column: 2,
+            path: anything,
+            fullpath: anything,
+            filename: anything,
           )
         end
       end
@@ -74,12 +74,12 @@ describe PuppetLint::Checks do
     let(:data) { "notify { 'test': }" }
     let(:enabled_checks) { [] }
 
-    before do
-      allow(instance).to receive(:enabled_checks).and_return(enabled_checks)
+    before(:each) do
+      allow(instance).to receive(:enabled_checks).and_return(enabled_checks) # rubocop: disable RSpec/SubjectStub
     end
 
     it 'loads the manifest data' do
-      expect(instance).to receive(:load_data).with(fileinfo, data).and_call_original
+      expect(instance).to receive(:load_data).with(fileinfo, data).and_call_original # rubocop: disable RSpec/SubjectStub
       instance.run(fileinfo, data)
     end
 
@@ -98,7 +98,7 @@ describe PuppetLint::Checks do
       it 'does not run the disabled checks' do
         # expect().to_not all(matcher) is not supported
         disabled_check_classes.each do |check_class|
-          expect(check_class).to_not receive(:new)
+          expect(check_class).not_to receive(:new)
         end
 
         instance.run(fileinfo, data)
@@ -110,12 +110,12 @@ describe PuppetLint::Checks do
         let(:mock_arrow_alignment) do
           instance_double(
             PuppetLint::CheckPlugin,
-            :run          => [{ :kind => :error, :check => :arrow_alignment }],
-            :fix_problems => [{ :kind => :fixed, :check => :arrow_alignment }]
+            run: [{ kind: :error, check: :arrow_alignment }],
+            fix_problems: [{ kind: :fixed, check: :arrow_alignment }],
           )
         end
         let(:mock_hard_tabs) do
-          instance_double(PuppetLint::CheckPlugin, :run => [], :fix_problems => [])
+          instance_double(PuppetLint::CheckPlugin, run: [], fix_problems: [])
         end
         let(:fix_state) { false }
 
@@ -127,22 +127,22 @@ describe PuppetLint::Checks do
         end
 
         it 'adds the found problems to the problems array' do
-          expect(instance).to have_attributes(:problems => [{ :kind => :error, :check => :arrow_alignment }])
+          expect(instance).to have_attributes(problems: [{ kind: :error, check: :arrow_alignment }])
         end
 
         context 'and fix is enabled' do
           let(:fix_state) { true }
 
           it 'calls #fix_problems on the check and adds the results to the problems array' do
-            expect(instance).to have_attributes(:problems => [{ :kind => :fixed, :check => :arrow_alignment }])
+            expect(instance).to have_attributes(problems: [{ kind: :fixed, check: :arrow_alignment }])
           end
         end
       end
     end
 
     context 'when an unhandled exception is raised' do
-      before do
-        allow(instance).to receive(:load_data).with(fileinfo, data).and_raise(StandardError.new('test message'))
+      before(:each) do
+        allow(instance).to receive(:load_data).with(fileinfo, data).and_raise(StandardError.new('test message')) # rubocop: disable RSpec/SubjectStub
         allow($stdout).to receive(:puts).with(anything)
       end
 
@@ -173,7 +173,7 @@ describe PuppetLint::Checks do
       end
 
       context 'and the file being linted is readable' do
-        before do
+        before(:each) do
           allow(File).to receive(:readable?).with(fileinfo).and_return(true)
           allow(File).to receive(:read).with(fileinfo).and_return(data)
         end
@@ -196,7 +196,7 @@ describe PuppetLint::Checks do
 
     let(:expected_enabled_checks) { [:arrow_alignment, :trailing_whitespace] }
 
-    before do
+    before(:each) do
       PuppetLint.configuration.checks.each do |check|
         allow(PuppetLint.configuration).to receive("#{check}_enabled?").and_return(expected_enabled_checks.include?(check))
       end
@@ -212,13 +212,13 @@ describe PuppetLint::Checks do
 
     let(:tokens) do
       [
-        instance_double(PuppetLint::Lexer::Token, :to_manifest => '1'),
-        instance_double(PuppetLint::Lexer::Token, :to_manifest => '2'),
-        instance_double(PuppetLint::Lexer::Token, :to_manifest => '3'),
+        instance_double(PuppetLint::Lexer::Token, to_manifest: '1'),
+        instance_double(PuppetLint::Lexer::Token, to_manifest: '2'),
+        instance_double(PuppetLint::Lexer::Token, to_manifest: '3'),
       ]
     end
 
-    before do
+    before(:each) do
       allow(PuppetLint::Data).to receive(:tokens).and_return(tokens)
     end
 
