@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe PuppetLint::Lexer::Token do
   subject do
-    PuppetLint::Lexer::Token.new(:NAME, 'foo', 1, 2)
+    described_class.new(:NAME, 'foo', 1, 2)
   end
 
   it { is_expected.to respond_to(:type) }
