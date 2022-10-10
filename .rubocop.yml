@@ -518,3 +518,5 @@ Style/RedundantArgument:
   Enabled: false
 Style/SwapValues:
   Enabled: false
+RSpec/FilePath:
+  Enabled: false

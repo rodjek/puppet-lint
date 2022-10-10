@@ -3,11 +3,11 @@ require 'spec_helper'
 describe 'parameter_order' do
   let(:msg) { 'optional parameter listed before required parameter' }
 
-  %w[define class].each do |type|
+  ['define', 'class'].each do |type|
     context "#{type} with attrs in order" do
       let(:code) { "#{type} foo($bar, $baz='gronk') { }" }
 
-      it 'should not detect any problems' do
+      it 'does not detect any problems' do
         expect(problems).to have(0).problems
       end
     end
@@ -15,7 +15,7 @@ describe 'parameter_order' do
     context "#{type} with parameter that calls a function" do
       let(:code) { "#{type} foo($bar=extlookup($name)) {}" }
 
-      it 'should not detect any problems' do
+      it 'does not detect any problems' do
         expect(problems).to have(0).problems
       end
     end
@@ -23,12 +23,12 @@ describe 'parameter_order' do
     context "#{type} with attrs out of order" do
       let(:code) { "#{type} foo($bar='baz', $gronk) { }" }
 
-      it 'should only detect a single problem' do
+      it 'only detects a single problem' do
         expect(problems).to have(1).problem
       end
 
       col = (type == 'class' ? 23 : 24)
-      it 'should create a warning' do
+      it 'creates a warning' do
         expect(problems).to contain_warning(msg).on_line(1).in_column(col)
       end
     end
@@ -41,7 +41,7 @@ describe 'parameter_order' do
         END
       end
 
-      it 'should not detect any problems' do
+      it 'does not detect any problems' do
         expect(problems).to have(0).problems
       end
     end
@@ -54,12 +54,12 @@ describe 'parameter_order' do
         END
       end
 
-      it 'should only detect a single problem' do
+      it 'only detects a single problem' do
         expect(problems).to have(1).problem
       end
 
       col = (type == 'class' ? 35 : 36)
-      it 'should create a warning' do
+      it 'creates a warning' do
         expect(problems).to contain_warning(msg).on_line(1).in_column(col)
       end
     end
@@ -75,7 +75,7 @@ describe 'parameter_order' do
         END
       end
 
-      it 'should not detect any problems' do
+      it 'does not detect any problems' do
         expect(problems).to have(0).problems
       end
     end

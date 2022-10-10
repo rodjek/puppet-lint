@@ -2,73 +2,74 @@
 
 require 'spec_helper'
 
-describe PuppetLint::Lexer do # rubocop:disable Metrics/BlockLength
-  before do
-    @lexer = PuppetLint::Lexer.new
+describe PuppetLint::Lexer do
+  subject(:lexer) do
+    described_class.new
   end
 
   context 'invalid code' do
-    it 'should bork' do
-      expect { @lexer.tokenise('^') }.to raise_error(PuppetLint::LexerError)
+    it 'borks' do
+      expect { lexer.tokenise('^') }.to raise_error(PuppetLint::LexerError)
     end
   end
 
   context '#new_token' do
-    it 'should calculate the line number for an empty string' do
-      token = @lexer.new_token(:TEST, 'test')
+    it 'calculates the line number for an empty string' do
+      token = lexer.new_token(:TEST, 'test')
       expect(token.line).to eq(1)
     end
 
-    it 'should get correct line number after double quoted multi line string' do
-      @lexer.new_token(:STRING, "test\ntest")
-      token = @lexer.new_token(:TEST, 'test')
+    it 'gets correct line number after double quoted multi line string' do
+      lexer.new_token(:STRING, "test\ntest")
+      token = lexer.new_token(:TEST, 'test')
       expect(token.line).to eq(2)
     end
 
-    it 'should get correct line number after a multi line comment' do
-      @lexer.new_token(:MLCOMMENT, "test\ntest", :raw => "/*test\ntest*/")
-      token = @lexer.new_token(:TEST, 'test')
+    it 'gets correct line number after a multi line comment' do
+      lexer.new_token(:MLCOMMENT, "test\ntest", raw: "/*test\ntest*/")
+      token = lexer.new_token(:TEST, 'test')
       expect(token.line).to eq(2)
     end
 
-    it 'should calculate the line number for a multi line string' do
-      @lexer.new_token(:SSTRING, "test\ntest")
-      token = @lexer.new_token(:TEST, 'test')
+    it 'calculates the line number for a multi line string' do
+      lexer.new_token(:SSTRING, "test\ntest")
+      token = lexer.new_token(:TEST, 'test')
       expect(token.line).to eq(2)
     end
 
-    it 'should calculate line number for string that ends with newline' do
-      @lexer.new_token(:SSTRING, "test\n")
-      token = @lexer.new_token(:TEST, 'test')
+    it 'calculates line number for string that ends with newline' do
+      lexer.new_token(:SSTRING, "test\n")
+      token = lexer.new_token(:TEST, 'test')
       expect(token.line).to eq(2)
     end
 
-    it 'should calculate the column number for an empty string' do
-      token = @lexer.new_token(:TEST, 'test')
+    it 'calculates the column number for an empty string' do
+      token = lexer.new_token(:TEST, 'test')
       expect(token.column).to eq(1)
     end
 
-    it 'should calculate the column number for a single line string' do
-      @lexer.new_token(:SSTRING, 'this is a test')
-      token = @lexer.new_token(:TEST, 'test')
+    it 'calculates the column number for a single line string' do
+      lexer.new_token(:SSTRING, 'this is a test')
+      token = lexer.new_token(:TEST, 'test')
       expect(token.column).to eq(17)
     end
 
-    it 'should calculate the column number for a multi line string' do
-      @lexer.instance_variable_set('@line_no', 4)
-      @lexer.instance_variable_set('@column', 5)
-      @lexer.new_token(:SSTRING, "test\ntest")
-      token = @lexer.new_token(:TEST, 'test')
+    it 'calculates the column number for a multi line string' do
+      lexer.instance_variable_set('@line_no', 4)
+      lexer.instance_variable_set('@column', 5)
+      lexer.new_token(:SSTRING, "test\ntest")
+      token = lexer.new_token(:TEST, 'test')
       expect(token.column).to eq(6)
     end
   end
 
   context '#process_string_segments' do
-    subject(:tokens) { @lexer.tokens }
-    subject(:manifest) { @lexer.tokens.map(&:to_manifest).join }
+    subject(:tokens) { lexer.tokens }
+
+    subject(:manifest) { lexer.tokens.map(&:to_manifest).join }
 
     before(:each) do
-      @lexer.process_string_segments(segments)
+      lexer.process_string_segments(segments)
     end
 
     context 'an empty string segment' do
@@ -81,10 +82,10 @@ describe PuppetLint::Lexer do # rubocop:disable Metrics/BlockLength
       it 'creates a :STRING token' do
         expect(tokens).to have(1).token
         expect(tokens[0]).to have_attributes(
-          :type   => :STRING,
-          :value  => '',
-          :line   => 1,
-          :column => 1
+          type: :STRING,
+          value: '',
+          line: 1,
+          column: 1,
         )
       end
 
@@ -105,22 +106,22 @@ describe PuppetLint::Lexer do # rubocop:disable Metrics/BlockLength
       it 'creates a tokenised string with an interpolated variable' do
         expect(tokens).to have(3).tokens
         expect(tokens[0]).to have_attributes(
-          :type   => :DQPRE,
-          :value  => '',
-          :line   => 1,
-          :column => 1
+          type: :DQPRE,
+          value: '',
+          line: 1,
+          column: 1,
         )
         expect(tokens[1]).to have_attributes(
-          :type   => :VARIABLE,
-          :value  => 'foo',
-          :line   => 1,
-          :column => 4
+          type: :VARIABLE,
+          value: 'foo',
+          line: 1,
+          column: 4,
         )
         expect(tokens[2]).to have_attributes(
-          :type   => :DQPOST,
-          :value  => 'bar',
-          :line   => 1,
-          :column => 7
+          type: :DQPOST,
+          value: 'bar',
+          line: 1,
+          column: 7,
         )
       end
 
@@ -141,22 +142,22 @@ describe PuppetLint::Lexer do # rubocop:disable Metrics/BlockLength
       it 'creates a tokenised string with an interpolated variable' do
         expect(tokens).to have(3).tokens
         expect(tokens[0]).to have_attributes(
-          :type   => :DQPRE,
-          :value  => 'foo',
-          :line   => 1,
-          :column => 1
+          type: :DQPRE,
+          value: 'foo',
+          line: 1,
+          column: 1,
         )
         expect(tokens[1]).to have_attributes(
-          :type   => :VARIABLE,
-          :value  => 'bar',
-          :line   => 1,
-          :column => 7
+          type: :VARIABLE,
+          value: 'bar',
+          line: 1,
+          column: 7,
         )
         expect(tokens[2]).to have_attributes(
-          :type   => :DQPOST,
-          :value  => 'baz',
-          :line   => 1,
-          :column => 10
+          type: :DQPOST,
+          value: 'baz',
+          line: 1,
+          column: 10,
         )
       end
 
@@ -180,34 +181,34 @@ describe PuppetLint::Lexer do # rubocop:disable Metrics/BlockLength
         expect(tokens).to have(5).tokens
 
         expect(tokens[0]).to have_attributes(
-          :type   => :DQPRE,
-          :value  => 'foo',
-          :line   => 1,
-          :column => 1
+          type: :DQPRE,
+          value: 'foo',
+          line: 1,
+          column: 1,
         )
         expect(tokens[1]).to have_attributes(
-          :type   => :VARIABLE,
-          :value  => 'bar',
-          :line   => 1,
-          :column => 7
+          type: :VARIABLE,
+          value: 'bar',
+          line: 1,
+          column: 7,
         )
         expect(tokens[2]).to have_attributes(
-          :type   => :DQMID,
-          :value  => 'baz',
-          :line   => 1,
-          :column => 10
+          type: :DQMID,
+          value: 'baz',
+          line: 1,
+          column: 10,
         )
         expect(tokens[3]).to have_attributes(
-          :type   => :VARIABLE,
-          :value  => 'gronk',
-          :line   => 1,
-          :column => 16
+          type: :VARIABLE,
+          value: 'gronk',
+          line: 1,
+          column: 16,
         )
         expect(tokens[4]).to have_attributes(
-          :type   => :DQPOST,
-          :value  => 'meh',
-          :line   => 1,
-          :column => 21
+          type: :DQPOST,
+          value: 'meh',
+          line: 1,
+          column: 21,
         )
       end
 
@@ -229,22 +230,22 @@ describe PuppetLint::Lexer do # rubocop:disable Metrics/BlockLength
         expect(tokens).to have(3).tokens
 
         expect(tokens[0]).to have_attributes(
-          :type   => :DQPRE,
-          :value  => '',
-          :line   => 1,
-          :column => 1
+          type: :DQPRE,
+          value: '',
+          line: 1,
+          column: 1,
         )
         expect(tokens[1]).to have_attributes(
-          :type   => :VARIABLE,
-          :value  => 'foo',
-          :line   => 1,
-          :column => 4
+          type: :VARIABLE,
+          value: 'foo',
+          line: 1,
+          column: 4,
         )
         expect(tokens[2]).to have_attributes(
-          :type   => :DQPOST,
-          :value  => '',
-          :line   => 1,
-          :column => 7
+          type: :DQPOST,
+          value: '',
+          line: 1,
+          column: 7,
         )
       end
 
@@ -254,7 +255,7 @@ describe PuppetLint::Lexer do # rubocop:disable Metrics/BlockLength
     end
 
     context 'treats a variable named the same as the keyword as a variable' do
-      PuppetLint::Lexer::KEYWORDS.keys.each do |keyword|
+      PuppetLint::Lexer::KEYWORDS.each_key do |keyword|
         context "for '#{keyword}'" do
           let(:segments) do
             [
@@ -268,22 +269,22 @@ describe PuppetLint::Lexer do # rubocop:disable Metrics/BlockLength
             expect(tokens).to have(3).tokens
 
             expect(tokens[0]).to have_attributes(
-              :type   => :DQPRE,
-              :value  => '',
-              :line   => 1,
-              :column => 1
+              type: :DQPRE,
+              value: '',
+              line: 1,
+              column: 1,
             )
             expect(tokens[1]).to have_attributes(
-              :type   => :VARIABLE,
-              :value  => keyword,
-              :line   => 1,
-              :column => 4
+              type: :VARIABLE,
+              value: keyword,
+              line: 1,
+              column: 4,
             )
             expect(tokens[2]).to have_attributes(
-              :type   => :DQPOST,
-              :value  => '',
-              :line   => 1,
-              :column => keyword.size + 4
+              type: :DQPOST,
+              value: '',
+              line: 1,
+              column: keyword.size + 4,
             )
           end
 
@@ -307,22 +308,22 @@ describe PuppetLint::Lexer do # rubocop:disable Metrics/BlockLength
         expect(tokens).to have(3).tokens
 
         expect(tokens[0]).to have_attributes(
-          :type   => :DQPRE,
-          :value  => '',
-          :line   => 1,
-          :column => 1
+          type: :DQPRE,
+          value: '',
+          line: 1,
+          column: 1,
         )
         expect(tokens[1]).to have_attributes(
-          :type   => :VARIABLE,
-          :value  => 'bar',
-          :line   => 1,
-          :column => 4
+          type: :VARIABLE,
+          value: 'bar',
+          line: 1,
+          column: 4,
         )
         expect(tokens[2]).to have_attributes(
-          :type   => :DQPOST,
-          :value  => '',
-          :line   => 1,
-          :column => 8
+          type: :DQPOST,
+          value: '',
+          line: 1,
+          column: 8,
         )
       end
 
@@ -344,58 +345,58 @@ describe PuppetLint::Lexer do # rubocop:disable Metrics/BlockLength
         expect(tokens).to have(9).tokens
 
         expect(tokens[0]).to have_attributes(
-          :type   => :DQPRE,
-          :value  => '',
-          :line   => 1,
-          :column => 1
+          type: :DQPRE,
+          value: '',
+          line: 1,
+          column: 1,
         )
         expect(tokens[1]).to have_attributes(
-          :type   => :VARIABLE,
-          :value  => 'foo',
-          :line   => 1,
-          :column => 4
+          type: :VARIABLE,
+          value: 'foo',
+          line: 1,
+          column: 4,
         )
         expect(tokens[2]).to have_attributes(
-          :type   => :LBRACK,
-          :value  => '[',
-          :line   => 1,
-          :column => 7
+          type: :LBRACK,
+          value: '[',
+          line: 1,
+          column: 7,
         )
         expect(tokens[3]).to have_attributes(
-          :type   => :NAME,
-          :value  => 'bar',
-          :line   => 1,
-          :column => 8
+          type: :NAME,
+          value: 'bar',
+          line: 1,
+          column: 8,
         )
         expect(tokens[4]).to have_attributes(
-          :type   => :RBRACK,
-          :value  => ']',
-          :line   => 1,
-          :column => 11
+          type: :RBRACK,
+          value: ']',
+          line: 1,
+          column: 11,
         )
         expect(tokens[5]).to have_attributes(
-          :type   => :LBRACK,
-          :value  => '[',
-          :line   => 1,
-          :column => 12
+          type: :LBRACK,
+          value: '[',
+          line: 1,
+          column: 12,
         )
         expect(tokens[6]).to have_attributes(
-          :type   => :NAME,
-          :value  => 'baz',
-          :line   => 1,
-          :column => 13
+          type: :NAME,
+          value: 'baz',
+          line: 1,
+          column: 13,
         )
         expect(tokens[7]).to have_attributes(
-          :type   => :RBRACK,
-          :value  => ']',
-          :line   => 1,
-          :column => 16
+          type: :RBRACK,
+          value: ']',
+          line: 1,
+          column: 16,
         )
         expect(tokens[8]).to have_attributes(
-          :type   => :DQPOST,
-          :value  => '',
-          :line   => 1,
-          :column => 17
+          type: :DQPOST,
+          value: '',
+          line: 1,
+          column: 17,
         )
       end
 
@@ -419,34 +420,34 @@ describe PuppetLint::Lexer do # rubocop:disable Metrics/BlockLength
         expect(tokens).to have(5).tokens
 
         expect(tokens[0]).to have_attributes(
-          :type   => :DQPRE,
-          :value  => '',
-          :line   => 1,
-          :column => 1
+          type: :DQPRE,
+          value: '',
+          line: 1,
+          column: 1,
         )
         expect(tokens[1]).to have_attributes(
-          :type   => :VARIABLE,
-          :value  => 'foo',
-          :line   => 1,
-          :column => 4
+          type: :VARIABLE,
+          value: 'foo',
+          line: 1,
+          column: 4,
         )
         expect(tokens[2]).to have_attributes(
-          :type   => :DQMID,
-          :value  => '',
-          :line   => 1,
-          :column => 7
+          type: :DQMID,
+          value: '',
+          line: 1,
+          column: 7,
         )
         expect(tokens[3]).to have_attributes(
-          :type   => :VARIABLE,
-          :value  => 'bar',
-          :line   => 1,
-          :column => 10
+          type: :VARIABLE,
+          value: 'bar',
+          line: 1,
+          column: 10,
         )
         expect(tokens[4]).to have_attributes(
-          :type   => :DQPOST,
-          :value  => '',
-          :line   => 1,
-          :column => 13
+          type: :DQPOST,
+          value: '',
+          line: 1,
+          column: 13,
         )
       end
 
@@ -468,22 +469,22 @@ describe PuppetLint::Lexer do # rubocop:disable Metrics/BlockLength
         expect(tokens).to have(3).tokens
 
         expect(tokens[0]).to have_attributes(
-          :type   => :DQPRE,
-          :value  => '',
-          :line   => 1,
-          :column => 1
+          type: :DQPRE,
+          value: '',
+          line: 1,
+          column: 1,
         )
         expect(tokens[1]).to have_attributes(
-          :type   => :UNENC_VARIABLE,
-          :value  => 'foo',
-          :line   => 1,
-          :column => 2
+          type: :UNENC_VARIABLE,
+          value: 'foo',
+          line: 1,
+          column: 2,
         )
         expect(tokens[2]).to have_attributes(
-          :type   => :DQPOST,
-          :value  => '',
-          :line   => 1,
-          :column => 6
+          type: :DQPOST,
+          value: '',
+          line: 1,
+          column: 6,
         )
       end
 
@@ -505,22 +506,22 @@ describe PuppetLint::Lexer do # rubocop:disable Metrics/BlockLength
         expect(tokens).to have(3).tokens
 
         expect(tokens[0]).to have_attributes(
-          :type   => :DQPRE,
-          :value  => 'string with ',
-          :line   => 1,
-          :column => 1
+          type: :DQPRE,
+          value: 'string with ',
+          line: 1,
+          column: 1,
         )
         expect(tokens[1]).to have_attributes(
-          :type   => :SSTRING,
-          :value  => 'a nested single quoted string',
-          :line   => 1,
-          :column => 16
+          type: :SSTRING,
+          value: 'a nested single quoted string',
+          line: 1,
+          column: 16,
         )
         expect(tokens[2]).to have_attributes(
-          :type   => :DQPOST,
-          :value  => ' inside it',
-          :line   => 1,
-          :column => 47
+          type: :DQPOST,
+          value: ' inside it',
+          line: 1,
+          column: 47,
         )
       end
 
@@ -542,58 +543,58 @@ describe PuppetLint::Lexer do # rubocop:disable Metrics/BlockLength
         expect(tokens).to have(9).tokens
 
         expect(tokens[0]).to have_attributes(
-          :type   => :DQPRE,
-          :value  => 'string with ',
-          :line   => 1,
-          :column => 1
+          type: :DQPRE,
+          value: 'string with ',
+          line: 1,
+          column: 1,
         )
         expect(tokens[1]).to have_attributes(
-          :type   => :LPAREN,
-          :value  => '(',
-          :line   => 1,
-          :column => 16
+          type: :LPAREN,
+          value: '(',
+          line: 1,
+          column: 16,
         )
         expect(tokens[2]).to have_attributes(
-          :type   => :NUMBER,
-          :value  => '3',
-          :line   => 1,
-          :column => 17
+          type: :NUMBER,
+          value: '3',
+          line: 1,
+          column: 17,
         )
         expect(tokens[3]).to have_attributes(
-          :type   => :PLUS,
-          :value  => '+',
-          :line   => 1,
-          :column => 18
+          type: :PLUS,
+          value: '+',
+          line: 1,
+          column: 18,
         )
         expect(tokens[4]).to have_attributes(
-          :type   => :NUMBER,
-          :value  => '5',
-          :line   => 1,
-          :column => 19
+          type: :NUMBER,
+          value: '5',
+          line: 1,
+          column: 19,
         )
         expect(tokens[5]).to have_attributes(
-          :type   => :RPAREN,
-          :value  => ')',
-          :line   => 1,
-          :column => 20
+          type: :RPAREN,
+          value: ')',
+          line: 1,
+          column: 20,
         )
         expect(tokens[6]).to have_attributes(
-          :type   => :DIV,
-          :value  => '/',
-          :line   => 1,
-          :column => 21
+          type: :DIV,
+          value: '/',
+          line: 1,
+          column: 21,
         )
         expect(tokens[7]).to have_attributes(
-          :type   => :NUMBER,
-          :value  => '4',
-          :line   => 1,
-          :column => 22
+          type: :NUMBER,
+          value: '4',
+          line: 1,
+          column: 22,
         )
         expect(tokens[8]).to have_attributes(
-          :type   => :DQPOST,
-          :value  => ' nested math',
-          :line   => 1,
-          :column => 23
+          type: :DQPOST,
+          value: ' nested math',
+          line: 1,
+          column: 23,
         )
       end
 
@@ -615,52 +616,52 @@ describe PuppetLint::Lexer do # rubocop:disable Metrics/BlockLength
         expect(tokens).to have(8).tokens
 
         expect(tokens[0]).to have_attributes(
-          :type   => :DQPRE,
-          :value  => 'string with ',
-          :line   => 1,
-          :column => 1
+          type: :DQPRE,
+          value: 'string with ',
+          line: 1,
+          column: 1,
         )
         expect(tokens[1]).to have_attributes(
-          :type   => :LBRACK,
-          :value  => '[',
-          :line   => 1,
-          :column => 16
+          type: :LBRACK,
+          value: '[',
+          line: 1,
+          column: 16,
         )
         expect(tokens[2]).to have_attributes(
-          :type   => :SSTRING,
-          :value  => 'an array ',
-          :line   => 1,
-          :column => 17
+          type: :SSTRING,
+          value: 'an array ',
+          line: 1,
+          column: 17,
         )
         expect(tokens[3]).to have_attributes(
-          :type   => :COMMA,
-          :value  => ',',
-          :line   => 1,
-          :column => 28
+          type: :COMMA,
+          value: ',',
+          line: 1,
+          column: 28,
         )
         expect(tokens[4]).to have_attributes(
-          :type   => :WHITESPACE,
-          :value  => ' ',
-          :line   => 1,
-          :column => 29
+          type: :WHITESPACE,
+          value: ' ',
+          line: 1,
+          column: 29,
         )
         expect(tokens[5]).to have_attributes(
-          :type   => :VARIABLE,
-          :value  => 'v2',
-          :line   => 1,
-          :column => 30
+          type: :VARIABLE,
+          value: 'v2',
+          line: 1,
+          column: 30,
         )
         expect(tokens[6]).to have_attributes(
-          :type   => :RBRACK,
-          :value  => ']',
-          :line   => 1,
-          :column => 33
+          type: :RBRACK,
+          value: ']',
+          line: 1,
+          column: 33,
         )
         expect(tokens[7]).to have_attributes(
-          :type   => :DQPOST,
-          :value  => ' in it',
-          :line   => 1,
-          :column => 34
+          type: :DQPOST,
+          value: ' in it',
+          line: 1,
+          column: 34,
         )
       end
 
@@ -684,34 +685,34 @@ describe PuppetLint::Lexer do # rubocop:disable Metrics/BlockLength
         expect(tokens).to have(5).tokens
 
         expect(tokens[0]).to have_attributes(
-          :type   => :DQPRE,
-          :value  => '',
-          :line   => 1,
-          :column => 1
+          type: :DQPRE,
+          value: '',
+          line: 1,
+          column: 1,
         )
         expect(tokens[1]).to have_attributes(
-          :type   => :UNENC_VARIABLE,
-          :value  => 'foo',
-          :line   => 1,
-          :column => 2
+          type: :UNENC_VARIABLE,
+          value: 'foo',
+          line: 1,
+          column: 2,
         )
         expect(tokens[2]).to have_attributes(
-          :type   => :DQMID,
-          :value  => '',
-          :line   => 1,
-          :column => 6
+          type: :DQMID,
+          value: '',
+          line: 1,
+          column: 6,
         )
         expect(tokens[3]).to have_attributes(
-          :type   => :UNENC_VARIABLE,
-          :value  => 'bar',
-          :line   => 1,
-          :column => 6
+          type: :UNENC_VARIABLE,
+          value: 'bar',
+          line: 1,
+          column: 6,
         )
         expect(tokens[4]).to have_attributes(
-          :type   => :DQPOST,
-          :value  => '',
-          :line   => 1,
-          :column => 10
+          type: :DQPOST,
+          value: '',
+          line: 1,
+          column: 10,
         )
       end
 
@@ -733,22 +734,22 @@ describe PuppetLint::Lexer do # rubocop:disable Metrics/BlockLength
         expect(tokens).to have(3).tokens
 
         expect(tokens[0]).to have_attributes(
-          :type   => :DQPRE,
-          :value  => 'foo',
-          :line   => 1,
-          :column => 1
+          type: :DQPRE,
+          value: 'foo',
+          line: 1,
+          column: 1,
         )
         expect(tokens[1]).to have_attributes(
-          :type   => :UNENC_VARIABLE,
-          :value  => 'bar',
-          :line   => 1,
-          :column => 5
+          type: :UNENC_VARIABLE,
+          value: 'bar',
+          line: 1,
+          column: 5,
         )
         expect(tokens[2]).to have_attributes(
-          :type   => :DQPOST,
-          :value  => '$',
-          :line   => 1,
-          :column => 9
+          type: :DQPOST,
+          value: '$',
+          line: 1,
+          column: 9,
         )
       end
 
@@ -772,94 +773,94 @@ describe PuppetLint::Lexer do # rubocop:disable Metrics/BlockLength
         expect(tokens).to have(15).tokens
 
         expect(tokens[0]).to have_attributes(
-          :type   => :DQPRE,
-          :value  => '',
-          :line   => 1,
-          :column => 1
+          type: :DQPRE,
+          value: '',
+          line: 1,
+          column: 1,
         )
         expect(tokens[1]).to have_attributes(
-          :type   => :VARIABLE,
-          :value  => 'key',
-          :line   => 1,
-          :column => 4
+          type: :VARIABLE,
+          value: 'key',
+          line: 1,
+          column: 4,
         )
         expect(tokens[2]).to have_attributes(
-          :type   => :DQMID,
-          :value  => ' ',
-          :line   => 1,
-          :column => 7
+          type: :DQMID,
+          value: ' ',
+          line: 1,
+          column: 7,
         )
         expect(tokens[3]).to have_attributes(
-          :type   => :FUNCTION_NAME,
-          :value  => 'flatten',
-          :line   => 1,
-          :column => 11
+          type: :FUNCTION_NAME,
+          value: 'flatten',
+          line: 1,
+          column: 11,
         )
         expect(tokens[4]).to have_attributes(
-          :type   => :LPAREN,
-          :value  => '(',
-          :line   => 1,
-          :column => 18
+          type: :LPAREN,
+          value: '(',
+          line: 1,
+          column: 18,
         )
         expect(tokens[5]).to have_attributes(
-          :type   => :LBRACK,
-          :value  => '[',
-          :line   => 1,
-          :column => 19
+          type: :LBRACK,
+          value: '[',
+          line: 1,
+          column: 19,
         )
         expect(tokens[6]).to have_attributes(
-          :type   => :VARIABLE,
-          :value  => 'value',
-          :line   => 1,
-          :column => 20
+          type: :VARIABLE,
+          value: 'value',
+          line: 1,
+          column: 20,
         )
         expect(tokens[7]).to have_attributes(
-          :type   => :RBRACK,
-          :value  => ']',
-          :line   => 1,
-          :column => 26
+          type: :RBRACK,
+          value: ']',
+          line: 1,
+          column: 26,
         )
         expect(tokens[8]).to have_attributes(
-          :type   => :RPAREN,
-          :value  => ')',
-          :line   => 1,
-          :column => 27
+          type: :RPAREN,
+          value: ')',
+          line: 1,
+          column: 27,
         )
         expect(tokens[9]).to have_attributes(
-          :type   => :DOT,
-          :value  => '.',
-          :line   => 1,
-          :column => 28
+          type: :DOT,
+          value: '.',
+          line: 1,
+          column: 28,
         )
         expect(tokens[10]).to have_attributes(
-          :type   => :FUNCTION_NAME,
-          :value  => 'join',
-          :line   => 1,
-          :column => 29
+          type: :FUNCTION_NAME,
+          value: 'join',
+          line: 1,
+          column: 29,
         )
         expect(tokens[11]).to have_attributes(
-          :type   => :LPAREN,
-          :value  => '(',
-          :line   => 1,
-          :column => 33
+          type: :LPAREN,
+          value: '(',
+          line: 1,
+          column: 33,
         )
         expect(tokens[12]).to have_attributes(
-          :type   => :STRING,
-          :value  => '\nkey ',
-          :line   => 1,
-          :column => 34
+          type: :STRING,
+          value: '\nkey ',
+          line: 1,
+          column: 34,
         )
         expect(tokens[13]).to have_attributes(
-          :type   => :RPAREN,
-          :value  => ')',
-          :line   => 1,
-          :column => 42
+          type: :RPAREN,
+          value: ')',
+          line: 1,
+          column: 42,
         )
         expect(tokens[14]).to have_attributes(
-          :type   => :DQPOST,
-          :value  => '',
-          :line   => 1,
-          :column => 43
+          type: :DQPOST,
+          value: '',
+          line: 1,
+          column: 43,
         )
       end
 
@@ -883,94 +884,94 @@ describe PuppetLint::Lexer do # rubocop:disable Metrics/BlockLength
         expect(tokens).to have(15).tokens
 
         expect(tokens[0]).to have_attributes(
-          :type   => :DQPRE,
-          :value  => '',
-          :line   => 1,
-          :column => 1
+          type: :DQPRE,
+          value: '',
+          line: 1,
+          column: 1,
         )
         expect(tokens[1]).to have_attributes(
-          :type   => :VARIABLE,
-          :value  => 'facts',
-          :line   => 1,
-          :column => 4
+          type: :VARIABLE,
+          value: 'facts',
+          line: 1,
+          column: 4,
         )
         expect(tokens[2]).to have_attributes(
-          :type   => :LBRACK,
-          :value  => '[',
-          :line   => 1,
-          :column => 9
+          type: :LBRACK,
+          value: '[',
+          line: 1,
+          column: 9,
         )
         expect(tokens[3]).to have_attributes(
-          :type   => :DQPRE,
-          :value  => 'network_',
-          :line   => 1,
-          :column => 10
+          type: :DQPRE,
+          value: 'network_',
+          line: 1,
+          column: 10,
         )
         expect(tokens[4]).to have_attributes(
-          :type   => :VARIABLE,
-          :value  => 'iface',
-          :line   => 1,
-          :column => 21
+          type: :VARIABLE,
+          value: 'iface',
+          line: 1,
+          column: 21,
         )
         expect(tokens[5]).to have_attributes(
-          :type   => :DQPOST,
-          :value  => '',
-          :line   => 1,
-          :column => 26
+          type: :DQPOST,
+          value: '',
+          line: 1,
+          column: 26,
         )
         expect(tokens[6]).to have_attributes(
-          :type   => :RBRACK,
-          :value  => ']',
-          :line   => 1,
-          :column => 28
+          type: :RBRACK,
+          value: ']',
+          line: 1,
+          column: 28,
         )
         expect(tokens[7]).to have_attributes(
-          :type   => :DQMID,
-          :value  => '/',
-          :line   => 1,
-          :column => 29
+          type: :DQMID,
+          value: '/',
+          line: 1,
+          column: 29,
         )
         expect(tokens[8]).to have_attributes(
-          :type   => :VARIABLE,
-          :value  => 'facts',
-          :line   => 1,
-          :column => 33
+          type: :VARIABLE,
+          value: 'facts',
+          line: 1,
+          column: 33,
         )
         expect(tokens[9]).to have_attributes(
-          :type   => :LBRACK,
-          :value  => '[',
-          :line   => 1,
-          :column => 38
+          type: :LBRACK,
+          value: '[',
+          line: 1,
+          column: 38,
         )
         expect(tokens[10]).to have_attributes(
-          :type   => :DQPRE,
-          :value  => 'netmask_',
-          :line   => 1,
-          :column => 39
+          type: :DQPRE,
+          value: 'netmask_',
+          line: 1,
+          column: 39,
         )
         expect(tokens[11]).to have_attributes(
-          :type   => :VARIABLE,
-          :value  => 'iface',
-          :line   => 1,
-          :column => 50
+          type: :VARIABLE,
+          value: 'iface',
+          line: 1,
+          column: 50,
         )
         expect(tokens[12]).to have_attributes(
-          :type   => :DQPOST,
-          :value  => '',
-          :line   => 1,
-          :column => 55
+          type: :DQPOST,
+          value: '',
+          line: 1,
+          column: 55,
         )
         expect(tokens[13]).to have_attributes(
-          :type   => :RBRACK,
-          :value  => ']',
-          :line   => 1,
-          :column => 57
+          type: :RBRACK,
+          value: ']',
+          line: 1,
+          column: 57,
         )
         expect(tokens[14]).to have_attributes(
-          :type   => :DQPOST,
-          :value  => '',
-          :line   => 1,
-          :column => 58
+          type: :DQPOST,
+          value: '',
+          line: 1,
+          column: 58,
         )
       end
 
@@ -992,112 +993,112 @@ describe PuppetLint::Lexer do # rubocop:disable Metrics/BlockLength
         expect(tokens).to have(18).tokens
 
         expect(tokens[0]).to have_attributes(
-          :type   => :DQPRE,
-          :value  => '',
-          :line   => 1,
-          :column => 1
+          type: :DQPRE,
+          value: '',
+          line: 1,
+          column: 1,
         )
         expect(tokens[1]).to have_attributes(
-          :type   => :VARIABLE,
-          :value  => 'foo',
-          :line   => 1,
-          :column => 4
+          type: :VARIABLE,
+          value: 'foo',
+          line: 1,
+          column: 4,
         )
         expect(tokens[2]).to have_attributes(
-          :type   => :DOT,
-          :value  => '.',
-          :line   => 1,
-          :column => 8
+          type: :DOT,
+          value: '.',
+          line: 1,
+          column: 8,
         )
         expect(tokens[3]).to have_attributes(
-          :type   => :NAME,
-          :value  => 'map',
-          :line   => 1,
-          :column => 9
+          type: :NAME,
+          value: 'map',
+          line: 1,
+          column: 9,
         )
         expect(tokens[4]).to have_attributes(
-          :type   => :WHITESPACE,
-          :value  => ' ',
-          :line   => 1,
-          :column => 12
+          type: :WHITESPACE,
+          value: ' ',
+          line: 1,
+          column: 12,
         )
         expect(tokens[5]).to have_attributes(
-          :type   => :PIPE,
-          :value  => '|',
-          :line   => 1,
-          :column => 13
+          type: :PIPE,
+          value: '|',
+          line: 1,
+          column: 13,
         )
         expect(tokens[6]).to have_attributes(
-          :type   => :VARIABLE,
-          :value  => 'bar',
-          :line   => 1,
-          :column => 14
+          type: :VARIABLE,
+          value: 'bar',
+          line: 1,
+          column: 14,
         )
         expect(tokens[7]).to have_attributes(
-          :type   => :PIPE,
-          :value  => '|',
-          :line   => 1,
-          :column => 18
+          type: :PIPE,
+          value: '|',
+          line: 1,
+          column: 18,
         )
         expect(tokens[8]).to have_attributes(
-          :type   => :WHITESPACE,
-          :value  => ' ',
-          :line   => 1,
-          :column => 19
+          type: :WHITESPACE,
+          value: ' ',
+          line: 1,
+          column: 19,
         )
         expect(tokens[9]).to have_attributes(
-          :type   => :LBRACE,
-          :value  => '{',
-          :line   => 1,
-          :column => 20
+          type: :LBRACE,
+          value: '{',
+          line: 1,
+          column: 20,
         )
         expect(tokens[10]).to have_attributes(
-          :type   => :WHITESPACE,
-          :value  => ' ',
-          :line   => 1,
-          :column => 21
+          type: :WHITESPACE,
+          value: ' ',
+          line: 1,
+          column: 21,
         )
         expect(tokens[11]).to have_attributes(
-          :type   => :FUNCTION_NAME,
-          :value  => 'something',
-          :line   => 1,
-          :column => 22
+          type: :FUNCTION_NAME,
+          value: 'something',
+          line: 1,
+          column: 22,
         )
         expect(tokens[12]).to have_attributes(
-          :type   => :LPAREN,
-          :value  => '(',
-          :line   => 1,
-          :column => 31
+          type: :LPAREN,
+          value: '(',
+          line: 1,
+          column: 31,
         )
         expect(tokens[13]).to have_attributes(
-          :type   => :VARIABLE,
-          :value  => 'bar',
-          :line   => 1,
-          :column => 32
+          type: :VARIABLE,
+          value: 'bar',
+          line: 1,
+          column: 32,
         )
         expect(tokens[14]).to have_attributes(
-          :type   => :RPAREN,
-          :value  => ')',
-          :line   => 1,
-          :column => 36
+          type: :RPAREN,
+          value: ')',
+          line: 1,
+          column: 36,
         )
         expect(tokens[15]).to have_attributes(
-          :type   => :WHITESPACE,
-          :value  => ' ',
-          :line   => 1,
-          :column => 37
+          type: :WHITESPACE,
+          value: ' ',
+          line: 1,
+          column: 37,
         )
         expect(tokens[16]).to have_attributes(
-          :type   => :RBRACE,
-          :value  => '}',
-          :line   => 1,
-          :column => 38
+          type: :RBRACE,
+          value: '}',
+          line: 1,
+          column: 38,
         )
         expect(tokens[17]).to have_attributes(
-          :type   => :DQPOST,
-          :value  => '',
-          :line   => 1,
-          :column => 39
+          type: :DQPOST,
+          value: '',
+          line: 1,
+          column: 39,
         )
       end
 
@@ -1108,7 +1109,7 @@ describe PuppetLint::Lexer do # rubocop:disable Metrics/BlockLength
   end
 
   context ':STRING / :DQ' do
-    it 'should handle a string with newline characters' do
+    it 'handles a string with newline characters' do
       # rubocop:disable Layout/TrailingWhitespace
       manifest = <<END
   exec {
@@ -1121,7 +1122,7 @@ describe PuppetLint::Lexer do # rubocop:disable Metrics/BlockLength
   }
 END
       # rubocop:enable Layout/TrailingWhitespace
-      tokens = @lexer.tokenise(manifest)
+      tokens = lexer.tokenise(manifest)
 
       expect(tokens.length).to eq(34)
 
@@ -1263,58 +1264,40 @@ END
       expect(tokens[33].column).to eq(4)
     end
 
-    it 'should calculate the column number correctly after an enclosed variable' do
-      token = @lexer.tokenise('  "${foo}" =>').last
+    it 'calculates the column number correctly after an enclosed variable' do
+      token = lexer.tokenise('  "${foo}" =>').last
       expect(token.type).to eq(:FARROW)
       expect(token.column).to eq(12)
     end
 
-    it 'should calculate the column number correctly after an enclosed variable starting with a string' do
-      token = @lexer.tokenise('  "bar${foo}" =>').last
+    it 'calculates the column number correctly after an enclosed variable starting with a string' do
+      token = lexer.tokenise('  "bar${foo}" =>').last
       expect(token.type).to eq(:FARROW)
       expect(token.column).to eq(15)
     end
 
-    it 'should calculate the column number correctly after an enclosed variable ending with a string' do
-      token = @lexer.tokenise('  "${foo}bar" =>').last
+    it 'calculates the column number correctly after an enclosed variable ending with a string' do
+      token = lexer.tokenise('  "${foo}bar" =>').last
       expect(token.type).to eq(:FARROW)
       expect(token.column).to eq(15)
     end
 
-    it 'should calculate the column number correctly after an enclosed variable surround by a string' do
-      token = @lexer.tokenise('  "foo${bar}baz" =>').last
+    it 'calculates the column number correctly after an enclosed variable surround by a string' do
+      token = lexer.tokenise('  "foo${bar}baz" =>').last
       expect(token.type).to eq(:FARROW)
       expect(token.column).to eq(18)
     end
 
-    it 'should not enclose variable with a chained function call' do
+    it 'does not enclose variable with a chained function call' do
       manifest = '"This is ${a.test}"'
-      tokens = @lexer.tokenise(manifest)
+      tokens = lexer.tokenise(manifest)
       expect(tokens.map(&:to_manifest).join('')).to eq(manifest)
     end
   end
 
-  %w[
-    case
-    class
-    default
-    define
-    import
-    if
-    elsif
-    else
-    inherits
-    node
-    and
-    or
-    undef
-    true
-    false
-    in
-    unless
-  ].each do |keyword|
-    it "should handle '#{keyword}' as a keyword" do
-      token = @lexer.tokenise(keyword).first
+  ['case', 'class', 'default', 'define', 'import', 'if', 'elsif', 'else', 'inherits', 'node', 'and', 'or', 'undef', 'true', 'false', 'in', 'unless'].each do |keyword|
+    it "handles '#{keyword}' as a keyword" do
+      token = lexer.tokenise(keyword).first
       expect(token.type).to eq(keyword.upcase.to_sym)
       expect(token.value).to eq(keyword)
     end
@@ -1367,40 +1350,40 @@ END
     [:NEWLINE, "\n"],
     [:NEWLINE, "\r\n"],
   ].each do |name, string|
-    it "should have a token named '#{name}'" do
-      token = @lexer.tokenise(string).first
+    it "has a token named '#{name}'" do
+      token = lexer.tokenise(string).first
       expect(token.type).to eq(name)
       expect(token.value).to eq(string)
     end
   end
 
   context ':TYPE' do
-    it 'should match Data Types' do
-      token = @lexer.tokenise('Integer').first
+    it 'matches Data Types' do
+      token = lexer.tokenise('Integer').first
       expect(token.type).to eq(:TYPE)
       expect(token.value).to eq('Integer')
     end
 
-    it 'should match Catalog Types' do
-      token = @lexer.tokenise('Resource').first
+    it 'matches Catalog Types' do
+      token = lexer.tokenise('Resource').first
       expect(token.type).to eq(:TYPE)
       expect(token.value).to eq('Resource')
     end
 
-    it 'should match Abstract Types' do
-      token = @lexer.tokenise('Collection').first
+    it 'matches Abstract Types' do
+      token = lexer.tokenise('Collection').first
       expect(token.type).to eq(:TYPE)
       expect(token.value).to eq('Collection')
     end
 
     describe 'Platform Types' do
-      it 'should match Callable' do
-        token = @lexer.tokenise('Callable').first
+      it 'matches Callable' do
+        token = lexer.tokenise('Callable').first
         expect(token.type).to eq(:TYPE)
         expect(token.value).to eq('Callable')
       end
-      it 'should match Sensitive' do
-        token = @lexer.tokenise('Sensitive').first
+      it 'matches Sensitive' do
+        token = lexer.tokenise('Sensitive').first
         expect(token.type).to eq(:TYPE)
         expect(token.value).to eq('Sensitive')
       end
@@ -1408,7 +1391,7 @@ END
   end
 
   context ':HEREDOC without interpolation' do
-    it 'should parse a simple heredoc' do
+    it 'parses a simple heredoc' do
       manifest = <<-END.gsub(%r{^ {6}}, '')
       $str = @(myheredoc)
         SOMETHING
@@ -1416,7 +1399,7 @@ END
         :
         |-myheredoc
       END
-      tokens = @lexer.tokenise(manifest)
+      tokens = lexer.tokenise(manifest)
 
       expect(tokens.length).to eq(8)
       expect(tokens[0].type).to eq(:VARIABLE)
@@ -1453,7 +1436,7 @@ END
       expect(tokens[7].column).to eq(14)
     end
 
-    it 'should not interpolate the contents of the heredoc' do
+    it 'does not interpolate the contents of the heredoc' do
       manifest = <<-END.gsub(%r{^ {6}}, '')
       $str = @(myheredoc)
         SOMETHING
@@ -1461,7 +1444,7 @@ END
         :
         |-myheredoc
       END
-      tokens = @lexer.tokenise(manifest)
+      tokens = lexer.tokenise(manifest)
 
       expect(tokens.length).to eq(8)
       expect(tokens[0].type).to eq(:VARIABLE)
@@ -1499,7 +1482,7 @@ END
       expect(tokens[7].column).to eq(14)
     end
 
-    it 'should handle multiple heredoc declarations on a single line' do
+    it 'handles multiple heredoc declarations on a single line' do
       manifest = <<-END.gsub(%r{^ {6}}, '')
       $str = "${@(end1)} ${@(end2)}"
         foo
@@ -1507,7 +1490,7 @@ END
         bar
         |-end2
       END
-      tokens = @lexer.tokenise(manifest)
+      tokens = lexer.tokenise(manifest)
 
       expect(tokens.length).to eq(14)
       expect(tokens[0].type).to eq(:VARIABLE)
@@ -1570,7 +1553,7 @@ END
       expect(tokens[13].column).to eq(9)
     end
 
-    it 'should handle a heredoc that specifies a syntax' do
+    it 'handles a heredoc that specifies a syntax' do
       manifest = <<-END.gsub(%r{^ {6}}, '')
       $str = @("end":json/)
         {
@@ -1579,7 +1562,7 @@ END
         |-end
       END
 
-      tokens = @lexer.tokenise(manifest)
+      tokens = lexer.tokenise(manifest)
 
       expect(tokens.length).to eq(8)
       expect(tokens[0].type).to eq(:VARIABLE)
@@ -1617,13 +1600,13 @@ END
       expect(tokens[7].column).to eq(8)
     end
 
-    it 'should handle a heredoc with spaces in the tag' do
+    it 'handles a heredoc with spaces in the tag' do
       manifest = <<-END.gsub(%r{^ {6}}, '')
       $str = @("myheredoc"     /)
         foo
         |-myheredoc
       END
-      tokens = @lexer.tokenise(manifest)
+      tokens = lexer.tokenise(manifest)
       expect(tokens.length).to eq(8)
 
       expect(tokens[4].type).to eq(:HEREDOC_OPEN)
@@ -1632,13 +1615,13 @@ END
       expect(tokens[6].value).to eq("  foo\n  ")
     end
 
-    it 'should handle a heredoc with no indentation' do
+    it 'handles a heredoc with no indentation' do
       manifest = <<-END.gsub(%r{^ {6}}, '')
       $str = @(EOT)
       something
       EOT
       END
-      tokens = @lexer.tokenise(manifest)
+      tokens = lexer.tokenise(manifest)
 
       expect(tokens.length).to eq(8)
       expect(tokens[4].type).to eq(:HEREDOC_OPEN)
@@ -1649,7 +1632,7 @@ END
   end
 
   context ':HEREDOC with interpolation' do
-    it 'should parse a heredoc with no interpolated values as a :HEREDOC' do
+    it 'parses a heredoc with no interpolated values as a :HEREDOC' do
       manifest = <<-END.gsub(%r{^ {6}}, '')
       $str = @("myheredoc"/)
         SOMETHING
@@ -1657,7 +1640,7 @@ END
         :
         |-myheredoc
       END
-      tokens = @lexer.tokenise(manifest)
+      tokens = lexer.tokenise(manifest)
 
       expect(tokens[0].type).to eq(:VARIABLE)
       expect(tokens[0].value).to eq('str')
@@ -1694,7 +1677,7 @@ END
       expect(tokens[7].column).to eq(14)
     end
 
-    it 'should parse a heredoc with interpolated values' do
+    it 'parses a heredoc with interpolated values' do
       manifest = <<-END.gsub(%r{^ {6}}, '')
       $str = @("myheredoc"/)
         SOMETHING
@@ -1705,7 +1688,7 @@ END
         | myheredoc
       END
 
-      tokens = @lexer.tokenise(manifest)
+      tokens = lexer.tokenise(manifest)
       expect(tokens.map(&:to_manifest).join('')).to eq(manifest)
 
       expect(tokens[0].type).to eq(:VARIABLE)
@@ -1758,13 +1741,13 @@ END
       expect(tokens[10].column).to eq(11)
     end
 
-    it 'should not remove the unnecessary $ from enclosed variables' do
+    it 'does not remove the unnecessary $ from enclosed variables' do
       manifest = <<-END.gsub(%r{^ {6}}, '')
       $str = @("myheredoc"/)
         ${$myvar}
         |-myheredoc
       END
-      tokens = @lexer.tokenise(manifest)
+      tokens = lexer.tokenise(manifest)
 
       expect(tokens.length).to eq(10)
 
@@ -1778,284 +1761,283 @@ END
   end
 
   context ':CLASSREF' do
-    it 'should match single capitalised alphanumeric term' do
-      token = @lexer.tokenise('One').first
+    it 'matches single capitalised alphanumeric term' do
+      token = lexer.tokenise('One').first
       expect(token.type).to eq(:CLASSREF)
       expect(token.value).to eq('One')
     end
 
-    it 'should match two capitalised alphanumeric terms sep by ::' do
-      token = @lexer.tokenise('One::Two').first
+    it 'matches two capitalised alphanumeric terms sep by ::' do
+      token = lexer.tokenise('One::Two').first
       expect(token.type).to eq(:CLASSREF)
       expect(token.value).to eq('One::Two')
     end
 
-    it 'should match many capitalised alphanumeric terms sep by ::' do
-      token = @lexer.tokenise('One::Two::Three::Four::Five').first
+    it 'matches many capitalised alphanumeric terms sep by ::' do
+      token = lexer.tokenise('One::Two::Three::Four::Five').first
       expect(token.type).to eq(:CLASSREF)
       expect(token.value).to eq('One::Two::Three::Four::Five')
     end
 
-    it 'should match capitalised terms prefixed by ::' do
-      token = @lexer.tokenise('::One').first
+    it 'matches capitalised terms prefixed by ::' do
+      token = lexer.tokenise('::One').first
       expect(token.type).to eq(:CLASSREF)
       expect(token.value).to eq('::One')
     end
 
-    it 'should match terms that start with Types' do
-      token = @lexer.tokenise('Regexp_foo').first
+    it 'matches terms that start with Types' do
+      token = lexer.tokenise('Regexp_foo').first
       expect(token.type).to eq(:CLASSREF)
       expect(token.value).to eq('Regexp_foo')
     end
   end
 
   context ':NAME' do
-    it 'should match lowercase alphanumeric terms' do
-      token = @lexer.tokenise('one-two').first
+    it 'matches lowercase alphanumeric terms' do
+      token = lexer.tokenise('one-two').first
       expect(token.type).to eq(:NAME)
       expect(token.value).to eq('one-two')
     end
 
-    it 'should match lowercase alphanumeric terms sep by ::' do
-      token = @lexer.tokenise('one::two').first
+    it 'matches lowercase alphanumeric terms sep by ::' do
+      token = lexer.tokenise('one::two').first
       expect(token.type).to eq(:NAME)
       expect(token.value).to eq('one::two')
     end
 
-    it 'should match many lowercase alphanumeric terms sep by ::' do
-      token = @lexer.tokenise('one::two::three::four::five').first
+    it 'matches many lowercase alphanumeric terms sep by ::' do
+      token = lexer.tokenise('one::two::three::four::five').first
       expect(token.type).to eq(:NAME)
       expect(token.value).to eq('one::two::three::four::five')
     end
 
-    it 'should match lowercase alphanumeric terms prefixed by ::' do
-      token = @lexer.tokenise('::1one::2two::3three').first
+    it 'matches lowercase alphanumeric terms prefixed by ::' do
+      token = lexer.tokenise('::1one::2two::3three').first
       expect(token.type).to eq(:NAME)
       expect(token.value).to eq('::1one::2two::3three')
     end
 
-    it 'should match barewords beginning with an underscore' do
-      token = @lexer.tokenise('_bareword').first
+    it 'matches barewords beginning with an underscore' do
+      token = lexer.tokenise('_bareword').first
       expect(token.type).to eq(:NAME)
       expect(token.value).to eq('_bareword')
     end
   end
 
   context ':FUNCTION_NAME' do
-    it 'should match when a :NAME is followed by a :LPAREN' do
-      token = @lexer.tokenise('my_function(').first
+    it 'matches when a :NAME is followed by a :LPAREN' do
+      token = lexer.tokenise('my_function(').first
       expect(token.type).to eq(:FUNCTION_NAME)
       expect(token.value).to eq('my_function')
     end
   end
 
   context ':NUMBER' do
-    it 'should match numeric terms' do
-      token = @lexer.tokenise('1234567890').first
+    it 'matches numeric terms' do
+      token = lexer.tokenise('1234567890').first
       expect(token.type).to eq(:NUMBER)
       expect(token.value).to eq('1234567890')
     end
 
-    it 'should match float terms' do
-      token = @lexer.tokenise('12345.6789').first
+    it 'matches float terms' do
+      token = lexer.tokenise('12345.6789').first
       expect(token.type).to eq(:NUMBER)
       expect(token.value).to eq('12345.6789')
     end
 
-    it 'should match hexadecimal terms' do
-      token = @lexer.tokenise('0xCAFE1029').first
+    it 'matches hexadecimal terms' do
+      token = lexer.tokenise('0xCAFE1029').first
       expect(token.type).to eq(:NUMBER)
       expect(token.value).to eq('0xCAFE1029')
     end
 
-    it 'should match float with exponent terms' do
-      token = @lexer.tokenise('10e23').first
-      expect(token.type).to eq(:NUMBER)
-      expect(token.value).to eq('10e23')
+    [
+      '10e23',
+      '1.234e5',
+    ].each do |f|
+      it 'matches float with exponent terms' do
+        token = lexer.tokenise(f).first
+        expect(token.type).to eq(:NUMBER)
+        expect(token.value).to eq(f)
+      end
     end
 
-    it 'should match float with negative exponent terms' do
-      token = @lexer.tokenise('10e-23').first
+    it 'matches float with negative exponent terms' do
+      token = lexer.tokenise('10e-23').first
       expect(token.type).to eq(:NUMBER)
       expect(token.value).to eq('10e-23')
-    end
-
-    it 'should match float with exponent terms' do
-      token = @lexer.tokenise('1.234e5').first
-      expect(token.type).to eq(:NUMBER)
-      expect(token.value).to eq('1.234e5')
     end
   end
 
   context ':COMMENT' do
-    it 'should match everything on a line after #' do
-      token = @lexer.tokenise('foo # bar baz')[2]
+    it 'matches everything on a line after #' do
+      token = lexer.tokenise('foo # bar baz')[2]
       expect(token.type).to eq(:COMMENT)
       expect(token.value).to eq(' bar baz')
     end
 
-    it 'should not include DOS line endings in the comment value' do
-      tokens = @lexer.tokenise("foo # bar baz\r\n")
+    it 'does not include DOS line endings in the comment value' do
+      tokens = lexer.tokenise("foo # bar baz\r\n")
 
-      expect(tokens[2]).to have_attributes(:type => :COMMENT, :value => ' bar baz')
-      expect(tokens[3]).to have_attributes(:type => :NEWLINE, :value => "\r\n")
+      expect(tokens[2]).to have_attributes(type: :COMMENT, value: ' bar baz')
+      expect(tokens[3]).to have_attributes(type: :NEWLINE, value: "\r\n")
     end
 
-    it 'should not include Unix line endings in the comment value' do
-      tokens = @lexer.tokenise("foo # bar baz\n")
+    it 'does not include Unix line endings in the comment value' do
+      tokens = lexer.tokenise("foo # bar baz\n")
 
-      expect(tokens[2]).to have_attributes(:type => :COMMENT, :value => ' bar baz')
-      expect(tokens[3]).to have_attributes(:type => :NEWLINE, :value => "\n")
+      expect(tokens[2]).to have_attributes(type: :COMMENT, value: ' bar baz')
+      expect(tokens[3]).to have_attributes(type: :NEWLINE, value: "\n")
     end
   end
 
   context ':MLCOMMENT' do
-    it 'should match comments on a single line' do
-      token = @lexer.tokenise('/* foo bar */').first
+    it 'matches comments on a single line' do
+      token = lexer.tokenise('/* foo bar */').first
       expect(token.type).to eq(:MLCOMMENT)
       expect(token.value).to eq('foo bar')
     end
 
-    it 'should match comments on multiple lines' do
-      token = @lexer.tokenise("/* foo\n * bar\n*/").first
+    it 'matches comments on multiple lines' do
+      token = lexer.tokenise("/* foo\n * bar\n*/").first
       expect(token.type).to eq(:MLCOMMENT)
       expect(token.value).to eq("foo\n bar\n")
     end
   end
 
   context ':SLASH_COMMENT' do
-    it 'should match everyone on a line after //' do
-      token = @lexer.tokenise('foo // bar baz')[2]
+    it 'matches everyone on a line after //' do
+      token = lexer.tokenise('foo // bar baz')[2]
       expect(token.type).to eq(:SLASH_COMMENT)
       expect(token.value).to eq(' bar baz')
     end
 
-    it 'should not include DOS line endings in the comment value' do
-      tokens = @lexer.tokenise("foo // bar baz\r\n")
+    it 'does not include DOS line endings in the comment value' do
+      tokens = lexer.tokenise("foo // bar baz\r\n")
 
-      expect(tokens[2]).to have_attributes(:type => :SLASH_COMMENT, :value => ' bar baz')
-      expect(tokens[3]).to have_attributes(:type => :NEWLINE, :value => "\r\n")
+      expect(tokens[2]).to have_attributes(type: :SLASH_COMMENT, value: ' bar baz')
+      expect(tokens[3]).to have_attributes(type: :NEWLINE, value: "\r\n")
     end
 
-    it 'should not include Unix line endings in the comment value' do
-      tokens = @lexer.tokenise("foo // bar baz\n")
+    it 'does not include Unix line endings in the comment value' do
+      tokens = lexer.tokenise("foo // bar baz\n")
 
-      expect(tokens[2]).to have_attributes(:type => :SLASH_COMMENT, :value => ' bar baz')
-      expect(tokens[3]).to have_attributes(:type => :NEWLINE, :value => "\n")
+      expect(tokens[2]).to have_attributes(type: :SLASH_COMMENT, value: ' bar baz')
+      expect(tokens[3]).to have_attributes(type: :NEWLINE, value: "\n")
     end
   end
 
   context ':SSTRING' do
-    it 'should match a single quoted string' do
-      token = @lexer.tokenise("'single quoted string'").first
+    it 'matches a single quoted string' do
+      token = lexer.tokenise("'single quoted string'").first
       expect(token.type).to eq(:SSTRING)
       expect(token.value).to eq('single quoted string')
     end
 
-    it "should match a single quoted string with an escaped '" do
-      token = @lexer.tokenise(%q('single quoted string with "\\'"')).first
+    it "matches a single quoted string with an escaped '" do
+      token = lexer.tokenise(%q('single quoted string with "\\'"')).first
       expect(token.type).to eq(:SSTRING)
       expect(token.value).to eq('single quoted string with "\\\'"')
     end
 
-    it 'should match a single quoted string with an escaped $' do
-      token = @lexer.tokenise(%q('single quoted string with "\$"')).first
+    it 'matches a single quoted string with an escaped $' do
+      token = lexer.tokenise(%q('single quoted string with "\$"')).first
       expect(token.type).to eq(:SSTRING)
       expect(token.value).to eq('single quoted string with "\\$"')
     end
 
-    it 'should match a single quoted string with an escaped .' do
-      token = @lexer.tokenise(%q('single quoted string with "\."')).first
+    it 'matches a single quoted string with an escaped .' do
+      token = lexer.tokenise(%q('single quoted string with "\."')).first
       expect(token.type).to eq(:SSTRING)
       expect(token.value).to eq('single quoted string with "\\."')
     end
 
-    it 'should match a single quoted string with an escaped \\n' do
-      token = @lexer.tokenise(%q('single quoted string with "\n"')).first
+    it 'matches a single quoted string with an escaped \n' do
+      token = lexer.tokenise(%q('single quoted string with "\n"')).first
       expect(token.type).to eq(:SSTRING)
       expect(token.value).to eq('single quoted string with "\\n"')
     end
 
-    it 'should match a single quoted string with an escaped \\' do
-      token = @lexer.tokenise(%q('single quoted string with "\\\\"')).first
-      expect(token.type).to eq(:SSTRING)
-      expect(token.value).to eq('single quoted string with "\\\\"')
-    end
-
-    it 'should match an empty string' do
-      token = @lexer.tokenise("''").first
+    # it 'matches a single quoted string with an escaped \' do
+    #   token = lexer.tokenise(%q('single quoted string with "\\\\"')).first
+    #   expect(token.type).to eq(:SSTRING)
+    #   expect(token.value).to eq('single quoted string with "\\\\"')
+    # end
+    #
+    it 'matches an empty string' do
+      token = lexer.tokenise("''").first
       expect(token.type).to eq(:SSTRING)
       expect(token.value).to eq('')
     end
 
-    it 'should match an empty string ending with \\\\' do
-      token = @lexer.tokenise("'foo\\\\'").first
+    it 'matches an empty string ending with \\' do
+      token = lexer.tokenise("'foo\\\\'").first
       expect(token.type).to eq(:SSTRING)
       expect(token.value).to eq(%(foo\\\\))
     end
 
-    it 'should match single quoted string containing a line break' do
-      token = @lexer.tokenise("'\n'").first
+    it 'matches single quoted string containing a line break' do
+      token = lexer.tokenise("'\n'").first
       expect(token.type).to eq(:SSTRING)
       expect(token.value).to eq("\n")
     end
   end
 
   context ':REGEX' do
-    it 'should match anything enclosed in //' do
-      token = @lexer.tokenise('/this is a regex/').first
+    it 'matches anything enclosed in //' do
+      token = lexer.tokenise('/this is a regex/').first
       expect(token.type).to eq(:REGEX)
       expect(token.value).to eq('this is a regex')
     end
 
-    it 'should match even if there is \n in the regex' do
-      token = @lexer.tokenise("/this is a regex,\ntoo/").first
+    it 'matches even if there is \n in the regex' do
+      token = lexer.tokenise("/this is a regex,\ntoo/").first
       expect(token.type).to eq(:REGEX)
       expect(token.value).to eq("this is a regex,\ntoo")
     end
 
-    it 'should not consider \/ to be the end of the regex' do
-      token = @lexer.tokenise('/this is \/ a regex/').first
+    it 'does not consider \/ to be the end of the regex' do
+      token = lexer.tokenise('/this is \/ a regex/').first
       expect(token.type).to eq(:REGEX)
       expect(token.value).to eq('this is \\/ a regex')
     end
 
-    it 'should be allowed as a param to a data type' do
-      tokens = @lexer.tokenise('Foo[/bar/]')
+    it 'is allowed as a param to a data type' do
+      tokens = lexer.tokenise('Foo[/bar/]')
       expect(tokens[2].type).to eq(:REGEX)
       expect(tokens[2].value).to eq('bar')
     end
 
-    it 'should be allowed as a param to an optional data type' do
-      tokens = @lexer.tokenise('Optional[Regexp[/^puppet/]]')
+    it 'is allowed as a param to an optional data type' do
+      tokens = lexer.tokenise('Optional[Regexp[/^puppet/]]')
       expect(tokens[4].type).to eq(:REGEX)
       expect(tokens[4].value).to eq('^puppet')
     end
 
-    it 'should not match chained division' do
-      tokens = @lexer.tokenise('$x = $a/$b/$c')
+    it 'does not match chained division' do
+      tokens = lexer.tokenise('$x = $a/$b/$c')
       expect(tokens.select { |r| r.type == :REGEX }).to be_empty
     end
 
-    it 'should properly parse when regex follows an if' do
-      tokens = @lexer.tokenise('if /^icinga_service_icon_.*/ in $location_info { }')
+    it 'properlies parse when regex follows an if' do
+      tokens = lexer.tokenise('if /^icinga_service_icon_.*/ in $location_info { }')
       expect(tokens[2].type).to eq(:REGEX)
     end
 
-    it 'should properly parse when a regex follows an elsif' do
-      tokens = @lexer.tokenise('if /a/ in $location_info { } elsif /b/ in $location_info { }')
+    it 'properlies parse when a regex follows an elsif' do
+      tokens = lexer.tokenise('if /a/ in $location_info { } elsif /b/ in $location_info { }')
       expect(tokens[2].type).to eq(:REGEX)
       expect(tokens[14].type).to eq(:REGEX)
     end
 
-    it 'should properly parse when a regex is provided as a function argument' do
-      tokens = @lexer.tokenise('$somevar = $other_var.match(/([\w\.]+(:\d+)?(\/\w+)?)(:(\w+))?/)')
+    it 'properlies parse when a regex is provided as a function argument' do
+      tokens = lexer.tokenise('$somevar = $other_var.match(/([\w\.]+(:\d+)?(\/\w+)?)(:(\w+))?/)')
       expect(tokens[8].type).to eq(:REGEX)
       expect(tokens[8].value).to eq('([\w\.]+(:\d+)?(\/\w+)?)(:(\w+))?')
     end
 
-    it 'should discriminate between division and regexes' do
-      tokens = @lexer.tokenise('if $a/10==0 or $b=~/{}/')
+    it 'discriminates between division and regexes' do
+      tokens = lexer.tokenise('if $a/10==0 or $b=~/{}/')
       expect(tokens[3].type).to eq(:DIV)
       expect(tokens[12].type).to eq(:REGEX)
       expect(tokens[12].value).to eq('{}')
@@ -2063,22 +2045,22 @@ END
   end
 
   context ':STRING' do
-    it 'should parse strings with embedded strings' do
+    it 'parses strings with embedded strings' do
       expect {
-        @lexer.tokenise('exec { "/bin/echo \"${environment}\"": }')
-      }.to_not raise_error
+        lexer.tokenise('exec { "/bin/echo \"${environment}\"": }')
+      }.not_to raise_error
     end
 
-    it 'should match double quoted string containing a line break' do
-      token = @lexer.tokenise(%("\n")).first
+    it 'matches double quoted string containing a line break' do
+      token = lexer.tokenise(%("\n")).first
       expect(token.type).to eq(:STRING)
       expect(token.value).to eq("\n")
     end
 
-    it 'should handle interpolated values that contain double quotes' do
+    it 'handles interpolated values that contain double quotes' do
       manifest = %{"export bar=\\"${join(hiera('test'), "," )}\\""}
 
-      tokens = @lexer.tokenise(manifest)
+      tokens = lexer.tokenise(manifest)
       expect(tokens[0].type).to eq(:DQPRE)
       expect(tokens[0].value).to eq('export bar=\"')
       expect(tokens[1].type).to eq(:FUNCTION_NAME)
@@ -2104,20 +2086,20 @@ END
   end
 
   context ':WHITESPACE' do
-    it 'should parse spaces' do
-      token = @lexer.tokenise(' ').first
+    it 'parses spaces' do
+      token = lexer.tokenise(' ').first
       expect(token.type).to eq(:WHITESPACE)
       expect(token.value).to eq(' ')
     end
 
-    it 'should parse tabs' do
-      token = @lexer.tokenise("\t").first
+    it 'parses tabs' do
+      token = lexer.tokenise("\t").first
       expect(token.type).to eq(:WHITESPACE)
       expect(token.value).to eq("\t")
     end
 
-    it 'should parse unicode spaces', :unless => RUBY_VERSION == '1.8.7' do
-      token = @lexer.tokenise("\xc2\xa0").first
+    it 'parses unicode spaces', unless: RUBY_VERSION == '1.8.7' do
+      token = lexer.tokenise("\xc2\xa0").first
       expect(token.type).to eq(:WHITESPACE)
       expect(token.value).to eq("\xc2\xa0")
     end

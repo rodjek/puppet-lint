@@ -14,7 +14,7 @@ describe 'ensure_not_symlink_target' do
         END
       end
 
-      it 'should not detect any problems' do
+      it 'does not detect any problems' do
         expect(problems).to have(0).problems
       end
     end
@@ -28,22 +28,22 @@ describe 'ensure_not_symlink_target' do
         END
       end
 
-      it 'should only detect a single problem' do
+      it 'only detects a single problem' do
         expect(problems).to have(1).problem
       end
 
-      it 'should create a warning' do
+      it 'creates a warning' do
         expect(problems).to contain_warning(msg).on_line(2).in_column(23)
       end
     end
   end
 
   context 'with fix enabled' do
-    before do
+    before(:each) do
       PuppetLint.configuration.fix = true
     end
 
-    after do
+    after(:each) do
       PuppetLint.configuration.fix = false
     end
 
@@ -57,11 +57,11 @@ describe 'ensure_not_symlink_target' do
         END
       end
 
-      it 'should not detect any problems' do
+      it 'does not detect any problems' do
         expect(problems).to have(0).problems
       end
 
-      it 'should not modify the manifest' do
+      it 'does not modify the manifest' do
         expect(manifest).to eq(code)
       end
     end
@@ -84,15 +84,15 @@ describe 'ensure_not_symlink_target' do
         END
       end
 
-      it 'should only detect a single problem' do
+      it 'only detects a single problem' do
         expect(problems).to have(1).problem
       end
 
-      it 'should fix the problem' do
+      it 'fixes the problem' do
         expect(problems).to contain_fixed(msg).on_line(2).in_column(23)
       end
 
-      it 'should create a new target param' do
+      it 'creates a new target param' do
         expect(manifest).to eq(fixed)
       end
     end

@@ -26,7 +26,7 @@ class CommandRun
 end
 
 describe PuppetLint::Bin do
-  subject do
+  subject(:bin) do
     sane_args = if args.is_a?(Array)
                   args
                 else
@@ -57,18 +57,19 @@ describe PuppetLint::Bin do
 
   context 'when asked to display available checks' do
     let(:args) { '--list-checks' }
+
     all_checks = PuppetLint.configuration.checks.map(&:to_s)
 
     its(:exitstatus) { is_expected.to eq(0) }
 
     all_checks.each do |c|
       it "includes check #{c} in its output" do
-        expect(subject.stdout).to include c
+        expect(bin.stdout).to include c
       end
     end
   end
 
-  context 'when passed a backslash separated path on Windows', :if => Gem.win_platform? do
+  context 'when passed a backslash separated path on Windows', if: Gem.win_platform? do
     let(:args) do
       [
         'spec\fixtures\test\manifests',
@@ -93,7 +94,7 @@ describe PuppetLint::Bin do
         [
           "#{args[0]} - WARNING: optional parameter listed before required parameter on line 2 (check: parameter_order)",
           "#{args[1]} - ERROR: test::foo not in autoload module layout on line 2 (check: autoloader_layout)",
-        ].join("\n")
+        ].join("\n"),
       )
     end
   end
@@ -144,8 +145,10 @@ describe PuppetLint::Bin do
     end
 
     its(:exitstatus) { is_expected.to eq(1) }
-    its(:stdout) { is_expected.to match(%r{WARNING}) }
-    its(:stdout) { is_expected.to_not match(%r{ERROR}) }
+    its(:stdout) do
+      is_expected.to match(%r{WARNING})
+      is_expected.not_to match(%r{ERROR})
+    end
   end
 
   context 'when specifying a specific check to run' do
@@ -159,8 +162,10 @@ describe PuppetLint::Bin do
     end
 
     its(:exitstatus) { is_expected.to eq(0) }
-    its(:stdout) { is_expected.to_not match(%r{ERROR}) }
-    its(:stdout) { is_expected.to match(%r{WARNING}) }
+    its(:stdout) do
+      is_expected.not_to match(%r{ERROR})
+      is_expected.to match(%r{WARNING})
+    end
   end
 
   context 'when asked to display filenames ' do
@@ -202,7 +207,7 @@ describe PuppetLint::Bin do
           '',
           "  define test::warning($foo='bar', $baz) { }",
           '                                   ^',
-        ].join("\n")
+        ].join("\n"),
       )
     end
   end
@@ -440,7 +445,7 @@ describe PuppetLint::Bin do
     end
 
     its(:exitstatus) { is_expected.to eq(0) }
-    its(:stdout) { is_expected.to_not match(%r{IGNORED}) }
+    its(:stdout) { is_expected.not_to match(%r{IGNORED}) }
   end
 
   context 'when showing ignored problems' do
@@ -469,7 +474,7 @@ describe PuppetLint::Bin do
         [
           'IGNORED: double quoted string containing no variables on line 3 (check: double_quoted_strings)',
           '  for a good reason',
-        ].join("\n")
+        ].join("\n"),
       )
     end
   end
@@ -517,44 +522,48 @@ describe PuppetLint::Bin do
   end
 
   context 'when fixing a file with \n line endings' do
-    before(:context) do
-      @windows_file = Tempfile.new('windows')
-      @posix_file = Tempfile.new('posix')
-
-      @windows_file.binmode
-      @posix_file.binmode
-
-      @windows_file.write("\r\n")
-      @posix_file.write("\n")
-
-      @windows_file.close
-      @posix_file.close
+    let(:windows_file) do
+      Tempfile.new('windows')
     end
 
-    after(:context) do
-      @windows_file.unlink
-      @posix_file.unlink
+    let(:posix_file) do
+      Tempfile.new('posix')
     end
 
     let(:args) do
       [
         '--fix',
-        @posix_file.path,
-        @windows_file.path,
+        posix_file.path,
+        windows_file.path,
       ]
+    end
+
+    before(:each) do
+      windows_file.binmode
+      windows_file.write("\r\n")
+      windows_file.close
+
+      posix_file.binmode
+      posix_file.write("\n")
+      posix_file.close
+    end
+
+    after(:each) do
+      windows_file.unlink
+      posix_file.unlink
     end
 
     its(:exitstatus) { is_expected.to eq(0) }
 
     it 'does not change the line endings' do
-      File.open(@posix_file.path, 'rb') do |f|
+      File.open(posix_file.path, 'rb') do |f|
         data = f.read
 
         expect(data).to match(%r{\n\Z}m)
-        expect(data).to_not match(%r{\r\n\Z}m)
+        expect(data).not_to match(%r{\r\n\Z}m)
       end
 
-      File.open(@windows_file.path, 'rb') do |f|
+      File.open(windows_file.path, 'rb') do |f|
         data = f.read
 
         expect(data).to match(%r{\r\n\Z}m)

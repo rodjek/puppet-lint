@@ -1,60 +1,60 @@
 require 'spec_helper'
 
 describe PuppetLint::Configuration do
-  subject { PuppetLint::Configuration.new }
+  subject(:config) { described_class.new }
 
-  it 'should create check methods on the fly' do
+  it 'creates check methods on the fly' do
     klass = Class.new
-    subject.add_check('foo', klass)
+    config.add_check('foo', klass)
 
-    expect(subject).to respond_to(:foo_enabled?)
-    expect(subject).to_not respond_to(:bar_enabled?)
-    expect(subject).to respond_to(:enable_foo)
-    expect(subject).to respond_to(:disable_foo)
+    expect(config).to respond_to(:foo_enabled?)
+    expect(config).not_to respond_to(:bar_enabled?)
+    expect(config).to respond_to(:enable_foo)
+    expect(config).to respond_to(:disable_foo)
 
-    subject.disable_foo
-    expect(subject.settings['foo_disabled']).to be_truthy
-    expect(subject.foo_enabled?).to be_falsey
+    config.disable_foo
+    expect(config.settings['foo_disabled']).to be_truthy
+    expect(config.foo_enabled?).to be_falsey
 
-    subject.enable_foo
-    expect(subject.settings['foo_disabled']).to be_falsey
-    expect(subject.foo_enabled?).to be_truthy
+    config.enable_foo
+    expect(config.settings['foo_disabled']).to be_falsey
+    expect(config.foo_enabled?).to be_truthy
   end
 
-  it 'should know what checks have been added' do
+  it 'knows what checks have been added' do
     klass = Class.new
-    subject.add_check('foo', klass)
-    expect(subject.checks).to include('foo')
+    config.add_check('foo', klass)
+    expect(config.checks).to include('foo')
   end
 
-  it 'should respond nil to unknown config options' do
-    expect(subject.foobarbaz).to be_nil
+  it 'responds nil to unknown config options' do
+    expect(config.foobarbaz).to be_nil
   end
 
-  it 'should be able to explicitly add options' do
-    subject.add_option('bar')
+  it 'is able to explicitly add options' do
+    config.add_option('bar')
 
-    expect(subject.bar).to be_nil
+    expect(config.bar).to be_nil
 
-    subject.bar = 'aoeui'
-    expect(subject.bar).to eq('aoeui')
+    config.bar = 'aoeui'
+    expect(config.bar).to eq('aoeui')
   end
 
-  it 'should be able to add options on the fly' do
-    expect(subject.test_option).to eq(nil)
+  it 'is able to add options on the fly' do
+    expect(config.test_option).to eq(nil)
 
-    subject.test_option = 'test'
+    config.test_option = 'test'
 
-    expect(subject.test_option).to eq('test')
+    expect(config.test_option).to eq('test')
   end
 
-  it 'should be able to set sane defaults' do
+  it 'is able to set sane defaults' do
     override_env do
       ENV.delete('GITHUB_ACTION')
-      subject.defaults
+      config.defaults
     end
 
-    expect(subject.settings).to eq(
+    expect(config.settings).to eq(
       'with_filename'    => false,
       'fail_on_warnings' => false,
       'error_level'      => :all,
@@ -65,21 +65,21 @@ describe PuppetLint::Configuration do
       'github_actions'   => false,
       'show_ignored'     => false,
       'json'             => false,
-      'ignore_paths'     => ['vendor/**/*.pp']
+      'ignore_paths'     => ['vendor/**/*.pp'],
     )
   end
 
   it 'detects github actions' do
     override_env do
       ENV['GITHUB_ACTION'] = 'action'
-      subject.defaults
+      config.defaults
     end
 
-    expect(subject.settings['github_actions']).to be(true)
+    expect(config.settings['github_actions']).to be(true)
   end
 
   def override_env
-    old_env = ENV.clone
+    old_env = ENV.to_h
     yield
   ensure
     ENV.clear

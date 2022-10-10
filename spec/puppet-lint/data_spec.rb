@@ -1,7 +1,8 @@
 require 'spec_helper'
 
 describe PuppetLint::Data do
-  subject(:data) { PuppetLint::Data }
+  subject(:data) { described_class }
+
   let(:lexer) { PuppetLint::Lexer.new }
 
   describe '.resource_indexes' do
@@ -39,7 +40,8 @@ describe PuppetLint::Data do
     let(:new_token) { PuppetLint::Lexer::Token.new(:PLUS, '+', 0, 0) }
     let(:original_tokens) { lexer.tokenise(manifest) }
     let(:tokens) { original_tokens.dup }
-    before do
+
+    before(:each) do
       data.tokens = tokens
       data.insert(2, new_token)
     end
@@ -86,7 +88,8 @@ describe PuppetLint::Data do
     let(:token) { tokens[2] }
     let(:original_tokens) { lexer.tokenise(manifest) }
     let(:tokens) { original_tokens.dup }
-    before do
+
+    before(:each) do
       data.tokens = tokens
       data.delete(token)
     end

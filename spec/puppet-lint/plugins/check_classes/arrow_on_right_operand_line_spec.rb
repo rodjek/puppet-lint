@@ -12,7 +12,7 @@ describe 'arrow_on_right_operand_line' do
           END
         end
 
-        it 'should not detect any problems' do
+        it 'does not detect any problems' do
           expect(problems).to have(0).problems
         end
       end
@@ -25,20 +25,20 @@ describe 'arrow_on_right_operand_line' do
           END
         end
 
-        it 'should detect a problem' do
+        it 'detects a problem' do
           expect(problems).to have(1).problem
         end
 
-        it 'should create a warning' do
+        it 'creates a warning' do
           expect(problems).to contain_warning(msg).on_line(1).in_column(31)
         end
 
         context 'with fix enabled' do
-          before do
+          before(:each) do
             PuppetLint.configuration.fix = true
           end
 
-          after do
+          after(:each) do
             PuppetLint.configuration.fix = false
           end
 
@@ -49,11 +49,11 @@ describe 'arrow_on_right_operand_line' do
             END
           end
 
-          it 'should fix the problem' do
+          it 'fixes the problem' do
             expect(problems).to contain_fixed(msg).on_line(1).in_column(31)
           end
 
-          it 'should move the arrow to before the right operand' do
+          it 'moves the arrow to before the right operand' do
             expect(manifest).to eq(fixed)
           end
         end
@@ -67,7 +67,7 @@ describe 'arrow_on_right_operand_line' do
           END
         end
 
-        it 'should not detect any problems' do
+        it 'does not detect any problems' do
           expect(problems).to have(0).problems
         end
       end
@@ -83,11 +83,11 @@ describe 'arrow_on_right_operand_line' do
           END
         end
 
-        it 'should detect a problem' do
+        it 'detects a problem' do
           expect(problems).to have(1).problem
         end
 
-        it 'should create a warning' do
+        it 'creates a warning' do
           expect(problems).to contain_warning(msg).on_line(1).in_column(30)
         end
 
@@ -110,11 +110,11 @@ describe 'arrow_on_right_operand_line' do
             END
           end
 
-          it 'should fix the problem' do
+          it 'fixes the problem' do
             expect(problems).to contain_fixed(msg).on_line(1).in_column(30)
           end
 
-          it 'should move the arrow to before the right operand' do
+          it 'moves the arrow to before the right operand' do
             expect(manifest).to eq(fixed)
           end
         end
@@ -128,11 +128,11 @@ describe 'arrow_on_right_operand_line' do
           END
         end
 
-        it 'should detect a problem' do
+        it 'detects a problem' do
           expect(problems).to have(1).problem
         end
 
-        it 'should create a warning' do
+        it 'creates a warning' do
           expect(problems).to contain_warning(msg).on_line(1).in_column(30)
         end
 
@@ -152,11 +152,11 @@ describe 'arrow_on_right_operand_line' do
             END
           end
 
-          it 'should fix the problem' do
+          it 'fixes the problem' do
             expect(problems).to contain_fixed(msg).on_line(1).in_column(30)
           end
 
-          it 'should move the arrow to before the right operand' do
+          it 'moves the arrow to before the right operand' do
             expect(manifest).to eq(fixed)
           end
         end

@@ -59,10 +59,10 @@ describe PuppetLint::Lexer::StringSlurper do
 
           it 'puts the variable into an interpolation segment' do
             expect(segments).to eq([
-              [:STRING, ''],
-              [:INTERP, 'foo'],
-              [:STRING, 'bar'],
-            ])
+                                     [:STRING, ''],
+                                     [:INTERP, 'foo'],
+                                     [:STRING, 'bar'],
+                                   ])
           end
         end
 
@@ -71,10 +71,10 @@ describe PuppetLint::Lexer::StringSlurper do
 
           it 'puts the variable into an interpolation segment' do
             expect(segments).to eq([
-              [:STRING, 'foo'],
-              [:INTERP, 'bar'],
-              [:STRING, 'baz'],
-            ])
+                                     [:STRING, 'foo'],
+                                     [:INTERP, 'bar'],
+                                     [:STRING, 'baz'],
+                                   ])
           end
         end
 
@@ -83,12 +83,12 @@ describe PuppetLint::Lexer::StringSlurper do
 
           it 'puts each variable into an interpolation segment' do
             expect(segments).to eq([
-              [:STRING, 'foo'],
-              [:INTERP, 'bar'],
-              [:STRING, 'baz'],
-              [:INTERP, 'gronk'],
-              [:STRING, 'meh'],
-            ])
+                                     [:STRING, 'foo'],
+                                     [:INTERP, 'bar'],
+                                     [:STRING, 'baz'],
+                                     [:INTERP, 'gronk'],
+                                     [:STRING, 'meh'],
+                                   ])
           end
         end
 
@@ -97,10 +97,10 @@ describe PuppetLint::Lexer::StringSlurper do
 
           it 'puts empty string segments around the interpolated segment' do
             expect(segments).to eq([
-              [:STRING, ''],
-              [:INTERP, 'bar'],
-              [:STRING, ''],
-            ])
+                                     [:STRING, ''],
+                                     [:INTERP, 'bar'],
+                                     [:STRING, ''],
+                                   ])
           end
         end
 
@@ -109,10 +109,10 @@ describe PuppetLint::Lexer::StringSlurper do
 
           it 'does not remove the unnecessary $' do
             expect(segments).to eq([
-              [:STRING, ''],
-              [:INTERP, '$bar'],
-              [:STRING, ''],
-            ])
+                                     [:STRING, ''],
+                                     [:INTERP, '$bar'],
+                                     [:STRING, ''],
+                                   ])
           end
         end
 
@@ -121,10 +121,10 @@ describe PuppetLint::Lexer::StringSlurper do
 
           it 'includes the references in the interpolated section' do
             expect(segments).to eq([
-              [:STRING, ''],
-              [:INTERP, 'foo[bar][baz]'],
-              [:STRING, ''],
-            ])
+                                     [:STRING, ''],
+                                     [:INTERP, 'foo[bar][baz]'],
+                                     [:STRING, ''],
+                                   ])
           end
         end
 
@@ -133,12 +133,12 @@ describe PuppetLint::Lexer::StringSlurper do
 
           it 'creates an interpolation section per variable' do
             expect(segments).to eq([
-              [:STRING, ''],
-              [:INTERP, 'foo'],
-              [:STRING, ''],
-              [:INTERP, 'bar'],
-              [:STRING, ''],
-            ])
+                                     [:STRING, ''],
+                                     [:INTERP, 'foo'],
+                                     [:STRING, ''],
+                                     [:INTERP, 'bar'],
+                                     [:STRING, ''],
+                                   ])
           end
         end
 
@@ -147,10 +147,10 @@ describe PuppetLint::Lexer::StringSlurper do
 
           it 'creates a special segment for the unenclosed variable' do
             expect(segments).to eq([
-              [:STRING, ''],
-              [:UNENC_VAR, '$foo'],
-              [:STRING, ''],
-            ])
+                                     [:STRING, ''],
+                                     [:UNENC_VAR, '$foo'],
+                                     [:STRING, ''],
+                                   ])
           end
         end
 
@@ -159,10 +159,10 @@ describe PuppetLint::Lexer::StringSlurper do
 
           it 'creates an interpolation segment for the nested string' do
             expect(segments).to eq([
-              [:STRING, 'string with '],
-              [:INTERP, "'a nested single quoted string'"],
-              [:STRING, ' inside it'],
-            ])
+                                     [:STRING, 'string with '],
+                                     [:INTERP, "'a nested single quoted string'"],
+                                     [:STRING, ' inside it'],
+                                   ])
           end
         end
 
@@ -171,10 +171,10 @@ describe PuppetLint::Lexer::StringSlurper do
 
           it 'creates an interpolation segment for the nested math' do
             expect(segments).to eq([
-              [:STRING, 'string with '],
-              [:INTERP, '(3+5)/4'],
-              [:STRING, ' nested math'],
-            ])
+                                     [:STRING, 'string with '],
+                                     [:INTERP, '(3+5)/4'],
+                                     [:STRING, ' nested math'],
+                                   ])
           end
         end
 
@@ -183,10 +183,10 @@ describe PuppetLint::Lexer::StringSlurper do
 
           it 'creates an interpolation segment for the nested array' do
             expect(segments).to eq([
-              [:STRING, 'string with '],
-              [:INTERP, "['an array ', $v2]"],
-              [:STRING, ' in it'],
-            ])
+                                     [:STRING, 'string with '],
+                                     [:INTERP, "['an array ', $v2]"],
+                                     [:STRING, ' in it'],
+                                   ])
           end
         end
 
@@ -203,12 +203,12 @@ describe PuppetLint::Lexer::StringSlurper do
 
           it 'creates a special segment for each unenclosed variable' do
             expect(segments).to eq([
-              [:STRING, ''],
-              [:UNENC_VAR, '$foo'],
-              [:STRING, ''],
-              [:UNENC_VAR, '$bar'],
-              [:STRING, ''],
-            ])
+                                     [:STRING, ''],
+                                     [:UNENC_VAR, '$foo'],
+                                     [:STRING, ''],
+                                     [:UNENC_VAR, '$bar'],
+                                     [:STRING, ''],
+                                   ])
           end
         end
 
@@ -217,10 +217,10 @@ describe PuppetLint::Lexer::StringSlurper do
 
           it 'places the trailing $ in a string segment' do
             expect(segments).to eq([
-              [:STRING, 'foo'],
-              [:UNENC_VAR, '$bar'],
-              [:STRING, '$'],
-            ])
+                                     [:STRING, 'foo'],
+                                     [:UNENC_VAR, '$bar'],
+                                     [:STRING, '$'],
+                                   ])
           end
         end
 
@@ -229,10 +229,10 @@ describe PuppetLint::Lexer::StringSlurper do
 
           it 'includes the preceeding $ in the string segment before the unenclosed variable' do
             expect(segments).to eq([
-              [:STRING, 'foo$'],
-              [:UNENC_VAR, '$bar'],
-              [:STRING, ''],
-            ])
+                                     [:STRING, 'foo$'],
+                                     [:UNENC_VAR, '$bar'],
+                                     [:STRING, ''],
+                                   ])
           end
         end
 
@@ -241,10 +241,10 @@ describe PuppetLint::Lexer::StringSlurper do
 
           it 'only includes the valid part of the variable name in the segment' do
             expect(segments).to eq([
-              [:STRING, ''],
-              [:UNENC_VAR, '$foo'],
-              [:STRING, '::::bar'],
-            ])
+                                     [:STRING, ''],
+                                     [:UNENC_VAR, '$foo'],
+                                     [:STRING, '::::bar'],
+                                   ])
           end
         end
 
@@ -253,10 +253,10 @@ describe PuppetLint::Lexer::StringSlurper do
 
           it 'does not let this double quote terminate the string' do
             expect(segments).to eq([
-              [:STRING, ''],
-              [:INTERP, 'foo'],
-              [:STRING, '\\"bar'],
-            ])
+                                     [:STRING, ''],
+                                     [:INTERP, 'foo'],
+                                     [:STRING, '\\"bar'],
+                                   ])
           end
         end
 
@@ -265,10 +265,10 @@ describe PuppetLint::Lexer::StringSlurper do
 
           it 'recognizes this double quote as the terminator' do
             expect(segments).to eq([
-              [:STRING, ''],
-              [:INTERP, 'foo'],
-              [:STRING, '\\\\'],
-            ])
+                                     [:STRING, ''],
+                                     [:INTERP, 'foo'],
+                                     [:STRING, '\\\\'],
+                                   ])
           end
         end
 
@@ -277,12 +277,12 @@ describe PuppetLint::Lexer::StringSlurper do
 
           it 'keeps the whole function chain in a single interpolation segment' do
             expect(segments).to eq([
-              [:STRING, ''],
-              [:INTERP, 'key'],
-              [:STRING, ' '],
-              [:INTERP, 'flatten([$value]).join("\nkey ")'],
-              [:STRING, ''],
-            ])
+                                     [:STRING, ''],
+                                     [:INTERP, 'key'],
+                                     [:STRING, ' '],
+                                     [:INTERP, 'flatten([$value]).join("\nkey ")'],
+                                     [:STRING, ''],
+                                   ])
           end
         end
 
@@ -291,12 +291,12 @@ describe PuppetLint::Lexer::StringSlurper do
 
           it 'keeps each full interpolation in its own segment' do
             expect(segments).to eq([
-              [:STRING, ''],
-              [:INTERP, 'facts["network_${iface}"]'],
-              [:STRING, '/'],
-              [:INTERP, 'facts["netmask_${iface}"]'],
-              [:STRING, ''],
-            ])
+                                     [:STRING, ''],
+                                     [:INTERP, 'facts["network_${iface}"]'],
+                                     [:STRING, '/'],
+                                     [:INTERP, 'facts["netmask_${iface}"]'],
+                                     [:STRING, ''],
+                                   ])
           end
         end
 
@@ -305,10 +305,10 @@ describe PuppetLint::Lexer::StringSlurper do
 
           it do
             expect(segments).to eq([
-              [:STRING, ''],
-              [:INTERP, '$foo.map |$bar| { something($bar) }'],
-              [:STRING, ''],
-            ])
+                                     [:STRING, ''],
+                                     [:INTERP, '$foo.map |$bar| { something($bar) }'],
+                                     [:STRING, ''],
+                                   ])
           end
         end
       end
@@ -324,9 +324,9 @@ describe PuppetLint::Lexer::StringSlurper do
 
       it 'terminates the heredoc at the closing tag' do
         expect(segments).to eq([
-          [:HEREDOC, "  SOMETHING else\n  "],
-          [:HEREDOC_TERM, '|-THING'],
-        ])
+                                 [:HEREDOC, "  SOMETHING else\n  "],
+                                 [:HEREDOC_TERM, '|-THING'],
+                               ])
       end
     end
 
@@ -337,9 +337,9 @@ describe PuppetLint::Lexer::StringSlurper do
 
         it 'splits the heredoc into two segments' do
           expect(segments).to eq([
-            [:HEREDOC, "  SOMETHING\n  ELSE\n  :\n  "],
-            [:HEREDOC_TERM, '|-myheredoc'],
-          ])
+                                   [:HEREDOC, "  SOMETHING\n  ELSE\n  :\n  "],
+                                   [:HEREDOC_TERM, '|-myheredoc'],
+                                 ])
         end
       end
 
@@ -349,9 +349,9 @@ describe PuppetLint::Lexer::StringSlurper do
 
         it 'does not create an interpolation segment' do
           expect(segments).to eq([
-            [:HEREDOC, "  SOMETHING\n  ${else}\n  :\n  "],
-            [:HEREDOC_TERM, '|-myheredoc'],
-          ])
+                                   [:HEREDOC, "  SOMETHING\n  ${else}\n  :\n  "],
+                                   [:HEREDOC_TERM, '|-myheredoc'],
+                                 ])
         end
       end
 
@@ -361,9 +361,9 @@ describe PuppetLint::Lexer::StringSlurper do
 
         it 'does not create a segment for the unenclosed variable' do
           expect(segments).to eq([
-            [:HEREDOC, "  SOMETHING\n  $else\n  :\n  "],
-            [:HEREDOC_TERM, '|-myheredoc'],
-          ])
+                                   [:HEREDOC, "  SOMETHING\n  $else\n  :\n  "],
+                                   [:HEREDOC_TERM, '|-myheredoc'],
+                                 ])
         end
       end
     end
@@ -375,9 +375,9 @@ describe PuppetLint::Lexer::StringSlurper do
 
         it 'splits the heredoc into two segments' do
           expect(segments).to eq([
-            [:HEREDOC, "  SOMETHING\n  ELSE\n  :\n  "],
-            [:HEREDOC_TERM, '|-myheredoc'],
-          ])
+                                   [:HEREDOC, "  SOMETHING\n  ELSE\n  :\n  "],
+                                   [:HEREDOC_TERM, '|-myheredoc'],
+                                 ])
         end
       end
 
@@ -387,11 +387,11 @@ describe PuppetLint::Lexer::StringSlurper do
 
         it 'creates an interpolation segment' do
           expect(segments).to eq([
-            [:HEREDOC, "  SOMETHING\n  "],
-            [:INTERP, 'else'],
-            [:HEREDOC, "\n  :\n  "],
-            [:HEREDOC_TERM, '|-myheredoc'],
-          ])
+                                   [:HEREDOC, "  SOMETHING\n  "],
+                                   [:INTERP, 'else'],
+                                   [:HEREDOC, "\n  :\n  "],
+                                   [:HEREDOC_TERM, '|-myheredoc'],
+                                 ])
         end
       end
 
@@ -401,11 +401,11 @@ describe PuppetLint::Lexer::StringSlurper do
 
         it 'does not create a segment for the unenclosed variable' do
           expect(segments).to eq([
-            [:HEREDOC, "  SOMETHING\n  "],
-            [:UNENC_VAR, '$else'],
-            [:HEREDOC, "\n  :\n  "],
-            [:HEREDOC_TERM, '|-myheredoc'],
-          ])
+                                   [:HEREDOC, "  SOMETHING\n  "],
+                                   [:UNENC_VAR, '$else'],
+                                   [:HEREDOC, "\n  :\n  "],
+                                   [:HEREDOC_TERM, '|-myheredoc'],
+                                 ])
         end
       end
 
@@ -415,11 +415,11 @@ describe PuppetLint::Lexer::StringSlurper do
 
         it 'does not create a segment for the unenclosed variable' do
           expect(segments).to eq([
-            [:HEREDOC, "  SOMETHING\n  "],
-            [:INTERP, 'facts["other_${thing}"]'],
-            [:HEREDOC, "\n  :\n  "],
-            [:HEREDOC_TERM, '|-myheredoc'],
-          ])
+                                   [:HEREDOC, "  SOMETHING\n  "],
+                                   [:INTERP, 'facts["other_${thing}"]'],
+                                   [:HEREDOC, "\n  :\n  "],
+                                   [:HEREDOC_TERM, '|-myheredoc'],
+                                 ])
         end
       end
 
@@ -429,11 +429,11 @@ describe PuppetLint::Lexer::StringSlurper do
 
         it 'does not create a segment for the unenclosed variable' do
           expect(segments).to eq([
-            [:HEREDOC, "  SOMETHING\n  "],
-            [:INTERP, '$foo.map |$bar| { something($bar) }'],
-            [:HEREDOC, "\n  :\n  "],
-            [:HEREDOC_TERM, '|-myheredoc'],
-          ])
+                                   [:HEREDOC, "  SOMETHING\n  "],
+                                   [:INTERP, '$foo.map |$bar| { something($bar) }'],
+                                   [:HEREDOC, "\n  :\n  "],
+                                   [:HEREDOC_TERM, '|-myheredoc'],
+                                 ])
         end
       end
 
@@ -443,9 +443,9 @@ describe PuppetLint::Lexer::StringSlurper do
 
         it do
           expect(segments).to eq([
-            [:HEREDOC, %(  {\n    "foo": "bar"\n  }\n  )],
-            [:HEREDOC_TERM, '|-end'],
-          ])
+                                   [:HEREDOC, %(  {\n    "foo": "bar"\n  }\n  )],
+                                   [:HEREDOC_TERM, '|-end'],
+                                 ])
         end
       end
     end

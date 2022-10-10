@@ -6,11 +6,11 @@ describe 'names_containing_uppercase' do
     let(:path) { 'foobar/manifests/init.pp' }
     let(:class_msg) { "defined type 'FooBar' contains illegal uppercase" }
 
-    it 'should only detect a single problem' do
+    it 'only detects a single problem' do
       expect(problems).to have(1).problem
     end
 
-    it 'should create an error' do
+    it 'creates an error' do
       expect(problems).to contain_error(class_msg).on_line(1).in_column(8)
     end
   end
@@ -20,11 +20,11 @@ describe 'names_containing_uppercase' do
     let(:path) { 'foobar/manifests/init.pp' }
     let(:class_msg) { "class 'FooBar' contains illegal uppercase" }
 
-    it 'should only detect a single problem' do
+    it 'only detects a single problem' do
       expect(problems).to have(1).problem
     end
 
-    it 'should create an error' do
+    it 'creates an error' do
       expect(problems).to contain_error(class_msg).on_line(1).in_column(7)
     end
   end
@@ -34,30 +34,30 @@ describe 'names_containing_uppercase' do
     let(:path) { 'foo/manifests/barfoo.pp' }
     let(:class_msg) { "class 'Foo::BarFoo' contains illegal uppercase" }
 
-    it 'should only detect a single problem' do
+    it 'only detects a single problem' do
       expect(problems).to have(1).problem
     end
 
-    it 'should create an error' do
+    it 'creates an error' do
       expect(problems).to contain_error(class_msg).on_line(1).in_column(7)
     end
 
     context 'check fix -' do
-      before do
+      before(:each) do
         PuppetLint.configuration.fix = true
       end
 
-      after do
+      after(:each) do
         PuppetLint.configuration.fix = false
       end
 
       let(:fixed) { code.downcase }
 
-      it 'should create an error' do
+      it 'creates an error' do
         expect(problems).to contain_fixed(class_msg).on_line(1).in_column(7)
       end
 
-      it 'should downcase the class name' do
+      it 'downcases the class name' do
         expect(manifest).to eq(fixed)
       end
     end

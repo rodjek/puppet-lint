@@ -7,11 +7,11 @@ describe 'unquoted_node_name' do
     context 'unquoted node name' do
       let(:code) { 'node foo { }' }
 
-      it 'should only detect a single problem' do
+      it 'only detects a single problem' do
         expect(problems).to have(1).problem
       end
 
-      it 'should create a warning' do
+      it 'creates a warning' do
         expect(problems).to contain_warning(msg).on_line(1).in_column(6)
       end
     end
@@ -19,7 +19,7 @@ describe 'unquoted_node_name' do
     context 'default node' do
       let(:code) { 'node default { }' }
 
-      it 'should not detect any problems' do
+      it 'does not detect any problems' do
         expect(problems).to have(0).problems
       end
     end
@@ -27,7 +27,7 @@ describe 'unquoted_node_name' do
     context 'single quoted node name' do
       let(:code) { "node 'foo' { }" }
 
-      it 'should not detect any problems' do
+      it 'does not detect any problems' do
         expect(problems).to have(0).problems
       end
     end
@@ -35,7 +35,7 @@ describe 'unquoted_node_name' do
     context 'regex node name' do
       let(:code) { 'node /foo/ { }' }
 
-      it 'should not detect any problems' do
+      it 'does not detect any problems' do
         expect(problems).to have(0).problems
       end
     end
@@ -43,11 +43,11 @@ describe 'unquoted_node_name' do
     context 'multiple bare node names' do
       let(:code) { 'node foo, bar, baz { }' }
 
-      it 'should detect 3 problems' do
+      it 'detects 3 problems' do
         expect(problems).to have(3).problems
       end
 
-      it 'should create 3 warnings' do
+      it 'creates 3 warnings' do
         expect(problems).to contain_warning(msg).on_line(1).in_column(6)
         expect(problems).to contain_warning(msg).on_line(1).in_column(11)
         expect(problems).to contain_warning(msg).on_line(1).in_column(16)
@@ -57,11 +57,11 @@ describe 'unquoted_node_name' do
     context 'mixed node name types' do
       let(:code) { "node foo, 'bar', baz { }" }
 
-      it 'should detect 2 problems' do
+      it 'detects 2 problems' do
         expect(problems).to have(2).problems
       end
 
-      it 'should create 2 warnings' do
+      it 'creates 2 warnings' do
         expect(problems).to contain_warning(msg).on_line(1).in_column(6)
         expect(problems).to contain_warning(msg).on_line(1).in_column(18)
       end
@@ -70,11 +70,11 @@ describe 'unquoted_node_name' do
     context 'multiple node blocks' do
       let(:code) { 'node foo { } node bar { }' }
 
-      it 'should detect 2 problems' do
+      it 'detects 2 problems' do
         expect(problems).to have(2).problems
       end
 
-      it 'should create 2 warnings' do
+      it 'creates 2 warnings' do
         expect(problems).to contain_warning(msg).on_line(1).in_column(6)
         expect(problems).to contain_warning(msg).on_line(1).in_column(19)
       end
@@ -83,37 +83,37 @@ describe 'unquoted_node_name' do
     context 'incomplete node block' do
       let(:code) { 'node foo' }
 
-      it 'should detect a problem' do
+      it 'detects a problem' do
         expect(problems).to have(1).problem
       end
 
-      it 'should create 1 error' do
+      it 'creates 1 error' do
         expect(problems).to contain_error('Syntax error (try running `puppet parser validate <file>`)').on_line(1).in_column(1)
       end
     end
   end
 
   context 'with fix enabled' do
-    before do
+    before(:each) do
       PuppetLint.configuration.fix = true
     end
 
-    after do
+    after(:each) do
       PuppetLint.configuration.fix = false
     end
 
     context 'unquoted node name' do
       let(:code) { 'node foo { }' }
 
-      it 'should only detect a single problem' do
+      it 'only detects a single problem' do
         expect(problems).to have(1).problem
       end
 
-      it 'should fix the manifest' do
+      it 'fixes the manifest' do
         expect(problems).to contain_fixed(msg).on_line(1).in_column(6)
       end
 
-      it 'should quote the node name' do
+      it 'quotes the node name' do
         expect(manifest).to eq("node 'foo' { }")
       end
     end
@@ -122,17 +122,17 @@ describe 'unquoted_node_name' do
       let(:code) { 'node foo, bar, baz { }' }
       let(:fixed) { "node 'foo', 'bar', 'baz' { }" }
 
-      it 'should detect 3 problems' do
+      it 'detects 3 problems' do
         expect(problems).to have(3).problems
       end
 
-      it 'should fix the 3 problems' do
+      it 'fixes the 3 problems' do
         expect(problems).to contain_fixed(msg).on_line(1).in_column(6)
         expect(problems).to contain_fixed(msg).on_line(1).in_column(11)
         expect(problems).to contain_fixed(msg).on_line(1).in_column(16)
       end
 
-      it 'should quote all three node names' do
+      it 'quotes all three node names' do
         expect(manifest).to eq(fixed)
       end
     end
@@ -141,16 +141,16 @@ describe 'unquoted_node_name' do
       let(:code) { "node foo, 'bar', baz { }" }
       let(:fixed) { "node 'foo', 'bar', 'baz' { }" }
 
-      it 'should detect 2 problems' do
+      it 'detects 2 problems' do
         expect(problems).to have(2).problems
       end
 
-      it 'should fix the 2 problems' do
+      it 'fixes the 2 problems' do
         expect(problems).to contain_fixed(msg).on_line(1).in_column(6)
         expect(problems).to contain_fixed(msg).on_line(1).in_column(18)
       end
 
-      it 'should quote the 2 unquoted node names' do
+      it 'quotes the 2 unquoted node names' do
         expect(manifest).to eq(fixed)
       end
     end
