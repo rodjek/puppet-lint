@@ -3,6 +3,7 @@ require 'rubocop/rake_task'
 require 'github_changelog_generator/task'
 require 'puppet-lint/version'
 require 'rspec/core/rake_task'
+require 'puppetlabs_spec_helper/tasks/fixtures'
 
 begin
   require 'github_changelog_generator/task'
@@ -26,12 +27,11 @@ rescue LoadError
   # Gem not present
 end
 
-require 'puppetlabs_spec_helper/tasks/fixtures'
-
-
 RSpec::Core::RakeTask.new(:spec) do |t|
   t.exclude_pattern = 'spec/acceptance/**/*_spec.rb'
 end
 
-task :default => :test
-
+desc 'Run acceptance tests'
+task :acceptance do
+  Rake::Task['litmus:acceptance:localhost'].invoke
+end

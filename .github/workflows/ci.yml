@@ -12,7 +12,12 @@ on:
   workflow_dispatch:
 
 jobs:
-  ci:
+
+  spec:
     uses: "puppetlabs/cat-github-actions/.github/workflows/gem_ci.yml@main"
     secrets: "inherit"
 
+  acceptance:
+    needs: "spec"
+    uses: "puppetlabs/cat-github-actions/.github/workflows/gem_acceptance.yml@main"
+    secrets: "inherit"
