@@ -14,7 +14,5 @@ on:
 jobs:
   ci:
     uses: "puppetlabs/cat-github-actions/.github/workflows/gem_ci.yml@main"
-    with:
-      with_acceptance: false
     secrets: "inherit"
 
