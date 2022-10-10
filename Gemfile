@@ -15,10 +15,18 @@ group :test do
   gem 'simplecov', :require => false if ENV['COVERAGE'] == 'yes'
 end
 
+group :acceptance do
+  gem 'serverspec'
+  gem 'puppetlabs_spec_helper'
+  gem 'puppet_litmus'
+end
+
 group :development do
     gem 'github_changelog_generator', require: false
     gem 'faraday-retry', require: false
     gem 'pry', require: false
+    gem 'pry-byebug', require: false
+    gem 'pry-stack_explorer', require: false
 end
 
 group :rubocop do

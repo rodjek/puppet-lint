@@ -587,7 +587,7 @@ describe PuppetLint::Bin do
 
       context 'and command-line does not override "--only-checks"' do
         let(:args) do
-          File.join(File.dirname(__FILE__), '..', 'fixtures', 'test', 'manifests', 'two_warnings.pp')
+          File.join(File.dirname(__FILE__), '..', '..', 'fixtures', 'test', 'manifests', 'two_warnings.pp')
         end
 
         its(:exitstatus) { is_expected.to eq(0) }
@@ -600,7 +600,7 @@ describe PuppetLint::Bin do
         let(:args) do
           [
             '--only-checks=variable_is_lowercase',
-            File.join(File.dirname(__FILE__), '..', 'fixtures', 'test', 'manifests', 'two_warnings.pp'),
+            File.join(File.dirname(__FILE__), '..', '..', 'fixtures', 'test', 'manifests', 'two_warnings.pp'),
           ]
         end
 
