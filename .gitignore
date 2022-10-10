@@ -11,3 +11,4 @@ coverage/
 /*.pp
 /tmp/
 .vendor/
+spec/fixtures/
