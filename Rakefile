@@ -20,6 +20,18 @@ else
   end
 end
 
-RSpec::Core::RakeTask.new(:spec)
+begin
+  require 'puppet_litmus/rake_tasks'
+rescue LoadError
+  # Gem not present
+end
+
+require 'puppetlabs_spec_helper/tasks/fixtures'
+
+
+RSpec::Core::RakeTask.new(:spec) do |t|
+  t.exclude_pattern = 'spec/acceptance/**/*_spec.rb'
+end
+
 task :default => :test
 
