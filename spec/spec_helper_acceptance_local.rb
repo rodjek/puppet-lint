@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'Shellwords'
+require 'shellwords'
 require 'open3'
 require 'rspec/expectations'
 
