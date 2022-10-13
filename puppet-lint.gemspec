@@ -13,9 +13,9 @@ Gem::Specification.new do |spec|
   spec.files = Dir[
     'README.md',
     'LICENSE',
+    '.rubocop.yml',
     'lib/**/*',
     'bin/**/*',
-    'spec/**/*',
   ]
   spec.executables = Dir['bin/**/*'].map { |f| File.basename(f) }
   spec.require_paths = ['lib']
@@ -31,5 +31,5 @@ Gem::Specification.new do |spec|
   ]
   spec.license = 'MIT'
 
-  spec.required_ruby_version = Gem::Requirement.new(">= 2.7".freeze)
+  spec.required_ruby_version = Gem::Requirement.new('>= 2.7'.freeze)
 end
