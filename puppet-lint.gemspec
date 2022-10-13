@@ -16,6 +16,7 @@ Gem::Specification.new do |spec|
     '.rubocop.yml',
     'lib/**/*',
     'bin/**/*',
+    'spec/**/*',
   ]
   spec.executables = Dir['bin/**/*'].map { |f| File.basename(f) }
   spec.require_paths = ['lib']
