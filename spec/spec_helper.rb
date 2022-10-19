@@ -134,7 +134,7 @@ RSpec.configure do |config|
   config.include(
     RSpec::LintExampleGroup,
     type: :lint,
-    file_path: Regexp.compile(['spec', 'unit', 'puppet-lint', 'plugins'].join('[\\\/]')),
+    file_path: Regexp.new('spec[\\\/](unit[\\\/])?puppet-lint[\\\/]plugins'),
   )
 
   config.expect_with(:rspec) do |c|
