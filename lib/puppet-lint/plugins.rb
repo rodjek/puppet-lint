@@ -10,16 +10,13 @@ class PuppetLint::Plugins
   #
   # Returns nothing.
   def self.load_from_gems
-    plugins_directories = gem_directories.select do |directory|
-      (directory + 'puppet-lint/plugins').to_s if (directory + 'puppet-lint/plugins').directory?
-    end
+    gem_directories.each do |directory|
+      path = directory + 'puppet-lint/plugins'
+      next unless path.directory?
 
-    plugin_files = plugins_directories.each do |directory|
-      Dir["#{directory}/**/*.rb"]
-    end
-
-    plugin_files.each do |file|
-      load(file)
+      Dir["#{path}/**/*.rb"].each do |file|
+        load(file)
+      end
     end
   end
 
