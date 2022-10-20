@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
+## [v3.0.1](https://github.com/puppetlabs/puppet-lint/tree/v3.0.1) - 2022-10-20
+
+[Full Changelog](https://github.com/puppetlabs/puppet-lint/compare/v3.0.0...v3.0.1)
+
+### Fixed
+
+- Fix plugin regressions introduced in 3.0.0 [#66](https://github.com/puppetlabs/puppet-lint/pull/66) ([ekohl](https://github.com/ekohl))
+
 ## [v3.0.0](https://github.com/puppetlabs/puppet-lint/tree/v3.0.0) - 2022-10-13
 
 [Full Changelog](https://github.com/puppetlabs/puppet-lint/compare/2.5.2...v3.0.0)
