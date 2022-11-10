@@ -9,7 +9,9 @@ guide](http://puppet.com/docs/puppet/latest/style_guide.html). Puppet Lint valid
 
 ## Compatibility warning
 
-Puppet Lint version 2 is the last planned version with support for Puppet 3 and Ruby 1.8.7. The next major version of Puppet Lint will drop support for these versions.
+Version 3.0.0 and above will no longer support Puppet 6 environments.
+
+In cases where Puppet Lint is required in an environment with Puppet 6, we recommend pinning to version 2.5.2.
 
 ## Installation
 
