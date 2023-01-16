@@ -378,7 +378,7 @@ describe PuppetLint::Bin do
       if respond_to?(:include_json)
         is_expected.to include_json([[{ 'KIND' => 'WARNING' }]])
       else
-        is_expected.to match(%r{\[\n  \{})
+        is_expected.to match(%r{\[\n  \[\n    \{})
       end
     end
   end
@@ -397,7 +397,7 @@ describe PuppetLint::Bin do
       if respond_to?(:include_json)
         is_expected.to include_json([[{ 'KIND' => 'ERROR' }], [{ 'KIND' => 'WARNING' }]])
       else
-        is_expected.to match(%r{\[\n  \{})
+        is_expected.to match(%r{\[\n  \[\n    \{})
       end
     end
   end
