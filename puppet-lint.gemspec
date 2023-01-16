@@ -7,7 +7,7 @@ Gem::Specification.new do |spec|
   spec.homepage = 'https://github.com/puppetlabs/puppet-lint/'
   spec.summary = 'Ensure your Puppet manifests conform with the Puppetlabs style guide'
   spec.description = <<-EOF
-    Checks your Puppet manifests against the Puppetlabs style guide and alerts you to any discrepancies.'
+    Checks your Puppet manifests against the Puppetlabs style guide and alerts you to any discrepancies.
   EOF
 
   spec.files = Dir[
