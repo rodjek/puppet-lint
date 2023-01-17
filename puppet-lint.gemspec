@@ -13,7 +13,7 @@ Gem::Specification.new do |spec|
   spec.files = Dir[
     'README.md',
     'LICENSE',
-    '.rubocop.yml',
+    'rubocop_baseline.yml',
     'lib/**/*',
     'bin/**/*',
     'spec/**/*',
