@@ -55,17 +55,18 @@ describe PuppetLint::Configuration do
     end
 
     expect(config.settings).to eq(
-      'with_filename'    => false,
-      'fail_on_warnings' => false,
-      'error_level'      => :all,
-      'log_format'       => '',
-      'sarif'            => false,
-      'with_context'     => false,
-      'fix'              => false,
-      'github_actions'   => false,
-      'show_ignored'     => false,
-      'json'             => false,
-      'ignore_paths'     => ['vendor/**/*.pp'],
+      'with_filename'           => false,
+      'fail_on_warnings'        => false,
+      'codeclimate_report_file' => nil,
+      'error_level'             => :all,
+      'log_format'              => '',
+      'sarif'                   => false,
+      'with_context'            => false,
+      'fix'                     => false,
+      'github_actions'          => false,
+      'show_ignored'            => false,
+      'json'                    => false,
+      'ignore_paths'            => ['vendor/**/*.pp'],
     )
   end
 
@@ -76,6 +77,15 @@ describe PuppetLint::Configuration do
     end
 
     expect(config.settings['github_actions']).to be(true)
+  end
+
+  it 'defaults codeclimate_report_file to the CODECLIMATE_REPORT_FILE environment variable' do
+    override_env do
+      ENV['CODECLIMATE_REPORT_FILE'] = '/path/to/report.json'
+      config.defaults
+    end
+
+    expect(config.settings['codeclimate_report_file']).to eq('/path/to/report.json')
   end
 
   def override_env

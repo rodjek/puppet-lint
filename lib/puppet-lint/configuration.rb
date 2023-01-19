@@ -153,5 +153,6 @@ class PuppetLint::Configuration
     self.show_ignored = false
     self.ignore_paths = ['vendor/**/*.pp']
     self.github_actions = ENV.key?('GITHUB_ACTION')
+    self.codeclimate_report_file = ENV['CODECLIMATE_REPORT_FILE']
   end
 end

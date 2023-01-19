@@ -215,6 +215,30 @@ There is a GitHub Actions action available to get linter feedback in workflows:
 
 * [puppet-lint-action](https://github.com/marketplace/actions/puppet-lint-action)
 
+## Integration with GitLab Code Quality
+
+[GitLab](https://gitlab.com/) users can use the `--codeclimate-report-file` configuration option to generate a report for use with the
+[Code Quality](https://docs.gitlab.com/ee/ci/testing/code_quality.html) feature.
+
+The easiest way to set this option, (and without having to modify rake tasks), is with the `CODECLIMATE_REPORT_FILE` environment variable.
+
+For example, the following GitLab job sets the environment variable and
+[archives the report](https://docs.gitlab.com/ee/ci/yaml/artifacts_reports.html#artifactsreportscodequality) produced.
+```yaml
+validate lint check rubocop-Ruby 2.7.2-Puppet ~> 7:
+  stage: syntax
+  image: ruby:2.7.2
+  script:
+    - bundle exec rake validate lint check rubocop
+  variables:
+    PUPPET_GEM_VERSION: '~> 7'
+    CODECLIMATE_REPORT_FILE: 'gl-code-quality-report.json'
+  artifacts:
+    reports:
+      codequality: gl-code-quality-report.json
+    expire_in: 1 week
+```
+
 ## Options
 
 See `puppet-lint --help` for a full list of command line options and checks.

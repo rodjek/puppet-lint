@@ -175,14 +175,16 @@ class PuppetLint
 
       next unless message[:kind] == :fixed || [message[:kind], :all].include?(configuration.error_level)
 
-      if configuration.json || configuration.sarif
+      if configuration.json || configuration.sarif || configuration.codeclimate_report_file
         message['context'] = get_context(message) if configuration.with_context
         json << message
-      else
-        format_message(message)
-        print_context(message) if configuration.with_context
-        print_github_annotation(message) if configuration.github_actions
       end
+
+      next if configuration.json || configuration.sarif
+
+      format_message(message)
+      print_context(message) if configuration.with_context
+      print_github_annotation(message) if configuration.github_actions
     end
     $stderr.puts 'Try running `puppet parser validate <file>`' if problems.any? { |p| p[:check] == :syntax }
     json
@@ -225,7 +227,7 @@ class PuppetLint
 
   # Public: Print any problems that were found out to stdout.
   #
-  # Returns nothing.
+  # Returns an array of problems.
   def print_problems
     report(@problems)
   end
