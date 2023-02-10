@@ -30,7 +30,7 @@ PuppetLint.new_check(:trailing_whitespace) do
 
     prev_token = problem[:token].prev_token
     next_token = problem[:token].next_token
-    prev_token.next_token = next_token
+    prev_token.next_token = next_token unless prev_token.nil?
     next_token.prev_token = prev_token unless next_token.nil?
     tokens.delete(problem[:token])
   end
