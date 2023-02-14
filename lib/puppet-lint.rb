@@ -124,6 +124,7 @@ class PuppetLint
     puts format % message
 
     puts "  #{message[:reason]}" if message[:kind] == :ignored && !message[:reason].nil?
+    print_context(message)
   end
 
   # Internal: Format a problem message and print it to STDOUT so GitHub Actions
@@ -154,7 +155,8 @@ class PuppetLint
   def print_context(message)
     return if message[:check] == 'documentation'
     return if message[:kind] == :fixed
-    line = get_context(message)
+    line = message[:context]
+    return unless line
     offset = line.index(%r{\S}) || 1
     puts "\n  #{line.strip}"
     printf("%#{message[:column] + 2 - offset}s\n\n", '^')
@@ -175,16 +177,16 @@ class PuppetLint
 
       next unless message[:kind] == :fixed || [message[:kind], :all].include?(configuration.error_level)
 
+      message[:context] = get_context(message) if configuration.with_context
+
       if configuration.json || configuration.sarif || configuration.codeclimate_report_file
-        message['context'] = get_context(message) if configuration.with_context
         json << message
       end
 
-      next if configuration.json || configuration.sarif
-
-      format_message(message)
-      print_context(message) if configuration.with_context
-      print_github_annotation(message) if configuration.github_actions
+      unless configuration.json || configuration.sarif
+        format_message(message)
+        print_github_annotation(message) if configuration.github_actions
+      end
     end
     $stderr.puts 'Try running `puppet parser validate <file>`' if problems.any? { |p| p[:check] == :syntax }
     json
