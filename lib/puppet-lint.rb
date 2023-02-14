@@ -170,6 +170,8 @@ class PuppetLint
   # Returns array of problem.
   def report(problems)
     json = []
+    print_stdout = !(configuration.json || configuration.sarif)
+
     problems.each do |message|
       next if message[:kind] == :ignored && !PuppetLint.configuration.show_ignored
 
@@ -179,11 +181,9 @@ class PuppetLint
 
       message[:context] = get_context(message) if configuration.with_context
 
-      if configuration.json || configuration.sarif || configuration.codeclimate_report_file
-        json << message
-      end
+      json << message
 
-      unless configuration.json || configuration.sarif
+      if print_stdout
         format_message(message)
         print_github_annotation(message) if configuration.github_actions
       end
