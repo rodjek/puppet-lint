@@ -105,5 +105,17 @@ describe 'trailing_whitespace' do
         expect(manifest).to eq(fixed)
       end
     end
+
+    context 'empty line with nothing but whitespace' do
+      let(:code) { " \n " }
+
+      it 'only detects a single problem' do
+        expect(problems).to have(2).problem
+      end
+
+      it 'fixes the manifest' do
+        expect(manifest).to eq("\n")
+      end
+    end
   end
 end
