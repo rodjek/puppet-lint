@@ -106,10 +106,10 @@ describe 'trailing_whitespace' do
       end
     end
 
-    context 'empty line with nothing but whitespace' do
+    context 'empty lines with nothing but whitespace' do
       let(:code) { " \n " }
 
-      it 'only detects a single problem' do
+      it 'detects problems with both empty lines' do
         expect(problems).to have(2).problem
       end
 
