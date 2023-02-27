@@ -155,6 +155,18 @@ class PuppetLint::Data
       end
     end
 
+    # Internal: Determine if the given token contains a CLASSREF in
+    # the token chain..
+    #
+    # Returns a Boolean.
+    def classref?(token)
+      current_token = token
+      while (current_token = current_token.prev_code_token)
+        return true if current_token.type == :CLASSREF
+        return false if current_token.type == :NAME
+      end
+    end
+
     # Internal: Calculate the positions of all resource declarations within the
     # tokenised manifest. These positions only point to the content of the
     # resource declarations, they do not include resource types or titles.
@@ -170,6 +182,7 @@ class PuppetLint::Data
         result = []
         tokens.select { |t| t.type == :COLON }.each do |colon_token|
           next unless colon_token.next_code_token && colon_token.next_code_token.type != :LBRACE
+          next if classref?(colon_token)
 
           rel_start_idx = tokens[marker..-1].index(colon_token)
           break if rel_start_idx.nil?
