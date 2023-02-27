@@ -33,6 +33,42 @@ describe PuppetLint::Data do
         }
       end
     end
+
+    context 'when given a defaults declaration' do
+      let(:manifest) { "Service { 'foo': }" }
+
+      it 'returns an empty array' do
+        expect(data.resource_indexes).to eq([])
+      end
+    end
+
+    context 'when given a set of resource declarations' do
+      let(:manifest) { <<-MANIFEST }
+        service {
+          'foo':
+            ensure => running,
+        }
+
+        service {
+          'bar':
+            ensure => running;
+          'foobar':
+            ensure => stopped;
+        }
+
+        service { ['first', 'second']:
+          ensure => running,
+        }
+
+        service { 'third':
+          ensure => running,
+        }
+      MANIFEST
+
+      it 'returns an array of resource indexes' do
+        expect(data.resource_indexes.length).to eq(5)
+      end
+    end
   end
 
   describe '.insert' do
