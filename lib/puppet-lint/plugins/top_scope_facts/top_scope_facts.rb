@@ -11,7 +11,7 @@
 # You should insert the following line to your Rakefile.
 # `PuppetLint.configuration.top_scope_variables = ['location', 'role']`
 #
-# This plugin was adoped in to puppet-lint from https://github.com/mmckinst/puppet-lint-top_scope_facts-check
+# This plugin was adopted in to puppet-lint from https://github.com/mmckinst/puppet-lint-top_scope_facts-check
 # Thanks to @mmckinst, @seanmil and @alexjfisher for the original work.
 PuppetLint.new_check(:top_scope_facts) do
   TOP_SCOPE_FACTS_VAR_TYPES = Set[:VARIABLE, :UNENC_VARIABLE]
