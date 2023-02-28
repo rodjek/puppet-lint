@@ -1,8 +1,27 @@
+<!-- markdownlint-disable MD024 -->
 # Changelog
 
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
+
+## [v3.1.0](https://github.com/puppetlabs/puppet-lint/tree/v3.1.0) - 2023-02-28
+
+[Full Changelog](https://github.com/puppetlabs/puppet-lint/compare/v3.0.1...v3.1.0)
+
+### Added
+
+- (CONT-670) Add legacy facts check [#91](https://github.com/puppetlabs/puppet-lint/pull/91) ([chelnak](https://github.com/chelnak))
+- (CONT-339) Lower Ruby requirement [#87](https://github.com/puppetlabs/puppet-lint/pull/87) ([chelnak](https://github.com/chelnak))
+- (CONT-339) Add top scope facts check [#85](https://github.com/puppetlabs/puppet-lint/pull/85) ([chelnak](https://github.com/chelnak))
+
+### Fixed
+
+- (CONT-666) Skip classref types [#93](https://github.com/puppetlabs/puppet-lint/pull/93) ([chelnak](https://github.com/chelnak))
+- Fix first token whitespace [#86](https://github.com/puppetlabs/puppet-lint/pull/86) ([nwoythal](https://github.com/nwoythal))
+- Fix assertion when rspec-json_expectations is missing [#75](https://github.com/puppetlabs/puppet-lint/pull/75) ([ekohl](https://github.com/ekohl))
+- (CONT-214) Fix rubocop inheritance [#70](https://github.com/puppetlabs/puppet-lint/pull/70) ([chelnak](https://github.com/chelnak))
+
 ## [v3.0.1](https://github.com/puppetlabs/puppet-lint/tree/v3.0.1) - 2022-10-20
 
 [Full Changelog](https://github.com/puppetlabs/puppet-lint/compare/v3.0.0...v3.0.1)
@@ -18,9 +37,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Added
 
 - (GH-47) Expose additional indexes [#48](https://github.com/puppetlabs/puppet-lint/pull/48) ([chelnak](https://github.com/chelnak))
-
 - Add SARIF support [#40](https://github.com/puppetlabs/puppet-lint/pull/40) ([shaopeng-gh](https://github.com/shaopeng-gh))
-
 - Add GitHub Actions annotations [#34](https://github.com/puppetlabs/puppet-lint/pull/34) ([ekohl](https://github.com/ekohl))
 
 ### Changed
