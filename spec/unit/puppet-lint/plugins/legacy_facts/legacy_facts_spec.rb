@@ -113,6 +113,14 @@ describe 'legacy_facts' do
         expect(problems).to have(1).problem
       end
     end
+
+    context 'top scoped fact variable using legacy facts hash variable in interpolation' do
+      let(:code) { "$::facts['osfamily']" }
+
+      it 'detects a single problem' do
+        expect(problems).to have(1).problem
+      end
+    end
   end
 
   context 'with fix enabled' do
@@ -153,6 +161,31 @@ describe 'legacy_facts' do
       let(:msg) { "legacy fact 'osfamily'" }
 
       it 'onlies detect a single problem' do
+        expect(problems).to have(1).problem
+      end
+
+      it 'fixes the problem' do
+        expect(problems).to contain_fixed(msg).on_line(1).in_column(1)
+      end
+
+      it 'uses the facts hash' do
+        expect(manifest).to eq("$facts['os']['family']")
+      end
+    end
+
+    context 'fact variable using top scope $::facts hash' do
+      let(:code) { "$::facts['os']['family']" }
+
+      it 'does not detect any problems' do
+        expect(problems).to have(0).problem
+      end
+    end
+
+    context "fact variable using legacy top scope $::facts['osfamily']" do
+      let(:code) { "$::facts['osfamily']" }
+      let(:msg) { "legacy fact 'osfamily'" }
+
+      it 'only detects a single problem' do
         expect(problems).to have(1).problem
       end
 

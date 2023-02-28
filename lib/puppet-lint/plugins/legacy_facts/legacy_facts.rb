@@ -115,10 +115,14 @@ PuppetLint.new_check(:legacy_facts) do
     tokens.select { |x| LEGACY_FACTS_VAR_TYPES.include?(x.type) }.each do |token|
       fact_name = ''
 
-      # Get rid of the top scope before we do our work. We don't need to
-      # preserve it because it won't work with the new structured facts.
-      if token.value.start_with?('::')
-        fact_name = token.value.sub(%r{^::}, '')
+      # This matches legacy facts defined in the fact hash that use the top scope
+      # fact assignment.
+      if token.value.start_with?('::facts[')
+        fact_name = token.value.match(%r{::facts\['(.*)'\]})[1]
+
+      # This matches legacy facts defined in the fact hash.
+      elsif token.value.start_with?("facts['")
+        fact_name = token.value.match(%r{facts\['(.*)'\]})[1]
 
       # This matches using legacy facts in a the new structured fact. For
       # example this would match 'uuid' in $facts['uuid'] so it can be converted
@@ -126,8 +130,10 @@ PuppetLint.new_check(:legacy_facts) do
       elsif token.value == 'facts'
         fact_name = hash_key_for(token)
 
-      elsif token.value.start_with?("facts['")
-        fact_name = token.value.match(%r{facts\['(.*)'\]})[1]
+      # Now we can get rid of top scopes. We don't need to
+      # preserve it because it won't work with the new structured facts.
+      elsif token.value.start_with?('::')
+        fact_name = token.value.sub(%r{^::}, '')
       end
 
       next unless EASY_FACTS.include?(fact_name) || UNCONVERTIBLE_FACTS.include?(fact_name) || fact_name.match(Regexp.union(REGEX_FACTS))
