@@ -102,6 +102,10 @@ class PuppetLint::OptParser
         PuppetLint.configuration.sarif = true
       end
 
+      opts.on('--codeclimate-report-file FILE', 'Save a code climate compatible report to this file') do |file|
+        PuppetLint.configuration.codeclimate_report_file = file
+      end
+
       opts.on('--list-checks', 'List available check names.') do
         PuppetLint.configuration.list_checks = true
       end

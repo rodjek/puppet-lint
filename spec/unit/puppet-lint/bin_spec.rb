@@ -437,6 +437,30 @@ describe PuppetLint::Bin do
     end
   end
 
+  context 'when outputting code climate report' do
+    let(:report_file) do
+      Tempfile.new('report_file.json')
+    end
+
+    let(:args) do
+      [
+        '--codeclimate-report-file',
+        report_file.path,
+        'spec/fixtures/test/manifests/fail.pp',
+        'spec/fixtures/test/manifests/warning.pp',
+      ]
+    end
+
+    after(:each) do
+      report_file.unlink
+    end
+
+    it 'creates a code climate report' do
+      expect(bin.exitstatus).to eq(1)
+      expect(FileUtils.compare_file(report_file.path, 'spec/fixtures/test/reports/code_climate.json')).to be_truthy
+    end
+  end
+
   context 'when hiding ignored problems' do
     let(:args) do
       [

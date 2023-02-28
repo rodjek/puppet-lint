@@ -1,0 +1,38 @@
+[
+  {
+    "type": "issue",
+    "check_name": "autoloader_layout",
+    "description": "test::foo not in autoload module layout",
+    "categories": [
+      "Style"
+    ],
+    "severity": "major",
+    "location": {
+      "path": "spec/fixtures/test/manifests/fail.pp",
+      "lines": {
+        "begin": 2,
+        "end": 2
+      }
+    },
+    "fingerprint": "f12bce7a776454ab9ffac2d20dcc34ba",
+    "content": "Test the manifest tokens for any classes or defined types that are not in an appropriately named file for the autoloader to detect and record an error of each instance found. See [this page](https://puppet.com/docs/puppet/latest/style_guide.html#separate-files) for more information about the `autoloader_layout` check."
+  },
+  {
+    "type": "issue",
+    "check_name": "parameter_order",
+    "description": "optional parameter listed before required parameter",
+    "categories": [
+      "Style"
+    ],
+    "severity": "minor",
+    "location": {
+      "path": "spec/fixtures/test/manifests/warning.pp",
+      "lines": {
+        "begin": 2,
+        "end": 2
+      }
+    },
+    "fingerprint": "e34cf289e008446b633d1be7cf58120e",
+    "content": "Test the manifest tokens for any parameterised classes or defined types that take parameters and record a warning if there are any optional parameters listed before required parameters. See [this page](https://puppet.com/docs/puppet/latest/style_guide.html#display-order-of-parameters) for more information about the `parameter_order` check."
+  }
+]

@@ -124,6 +124,7 @@ class PuppetLint
     puts format % message
 
     puts "  #{message[:reason]}" if message[:kind] == :ignored && !message[:reason].nil?
+    print_context(message)
   end
 
   # Internal: Format a problem message and print it to STDOUT so GitHub Actions
@@ -154,7 +155,8 @@ class PuppetLint
   def print_context(message)
     return if message[:check] == 'documentation'
     return if message[:kind] == :fixed
-    line = get_context(message)
+    line = message[:context]
+    return unless line
     offset = line.index(%r{\S}) || 1
     puts "\n  #{line.strip}"
     printf("%#{message[:column] + 2 - offset}s\n\n", '^')
@@ -168,6 +170,8 @@ class PuppetLint
   # Returns array of problem.
   def report(problems)
     json = []
+    print_stdout = !(configuration.json || configuration.sarif)
+
     problems.each do |message|
       next if message[:kind] == :ignored && !PuppetLint.configuration.show_ignored
 
@@ -175,12 +179,12 @@ class PuppetLint
 
       next unless message[:kind] == :fixed || [message[:kind], :all].include?(configuration.error_level)
 
-      if configuration.json || configuration.sarif
-        message['context'] = get_context(message) if configuration.with_context
-        json << message
-      else
+      message[:context] = get_context(message) if configuration.with_context
+
+      json << message
+
+      if print_stdout
         format_message(message)
-        print_context(message) if configuration.with_context
         print_github_annotation(message) if configuration.github_actions
       end
     end
@@ -225,7 +229,7 @@ class PuppetLint
 
   # Public: Print any problems that were found out to stdout.
   #
-  # Returns nothing.
+  # Returns an array of problems.
   def print_problems
     report(@problems)
   end

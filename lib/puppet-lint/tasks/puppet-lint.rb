@@ -4,6 +4,7 @@ require 'puppet-lint'
 require 'puppet-lint/optparser'
 require 'rake'
 require 'rake/tasklib'
+require 'puppet-lint/report/codeclimate'
 
 # Public: A Rake task that can be loaded and used with everything you need.
 #
@@ -90,6 +91,7 @@ class PuppetLint::RakeTask < ::Rake::TaskLib
       RakeFileUtils.send(:verbose, true) do
         linter = PuppetLint.new
         matched_files = FileList[@pattern]
+        all_problems = []
 
         matched_files = matched_files.exclude(*@ignore_paths)
 
@@ -97,12 +99,17 @@ class PuppetLint::RakeTask < ::Rake::TaskLib
           next unless File.file?(puppet_file)
           linter.file = puppet_file
           linter.run
-          linter.print_problems
+          all_problems << linter.print_problems
 
           if PuppetLint.configuration.fix && linter.problems.none? { |e| e[:check] == :syntax }
             IO.write(puppet_file, linter.manifest)
           end
         end
+
+        if PuppetLint.configuration.codeclimate_report_file
+          PuppetLint::Report::CodeClimateReporter.write_report_file(all_problems, PuppetLint.configuration.codeclimate_report_file)
+        end
+
         abort if linter.errors? || (
           linter.warnings? && PuppetLint.configuration.fail_on_warnings
         )

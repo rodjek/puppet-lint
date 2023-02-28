@@ -1,6 +1,7 @@
 require 'pathname'
 require 'uri'
 require 'puppet-lint/optparser'
+require 'puppet-lint/report/codeclimate'
 
 # Internal: The logic of the puppet-lint bin script, contained in a class for
 # ease of testing.
@@ -102,6 +103,10 @@ class PuppetLint::Bin
           end
         end
         puts JSON.pretty_generate(all_problems)
+      end
+
+      if PuppetLint.configuration.codeclimate_report_file
+        PuppetLint::Report::CodeClimateReporter.write_report_file(all_problems, PuppetLint.configuration.codeclimate_report_file)
       end
 
       return_val
