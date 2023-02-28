@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
+## [v3.2.0](https://github.com/puppetlabs/puppet-lint/tree/v3.2.0) - 2023-02-28
+
+[Full Changelog](https://github.com/puppetlabs/puppet-lint/compare/v3.1.0...v3.2.0)
+
+### Added
+
+- codeclimate (GitLab Code Quality compatible) output support  [#79](https://github.com/puppetlabs/puppet-lint/pull/79) ([alexjfisher](https://github.com/alexjfisher))
+
+### Fixed
+
+- (CONT-675) Fix fact detection [#96](https://github.com/puppetlabs/puppet-lint/pull/96) ([chelnak](https://github.com/chelnak))
+
 ## [v3.1.0](https://github.com/puppetlabs/puppet-lint/tree/v3.1.0) - 2023-02-28
 
 [Full Changelog](https://github.com/puppetlabs/puppet-lint/compare/v3.0.1...v3.1.0)
