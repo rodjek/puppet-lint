@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
+## [v3.3.0](https://github.com/puppetlabs/puppet-lint/tree/v3.3.0) - 2023-03-07
+
+[Full Changelog](https://github.com/puppetlabs/puppet-lint/compare/v3.2.0...v3.3.0)
+
+### Added
+
+- (CONT-233) - Add version input to gem_release_prep.yml [#102](https://github.com/puppetlabs/puppet-lint/pull/102) ([jordanbreen28](https://github.com/jordanbreen28))
+
+### Fixed
+
+- (maint) Corrects legacy macOS facts [#103](https://github.com/puppetlabs/puppet-lint/pull/103) ([mhashizume](https://github.com/mhashizume))
+
 ## [v3.2.0](https://github.com/puppetlabs/puppet-lint/tree/v3.2.0) - 2023-02-28
 
 [Full Changelog](https://github.com/puppetlabs/puppet-lint/compare/v3.1.0...v3.2.0)
