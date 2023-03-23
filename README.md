@@ -1,9 +1,5 @@
 # Puppet Lint
 
-[![Build
-Status](https://secure.travis-ci.org/rodjek/puppet-lint.png)](http://travis-ci.org/rodjek/puppet-lint)
-[![Inline docs](http://inch-ci.org/github/rodjek/puppet-lint.png?branch=master)](http://inch-ci.org/github/rodjek/puppet-lint)
-
 Puppet Lint tests Puppet code against the recommended [Puppet language style
 guide](http://puppet.com/docs/puppet/latest/style_guide.html). Puppet Lint validates only code style; it does not validate syntax. To test syntax, use Puppet's `puppet parser validate` command.
 
@@ -294,7 +290,7 @@ For a complete list of checks, and how to resolve errors on each check, see the 
 ## Reporting bugs or incorrect results
 
 If you find a bug in Puppet Lint or its results, please create an issue in the
-[repo issues tracker](https://github.com/rodjek/puppet-lint/issues/). Bonus
+[repo issues tracker](https://github.com/puppetlabs/puppet-lint/issues/). Bonus
 points will be awarded if you also include a patch that fixes the issue.
 
 ## Thank you

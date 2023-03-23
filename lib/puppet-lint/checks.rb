@@ -87,7 +87,7 @@ class PuppetLint::Checks
   rescue => e
     $stdout.puts <<-END.gsub(%r{^ {6}}, '')
       Whoops! It looks like puppet-lint has encountered an error that it doesn't
-      know how to handle. Please open an issue at https://github.com/rodjek/puppet-lint
+      know how to handle. Please open an issue at https://github.com/puppetlabs/puppet-lint
       and paste the following output into the issue description.
       ---
       puppet-lint version: #{PuppetLint::VERSION}
