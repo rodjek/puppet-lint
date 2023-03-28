@@ -180,8 +180,8 @@ class PuppetLint::Lexer
           return token_iter if opts[:value].nil? || token_iter.value == opts[:value]
         end
 
-        opening_token = direction == :next ? 'L' : 'R'
-        closing_token = direction == :next ? 'R' : 'L'
+        opening_token = (direction == :next) ? 'L' : 'R'
+        closing_token = (direction == :next) ? 'R' : 'L'
 
         if opts[:skip_blocks]
           case token_iter.type
