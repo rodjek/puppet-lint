@@ -168,7 +168,7 @@ describe PuppetLint::Bin do
     end
   end
 
-  context 'when asked to display filenames ' do
+  context 'when asked to display filenames' do
     let(:args) do
       [
         '--with-filename',
