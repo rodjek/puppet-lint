@@ -45,7 +45,7 @@ describe 'only_variable_string' do
         <<-END
           $bar = 'key'
           $foo = {
-            \"$bar\" => 1,
+            "$bar" => 1,
           }
         END
       end

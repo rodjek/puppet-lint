@@ -87,15 +87,15 @@ describe 'case_without_default' do
     let(:code) do
       <<-END
         $mem = inline_template('<%
-          mem,unit = scope.lookupvar(\'::memorysize\').split
+          mem,unit = scope.lookupvar('::memorysize').split
           mem = mem.to_f
           # Normalize mem to bytes
           case unit
               when nil:  mem *= (1<<0)
-              when \'kB\': mem *= (1<<10)
-              when \'MB\': mem *= (1<<20)
-              when \'GB\': mem *= (1<<30)
-              when \'TB\': mem *= (1<<40)
+              when 'kB': mem *= (1<<10)
+              when 'MB': mem *= (1<<20)
+              when 'GB': mem *= (1<<30)
+              when 'TB': mem *= (1<<40)
           end
           %><%= mem.to_i %>')
       END
