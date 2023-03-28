@@ -18,7 +18,7 @@ class PuppetLint::Configuration
     #
     # Returns true if the check is enabled, otherwise return false.
     define_method("#{check}_enabled?") do
-      (settings["#{check}_disabled"] == true) ? false : true
+      settings["#{check}_disabled"] != true
     end
 
     # Public: Disable the named check.
