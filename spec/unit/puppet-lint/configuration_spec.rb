@@ -41,7 +41,7 @@ describe PuppetLint::Configuration do
   end
 
   it 'is able to add options on the fly' do
-    expect(config.test_option).to eq(nil)
+    expect(config.test_option).to be_nil
 
     config.test_option = 'test'
 
