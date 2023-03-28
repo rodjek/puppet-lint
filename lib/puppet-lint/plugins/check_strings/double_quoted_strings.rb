@@ -19,7 +19,7 @@ PuppetLint.new_check(:double_quoted_strings) do
         line: token.line,
         column: token.column,
         token: token,
-        description: 'Check the manifest tokens for any double quoted strings that don\'t '\
+        description: 'Check the manifest tokens for any double quoted strings that don\'t ' \
           'contain any variables or common escape characters and record a warning for each instance found.',
         help_uri: 'https://puppet.com/docs/puppet/latest/style_guide.html#quoting',
       )
