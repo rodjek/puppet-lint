@@ -18,7 +18,7 @@ class PuppetLint::Configuration
     #
     # Returns true if the check is enabled, otherwise return false.
     define_method("#{check}_enabled?") do
-      settings["#{check}_disabled"] == true ? false : true
+      (settings["#{check}_disabled"] == true) ? false : true
     end
 
     # Public: Disable the named check.
@@ -153,6 +153,6 @@ class PuppetLint::Configuration
     self.show_ignored = false
     self.ignore_paths = ['vendor/**/*.pp']
     self.github_actions = ENV.key?('GITHUB_ACTION')
-    self.codeclimate_report_file = ENV['CODECLIMATE_REPORT_FILE']
+    self.codeclimate_report_file = ENV.fetch('CODECLIMATE_REPORT_FILE', nil)
   end
 end

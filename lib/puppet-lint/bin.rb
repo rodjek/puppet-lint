@@ -49,7 +49,7 @@ class PuppetLint::Bin
 
     begin
       path = @args[0]
-      full_path = File.expand_path(path, ENV['PWD'])
+      full_path = File.expand_path(path, ENV.fetch('PWD', nil))
       full_base_path = if File.directory?(full_path)
                          full_path
                        else
@@ -89,9 +89,7 @@ class PuppetLint::Bin
         end
 
         next unless PuppetLint.configuration.fix && l.problems.none? { |r| r[:check] == :syntax }
-        File.open(f, 'wb') do |fd|
-          fd.write(l.manifest)
-        end
+        File.binwrite(f, l.manifest)
       end
 
       if PuppetLint.configuration.sarif
