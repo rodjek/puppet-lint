@@ -132,8 +132,8 @@ PuppetLint.new_check(:variable_scope) do
           line: token.line,
           column: token.column,
           description: 'Test the manifest tokens for any variables that are referenced in the manifest. ' \
-                          'If the variables are not fully qualified or one of the variables automatically created in the scope, ' \
-                          'check that they have been defined in the local scope and record a warning for each variable that has not.',
+                       'If the variables are not fully qualified or one of the variables automatically created in the scope, ' \
+                       'check that they have been defined in the local scope and record a warning for each variable that has not.',
           help_uri: 'https://puppet.com/docs/puppet/latest/style_guide.html#namespacing-variables',
         )
       end

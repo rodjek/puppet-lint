@@ -29,4 +29,4 @@ PuppetLint.new_check(:quoted_booleans) do
     problem[:token].type = problem[:token].value.upcase.to_sym
   end
 end
-PuppetLint.configuration.send('disable_quoted_booleans')
+PuppetLint.configuration.send(:disable_quoted_booleans)
