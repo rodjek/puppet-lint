@@ -12,7 +12,7 @@ require 'puppet-lint/report/codeclimate'
 #
 #   require 'puppet-lint'
 #   PuppetLint::RakeTask.new
-class PuppetLint::RakeTask < ::Rake::TaskLib
+class PuppetLint::RakeTask < Rake::TaskLib
   include ::Rake::DSL if defined?(::Rake::DSL)
 
   DEFAULT_PATTERN = '**/*.pp'.freeze
