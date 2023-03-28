@@ -102,7 +102,7 @@ class PuppetLint::RakeTask < ::Rake::TaskLib
           all_problems << linter.print_problems
 
           if PuppetLint.configuration.fix && linter.problems.none? { |e| e[:check] == :syntax }
-            IO.write(puppet_file, linter.manifest)
+            File.write(puppet_file, linter.manifest)
           end
         end
 
