@@ -112,7 +112,7 @@ class PuppetLint::Lexer
   # \v == vertical tab
   # \f == form feed
   # \p{Zs} == ASCII + Unicode non-linebreaking whitespace
-  WHITESPACE_RE = RUBY_VERSION == '1.8.7' ? %r{[\t\v\f ]} : %r{[\t\v\f\p{Zs}]}
+  WHITESPACE_RE = (RUBY_VERSION == '1.8.7') ? %r{[\t\v\f ]} : %r{[\t\v\f\p{Zs}]}
 
   LINE_END_RE = %r{(?:\r\n|\r|\n)}.freeze
 
@@ -419,7 +419,7 @@ class PuppetLint::Lexer
         lexer = PuppetLint::Lexer.new
         lexer.tokenise(segment[1])
         lexer.tokens.each_with_index do |t, i|
-          type = i.zero? && t.interpolated_variable? ? :VARIABLE : t.type
+          type = (i.zero? && t.interpolated_variable?) ? :VARIABLE : t.type
           tokens << new_token(type, t.value, raw: t.raw)
         end
       when :UNENC_VAR
@@ -451,7 +451,7 @@ class PuppetLint::Lexer
         lexer = PuppetLint::Lexer.new
         lexer.tokenise(segment[1])
         lexer.tokens.each_with_index do |t, i|
-          type = i.zero? && t.interpolated_variable? ? :VARIABLE : t.type
+          type = (i.zero? && t.interpolated_variable?) ? :VARIABLE : t.type
           tokens << new_token(type, t.value, raw: t.raw)
         end
       when :UNENC_VAR
