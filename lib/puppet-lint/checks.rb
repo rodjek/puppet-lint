@@ -76,7 +76,7 @@ class PuppetLint::Checks
       kind: :error,
       check: :syntax,
       message: 'Syntax error',
-      fullpath: File.expand_path(fileinfo, ENV['PWD']),
+      fullpath: File.expand_path(fileinfo, ENV.fetch('PWD', nil)),
       filename: File.basename(fileinfo),
       path: fileinfo,
       line: e.token.line,
@@ -120,10 +120,8 @@ class PuppetLint::Checks
   #
   # Returns an Array of String check names.
   def enabled_checks
-    @enabled_checks ||= begin
-      PuppetLint.configuration.checks.select do |check|
-        PuppetLint.configuration.send("#{check}_enabled?")
-      end
+    @enabled_checks ||= PuppetLint.configuration.checks.select do |check|
+      PuppetLint.configuration.send("#{check}_enabled?")
     end
   end
 
