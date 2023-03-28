@@ -11,7 +11,7 @@ PuppetLint.new_check(:variable_contains_dash) do
     end
 
     invalid_tokens.each do |token|
-      next unless %r{-}.match?(token.value.gsub(%r{\[.+?\]}, ''))
+      next unless token.value.gsub(%r{\[.+?\]}, '').include?('-')
 
       notify(
         :warning,
