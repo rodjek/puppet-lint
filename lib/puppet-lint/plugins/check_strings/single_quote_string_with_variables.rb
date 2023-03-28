@@ -14,7 +14,7 @@ PuppetLint.new_check(:single_quote_string_with_variables) do
         message: 'single quoted string containing a variable found',
         line: token.line,
         column: token.column,
-        description: 'Check the manifest tokens for any single quoted strings containing '\
+        description: 'Check the manifest tokens for any single quoted strings containing ' \
           'a enclosed variable and record an error for each instance found.',
         help_uri: 'https://puppet.com/docs/puppet/latest/style_guide.html#quoting',
       )

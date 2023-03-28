@@ -23,7 +23,7 @@ PuppetLint.new_check(:unquoted_file_mode) do
           line: value_token.line,
           column: value_token.column,
           token: value_token,
-          description: 'Check the tokens of each File resource instance for a mode parameter '\
+          description: 'Check the tokens of each File resource instance for a mode parameter ' \
             'and if found, record a warning if the value of that parameter is not a quoted string.',
           help_uri: 'https://puppet.com/docs/puppet/latest/style_guide.html#file-modes',
         )
