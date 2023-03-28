@@ -123,7 +123,7 @@ class PuppetLint::Data
         @fullpath = nil
         @filename = nil
       else
-        @fullpath = File.expand_path(val, ENV['PWD'])
+        @fullpath = File.expand_path(val, ENV.fetch('PWD', nil))
         @filename = File.basename(val)
       end
     end

@@ -58,9 +58,9 @@ task :release_test do
   branch = if ENV['GITHUB_REF']
              ENV['GITHUB_REF']
            elsif ENV['APPVEYOR']
-             ENV['APPVEYOR_PULL_REQUEST_HEAD_REPO_BRANCH']
+             ENV.fetch('APPVEYOR_PULL_REQUEST_HEAD_REPO_BRANCH', nil)
            elsif ENV['TRAVIS']
-             ENV['TRAVIS_PULL_REQUEST_BRANCH']
+             ENV.fetch('TRAVIS_PULL_REQUEST_BRANCH', nil)
            else
              false
            end
