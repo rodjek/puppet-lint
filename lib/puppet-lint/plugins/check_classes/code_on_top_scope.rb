@@ -20,4 +20,4 @@ PuppetLint.new_check(:code_on_top_scope) do
     end
   end
 end
-PuppetLint.configuration.send('disable_code_on_top_scope')
+PuppetLint.configuration.send(:disable_code_on_top_scope)

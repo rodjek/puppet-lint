@@ -3,7 +3,7 @@ begin
 rescue
   # monkeypatch String#% into Ruby 1.8.7
   class String
-    Percent = instance_method('%') unless defined?(Percent)
+    Percent = instance_method(:%) unless defined?(Percent)
 
     def %(*a, &b)
       a.flatten!

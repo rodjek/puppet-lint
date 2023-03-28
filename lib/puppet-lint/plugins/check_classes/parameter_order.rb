@@ -35,7 +35,7 @@ PuppetLint.new_check(:parameter_order) do
           line: token.line,
           column: token.column,
           description: 'Test the manifest tokens for any parameterised classes or defined types that take ' \
-            'parameters and record a warning if there are any optional parameters listed before required parameters.',
+                       'parameters and record a warning if there are any optional parameters listed before required parameters.',
           help_uri: 'https://puppet.com/docs/puppet/latest/style_guide.html#display-order-of-parameters',
         )
       end

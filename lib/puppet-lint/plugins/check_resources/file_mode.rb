@@ -30,7 +30,7 @@ PuppetLint.new_check(:file_mode) do
           column: value_token.column,
           token: value_token,
           description: 'Check the tokens of each File resource instance for a mode parameter and if found, ' \
-                          'record a warning if the value of that parameter is not a 4 digit octal value (0755) or a symbolic mode (\'o=rwx,g\+r\').',
+                       'record a warning if the value of that parameter is not a 4 digit octal value (0755) or a symbolic mode (\'o=rwx,g\+r\').',
           help_uri: 'https://puppet.com/docs/puppet/latest/style_guide.html#file-modes',
         )
       end

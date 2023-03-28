@@ -55,8 +55,8 @@ describe PuppetLint::Lexer do
     end
 
     it 'calculates the column number for a multi line string' do
-      lexer.instance_variable_set('@line_no', 4)
-      lexer.instance_variable_set('@column', 5)
+      lexer.instance_variable_set(:@line_no, 4)
+      lexer.instance_variable_set(:@column, 5)
       lexer.new_token(:SSTRING, "test\ntest")
       token = lexer.new_token(:TEST, 'test')
       expect(token.column).to eq(6)
