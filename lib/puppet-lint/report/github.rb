@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Style/ClassAndModuleChildren
 class PuppetLint::Report
   # This formatter formats report data as GitHub Workflow commands resulting
   # in GitHub check annotations when run within GitHub Actions.
