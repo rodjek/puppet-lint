@@ -1,5 +1,6 @@
 require 'strscan'
 
+# rubocop:disable Style/ClassAndModuleChildren
 class PuppetLint::Lexer
   # Internal: A class for slurping strings from a Puppet manifest.
   class StringSlurper

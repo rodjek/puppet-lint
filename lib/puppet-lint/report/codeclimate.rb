@@ -3,6 +3,7 @@
 require 'digest'
 require 'json'
 
+# rubocop:disable Style/ClassAndModuleChildren
 class PuppetLint::Report
   # Formats problems and writes them to a file as a code climate compatible report.
   class CodeClimateReporter
