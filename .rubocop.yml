@@ -1,1 +1,3 @@
-inherit_from: rubocop_baseline.yml
+inherit_from:
+  - rubocop_baseline.yml
+  - .rubocop_todo.yml
