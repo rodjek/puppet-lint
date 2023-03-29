@@ -56,27 +56,27 @@ class PuppetLint::Lexer
   # From https://github.com/puppetlabs/puppet/blob/master/lib/puppet/pops/parser/lexer2.rb#L116-L137
   # or thereabouts
   KEYWORDS = {
-    'case'     => true,
-    'class'    => true,
-    'default'  => true,
-    'define'   => true,
-    'import'   => true,
-    'if'       => true,
-    'elsif'    => true,
-    'else'     => true,
+    'case' => true,
+    'class' => true,
+    'default' => true,
+    'define' => true,
+    'import' => true,
+    'if' => true,
+    'elsif' => true,
+    'else' => true,
     'inherits' => true,
-    'node'     => true,
-    'and'      => true,
-    'or'       => true,
-    'undef'    => true,
-    'false'    => true,
-    'true'     => true,
-    'in'       => true,
-    'unless'   => true,
+    'node' => true,
+    'and' => true,
+    'or' => true,
+    'undef' => true,
+    'false' => true,
+    'true' => true,
+    'in' => true,
+    'unless' => true,
     'function' => true,
-    'type'     => true,
-    'attr'     => true,
-    'private'  => true,
+    'type' => true,
+    'attr' => true,
+    'private' => true,
   }.freeze
 
   # Internal: A Hash whose keys are Strings representing reserved keywords in
@@ -86,9 +86,9 @@ class PuppetLint::Lexer
   # Currently unused
   APP_MANAGEMENT_TOKENS = {
     'application' => true,
-    'consumes'    => true,
-    'produces'    => true,
-    'site'        => true,
+    'consumes' => true,
+    'produces' => true,
+    'site' => true,
   }.freeze
 
   # Internal: A Hash whose keys are Symbols representing token types which

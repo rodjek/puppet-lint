@@ -55,18 +55,18 @@ describe PuppetLint::Configuration do
     end
 
     expect(config.settings).to eq(
-      'with_filename'           => false,
-      'fail_on_warnings'        => false,
+      'with_filename' => false,
+      'fail_on_warnings' => false,
       'codeclimate_report_file' => nil,
-      'error_level'             => :all,
-      'log_format'              => '',
-      'sarif'                   => false,
-      'with_context'            => false,
-      'fix'                     => false,
-      'github_actions'          => false,
-      'show_ignored'            => false,
-      'json'                    => false,
-      'ignore_paths'            => ['vendor/**/*.pp'],
+      'error_level' => :all,
+      'log_format' => '',
+      'sarif' => false,
+      'with_context' => false,
+      'fix' => false,
+      'github_actions' => false,
+      'show_ignored' => false,
+      'json' => false,
+      'ignore_paths' => ['vendor/**/*.pp'],
     )
   end
 

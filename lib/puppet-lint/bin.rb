@@ -148,7 +148,7 @@ class PuppetLint::Bin
           'ruleIndex' => rule_index,
           'message' => { 'text' => message[:message] },
           'locations' => [{ 'physicalLocation' => { 'artifactLocation' => { 'uri' => relative_path, 'uriBaseId' => 'ROOTPATH' },
-'region' => { 'startLine' => message[:line], 'startColumn' => message[:column] } } }],
+                                                    'region' => { 'startLine' => message[:line], 'startColumn' => message[:column] } } }],
         }
         results << result
       end
