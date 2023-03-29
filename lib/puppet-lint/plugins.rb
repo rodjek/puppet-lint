@@ -58,6 +58,7 @@ class PuppetLint::Plugins
       if ENV['PUPPET_LINT_LOAD_PRERELEASE_PLUGINS']
         return ['true', 'yes'].include?(ENV['PUPPET_LINT_LOAD_PRERELEASE_PLUGINS'].downcase)
       end
+
       false
     end
 

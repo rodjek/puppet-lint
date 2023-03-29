@@ -118,6 +118,7 @@ PuppetLint.new_check(:arrow_alignment) do
     end
 
     raise PuppetLint::NoFix if new_ws_len < 0
+
     new_ws = ' ' * new_ws_len
 
     if problem[:token].prev_token.type == :WHITESPACE

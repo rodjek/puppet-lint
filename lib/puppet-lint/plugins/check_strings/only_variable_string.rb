@@ -23,6 +23,7 @@ PuppetLint.new_check(:only_variable_string) do
             if eos_token.next_code_token && eos_token.next_code_token.type == :FARROW
               break
             end
+
             notify(
               :warning,
               message: 'string containing only a variable',

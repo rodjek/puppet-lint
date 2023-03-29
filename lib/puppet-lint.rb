@@ -155,8 +155,10 @@ class PuppetLint
   def print_context(message)
     return if message[:check] == 'documentation'
     return if message[:kind] == :fixed
+
     line = message[:context]
     return unless line
+
     offset = line.index(%r{\S}) || 1
     puts "\n  #{line.strip}"
     printf("%#{message[:column] + 2 - offset}s\n\n", '^')

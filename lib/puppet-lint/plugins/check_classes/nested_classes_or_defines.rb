@@ -13,6 +13,7 @@ PuppetLint.new_check(:nested_classes_or_defines) do
       class_tokens.each do |token|
         next unless TOKENS.include?(token.type)
         next if token.next_code_token.type == :LBRACE
+
         type = (token.type == :CLASS) ? 'class' : 'defined type'
 
         notify(

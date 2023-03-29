@@ -40,6 +40,7 @@ PuppetLint.new_check(:documentation) do
     while !prev_token.nil? && WHITESPACE_TOKENS.include?(prev_token.type)
       newlines += 1 if prev_token.type == :NEWLINE
       break if newlines > 1
+
       prev_token = prev_token.prev_token
     end
 

@@ -97,6 +97,7 @@ class PuppetLint::RakeTask < Rake::TaskLib
 
         matched_files.to_a.each do |puppet_file|
           next unless File.file?(puppet_file)
+
           linter.file = puppet_file
           linter.run
           all_problems << linter.print_problems

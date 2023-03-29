@@ -137,6 +137,7 @@ PuppetLint.new_check(:legacy_facts) do
       end
 
       next unless EASY_FACTS.include?(fact_name) || UNCONVERTIBLE_FACTS.include?(fact_name) || fact_name.match(Regexp.union(REGEX_FACTS))
+
       notify :warning, {
         message: "legacy fact '#{fact_name}'",
         line: token.line,

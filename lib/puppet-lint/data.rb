@@ -186,10 +186,12 @@ class PuppetLint::Data
 
           rel_start_idx = tokens[marker..-1].index(colon_token)
           break if rel_start_idx.nil?
+
           start_idx = rel_start_idx + marker
           end_token = colon_token.next_token_of([:SEMIC, :RBRACE])
           rel_end_idx = tokens[start_idx..-1].index(end_token)
           raise PuppetLint::SyntaxError, colon_token if rel_end_idx.nil?
+
           marker = rel_end_idx + start_idx
 
           result << {

@@ -195,6 +195,7 @@ class PuppetLint::Lexer
         end
 
         return nil if token_iter.nil?
+
         token_iter = token_iter.send("#{direction}_token".to_sym)
       end
       nil
@@ -203,6 +204,7 @@ class PuppetLint::Lexer
     def interpolated_variable?
       return false if type == :TYPE && value != 'type'
       return true if type == :NAME
+
       PuppetLint::Lexer::KEYWORDS.include?(type.to_s.downcase)
     end
   end

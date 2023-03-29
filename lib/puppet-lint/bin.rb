@@ -79,6 +79,7 @@ class PuppetLint::Bin
 
       path.each do |f|
         next if ignore_paths.any? { |p| File.fnmatch(p, f) }
+
         l = PuppetLint.new
         l.file = f
         l.run
@@ -89,6 +90,7 @@ class PuppetLint::Bin
         end
 
         next unless PuppetLint.configuration.fix && l.problems.none? { |r| r[:check] == :syntax }
+
         File.binwrite(f, l.manifest)
       end
 

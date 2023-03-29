@@ -74,6 +74,7 @@ PuppetLint.new_check(:variables_not_enclosed) do
     var_token.value = var_name
 
     return if str_token.nil?
+
     str_token.value = "-#{text}#{str_token.value}"
   end
 

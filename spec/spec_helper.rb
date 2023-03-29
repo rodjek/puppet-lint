@@ -100,6 +100,7 @@ module RSpec::LintExampleGroup
 
   def method_missing(method, *args, &block)
     return HaveProblem.new(method, args.first) if method.to_s.start_with?('contain_')
+
     super
   end
 
