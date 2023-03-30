@@ -2,9 +2,9 @@
 # are not aligned with other arrows in that grouping.
 #
 # https://puppet.com/docs/puppet/latest/style_guide.html#spacing-indentation-and-whitespace
-PuppetLint.new_check(:arrow_alignment) do
-  COMMENT_TYPES = Set[:COMMENT, :SLASH_COMMENT, :MLCOMMENT]
+COMMENT_TYPES = Set[:COMMENT, :SLASH_COMMENT, :MLCOMMENT]
 
+PuppetLint.new_check(:arrow_alignment) do
   def check
     resource_indexes.each do |res_idx|
       arrow_column = [0]

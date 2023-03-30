@@ -3,9 +3,9 @@
 # not a quoted string.
 #
 # https://puppet.com/docs/puppet/latest/style_guide.html#file-modes
-PuppetLint.new_check(:unquoted_file_mode) do
-  TOKEN_TYPES = Set[:NAME, :NUMBER]
+TOKEN_TYPES = Set[:NAME, :NUMBER]
 
+PuppetLint.new_check(:unquoted_file_mode) do
   def check
     resource_indexes.each do |resource|
       next unless resource[:type].value == 'file' || resource[:type].value == 'concat'

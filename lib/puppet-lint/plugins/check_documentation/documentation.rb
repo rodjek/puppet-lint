@@ -3,10 +3,10 @@
 # record a warning for each instance found.
 #
 # https://puppet.com/docs/puppet/latest/style_guide.html#public-and-private
-PuppetLint.new_check(:documentation) do
-  COMMENT_TOKENS = Set[:COMMENT, :MLCOMMENT, :SLASH_COMMENT]
-  WHITESPACE_TOKENS = Set[:WHITESPACE, :NEWLINE, :INDENT]
+COMMENT_TOKENS = Set[:COMMENT, :MLCOMMENT, :SLASH_COMMENT]
+WHITESPACE_TOKENS = Set[:WHITESPACE, :NEWLINE, :INDENT]
 
+PuppetLint.new_check(:documentation) do
   def check
     (class_indexes + defined_type_indexes).each do |item_idx|
       comment_token = find_comment_token(item_idx[:tokens].first)

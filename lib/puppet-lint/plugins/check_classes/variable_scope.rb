@@ -5,35 +5,35 @@
 # not.
 #
 # https://puppet.com/docs/puppet/latest/style_guide.html#namespacing-variables
-PuppetLint.new_check(:variable_scope) do
-  DEFAULT_SCOPE_VARS = Set[
-    'name',
-    'title',
-    'module_name',
-    'environment',
-    'clientcert',
-    'clientversion',
-    'servername',
-    'serverip',
-    'serverversion',
-    'caller_module_name',
-    'alias',
-    'audit',
-    'before',
-    'loglevel',
-    'noop',
-    'notify',
-    'require',
-    'schedule',
-    'stage',
-    'subscribe',
-    'tag',
-    'facts',
-    'trusted',
-    'server_facts',
-  ]
-  POST_VAR_TOKENS = Set[:COMMA, :EQUALS, :RPAREN]
+DEFAULT_SCOPE_VARS = Set[
+  'name',
+  'title',
+  'module_name',
+  'environment',
+  'clientcert',
+  'clientversion',
+  'servername',
+  'serverip',
+  'serverversion',
+  'caller_module_name',
+  'alias',
+  'audit',
+  'before',
+  'loglevel',
+  'noop',
+  'notify',
+  'require',
+  'schedule',
+  'stage',
+  'subscribe',
+  'tag',
+  'facts',
+  'trusted',
+  'server_facts',
+]
+POST_VAR_TOKENS = Set[:COMMA, :EQUALS, :RPAREN]
 
+PuppetLint.new_check(:variable_scope) do
   def check
     variables_in_scope = DEFAULT_SCOPE_VARS.clone
 

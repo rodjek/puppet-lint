@@ -3,9 +3,9 @@
 # each instance found.
 #
 # https://puppet.com/docs/puppet/latest/style_guide.html#quoting
-PuppetLint.new_check(:double_quoted_strings) do
-  ESCAPE_CHAR_RE = %r{(\\\$|\\"|\\'|'|\r|\t|\\t|\\s|\n|\\n|\\\\)}.freeze
+ESCAPE_CHAR_RE = %r{(\\\$|\\"|\\'|'|\r|\t|\\t|\\s|\n|\\n|\\\\)}.freeze
 
+PuppetLint.new_check(:double_quoted_strings) do
   def check
     invalid_tokens = tokens.select do |token|
       token.type == :STRING &&
