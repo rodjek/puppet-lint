@@ -129,6 +129,6 @@ class PuppetLint::Checks
   #
   # Returns the manifest as a String.
   def manifest
-    PuppetLint::Data.tokens.map(&:to_manifest).join('')
+    PuppetLint::Data.tokens.map(&:to_manifest).join
   end
 end

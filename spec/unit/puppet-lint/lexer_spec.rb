@@ -1289,7 +1289,7 @@ END
     it 'does not enclose variable with a chained function call' do
       manifest = '"This is ${a.test}"'
       tokens = lexer.tokenise(manifest)
-      expect(tokens.map(&:to_manifest).join('')).to eq(manifest)
+      expect(tokens.map(&:to_manifest).join).to eq(manifest)
     end
   end
 
@@ -1688,7 +1688,7 @@ END
       END
 
       tokens = lexer.tokenise(manifest)
-      expect(tokens.map(&:to_manifest).join('')).to eq(manifest)
+      expect(tokens.map(&:to_manifest).join).to eq(manifest)
 
       expect(tokens[0].type).to eq(:VARIABLE)
       expect(tokens[0].value).to eq('str')
@@ -1755,7 +1755,7 @@ END
       expect(tokens[7].raw).to eq('$myvar')
       expect(tokens[7].to_manifest).to eq('$myvar')
 
-      expect(tokens.map(&:to_manifest).join('')).to eq(manifest)
+      expect(tokens.map(&:to_manifest).join).to eq(manifest)
     end
   end
 
