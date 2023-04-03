@@ -448,7 +448,7 @@ class PuppetLint::Data
 
             level += 1 if cur_token.type == :LBRACE
             level -= 1 if cur_token.type == :RBRACE
-            break if level < 0
+            break if level.negative?
           end
 
           hashes << {

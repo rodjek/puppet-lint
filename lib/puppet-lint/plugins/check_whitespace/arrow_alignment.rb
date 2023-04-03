@@ -116,7 +116,7 @@ PuppetLint.new_check(:arrow_alignment) do
       new_ws_len += (problem[:arrow_column] - problem[:token].column)
     end
 
-    raise PuppetLint::NoFix if new_ws_len < 0
+    raise PuppetLint::NoFix if new_ws_len.negative?
 
     new_ws = ' ' * new_ws_len
 
