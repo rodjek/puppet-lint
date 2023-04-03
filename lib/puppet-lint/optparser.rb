@@ -143,7 +143,7 @@ class PuppetLint::OptParser
 
     unless args.include?('--no-config')
       opt_parser.load('/etc/puppet-lint.rc')
-      if ENV.key?('HOME') && File.readable?(Dir.home)
+      if File.readable?(Dir.home)
         home_dotfile_path = File.expand_path('~/.puppet-lint.rc')
         opt_parser.load(home_dotfile_path) if File.readable?(home_dotfile_path)
       end
