@@ -95,7 +95,7 @@ class PuppetLint
 
     # Check if the input is an SE Linux policy package file (which also use
     # the .pp extension), which all have the first 4 bytes 0xf97cff8f.
-    @code = '' if @code[0..3].unpack('V').first == 0xf97cff8f
+    @code = '' if @code[0..3].unpack1('V') == 0xf97cff8f
   end
 
   # Internal: Retrieve the format string to be used when writing problems to
