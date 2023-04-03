@@ -77,7 +77,7 @@ class PuppetLint::Plugins
   end
 end
 
-Dir[File.expand_path('plugins/**/*.rb', File.dirname(__FILE__))].each do |file|
+Dir[File.expand_path('plugins/**/*.rb', File.dirname(__FILE__))].sort.each do |file|
   require file
 end
 
