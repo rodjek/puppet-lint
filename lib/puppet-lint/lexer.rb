@@ -73,7 +73,7 @@ class PuppetLint::Lexer
     'function' => true,
     'type' => true,
     'attr' => true,
-    'private' => true,
+    'private' => true
   }.freeze
 
   # Internal: A Hash whose keys are Strings representing reserved keywords in
@@ -85,7 +85,7 @@ class PuppetLint::Lexer
     'application' => true,
     'consumes' => true,
     'produces' => true,
-    'site' => true,
+    'site' => true
   }.freeze
 
   # Internal: A Hash whose keys are Symbols representing token types which
@@ -101,7 +101,7 @@ class PuppetLint::Lexer
     IF: true,
     ELSIF: true,
     LPAREN: true,
-    EQUALS: true,
+    EQUALS: true
   }.freeze
 
   # Internal: some commonly used regular expressions
@@ -179,7 +179,7 @@ class PuppetLint::Lexer
     COMMENT: true,
     MLCOMMENT: true,
     SLASH_COMMENT: true,
-    INDENT: true,
+    INDENT: true
   }.freeze
 
   # Internal: Access the internal token storage.

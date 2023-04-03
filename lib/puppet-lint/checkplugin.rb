@@ -182,7 +182,7 @@ class PuppetLint::CheckPlugin
       check: self.class.const_get(:NAME),
       fullpath: fullpath,
       path: path,
-      filename: filename,
+      filename: filename
     }
   end
 

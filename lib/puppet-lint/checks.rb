@@ -39,7 +39,7 @@ class PuppetLint::Checks
         column: e.column,
         fullpath: PuppetLint::Data.fullpath,
         path: PuppetLint::Data.path,
-        filename: PuppetLint::Data.filename,
+        filename: PuppetLint::Data.filename
       }
       PuppetLint::Data.tokens = []
     end
@@ -80,7 +80,7 @@ class PuppetLint::Checks
       filename: File.basename(fileinfo),
       path: fileinfo,
       line: e.token.line,
-      column: e.token.column,
+      column: e.token.column
     }
 
     @problems

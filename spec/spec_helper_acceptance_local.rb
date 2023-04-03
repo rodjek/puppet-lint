@@ -17,7 +17,7 @@ def puppet_lint(args = [])
   {
     stdout: stdout.chomp,
     stderr: stderr.chomp,
-    exit_code: status.exitstatus,
+    exit_code: status.exitstatus
   }
 end
 

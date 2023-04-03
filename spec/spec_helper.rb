@@ -24,7 +24,7 @@ module RSpec::LintExampleGroup
     def initialize(method, message)
       @expected_problem = {
         kind: method.to_s.delete_prefix('contain_').to_sym,
-        message: message,
+        message: message
       }
       @description = ["contain a #{@expected_problem[:kind]}"]
     end

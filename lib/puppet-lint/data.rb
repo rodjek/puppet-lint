@@ -197,7 +197,7 @@ class PuppetLint::Data
             end: marker,
             tokens: tokens[start_idx..marker],
             type: find_resource_type_token(start_idx),
-            param_tokens: find_resource_param_tokens(tokens[start_idx..marker]),
+            param_tokens: find_resource_param_tokens(tokens[start_idx..marker])
           }
         end
         result
@@ -326,7 +326,7 @@ class PuppetLint::Data
                 param_tokens: param_tokens(tokens[i..(i + j + 1)]),
                 type: type,
                 name_token: token.next_code_token,
-                inherited_token: inherited_class,
+                inherited_token: inherited_class
               }
               break
             end
@@ -378,7 +378,7 @@ class PuppetLint::Data
           functions << {
             start: token_idx,
             end: real_idx,
-            tokens: tokens[token_idx..real_idx],
+            tokens: tokens[token_idx..real_idx]
           }
         end
         functions
@@ -414,7 +414,7 @@ class PuppetLint::Data
           arrays << {
             start: token_idx,
             end: real_idx,
-            tokens: tokens[token_idx..real_idx],
+            tokens: tokens[token_idx..real_idx]
           }
         end
         arrays
@@ -452,7 +452,7 @@ class PuppetLint::Data
           hashes << {
             start: token_idx,
             end: real_idx,
-            tokens: tokens[token_idx..real_idx],
+            tokens: tokens[token_idx..real_idx]
           }
         end
         hashes
@@ -486,7 +486,7 @@ class PuppetLint::Data
           defaults << {
             start: token_idx,
             end: real_idx,
-            tokens: tokens[token_idx..real_idx],
+            tokens: tokens[token_idx..real_idx]
           }
         end
         defaults

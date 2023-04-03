@@ -30,9 +30,9 @@ class PuppetLint::Report
               path: message[:path],
               lines: {
                 begin: message[:line],
-                end: message[:line],
+                end: message[:line]
               }
-            },
+            }
           }
 
           issue[:fingerprint] = Digest::MD5.hexdigest(Marshal.dump(issue))

@@ -100,7 +100,7 @@ EASY_FACTS = {
   'uptime_seconds' => "facts['system_uptime']['seconds']",
   'uuid' => "facts['dmi']['product']['uuid']",
   'xendomains' => "facts['xen']['domains']",
-  'zonename' => "facts['solaris_zones']['current']",
+  'zonename' => "facts['solaris_zones']['current']"
 }.freeze
 
 # A list of valid hash key token types
@@ -143,7 +143,7 @@ PuppetLint.new_check(:legacy_facts) do
         line: token.line,
         column: token.column,
         token: token,
-        fact_name: fact_name,
+        fact_name: fact_name
       }
     end
   end
