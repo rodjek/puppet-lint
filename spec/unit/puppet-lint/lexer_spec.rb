@@ -13,7 +13,7 @@ describe PuppetLint::Lexer do
     end
   end
 
-  context '#new_token' do
+  describe '#new_token' do
     it 'calculates the line number for an empty string' do
       token = lexer.new_token(:TEST, 'test')
       expect(token.line).to eq(1)
@@ -63,7 +63,7 @@ describe PuppetLint::Lexer do
     end
   end
 
-  context '#process_string_segments' do
+  describe '#process_string_segments' do
     subject(:tokens) { lexer.tokens }
 
     subject(:manifest) { lexer.tokens.map(&:to_manifest).join }
