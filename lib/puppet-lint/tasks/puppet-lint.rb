@@ -17,19 +17,7 @@ class PuppetLint::RakeTask < Rake::TaskLib
 
   DEFAULT_PATTERN = '**/*.pp'.freeze
 
-  attr_accessor :name
-  attr_accessor :pattern
-  attr_accessor :ignore_paths
-  attr_accessor :with_filename
-  attr_accessor :disable_checks
-  attr_accessor :only_checks
-  attr_accessor :fail_on_warnings
-  attr_accessor :error_level
-  attr_accessor :log_format
-  attr_accessor :with_context
-  attr_accessor :fix
-  attr_accessor :show_ignored
-  attr_accessor :relative
+  attr_accessor :name, :pattern, :ignore_paths, :with_filename, :disable_checks, :only_checks, :fail_on_warnings, :error_level, :log_format, :with_context, :fix, :show_ignored, :relative
 
   # Public: Initialise a new PuppetLint::RakeTask.
   #

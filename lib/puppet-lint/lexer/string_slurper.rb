@@ -4,9 +4,7 @@ require 'strscan'
 class PuppetLint::Lexer
   # Internal: A class for slurping strings from a Puppet manifest.
   class StringSlurper
-    attr_accessor :scanner
-    attr_accessor :results
-    attr_accessor :interp_stack
+    attr_accessor :scanner, :results, :interp_stack
 
     START_INTERP_PATTERN = %r{\$\{}.freeze
     END_INTERP_PATTERN = %r{\}}.freeze
