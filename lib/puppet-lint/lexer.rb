@@ -200,7 +200,7 @@ class PuppetLint::Lexer
     i = 0
 
     while i < code.size
-      chunk = code[i..-1]
+      chunk = code[i..]
 
       found = false
 
@@ -230,12 +230,12 @@ class PuppetLint::Lexer
         tokens << new_token(:VARIABLE, var_name, opts)
 
       elsif %r{\A'.*?'}m.match?(chunk)
-        str_content = StringScanner.new(code[i + 1..-1]).scan_until(%r{(\A|[^\\])(\\\\)*'}m)
+        str_content = StringScanner.new(code[i + 1..]).scan_until(%r{(\A|[^\\])(\\\\)*'}m)
         length = str_content.size + 1
         tokens << new_token(:SSTRING, str_content[0..-2])
 
       elsif chunk.start_with?('"')
-        slurper = PuppetLint::Lexer::StringSlurper.new(code[i + 1..-1])
+        slurper = PuppetLint::Lexer::StringSlurper.new(code[i + 1..])
         begin
           string_segments = slurper.parse
           process_string_segments(string_segments)
@@ -268,7 +268,7 @@ class PuppetLint::Lexer
         tokens << new_token(:MLCOMMENT, mlcomment, raw: mlcomment_raw)
 
       elsif chunk.match(%r{\A/.*?/}m) && possible_regex?
-        str_content = StringScanner.new(code[i + 1..-1]).scan_until(%r{(\A|[^\\])(\\\\)*/}m)
+        str_content = StringScanner.new(code[i + 1..]).scan_until(%r{(\A|[^\\])(\\\\)*/}m)
         length = str_content.size + 1
         tokens << new_token(:REGEX, str_content[0..-2])
 
@@ -283,7 +283,7 @@ class PuppetLint::Lexer
           length += indent.size
         else
           heredoc_tag = heredoc_queue.shift
-          slurper = PuppetLint::Lexer::StringSlurper.new(code[i + length..-1])
+          slurper = PuppetLint::Lexer::StringSlurper.new(code[i + length..])
           heredoc_segments = slurper.parse_heredoc(heredoc_tag)
           process_heredoc_segments(heredoc_segments)
           length += slurper.consumed_chars
@@ -295,7 +295,7 @@ class PuppetLint::Lexer
 
         unless heredoc_queue.empty?
           heredoc_tag = heredoc_queue.shift
-          slurper = PuppetLint::Lexer::StringSlurper.new(code[i + length..-1])
+          slurper = PuppetLint::Lexer::StringSlurper.new(code[i + length..])
           heredoc_segments = slurper.parse_heredoc(heredoc_tag)
           process_heredoc_segments(heredoc_segments)
           length += slurper.consumed_chars

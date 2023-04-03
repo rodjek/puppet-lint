@@ -7,7 +7,7 @@ PuppetLint.new_check(:nested_classes_or_defines) do
   def check
     class_indexes.each do |class_idx|
       # Skip the first token so that we don't pick up the first :CLASS
-      class_tokens = class_idx[:tokens][1..-1]
+      class_tokens = class_idx[:tokens][1..]
 
       class_tokens.each do |token|
         next unless CLASS_DEFINE_TOKENS.include?(token.type)

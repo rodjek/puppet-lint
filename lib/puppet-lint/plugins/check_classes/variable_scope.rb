@@ -93,7 +93,7 @@ PuppetLint.new_check(:variable_scope) do
             end_token = nil
             brace_depth = 0
 
-            tokens[start_idx..-1].each do |sub_token|
+            tokens[start_idx..].each do |sub_token|
               case sub_token.type
               when :LBRACE
                 brace_depth += 1

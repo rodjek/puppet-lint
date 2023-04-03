@@ -12,12 +12,12 @@ PuppetLint.new_check(:autoloader_layout) do
       split_title = title_token.value.split('::')
       mod = split_title.first
       expected_path = if split_title.length > 1
-                        "/#{mod}/manifests/#{split_title[1..-1].join('/')}.pp"
+                        "/#{mod}/manifests/#{split_title[1..].join('/')}.pp"
                       else
                         "/#{title_token.value}/manifests/init.pp"
                       end
 
-      expected_path = expected_path.gsub(%r{^/}, '').split('/')[1..-1].join('/') if PuppetLint.configuration.relative
+      expected_path = expected_path.gsub(%r{^/}, '').split('/')[1..].join('/') if PuppetLint.configuration.relative
 
       next if fullpath.end_with?(expected_path)
 

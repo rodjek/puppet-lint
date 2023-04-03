@@ -72,7 +72,7 @@ class PuppetLint::Data
 
       unless formatting_tokens.include?(token.type)
         current_token.next_token.prev_code_token = token unless current_token.next_token.nil?
-        next_nf_idx = tokens[index..-1].index { |r| !formatting_tokens.include?(r.type) }
+        next_nf_idx = tokens[index..].index { |r| !formatting_tokens.include?(r.type) }
         unless next_nf_idx.nil?
           next_nf_token = tokens[index + next_nf_idx]
           token.next_code_token = next_nf_token
@@ -182,12 +182,12 @@ class PuppetLint::Data
           next unless colon_token.next_code_token && colon_token.next_code_token.type != :LBRACE
           next if classref?(colon_token)
 
-          rel_start_idx = tokens[marker..-1].index(colon_token)
+          rel_start_idx = tokens[marker..].index(colon_token)
           break if rel_start_idx.nil?
 
           start_idx = rel_start_idx + marker
           end_token = colon_token.next_token_of([:SEMIC, :RBRACE])
-          rel_end_idx = tokens[start_idx..-1].index(end_token)
+          rel_end_idx = tokens[start_idx..].index(end_token)
           raise PuppetLint::SyntaxError, colon_token if rel_end_idx.nil?
 
           marker = rel_end_idx + start_idx
@@ -304,7 +304,7 @@ class PuppetLint::Data
         paren_depth = 0
         in_params = false
         inherited_class = nil
-        tokens[i + 1..-1].each_with_index do |definition_token, j|
+        tokens[i + 1..].each_with_index do |definition_token, j|
           case definition_token.type
           when :INHERITS
             inherited_class = definition_token.next_code_token
@@ -365,7 +365,7 @@ class PuppetLint::Data
           level = 0
           real_idx = 0
           in_paren = false
-          tokens[token_idx + 1..-1].each_with_index do |cur_token, cur_token_idx|
+          tokens[token_idx + 1..].each_with_index do |cur_token, cur_token_idx|
             break if level.zero? && in_paren
             break if level.zero? && cur_token.type == :NEWLINE
 
@@ -404,7 +404,7 @@ class PuppetLint::Data
           next unless token.type == :LBRACK
 
           real_idx = 0
-          tokens[token_idx + 1..-1].each_with_index do |cur_token, cur_token_idx|
+          tokens[token_idx + 1..].each_with_index do |cur_token, cur_token_idx|
             real_idx = token_idx + 1 + cur_token_idx
             break if cur_token.type == :RBRACK
           end
@@ -443,7 +443,7 @@ class PuppetLint::Data
 
           level = 0
           real_idx = 0
-          tokens[token_idx + 1..-1].each_with_index do |cur_token, cur_token_idx|
+          tokens[token_idx + 1..].each_with_index do |cur_token, cur_token_idx|
             real_idx = token_idx + 1 + cur_token_idx
 
             level += 1 if cur_token.type == :LBRACE
@@ -480,7 +480,7 @@ class PuppetLint::Data
 
           real_idx = 0
 
-          tokens[token_idx + 1..-1].each_with_index do |cur_token, cur_token_idx|
+          tokens[token_idx + 1..].each_with_index do |cur_token, cur_token_idx|
             real_idx = token_idx + 1 + cur_token_idx
             break if cur_token.type == :RBRACE
           end
@@ -577,7 +577,7 @@ class PuppetLint::Data
           else
             # Once we reach the first non-controlcomment word, assume the rest
             # of the words are the reason.
-            reason = comment_words[i..-1]
+            reason = comment_words[i..]
             break
           end
         end

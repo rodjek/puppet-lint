@@ -7,7 +7,7 @@ PuppetLint.new_check(:unquoted_node_name) do
     node_tokens = tokens.select { |token| token.type == :NODE }
     node_tokens.each do |node|
       node_token_idx = tokens.index(node)
-      node_lbrace_tok = tokens[node_token_idx..-1].find { |token| token.type == :LBRACE }
+      node_lbrace_tok = tokens[node_token_idx..].find { |token| token.type == :LBRACE }
       if node_lbrace_tok.nil?
         notify(
           :error,
