@@ -18,7 +18,7 @@ rescue
       if a.empty?
         string
       else
-        Percent.bind(string).call(a, &b)
+        Percent.bind_call(string, a, &b)
       end
     end
 
