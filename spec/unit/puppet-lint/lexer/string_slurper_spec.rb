@@ -458,7 +458,7 @@ describe PuppetLint::Lexer::StringSlurper do
       let(:string) { 'accentués"' }
 
       it 'counts the multibyte character as a single consumed character' do
-        is_expected.to eq(10)
+        expect(subject).to eq(10)
       end
     end
 
@@ -466,7 +466,7 @@ describe PuppetLint::Lexer::StringSlurper do
       let(:string) { '"' }
 
       it 'consumes only the closing quote' do
-        is_expected.to eq(1)
+        expect(subject).to eq(1)
       end
     end
   end
