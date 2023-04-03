@@ -17,9 +17,7 @@ PuppetLint.new_check(:autoloader_layout) do
                         "/#{title_token.value}/manifests/init.pp"
                       end
 
-      if PuppetLint.configuration.relative
-        expected_path = expected_path.gsub(%r{^/}, '').split('/')[1..-1].join('/')
-      end
+      expected_path = expected_path.gsub(%r{^/}, '').split('/')[1..-1].join('/') if PuppetLint.configuration.relative
 
       next if fullpath.end_with?(expected_path)
 

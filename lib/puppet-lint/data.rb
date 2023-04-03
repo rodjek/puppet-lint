@@ -92,9 +92,7 @@ class PuppetLint::Data
       end
 
       current_token.next_token = token
-      unless formatting_tokens.include?(token.type)
-        current_token.next_code_token = token
-      end
+      current_token.next_code_token = token unless formatting_tokens.include?(token.type)
 
       tokens.insert(index, token)
     end
@@ -239,9 +237,7 @@ class PuppetLint::Data
 
         break unless resource_tokens.include?(iter_token)
 
-        if iter_token && iter_token.next_code_token.type == :FARROW
-          param_tokens << iter_token
-        end
+        param_tokens << iter_token if iter_token && iter_token.next_code_token.type == :FARROW
       end
 
       param_tokens

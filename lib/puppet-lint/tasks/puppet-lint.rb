@@ -68,13 +68,9 @@ class PuppetLint::RakeTask < Rake::TaskLib
         PuppetLint.configuration.send("#{config}=".to_sym, value) unless value.nil?
       end
 
-      if PuppetLint.configuration.ignore_paths && @ignore_paths.empty?
-        @ignore_paths = PuppetLint.configuration.ignore_paths
-      end
+      @ignore_paths = PuppetLint.configuration.ignore_paths if PuppetLint.configuration.ignore_paths && @ignore_paths.empty?
 
-      if PuppetLint.configuration.pattern
-        @pattern = PuppetLint.configuration.pattern
-      end
+      @pattern = PuppetLint.configuration.pattern if PuppetLint.configuration.pattern
 
       RakeFileUtils.send(:verbose, true) do
         linter = PuppetLint.new
@@ -90,14 +86,10 @@ class PuppetLint::RakeTask < Rake::TaskLib
           linter.run
           all_problems << linter.print_problems
 
-          if PuppetLint.configuration.fix && linter.problems.none? { |e| e[:check] == :syntax }
-            File.write(puppet_file, linter.manifest)
-          end
+          File.write(puppet_file, linter.manifest) if PuppetLint.configuration.fix && linter.problems.none? { |e| e[:check] == :syntax }
         end
 
-        if PuppetLint.configuration.codeclimate_report_file
-          PuppetLint::Report::CodeClimateReporter.write_report_file(all_problems, PuppetLint.configuration.codeclimate_report_file)
-        end
+        PuppetLint::Report::CodeClimateReporter.write_report_file(all_problems, PuppetLint.configuration.codeclimate_report_file) if PuppetLint.configuration.codeclimate_report_file
 
         abort if linter.errors? || (
           linter.warnings? && PuppetLint.configuration.fail_on_warnings

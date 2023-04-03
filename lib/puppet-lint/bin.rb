@@ -85,9 +85,7 @@ class PuppetLint::Bin
         l.run
         all_problems << l.print_problems
 
-        if l.errors? || (l.warnings? && PuppetLint.configuration.fail_on_warnings)
-          return_val = 1
-        end
+        return_val = 1 if l.errors? || (l.warnings? && PuppetLint.configuration.fail_on_warnings)
 
         next unless PuppetLint.configuration.fix && l.problems.none? { |r| r[:check] == :syntax }
 
@@ -105,9 +103,7 @@ class PuppetLint::Bin
         puts JSON.pretty_generate(all_problems)
       end
 
-      if PuppetLint.configuration.codeclimate_report_file
-        PuppetLint::Report::CodeClimateReporter.write_report_file(all_problems, PuppetLint.configuration.codeclimate_report_file)
-      end
+      PuppetLint::Report::CodeClimateReporter.write_report_file(all_problems, PuppetLint.configuration.codeclimate_report_file) if PuppetLint.configuration.codeclimate_report_file
 
       return_val
     rescue PuppetLint::NoCodeError

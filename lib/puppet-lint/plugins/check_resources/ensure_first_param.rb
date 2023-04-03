@@ -37,9 +37,7 @@ PuppetLint.new_check(:ensure_first_param) do
 
     ensure_param_comma_token = ensure_param_name_token.next_token_of([:COMMA, :SEMIC])
 
-    if first_param_name_token.nil? || first_param_comma_token.nil? || ensure_param_comma_token.nil?
-      raise PuppetLint::NoFix
-    end
+    raise PuppetLint::NoFix if first_param_name_token.nil? || first_param_comma_token.nil? || ensure_param_comma_token.nil?
 
     first_param_name_idx = tokens.index(first_param_name_token)
     first_param_comma_idx = tokens.index(first_param_comma_token)

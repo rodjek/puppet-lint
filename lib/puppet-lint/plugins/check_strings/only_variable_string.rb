@@ -20,9 +20,7 @@ PuppetLint.new_check(:only_variable_string) do
           eos_offset += 3
         when :DQPOST
           if eos_token.value == ''
-            if eos_token.next_code_token && eos_token.next_code_token.type == :FARROW
-              break
-            end
+            break if eos_token.next_code_token && eos_token.next_code_token.type == :FARROW
 
             notify(
               :warning,

@@ -55,9 +55,7 @@ PuppetLint.new_check(:arrow_alignment) do
             this_arrow_column += 1
           end
 
-          if arrow_column[level_idx] < this_arrow_column
-            arrow_column[level_idx] = this_arrow_column
-          end
+          arrow_column[level_idx] = this_arrow_column if arrow_column[level_idx] < this_arrow_column
 
           (level_tokens[level_idx] ||= []) << token
         when :LBRACE
