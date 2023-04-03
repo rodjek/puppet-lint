@@ -28,7 +28,7 @@ rescue
         vars.each do |var, value|
           var = var.to_s
           var.gsub!(%r{[^a-zA-Z0-9_]}, '')
-          changed = gsub!(%r{\%\{#{var}\}}, value.to_s)
+          changed = gsub!(%r{%\{#{var}\}}, value.to_s)
         end
         break unless changed
       end

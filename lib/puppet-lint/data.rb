@@ -562,7 +562,7 @@ class PuppetLint::Data
         comment_token_types.include?(token.type)
       end
       control_comment_tokens = comment_tokens.select do |token|
-        token.value.strip =~ %r{\Alint\:(ignore\:[\w\d]+|endignore)}
+        token.value.strip =~ %r{\Alint:(ignore:[\w\d]+|endignore)}
       end
 
       stack = []
@@ -572,7 +572,7 @@ class PuppetLint::Data
 
         comment_words = token.value.strip.split(%r{\s+})
         comment_words.each_with_index do |word, i|
-          if %r{\Alint\:(ignore|endignore)}.match?(word)
+          if %r{\Alint:(ignore|endignore)}.match?(word)
             comment_data << word
           else
             # Once we reach the first non-controlcomment word, assume the rest

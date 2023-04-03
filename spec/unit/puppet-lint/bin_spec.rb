@@ -300,7 +300,7 @@ describe PuppetLint::Bin do
       its(:exitstatus) { is_expected.to eq(1) }
 
       its(:stdout) do
-        is_expected.to match(%r{^(/|[A-Za-z]\:).+/spec/fixtures/test/manifests/fail\.pp$})
+        is_expected.to match(%r{^(/|[A-Za-z]:).+/spec/fixtures/test/manifests/fail\.pp$})
       end
     end
 
