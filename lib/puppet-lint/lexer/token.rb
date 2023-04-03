@@ -176,9 +176,7 @@ class PuppetLint::Lexer
 
       token_iter = send("#{direction}_token".to_sym)
       until token_iter.nil?
-        if to_find.include?(token_iter.type)
-          return token_iter if opts[:value].nil? || token_iter.value == opts[:value]
-        end
+        return token_iter if to_find.include?(token_iter.type) && (opts[:value].nil? || token_iter.value == opts[:value])
 
         opening_token = (direction == :next) ? 'L' : 'R'
         closing_token = (direction == :next) ? 'R' : 'L'

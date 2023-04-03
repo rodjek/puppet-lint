@@ -318,19 +318,17 @@ class PuppetLint::Data
             brace_depth += 1
           when :RBRACE
             brace_depth -= 1
-            if brace_depth.zero? && !in_params
-              if token.next_code_token.type != :LBRACE
-                result << {
-                  start: i,
-                  end: i + j + 1,
-                  tokens: tokens[i..(i + j + 1)],
-                  param_tokens: param_tokens(tokens[i..(i + j + 1)]),
-                  type: type,
-                  name_token: token.next_code_token,
-                  inherited_token: inherited_class,
-                }
-                break
-              end
+            if brace_depth.zero? && !in_params && (token.next_code_token.type != :LBRACE)
+              result << {
+                start: i,
+                end: i + j + 1,
+                tokens: tokens[i..(i + j + 1)],
+                param_tokens: param_tokens(tokens[i..(i + j + 1)]),
+                type: type,
+                name_token: token.next_code_token,
+                inherited_token: inherited_class,
+              }
+              break
             end
           end
         end
