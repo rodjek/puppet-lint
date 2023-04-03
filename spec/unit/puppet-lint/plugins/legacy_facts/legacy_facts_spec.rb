@@ -250,6 +250,7 @@ describe 'legacy_facts' do
       it 'onlies detect a single problem' do
         expect(problems).to have(1).problem
       end
+
       it 'uses the facts hash' do
         expect(manifest).to eq("$facts['disks']['sda']['model']")
       end
@@ -261,6 +262,7 @@ describe 'legacy_facts' do
       it 'onlies detect a single problem' do
         expect(problems).to have(1).problem
       end
+
       it 'uses the facts hash' do
         expect(manifest).to eq("$facts['networking']['interfaces']['em2']['ip6']")
       end
@@ -272,6 +274,7 @@ describe 'legacy_facts' do
       it 'onlies detect a single problem' do
         expect(problems).to have(1).problem
       end
+
       it 'uses the facts hash' do
         expect(manifest).to eq("$facts['solaris_zones']['zones']['foobar']['uuid']")
       end
@@ -283,6 +286,7 @@ describe 'legacy_facts' do
       it 'onlies detect a single problem' do
         expect(problems).to have(1).problem
       end
+
       it 'uses the facts hash' do
         expect(manifest).to eq("$facts['processors']['models'][314]")
       end
@@ -294,6 +298,7 @@ describe 'legacy_facts' do
       it 'onlies detect a single problem' do
         expect(problems).to have(1).problem
       end
+
       it 'uses the facts hash' do
         expect(manifest).to eq("$facts['system_profiler']['l3_cache']")
       end
@@ -305,6 +310,7 @@ describe 'legacy_facts' do
       it 'onlies detect a single problem' do
         expect(problems).to have(1).problem
       end
+
       it 'uses the facts hash' do
         expect(manifest).to eq("$facts['ssh']['rsa']['key']")
       end

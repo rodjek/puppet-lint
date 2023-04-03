@@ -1382,6 +1382,7 @@ END
         expect(token.type).to eq(:TYPE)
         expect(token.value).to eq('Callable')
       end
+
       it 'matches Sensitive' do
         token = lexer.tokenise('Sensitive').first
         expect(token.type).to eq(:TYPE)
