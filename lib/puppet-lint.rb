@@ -190,7 +190,7 @@ class PuppetLint
         print_github_annotation(message) if configuration.github_actions
       end
     end
-    $stderr.puts 'Try running `puppet parser validate <file>`' if problems.any? { |p| p[:check] == :syntax }
+    warn 'Try running `puppet parser validate <file>`' if problems.any? { |p| p[:check] == :syntax }
     json
   end
 
