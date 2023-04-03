@@ -1,6 +1,6 @@
 begin
   '%{test}' % { test: 'replaced' } == 'replaced'
-rescue
+rescue StandardError
   # monkeypatch String#% into Ruby 1.8.7
   class String
     Percent = instance_method(:%) unless defined?(Percent)
