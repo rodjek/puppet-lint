@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 require 'strscan'
 require 'set'
 require 'puppet-lint/lexer/token'
