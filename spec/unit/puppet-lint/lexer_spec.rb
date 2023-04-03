@@ -64,9 +64,9 @@ describe PuppetLint::Lexer do
   end
 
   describe '#process_string_segments' do
-    subject(:tokens) { lexer.tokens }
-
     subject(:manifest) { lexer.tokens.map(&:to_manifest).join }
+
+    let(:tokens) { lexer.tokens }
 
     before(:each) do
       lexer.process_string_segments(segments)
