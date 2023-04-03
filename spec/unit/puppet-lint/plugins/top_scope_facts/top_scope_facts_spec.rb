@@ -11,6 +11,7 @@ describe 'top_scope_facts' do
         expect(problems).to have(0).problem
       end
     end
+
     context 'non-fact variable with two colons' do
       let(:code) { '$foo::bar' }
 
