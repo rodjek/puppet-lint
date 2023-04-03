@@ -422,7 +422,7 @@ class PuppetLint::Lexer
           tokens << new_token(type, t.value, raw: t.raw)
         end
       when :UNENC_VAR
-        tokens << new_token(:UNENC_VARIABLE, segment[1].gsub(%r{\A\$}, ''))
+        tokens << new_token(:UNENC_VARIABLE, segment[1].delete_prefix('$'))
       else
         tokens << new_token(:DQMID, segment[1])
       end
@@ -454,7 +454,7 @@ class PuppetLint::Lexer
           tokens << new_token(type, t.value, raw: t.raw)
         end
       when :UNENC_VAR
-        tokens << new_token(:UNENC_VARIABLE, segment[1].gsub(%r{\A\$}, ''))
+        tokens << new_token(:UNENC_VARIABLE, segment[1].delete_prefix('$'))
       else
         tokens << new_token(:HEREDOC_MID, segment[1])
       end
