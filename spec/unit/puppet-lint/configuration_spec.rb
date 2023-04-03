@@ -14,11 +14,11 @@ describe PuppetLint::Configuration do
 
     config.disable_foo
     expect(config.settings['foo_disabled']).to be_truthy
-    expect(config.foo_enabled?).to be_falsey
+    expect(config).not_to be_foo_enabled
 
     config.enable_foo
     expect(config.settings['foo_disabled']).to be_falsey
-    expect(config.foo_enabled?).to be_truthy
+    expect(config).to be_foo_enabled
   end
 
   it 'knows what checks have been added' do
