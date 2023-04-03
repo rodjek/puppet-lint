@@ -24,7 +24,8 @@ PuppetLint.new_check(:arrow_alignment) do
       next if resource_tokens[first_arrow].line == resource_tokens[last_arrow].line
 
       resource_tokens.each do |token|
-        if token.type == :FARROW
+        case token.type
+        when :FARROW
           param_token = token.prev_code_token
 
           if param_token.type == :DQPOST
@@ -59,12 +60,12 @@ PuppetLint.new_check(:arrow_alignment) do
           end
 
           (level_tokens[level_idx] ||= []) << token
-        elsif token.type == :LBRACE
+        when :LBRACE
           level_idx += 1
           arrow_column << 0
           level_tokens[level_idx] ||= []
           param_column << nil
-        elsif token.type == :RBRACE || token.type == :SEMIC
+        when :RBRACE, :SEMIC
           if (level_tokens[level_idx] ||= []).map(&:line).uniq.length > 1
             level_tokens[level_idx].each do |arrow_tok|
               next if arrow_tok.column == arrow_column[level_idx] || level_tokens[level_idx].size == 1

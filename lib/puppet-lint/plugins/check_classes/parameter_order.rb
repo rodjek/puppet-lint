@@ -11,13 +11,14 @@ PuppetLint.new_check(:parameter_order) do
       paren_stack = []
       hash_or_array_stack = []
       class_idx[:param_tokens].each_with_index do |token, i|
-        if token.type == :LPAREN
+        case token.type
+        when :LPAREN
           paren_stack.push(true)
-        elsif token.type == :RPAREN
+        when :RPAREN
           paren_stack.pop
-        elsif token.type == :LBRACE || token.type == :LBRACK
+        when :LBRACE, :LBRACK
           hash_or_array_stack.push(true)
-        elsif token.type == :RBRACE || token.type == :RBRACK
+        when :RBRACE, :RBRACK
           hash_or_array_stack.pop
         end
 
