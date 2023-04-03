@@ -27,7 +27,7 @@ def run_cmd(message, *cmd)
   [output.strip, status.success?]
 end
 
-def with_puppet_lint_head
+def with_puppet_lint_head(&block)
   print('  Updating Gemfile to use puppet-lint HEAD... ')
 
   buffer = Parser::Source::Buffer.new('Gemfile')
@@ -49,7 +49,7 @@ def with_puppet_lint_head
 
   puts 'Done'
 
-  Bundler.with_clean_env { yield }
+  Bundler.with_clean_env(&block)
 
   run_cmd('Restoring Gemfile', 'git', 'checkout', '--', 'Gemfile')
 end
