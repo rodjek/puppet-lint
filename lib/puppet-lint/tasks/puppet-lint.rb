@@ -12,24 +12,12 @@ require 'puppet-lint/report/codeclimate'
 #
 #   require 'puppet-lint'
 #   PuppetLint::RakeTask.new
-class PuppetLint::RakeTask < ::Rake::TaskLib
+class PuppetLint::RakeTask < Rake::TaskLib
   include ::Rake::DSL if defined?(::Rake::DSL)
 
   DEFAULT_PATTERN = '**/*.pp'.freeze
 
-  attr_accessor :name
-  attr_accessor :pattern
-  attr_accessor :ignore_paths
-  attr_accessor :with_filename
-  attr_accessor :disable_checks
-  attr_accessor :only_checks
-  attr_accessor :fail_on_warnings
-  attr_accessor :error_level
-  attr_accessor :log_format
-  attr_accessor :with_context
-  attr_accessor :fix
-  attr_accessor :show_ignored
-  attr_accessor :relative
+  attr_accessor :name, :pattern, :ignore_paths, :with_filename, :disable_checks, :only_checks, :fail_on_warnings, :error_level, :log_format, :with_context, :fix, :show_ignored, :relative
 
   # Public: Initialise a new PuppetLint::RakeTask.
   #
@@ -80,13 +68,9 @@ class PuppetLint::RakeTask < ::Rake::TaskLib
         PuppetLint.configuration.send("#{config}=".to_sym, value) unless value.nil?
       end
 
-      if PuppetLint.configuration.ignore_paths && @ignore_paths.empty?
-        @ignore_paths = PuppetLint.configuration.ignore_paths
-      end
+      @ignore_paths = PuppetLint.configuration.ignore_paths if PuppetLint.configuration.ignore_paths && @ignore_paths.empty?
 
-      if PuppetLint.configuration.pattern
-        @pattern = PuppetLint.configuration.pattern
-      end
+      @pattern = PuppetLint.configuration.pattern if PuppetLint.configuration.pattern
 
       RakeFileUtils.send(:verbose, true) do
         linter = PuppetLint.new
@@ -97,18 +81,15 @@ class PuppetLint::RakeTask < ::Rake::TaskLib
 
         matched_files.to_a.each do |puppet_file|
           next unless File.file?(puppet_file)
+
           linter.file = puppet_file
           linter.run
           all_problems << linter.print_problems
 
-          if PuppetLint.configuration.fix && linter.problems.none? { |e| e[:check] == :syntax }
-            IO.write(puppet_file, linter.manifest)
-          end
+          File.write(puppet_file, linter.manifest) if PuppetLint.configuration.fix && linter.problems.none? { |e| e[:check] == :syntax }
         end
 
-        if PuppetLint.configuration.codeclimate_report_file
-          PuppetLint::Report::CodeClimateReporter.write_report_file(all_problems, PuppetLint.configuration.codeclimate_report_file)
-        end
+        PuppetLint::Report::CodeClimateReporter.write_report_file(all_problems, PuppetLint.configuration.codeclimate_report_file) if PuppetLint.configuration.codeclimate_report_file
 
         abort if linter.errors? || (
           linter.warnings? && PuppetLint.configuration.fail_on_warnings

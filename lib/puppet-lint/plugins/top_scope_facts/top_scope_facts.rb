@@ -13,8 +13,9 @@
 #
 # This plugin was adopted in to puppet-lint from https://github.com/mmckinst/puppet-lint-top_scope_facts-check
 # Thanks to @mmckinst, @seanmil and @alexjfisher for the original work.
+TOP_SCOPE_FACTS_VAR_TYPES = Set[:VARIABLE, :UNENC_VARIABLE]
+
 PuppetLint.new_check(:top_scope_facts) do
-  TOP_SCOPE_FACTS_VAR_TYPES = Set[:VARIABLE, :UNENC_VARIABLE]
   def check
     whitelist = ['trusted', 'facts'] + (PuppetLint.configuration.top_scope_variables || [])
     whitelist = whitelist.join('|')
@@ -27,7 +28,7 @@ PuppetLint.new_check(:top_scope_facts) do
         message: 'top scope fact instead of facts hash',
         line: token.line,
         column: token.column,
-        token: token,
+        token: token
       }
     end
   end

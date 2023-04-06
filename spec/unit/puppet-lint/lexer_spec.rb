@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 require 'spec_helper'
 
 describe PuppetLint::Lexer do
@@ -13,7 +11,7 @@ describe PuppetLint::Lexer do
     end
   end
 
-  context '#new_token' do
+  describe '#new_token' do
     it 'calculates the line number for an empty string' do
       token = lexer.new_token(:TEST, 'test')
       expect(token.line).to eq(1)
@@ -55,18 +53,18 @@ describe PuppetLint::Lexer do
     end
 
     it 'calculates the column number for a multi line string' do
-      lexer.instance_variable_set('@line_no', 4)
-      lexer.instance_variable_set('@column', 5)
+      lexer.instance_variable_set(:@line_no, 4)
+      lexer.instance_variable_set(:@column, 5)
       lexer.new_token(:SSTRING, "test\ntest")
       token = lexer.new_token(:TEST, 'test')
       expect(token.column).to eq(6)
     end
   end
 
-  context '#process_string_segments' do
-    subject(:tokens) { lexer.tokens }
-
+  describe '#process_string_segments' do
     subject(:manifest) { lexer.tokens.map(&:to_manifest).join }
+
+    let(:tokens) { lexer.tokens }
 
     before(:each) do
       lexer.process_string_segments(segments)
@@ -1291,7 +1289,7 @@ END
     it 'does not enclose variable with a chained function call' do
       manifest = '"This is ${a.test}"'
       tokens = lexer.tokenise(manifest)
-      expect(tokens.map(&:to_manifest).join('')).to eq(manifest)
+      expect(tokens.map(&:to_manifest).join).to eq(manifest)
     end
   end
 
@@ -1382,6 +1380,7 @@ END
         expect(token.type).to eq(:TYPE)
         expect(token.value).to eq('Callable')
       end
+
       it 'matches Sensitive' do
         token = lexer.tokenise('Sensitive').first
         expect(token.type).to eq(:TYPE)
@@ -1689,7 +1688,7 @@ END
       END
 
       tokens = lexer.tokenise(manifest)
-      expect(tokens.map(&:to_manifest).join('')).to eq(manifest)
+      expect(tokens.map(&:to_manifest).join).to eq(manifest)
 
       expect(tokens[0].type).to eq(:VARIABLE)
       expect(tokens[0].value).to eq('str')
@@ -1756,7 +1755,7 @@ END
       expect(tokens[7].raw).to eq('$myvar')
       expect(tokens[7].to_manifest).to eq('$myvar')
 
-      expect(tokens.map(&:to_manifest).join('')).to eq(manifest)
+      expect(tokens.map(&:to_manifest).join).to eq(manifest)
     end
   end
 

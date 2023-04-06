@@ -11,13 +11,14 @@ PuppetLint.new_check(:parameter_order) do
       paren_stack = []
       hash_or_array_stack = []
       class_idx[:param_tokens].each_with_index do |token, i|
-        if token.type == :LPAREN
+        case token.type
+        when :LPAREN
           paren_stack.push(true)
-        elsif token.type == :RPAREN
+        when :RPAREN
           paren_stack.pop
-        elsif token.type == :LBRACE || token.type == :LBRACK
+        when :LBRACE, :LBRACK
           hash_or_array_stack.push(true)
-        elsif token.type == :RBRACE || token.type == :RBRACK
+        when :RBRACE, :RBRACK
           hash_or_array_stack.pop
         end
 
@@ -34,8 +35,8 @@ PuppetLint.new_check(:parameter_order) do
           message: msg,
           line: token.line,
           column: token.column,
-          description: 'Test the manifest tokens for any parameterised classes or defined types that take '\
-            'parameters and record a warning if there are any optional parameters listed before required parameters.',
+          description: 'Test the manifest tokens for any parameterised classes or defined types that take ' \
+                       'parameters and record a warning if there are any optional parameters listed before required parameters.',
           help_uri: 'https://puppet.com/docs/puppet/latest/style_guide.html#display-order-of-parameters',
         )
       end
@@ -58,9 +59,7 @@ PuppetLint.new_check(:parameter_order) do
     data_type = token.prev_token_of(:TYPE, skip_blocks: true)
     return false if data_type && data_type.value == 'Optional'
 
-    if token.next_code_token.nil? || [:COMMA, :RPAREN].include?(token.next_code_token.type)
-      return !(token.prev_code_token && token.prev_code_token.type == :EQUALS)
-    end
+    return !(token.prev_code_token && token.prev_code_token.type == :EQUALS) if token.next_code_token.nil? || [:COMMA, :RPAREN].include?(token.next_code_token.type)
 
     false
   end

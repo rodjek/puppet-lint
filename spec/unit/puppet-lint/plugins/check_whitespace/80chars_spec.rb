@@ -1,10 +1,8 @@
-# encoding: utf-8
-
 require 'spec_helper'
 
 describe '80chars' do
   before(:each) do
-    PuppetLint.configuration.send('enable_80chars')
+    PuppetLint.configuration.send(:enable_80chars)
   end
 
   let(:msg) { 'line has more than 80 characters' }

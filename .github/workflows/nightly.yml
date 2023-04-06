@@ -12,8 +12,8 @@ jobs:
       fail-fast: false
       matrix:
         ruby_version:
-          - '2.5'
           - '2.7'
+          - '3.2'
     name: "spec (ruby ${{ matrix.ruby_version }})"
     uses: "puppetlabs/cat-github-actions/.github/workflows/gem_ci.yml@main"
     secrets: "inherit"
@@ -25,8 +25,8 @@ jobs:
       fail-fast: false
       matrix:
         ruby_version:
-          - '2.5'
           - '2.7'
+          - '3.2'
     name: "acceptance (ruby ${{ matrix.ruby_version }})"
     needs: "spec"
     uses: "puppetlabs/cat-github-actions/.github/workflows/gem_acceptance.yml@main"

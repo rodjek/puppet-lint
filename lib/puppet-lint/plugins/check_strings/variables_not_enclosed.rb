@@ -6,14 +6,14 @@ require 'strscan'
 # found.
 #
 # https://puppet.com/docs/puppet/latest/style_guide.html#quoting
-PuppetLint.new_check(:variables_not_enclosed) do
-  STRING_TOKEN_TYPES = Set[
-    :DQMID,
-    :DQPOST,
-    :HEREDOC_MID,
-    :HEREDOC_POST,
-  ]
+STRING_TOKEN_TYPES = Set[
+  :DQMID,
+  :DQPOST,
+  :HEREDOC_MID,
+  :HEREDOC_POST,
+]
 
+PuppetLint.new_check(:variables_not_enclosed) do
   def check
     invalid_tokens = tokens.select do |token|
       token.type == :UNENC_VARIABLE
@@ -74,6 +74,7 @@ PuppetLint.new_check(:variables_not_enclosed) do
     var_token.value = var_name
 
     return if str_token.nil?
+
     str_token.value = "-#{text}#{str_token.value}"
   end
 

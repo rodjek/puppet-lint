@@ -2,9 +2,9 @@
 # characters and record an error for each instance found.
 #
 # https://puppet.com/docs/puppet/latest/style_guide.html#spacing-indentation-and-whitespace
-PuppetLint.new_check(:hard_tabs) do
-  WHITESPACE_TYPES = Set[:INDENT, :WHITESPACE]
+WHITESPACE_TYPES = Set[:INDENT, :WHITESPACE]
 
+PuppetLint.new_check(:hard_tabs) do
   def check
     invalid_tokens = tokens.select do |token|
       WHITESPACE_TYPES.include?(token.type) && token.value.include?("\t")

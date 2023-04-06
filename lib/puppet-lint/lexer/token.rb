@@ -1,3 +1,4 @@
+# rubocop:disable Style/ClassAndModuleChildren
 class PuppetLint::Lexer
   # Public: Stores a fragment of the manifest and the information about its
   # location in the manifest.
@@ -175,12 +176,10 @@ class PuppetLint::Lexer
 
       token_iter = send("#{direction}_token".to_sym)
       until token_iter.nil?
-        if to_find.include?(token_iter.type)
-          return token_iter if opts[:value].nil? || token_iter.value == opts[:value]
-        end
+        return token_iter if to_find.include?(token_iter.type) && (opts[:value].nil? || token_iter.value == opts[:value])
 
-        opening_token = direction == :next ? 'L' : 'R'
-        closing_token = direction == :next ? 'R' : 'L'
+        opening_token = (direction == :next) ? 'L' : 'R'
+        closing_token = (direction == :next) ? 'R' : 'L'
 
         if opts[:skip_blocks]
           case token_iter.type
@@ -194,6 +193,7 @@ class PuppetLint::Lexer
         end
 
         return nil if token_iter.nil?
+
         token_iter = token_iter.send("#{direction}_token".to_sym)
       end
       nil
@@ -202,6 +202,7 @@ class PuppetLint::Lexer
     def interpolated_variable?
       return false if type == :TYPE && value != 'type'
       return true if type == :NAME
+
       PuppetLint::Lexer::KEYWORDS.include?(type.to_s.downcase)
     end
   end

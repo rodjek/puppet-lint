@@ -95,7 +95,7 @@ class PuppetLint
 
     # Check if the input is an SE Linux policy package file (which also use
     # the .pp extension), which all have the first 4 bytes 0xf97cff8f.
-    @code = '' if @code[0..3].unpack('V').first == 0xf97cff8f
+    @code = '' if @code[0..3].unpack1('V') == 0xf97cff8f
   end
 
   # Internal: Retrieve the format string to be used when writing problems to
@@ -155,8 +155,10 @@ class PuppetLint
   def print_context(message)
     return if message[:check] == 'documentation'
     return if message[:kind] == :fixed
+
     line = message[:context]
     return unless line
+
     offset = line.index(%r{\S}) || 1
     puts "\n  #{line.strip}"
     printf("%#{message[:column] + 2 - offset}s\n\n", '^')
@@ -188,7 +190,7 @@ class PuppetLint
         print_github_annotation(message) if configuration.github_actions
       end
     end
-    $stderr.puts 'Try running `puppet parser validate <file>`' if problems.any? { |p| p[:check] == :syntax }
+    warn 'Try running `puppet parser validate <file>`' if problems.any? { |p| p[:check] == :syntax }
     json
   end
 
@@ -251,7 +253,7 @@ class PuppetLint
   def self.new_check(name, &block)
     class_name = name.to_s.split('_').map(&:capitalize).join
     klass = PuppetLint.const_set("Check#{class_name}", Class.new(PuppetLint::CheckPlugin))
-    klass.const_set('NAME', name)
+    klass.const_set(:NAME, name)
     klass.class_exec(&block)
     PuppetLint.configuration.add_check(name, klass)
     PuppetLint::Data.ignore_overrides[name] ||= {}

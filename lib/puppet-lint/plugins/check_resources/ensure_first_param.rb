@@ -21,8 +21,8 @@ PuppetLint.new_check(:ensure_first_param) do
         line: ensure_token.line,
         column: ensure_token.column,
         resource: resource,
-        description: 'Check the tokens of each resource instance for an ensure parameter and if '\
-          'found, check that it is the first parameter listed.  If it is not the first parameter, record a warning.',
+        description: 'Check the tokens of each resource instance for an ensure parameter and if ' \
+                     'found, check that it is the first parameter listed.  If it is not the first parameter, record a warning.',
         help_uri: 'https://puppet.com/docs/puppet/latest/style_guide.html#attribute-ordering',
       )
     end
@@ -37,9 +37,7 @@ PuppetLint.new_check(:ensure_first_param) do
 
     ensure_param_comma_token = ensure_param_name_token.next_token_of([:COMMA, :SEMIC])
 
-    if first_param_name_token.nil? || first_param_comma_token.nil? || ensure_param_comma_token.nil?
-      raise PuppetLint::NoFix
-    end
+    raise PuppetLint::NoFix if first_param_name_token.nil? || first_param_comma_token.nil? || ensure_param_comma_token.nil?
 
     first_param_name_idx = tokens.index(first_param_name_token)
     first_param_comma_idx = tokens.index(first_param_comma_token)

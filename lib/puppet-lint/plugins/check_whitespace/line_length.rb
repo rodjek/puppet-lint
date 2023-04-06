@@ -18,12 +18,12 @@ class PuppetLint::LineLengthCheck
 
     [
       :warning,
-      message: "line has more than #{character_count} characters",
-      line: line_number,
-      column: character_count,
-      description: 'Test the raw manifest string for lines containing more than #{character_count} characters and record a warning for each instance found. '\
-        'The only exceptions to this rule are lines containing URLs and template() calls which would hurt readability if split.',
-      help_uri: 'https://puppet.com/docs/puppet/latest/style_guide.html#spacing-indentation-and-whitespace',
+      { message: "line has more than #{character_count} characters",
+        line: line_number,
+        column: character_count,
+        description: "Test the raw manifest string for lines containing more than #{character_count} characters and record a warning for each instance found. " \
+                     'The only exceptions to this rule are lines containing URLs and template() calls which would hurt readability if split.',
+        help_uri: 'https://puppet.com/docs/puppet/latest/style_guide.html#spacing-indentation-and-whitespace' },
     ]
   end
 end

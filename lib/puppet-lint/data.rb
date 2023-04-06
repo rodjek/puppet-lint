@@ -72,7 +72,7 @@ class PuppetLint::Data
 
       unless formatting_tokens.include?(token.type)
         current_token.next_token.prev_code_token = token unless current_token.next_token.nil?
-        next_nf_idx = tokens[index..-1].index { |r| !formatting_tokens.include?(r.type) }
+        next_nf_idx = tokens[index..].index { |r| !formatting_tokens.include?(r.type) }
         unless next_nf_idx.nil?
           next_nf_token = tokens[index + next_nf_idx]
           token.next_code_token = next_nf_token
@@ -92,9 +92,7 @@ class PuppetLint::Data
       end
 
       current_token.next_token = token
-      unless formatting_tokens.include?(token.type)
-        current_token.next_code_token = token
-      end
+      current_token.next_code_token = token unless formatting_tokens.include?(token.type)
 
       tokens.insert(index, token)
     end
@@ -123,7 +121,7 @@ class PuppetLint::Data
         @fullpath = nil
         @filename = nil
       else
-        @fullpath = File.expand_path(val, ENV['PWD'])
+        @fullpath = File.expand_path(val, ENV.fetch('PWD', nil))
         @filename = File.basename(val)
       end
     end
@@ -184,12 +182,14 @@ class PuppetLint::Data
           next unless colon_token.next_code_token && colon_token.next_code_token.type != :LBRACE
           next if classref?(colon_token)
 
-          rel_start_idx = tokens[marker..-1].index(colon_token)
+          rel_start_idx = tokens[marker..].index(colon_token)
           break if rel_start_idx.nil?
+
           start_idx = rel_start_idx + marker
           end_token = colon_token.next_token_of([:SEMIC, :RBRACE])
-          rel_end_idx = tokens[start_idx..-1].index(end_token)
+          rel_end_idx = tokens[start_idx..].index(end_token)
           raise PuppetLint::SyntaxError, colon_token if rel_end_idx.nil?
+
           marker = rel_end_idx + start_idx
 
           result << {
@@ -197,7 +197,7 @@ class PuppetLint::Data
             end: marker,
             tokens: tokens[start_idx..marker],
             type: find_resource_type_token(start_idx),
-            param_tokens: find_resource_param_tokens(tokens[start_idx..marker]),
+            param_tokens: find_resource_param_tokens(tokens[start_idx..marker])
           }
         end
         result
@@ -237,9 +237,7 @@ class PuppetLint::Data
 
         break unless resource_tokens.include?(iter_token)
 
-        if iter_token && iter_token.next_code_token.type == :FARROW
-          param_tokens << iter_token
-        end
+        param_tokens << iter_token if iter_token && iter_token.next_code_token.type == :FARROW
       end
 
       param_tokens
@@ -306,7 +304,7 @@ class PuppetLint::Data
         paren_depth = 0
         in_params = false
         inherited_class = nil
-        tokens[i + 1..-1].each_with_index do |definition_token, j|
+        tokens[i + 1..].each_with_index do |definition_token, j|
           case definition_token.type
           when :INHERITS
             inherited_class = definition_token.next_code_token
@@ -320,19 +318,17 @@ class PuppetLint::Data
             brace_depth += 1
           when :RBRACE
             brace_depth -= 1
-            if brace_depth.zero? && !in_params
-              if token.next_code_token.type != :LBRACE
-                result << {
-                  start: i,
-                  end: i + j + 1,
-                  tokens: tokens[i..(i + j + 1)],
-                  param_tokens: param_tokens(tokens[i..(i + j + 1)]),
-                  type: type,
-                  name_token: token.next_code_token,
-                  inherited_token: inherited_class,
-                }
-                break
-              end
+            if brace_depth.zero? && !in_params && (token.next_code_token.type != :LBRACE)
+              result << {
+                start: i,
+                end: i + j + 1,
+                tokens: tokens[i..(i + j + 1)],
+                param_tokens: param_tokens(tokens[i..(i + j + 1)]),
+                type: type,
+                name_token: token.next_code_token,
+                inherited_token: inherited_class
+              }
+              break
             end
           end
         end
@@ -367,7 +363,7 @@ class PuppetLint::Data
           level = 0
           real_idx = 0
           in_paren = false
-          tokens[token_idx + 1..-1].each_with_index do |cur_token, cur_token_idx|
+          tokens[token_idx + 1..].each_with_index do |cur_token, cur_token_idx|
             break if level.zero? && in_paren
             break if level.zero? && cur_token.type == :NEWLINE
 
@@ -382,7 +378,7 @@ class PuppetLint::Data
           functions << {
             start: token_idx,
             end: real_idx,
-            tokens: tokens[token_idx..real_idx],
+            tokens: tokens[token_idx..real_idx]
           }
         end
         functions
@@ -406,7 +402,7 @@ class PuppetLint::Data
           next unless token.type == :LBRACK
 
           real_idx = 0
-          tokens[token_idx + 1..-1].each_with_index do |cur_token, cur_token_idx|
+          tokens[token_idx + 1..].each_with_index do |cur_token, cur_token_idx|
             real_idx = token_idx + 1 + cur_token_idx
             break if cur_token.type == :RBRACK
           end
@@ -418,7 +414,7 @@ class PuppetLint::Data
           arrays << {
             start: token_idx,
             end: real_idx,
-            tokens: tokens[token_idx..real_idx],
+            tokens: tokens[token_idx..real_idx]
           }
         end
         arrays
@@ -445,18 +441,18 @@ class PuppetLint::Data
 
           level = 0
           real_idx = 0
-          tokens[token_idx + 1..-1].each_with_index do |cur_token, cur_token_idx|
+          tokens[token_idx + 1..].each_with_index do |cur_token, cur_token_idx|
             real_idx = token_idx + 1 + cur_token_idx
 
             level += 1 if cur_token.type == :LBRACE
             level -= 1 if cur_token.type == :RBRACE
-            break if level < 0
+            break if level.negative?
           end
 
           hashes << {
             start: token_idx,
             end: real_idx,
-            tokens: tokens[token_idx..real_idx],
+            tokens: tokens[token_idx..real_idx]
           }
         end
         hashes
@@ -482,7 +478,7 @@ class PuppetLint::Data
 
           real_idx = 0
 
-          tokens[token_idx + 1..-1].each_with_index do |cur_token, cur_token_idx|
+          tokens[token_idx + 1..].each_with_index do |cur_token, cur_token_idx|
             real_idx = token_idx + 1 + cur_token_idx
             break if cur_token.type == :RBRACE
           end
@@ -490,7 +486,7 @@ class PuppetLint::Data
           defaults << {
             start: token_idx,
             end: real_idx,
-            tokens: tokens[token_idx..real_idx],
+            tokens: tokens[token_idx..real_idx]
           }
         end
         defaults
@@ -564,7 +560,7 @@ class PuppetLint::Data
         comment_token_types.include?(token.type)
       end
       control_comment_tokens = comment_tokens.select do |token|
-        token.value.strip =~ %r{\Alint\:(ignore\:[\w\d]+|endignore)}
+        token.value.strip =~ %r{\Alint:(ignore:[\w\d]+|endignore)}
       end
 
       stack = []
@@ -574,12 +570,12 @@ class PuppetLint::Data
 
         comment_words = token.value.strip.split(%r{\s+})
         comment_words.each_with_index do |word, i|
-          if %r{\Alint\:(ignore|endignore)}.match?(word)
+          if %r{\Alint:(ignore|endignore)}.match?(word)
             comment_data << word
           else
             # Once we reach the first non-controlcomment word, assume the rest
             # of the words are the reason.
-            reason = comment_words[i..-1]
+            reason = comment_words[i..]
             break
           end
         end
@@ -604,7 +600,7 @@ class PuppetLint::Data
             if top_override.nil?
               # TODO: refactor to provide a way to expose problems from
               # PuppetLint::Data via the normal problem reporting mechanism.
-              $stderr.puts "WARNING: lint:endignore comment with no opening lint:ignore:<check> comment found on line #{token.line}"
+              warn "WARNING: lint:endignore comment with no opening lint:ignore:<check> comment found on line #{token.line}"
             else
               top_override.each do |start|
                 next if start.nil?
@@ -620,7 +616,7 @@ class PuppetLint::Data
       end
 
       stack.each do |control|
-        $stderr.puts "WARNING: lint:ignore:#{control[0][2]} comment on line #{control[0][0]} with no closing lint:endignore comment"
+        warn "WARNING: lint:ignore:#{control[0][2]} comment on line #{control[0][0]} with no closing lint:endignore comment"
       end
     end
   end

@@ -14,11 +14,11 @@ describe PuppetLint::Configuration do
 
     config.disable_foo
     expect(config.settings['foo_disabled']).to be_truthy
-    expect(config.foo_enabled?).to be_falsey
+    expect(config).not_to be_foo_enabled
 
     config.enable_foo
     expect(config.settings['foo_disabled']).to be_falsey
-    expect(config.foo_enabled?).to be_truthy
+    expect(config).to be_foo_enabled
   end
 
   it 'knows what checks have been added' do
@@ -41,7 +41,7 @@ describe PuppetLint::Configuration do
   end
 
   it 'is able to add options on the fly' do
-    expect(config.test_option).to eq(nil)
+    expect(config.test_option).to be_nil
 
     config.test_option = 'test'
 
@@ -55,18 +55,18 @@ describe PuppetLint::Configuration do
     end
 
     expect(config.settings).to eq(
-      'with_filename'           => false,
-      'fail_on_warnings'        => false,
+      'with_filename' => false,
+      'fail_on_warnings' => false,
       'codeclimate_report_file' => nil,
-      'error_level'             => :all,
-      'log_format'              => '',
-      'sarif'                   => false,
-      'with_context'            => false,
-      'fix'                     => false,
-      'github_actions'          => false,
-      'show_ignored'            => false,
-      'json'                    => false,
-      'ignore_paths'            => ['vendor/**/*.pp'],
+      'error_level' => :all,
+      'log_format' => '',
+      'sarif' => false,
+      'with_context' => false,
+      'fix' => false,
+      'github_actions' => false,
+      'show_ignored' => false,
+      'json' => false,
+      'ignore_paths' => ['vendor/**/*.pp'],
     )
   end
 

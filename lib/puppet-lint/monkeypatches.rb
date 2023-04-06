@@ -1,9 +1,9 @@
 begin
   '%{test}' % { test: 'replaced' } == 'replaced'
-rescue
+rescue StandardError
   # monkeypatch String#% into Ruby 1.8.7
   class String
-    Percent = instance_method('%') unless defined?(Percent)
+    Percent = instance_method(:%) unless defined?(Percent)
 
     def %(*a, &b)
       a.flatten!
@@ -18,7 +18,7 @@ rescue
       if a.empty?
         string
       else
-        Percent.bind(string).call(a, &b)
+        Percent.bind_call(string, a, &b)
       end
     end
 
@@ -28,7 +28,7 @@ rescue
         vars.each do |var, value|
           var = var.to_s
           var.gsub!(%r{[^a-zA-Z0-9_]}, '')
-          changed = gsub!(%r{\%\{#{var}\}}, value.to_s)
+          changed = gsub!(%r{%\{#{var}\}}, value.to_s)
         end
         break unless changed
       end

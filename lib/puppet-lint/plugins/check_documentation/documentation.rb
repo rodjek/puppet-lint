@@ -3,10 +3,10 @@
 # record a warning for each instance found.
 #
 # https://puppet.com/docs/puppet/latest/style_guide.html#public-and-private
-PuppetLint.new_check(:documentation) do
-  COMMENT_TOKENS = Set[:COMMENT, :MLCOMMENT, :SLASH_COMMENT]
-  WHITESPACE_TOKENS = Set[:WHITESPACE, :NEWLINE, :INDENT]
+COMMENT_TOKENS = Set[:COMMENT, :MLCOMMENT, :SLASH_COMMENT]
+WHITESPACE_TOKENS = Set[:WHITESPACE, :NEWLINE, :INDENT]
 
+PuppetLint.new_check(:documentation) do
   def check
     (class_indexes + defined_type_indexes).each do |item_idx|
       comment_token = find_comment_token(item_idx[:tokens].first)
@@ -25,9 +25,9 @@ PuppetLint.new_check(:documentation) do
         message: "#{type} not documented",
         line: first_token.line,
         column: first_token.column,
-        description: 'Check the manifest tokens for any class or defined type that does not '\
-          'have a comment directly above it (hopefully, explaining the usage of it) and record '\
-          'a warning for each instance found.',
+        description: 'Check the manifest tokens for any class or defined type that does not ' \
+                     'have a comment directly above it (hopefully, explaining the usage of it) and record ' \
+                     'a warning for each instance found.',
         help_uri: 'https://puppet.com/docs/puppet/latest/style_guide.html#public-and-private',
       )
     end
@@ -40,6 +40,7 @@ PuppetLint.new_check(:documentation) do
     while !prev_token.nil? && WHITESPACE_TOKENS.include?(prev_token.type)
       newlines += 1 if prev_token.type == :NEWLINE
       break if newlines > 1
+
       prev_token = prev_token.prev_token
     end
 

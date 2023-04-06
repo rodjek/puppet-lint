@@ -39,7 +39,7 @@ class PuppetLint::Checks
         column: e.column,
         fullpath: PuppetLint::Data.fullpath,
         path: PuppetLint::Data.path,
-        filename: PuppetLint::Data.filename,
+        filename: PuppetLint::Data.filename
       }
       PuppetLint::Data.tokens = []
     end
@@ -76,15 +76,15 @@ class PuppetLint::Checks
       kind: :error,
       check: :syntax,
       message: 'Syntax error',
-      fullpath: File.expand_path(fileinfo, ENV['PWD']),
+      fullpath: File.expand_path(fileinfo, ENV.fetch('PWD', nil)),
       filename: File.basename(fileinfo),
       path: fileinfo,
       line: e.token.line,
-      column: e.token.column,
+      column: e.token.column
     }
 
     @problems
-  rescue => e
+  rescue StandardError => e
     $stdout.puts <<-END.gsub(%r{^ {6}}, '')
       Whoops! It looks like puppet-lint has encountered an error that it doesn't
       know how to handle. Please open an issue at https://github.com/puppetlabs/puppet-lint
@@ -120,10 +120,8 @@ class PuppetLint::Checks
   #
   # Returns an Array of String check names.
   def enabled_checks
-    @enabled_checks ||= begin
-      PuppetLint.configuration.checks.select do |check|
-        PuppetLint.configuration.send("#{check}_enabled?")
-      end
+    @enabled_checks ||= PuppetLint.configuration.checks.select do |check|
+      PuppetLint.configuration.send("#{check}_enabled?")
     end
   end
 
@@ -131,6 +129,6 @@ class PuppetLint::Checks
   #
   # Returns the manifest as a String.
   def manifest
-    PuppetLint::Data.tokens.map(&:to_manifest).join('')
+    PuppetLint::Data.tokens.map(&:to_manifest).join
   end
 end

@@ -23,8 +23,8 @@ module RSpec::LintExampleGroup
   class HaveProblem
     def initialize(method, message)
       @expected_problem = {
-        kind: method.to_s.gsub(%r{\Acontain_}, '').to_sym,
-        message: message,
+        kind: method.to_s.delete_prefix('contain_').to_sym,
+        message: message
       }
       @description = ["contain a #{@expected_problem[:kind]}"]
     end
@@ -100,6 +100,7 @@ module RSpec::LintExampleGroup
 
   def method_missing(method, *args, &block)
     return HaveProblem.new(method, args.first) if method.to_s.start_with?('contain_')
+
     super
   end
 

@@ -5,35 +5,35 @@
 # not.
 #
 # https://puppet.com/docs/puppet/latest/style_guide.html#namespacing-variables
-PuppetLint.new_check(:variable_scope) do
-  DEFAULT_SCOPE_VARS = Set[
-    'name',
-    'title',
-    'module_name',
-    'environment',
-    'clientcert',
-    'clientversion',
-    'servername',
-    'serverip',
-    'serverversion',
-    'caller_module_name',
-    'alias',
-    'audit',
-    'before',
-    'loglevel',
-    'noop',
-    'notify',
-    'require',
-    'schedule',
-    'stage',
-    'subscribe',
-    'tag',
-    'facts',
-    'trusted',
-    'server_facts',
-  ]
-  POST_VAR_TOKENS = Set[:COMMA, :EQUALS, :RPAREN]
+DEFAULT_SCOPE_VARS = Set[
+  'name',
+  'title',
+  'module_name',
+  'environment',
+  'clientcert',
+  'clientversion',
+  'servername',
+  'serverip',
+  'serverversion',
+  'caller_module_name',
+  'alias',
+  'audit',
+  'before',
+  'loglevel',
+  'noop',
+  'notify',
+  'require',
+  'schedule',
+  'stage',
+  'subscribe',
+  'tag',
+  'facts',
+  'trusted',
+  'server_facts',
+]
+POST_VAR_TOKENS = Set[:COMMA, :EQUALS, :RPAREN]
 
+PuppetLint.new_check(:variable_scope) do
   def check
     variables_in_scope = DEFAULT_SCOPE_VARS.clone
 
@@ -93,7 +93,7 @@ PuppetLint.new_check(:variable_scope) do
             end_token = nil
             brace_depth = 0
 
-            tokens[start_idx..-1].each do |sub_token|
+            tokens[start_idx..].each do |sub_token|
               case sub_token.type
               when :LBRACE
                 brace_depth += 1
@@ -117,9 +117,7 @@ PuppetLint.new_check(:variable_scope) do
 
       msg = 'top-scope variable being used without an explicit namespace'
       referenced_variables.each do |token|
-        unless future_parser_scopes[token.line].nil?
-          next if future_parser_scopes[token.line].include?(token.value.gsub(%r{\[.+\]\Z}, ''))
-        end
+        next if !future_parser_scopes[token.line].nil? && future_parser_scopes[token.line].include?(token.value.gsub(%r{\[.+\]\Z}, ''))
 
         next if token.value.include?('::')
         next if %r{^(facts|trusted)\[.+\]}.match?(token.value)
@@ -132,8 +130,8 @@ PuppetLint.new_check(:variable_scope) do
           line: token.line,
           column: token.column,
           description: 'Test the manifest tokens for any variables that are referenced in the manifest. ' \
-                          'If the variables are not fully qualified or one of the variables automatically created in the scope, ' \
-                          'check that they have been defined in the local scope and record a warning for each variable that has not.',
+                       'If the variables are not fully qualified or one of the variables automatically created in the scope, ' \
+                       'check that they have been defined in the local scope and record a warning for each variable that has not.',
           help_uri: 'https://puppet.com/docs/puppet/latest/style_guide.html#namespacing-variables',
         )
       end

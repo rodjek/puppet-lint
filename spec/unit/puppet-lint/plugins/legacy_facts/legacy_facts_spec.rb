@@ -250,6 +250,7 @@ describe 'legacy_facts' do
       it 'onlies detect a single problem' do
         expect(problems).to have(1).problem
       end
+
       it 'uses the facts hash' do
         expect(manifest).to eq("$facts['disks']['sda']['model']")
       end
@@ -261,6 +262,7 @@ describe 'legacy_facts' do
       it 'onlies detect a single problem' do
         expect(problems).to have(1).problem
       end
+
       it 'uses the facts hash' do
         expect(manifest).to eq("$facts['networking']['interfaces']['em2']['ip6']")
       end
@@ -272,6 +274,7 @@ describe 'legacy_facts' do
       it 'onlies detect a single problem' do
         expect(problems).to have(1).problem
       end
+
       it 'uses the facts hash' do
         expect(manifest).to eq("$facts['solaris_zones']['zones']['foobar']['uuid']")
       end
@@ -283,6 +286,7 @@ describe 'legacy_facts' do
       it 'onlies detect a single problem' do
         expect(problems).to have(1).problem
       end
+
       it 'uses the facts hash' do
         expect(manifest).to eq("$facts['processors']['models'][314]")
       end
@@ -294,6 +298,7 @@ describe 'legacy_facts' do
       it 'onlies detect a single problem' do
         expect(problems).to have(1).problem
       end
+
       it 'uses the facts hash' do
         expect(manifest).to eq("$facts['system_profiler']['l3_cache']")
       end
@@ -305,6 +310,7 @@ describe 'legacy_facts' do
       it 'onlies detect a single problem' do
         expect(problems).to have(1).problem
       end
+
       it 'uses the facts hash' do
         expect(manifest).to eq("$facts['ssh']['rsa']['key']")
       end
@@ -333,6 +339,7 @@ describe 'legacy_facts' do
         expect(manifest).to eq("\"$facts['os']['family']\"")
       end
     end
+
     context 'fact variable using legacy variable in double quotes "$::gid"' do
       let(:code) { '"$::gid"' }
 
@@ -344,6 +351,7 @@ describe 'legacy_facts' do
         expect(manifest).to eq("\"$facts['identity']['group']\"")
       end
     end
+
     context 'fact variable using legacy variable in double quotes "$::id"' do
       let(:code) { '"$::id"' }
 
@@ -355,6 +363,7 @@ describe 'legacy_facts' do
         expect(manifest).to eq("\"$facts['identity']['user']\"")
       end
     end
+
     context 'fact variable using legacy variable in double quotes "$::lsbdistcodename"' do
       let(:code) { '"$::lsbdistcodename"' }
 
@@ -366,6 +375,7 @@ describe 'legacy_facts' do
         expect(manifest).to eq("\"$facts['os']['distro']['codename']\"")
       end
     end
+
     context 'fact variable using legacy variable in double quotes "$::lsbdistdescription"' do
       let(:code) { '"$::lsbdistdescription"' }
 
@@ -377,6 +387,7 @@ describe 'legacy_facts' do
         expect(manifest).to eq("\"$facts['os']['distro']['description']\"")
       end
     end
+
     context 'fact variable using legacy variable in double quotes "$::lsbdistid"' do
       let(:code) { '"$::lsbdistid"' }
 
@@ -388,6 +399,7 @@ describe 'legacy_facts' do
         expect(manifest).to eq("\"$facts['os']['distro']['id']\"")
       end
     end
+
     context 'fact variable using legacy variable in double quotes "$::lsbdistrelease"' do
       let(:code) { '"$::lsbdistrelease"' }
 
@@ -399,6 +411,7 @@ describe 'legacy_facts' do
         expect(manifest).to eq("\"$facts['os']['distro']['release']['full']\"")
       end
     end
+
     context 'fact variable using legacy variable in double quotes "$::lsbmajdistrelease"' do
       let(:code) { '"$::lsbmajdistrelease"' }
 
@@ -410,6 +423,7 @@ describe 'legacy_facts' do
         expect(manifest).to eq("\"$facts['os']['distro']['release']['major']\"")
       end
     end
+
     context 'fact variable using legacy variable in double quotes "$::lsbminordistrelease"' do
       let(:code) { '"$::lsbminordistrelease"' }
 
@@ -421,6 +435,7 @@ describe 'legacy_facts' do
         expect(manifest).to eq("\"$facts['os']['distro']['release']['minor']\"")
       end
     end
+
     context 'fact variable using legacy variable in double quotes "$::lsbrelease"' do
       let(:code) { '"$::lsbrelease"' }
 
@@ -432,6 +447,7 @@ describe 'legacy_facts' do
         expect(manifest).to eq("\"$facts['os']['distro']['release']['specification']\"")
       end
     end
+
     context "fact variable using facts hash in double quotes \"$facts['lsbrelease']\"" do
       let(:code) { "\"${facts['lsbrelease']}\"" }
 

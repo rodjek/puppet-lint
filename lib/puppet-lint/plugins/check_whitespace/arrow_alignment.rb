@@ -2,9 +2,9 @@
 # are not aligned with other arrows in that grouping.
 #
 # https://puppet.com/docs/puppet/latest/style_guide.html#spacing-indentation-and-whitespace
-PuppetLint.new_check(:arrow_alignment) do
-  COMMENT_TYPES = Set[:COMMENT, :SLASH_COMMENT, :MLCOMMENT]
+COMMENT_TYPES = Set[:COMMENT, :SLASH_COMMENT, :MLCOMMENT]
 
+PuppetLint.new_check(:arrow_alignment) do
   def check
     resource_indexes.each do |res_idx|
       arrow_column = [0]
@@ -24,7 +24,8 @@ PuppetLint.new_check(:arrow_alignment) do
       next if resource_tokens[first_arrow].line == resource_tokens[last_arrow].line
 
       resource_tokens.each do |token|
-        if token.type == :FARROW
+        case token.type
+        when :FARROW
           param_token = token.prev_code_token
 
           if param_token.type == :DQPOST
@@ -54,17 +55,15 @@ PuppetLint.new_check(:arrow_alignment) do
             this_arrow_column += 1
           end
 
-          if arrow_column[level_idx] < this_arrow_column
-            arrow_column[level_idx] = this_arrow_column
-          end
+          arrow_column[level_idx] = this_arrow_column if arrow_column[level_idx] < this_arrow_column
 
           (level_tokens[level_idx] ||= []) << token
-        elsif token.type == :LBRACE
+        when :LBRACE
           level_idx += 1
           arrow_column << 0
           level_tokens[level_idx] ||= []
           param_column << nil
-        elsif token.type == :RBRACE || token.type == :SEMIC
+        when :RBRACE, :SEMIC
           if (level_tokens[level_idx] ||= []).map(&:line).uniq.length > 1
             level_tokens[level_idx].each do |arrow_tok|
               next if arrow_tok.column == arrow_column[level_idx] || level_tokens[level_idx].size == 1
@@ -117,7 +116,8 @@ PuppetLint.new_check(:arrow_alignment) do
       new_ws_len += (problem[:arrow_column] - problem[:token].column)
     end
 
-    raise PuppetLint::NoFix if new_ws_len < 0
+    raise PuppetLint::NoFix if new_ws_len.negative?
+
     new_ws = ' ' * new_ws_len
 
     if problem[:token].prev_token.type == :WHITESPACE

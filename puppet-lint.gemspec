@@ -1,4 +1,4 @@
-$LOAD_PATH.push(File.expand_path('../lib', __FILE__))
+$LOAD_PATH.push(File.expand_path('lib', __dir__))
 require 'puppet-lint/version'
 
 Gem::Specification.new do |spec|
@@ -32,5 +32,5 @@ Gem::Specification.new do |spec|
   ]
   spec.license = 'MIT'
 
-  spec.required_ruby_version = Gem::Requirement.new('>= 2.5'.freeze)
+  spec.required_ruby_version = Gem::Requirement.new('>= 2.7'.freeze)
 end

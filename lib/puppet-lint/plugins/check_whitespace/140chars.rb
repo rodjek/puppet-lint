@@ -10,6 +10,7 @@ PuppetLint.new_check(:'140chars') do
       result = PuppetLint::LineLengthCheck.check(idx + 1, line, 140)
 
       next if result.nil?
+
       notify(*result)
     end
   end

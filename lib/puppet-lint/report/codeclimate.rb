@@ -3,6 +3,7 @@
 require 'digest'
 require 'json'
 
+# rubocop:disable Style/ClassAndModuleChildren
 class PuppetLint::Report
   # Formats problems and writes them to a file as a code climate compatible report.
   class CodeClimateReporter
@@ -29,9 +30,9 @@ class PuppetLint::Report
               path: message[:path],
               lines: {
                 begin: message[:line],
-                end: message[:line],
+                end: message[:line]
               }
-            },
+            }
           }
 
           issue[:fingerprint] = Digest::MD5.hexdigest(Marshal.dump(issue))

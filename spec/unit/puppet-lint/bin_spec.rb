@@ -89,6 +89,7 @@ describe PuppetLint::Bin do
     end
 
     its(:exitstatus) { is_expected.to eq(1) }
+
     its(:stdout) do
       is_expected.to eq(
         [
@@ -145,6 +146,7 @@ describe PuppetLint::Bin do
     end
 
     its(:exitstatus) { is_expected.to eq(1) }
+
     its(:stdout) do
       is_expected.to match(%r{WARNING})
       is_expected.not_to match(%r{ERROR})
@@ -162,13 +164,14 @@ describe PuppetLint::Bin do
     end
 
     its(:exitstatus) { is_expected.to eq(0) }
+
     its(:stdout) do
       is_expected.not_to match(%r{ERROR})
       is_expected.to match(%r{WARNING})
     end
   end
 
-  context 'when asked to display filenames ' do
+  context 'when asked to display filenames' do
     let(:args) do
       [
         '--with-filename',
@@ -200,6 +203,7 @@ describe PuppetLint::Bin do
     end
 
     its(:exitstatus) { is_expected.to eq(0) }
+
     its(:stdout) do
       is_expected.to eq(
         [
@@ -294,8 +298,9 @@ describe PuppetLint::Bin do
       end
 
       its(:exitstatus) { is_expected.to eq(1) }
+
       its(:stdout) do
-        is_expected.to match(%r{^(/|[A-Za-z]\:).+/spec/fixtures/test/manifests/fail\.pp$})
+        is_expected.to match(%r{^(/|[A-Za-z]:).+/spec/fixtures/test/manifests/fail\.pp$})
       end
     end
 
@@ -374,6 +379,7 @@ describe PuppetLint::Bin do
     end
 
     its(:exitstatus) { is_expected.to eq(0) }
+
     its(:stdout) do
       if respond_to?(:include_json)
         is_expected.to include_json([[{ 'KIND' => 'WARNING' }]])
@@ -393,6 +399,7 @@ describe PuppetLint::Bin do
     end
 
     its(:exitstatus) { is_expected.to eq(1) }
+
     its(:stdout) do
       if respond_to?(:include_json)
         is_expected.to include_json([[{ 'KIND' => 'ERROR' }], [{ 'KIND' => 'WARNING' }]])
@@ -493,6 +500,7 @@ describe PuppetLint::Bin do
     end
 
     its(:exitstatus) { is_expected.to eq(0) }
+
     its(:stdout) do
       is_expected.to eq(
         [
@@ -615,6 +623,7 @@ describe PuppetLint::Bin do
         end
 
         its(:exitstatus) { is_expected.to eq(0) }
+
         its(:stdout) do
           is_expected.to eq('WARNING: variable contains a dash on line 3 (check: variable_contains_dash)')
         end
@@ -629,6 +638,7 @@ describe PuppetLint::Bin do
         end
 
         its(:exitstatus) { is_expected.to eq(0) }
+
         its(:stdout) do
           is_expected.to eq('WARNING: variable contains an uppercase letter on line 4 (check: variable_is_lowercase)')
         end

@@ -3,10 +3,10 @@
 # found.
 #
 # No style guide reference
-PuppetLint.new_check(:quoted_booleans) do
-  STRING_TYPES = Set[:STRING, :SSTRING]
-  BOOLEANS = Set['true', 'false']
+STRING_TYPES = Set[:STRING, :SSTRING]
+BOOLEANS = Set['true', 'false']
 
+PuppetLint.new_check(:quoted_booleans) do
   def check
     invalid_tokens = tokens.select do |token|
       STRING_TYPES.include?(token.type) && BOOLEANS.include?(token.value)
@@ -29,4 +29,4 @@ PuppetLint.new_check(:quoted_booleans) do
     problem[:token].type = problem[:token].value.upcase.to_sym
   end
 end
-PuppetLint.configuration.send('disable_quoted_booleans')
+PuppetLint.configuration.send(:disable_quoted_booleans)

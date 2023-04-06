@@ -98,7 +98,7 @@ describe 'double_quoted_strings' do
         <<-END
           $string1 = "this string contains \n newline"
           $string2 = "this string contains \t tab"
-          $string3 = "this string contains \${escaped} var"
+          $string3 = "this string contains ${escaped} var"
           $string4 = "this string contains \\"escaped \\" double quotes"
           $string5 = "this string contains \\'escaped \\' single quotes"
           $string6 = "this string contains \r carriage return"

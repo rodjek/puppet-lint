@@ -49,7 +49,7 @@ class PuppetLint::Bin
 
     begin
       path = @args[0]
-      full_path = File.expand_path(path, ENV['PWD'])
+      full_path = File.expand_path(path, ENV.fetch('PWD', nil))
       full_base_path = if File.directory?(full_path)
                          full_path
                        else
@@ -79,19 +79,17 @@ class PuppetLint::Bin
 
       path.each do |f|
         next if ignore_paths.any? { |p| File.fnmatch(p, f) }
+
         l = PuppetLint.new
         l.file = f
         l.run
         all_problems << l.print_problems
 
-        if l.errors? || (l.warnings? && PuppetLint.configuration.fail_on_warnings)
-          return_val = 1
-        end
+        return_val = 1 if l.errors? || (l.warnings? && PuppetLint.configuration.fail_on_warnings)
 
         next unless PuppetLint.configuration.fix && l.problems.none? { |r| r[:check] == :syntax }
-        File.open(f, 'wb') do |fd|
-          fd.write(l.manifest)
-        end
+
+        File.binwrite(f, l.manifest)
       end
 
       if PuppetLint.configuration.sarif
@@ -105,9 +103,7 @@ class PuppetLint::Bin
         puts JSON.pretty_generate(all_problems)
       end
 
-      if PuppetLint.configuration.codeclimate_report_file
-        PuppetLint::Report::CodeClimateReporter.write_report_file(all_problems, PuppetLint.configuration.codeclimate_report_file)
-      end
+      PuppetLint::Report::CodeClimateReporter.write_report_file(all_problems, PuppetLint.configuration.codeclimate_report_file) if PuppetLint.configuration.codeclimate_report_file
 
       return_val
     rescue PuppetLint::NoCodeError
@@ -148,7 +144,7 @@ class PuppetLint::Bin
           'ruleIndex' => rule_index,
           'message' => { 'text' => message[:message] },
           'locations' => [{ 'physicalLocation' => { 'artifactLocation' => { 'uri' => relative_path, 'uriBaseId' => 'ROOTPATH' },
-'region' => { 'startLine' => message[:line], 'startColumn' => message[:column] } } }],
+                                                    'region' => { 'startLine' => message[:line], 'startColumn' => message[:column] } } }]
         }
         results << result
       end

@@ -2,9 +2,9 @@
 # letter and record a warning for each instance found.
 #
 # No style guide reference
-PuppetLint.new_check(:variable_is_lowercase) do
-  VARIABLE_LOWERCASE_TYPES = Set[:VARIABLE, :UNENC_VARIABLE]
+VARIABLE_LOWERCASE_TYPES = Set[:VARIABLE, :UNENC_VARIABLE]
 
+PuppetLint.new_check(:variable_is_lowercase) do
   def check
     invalid_tokens = tokens.select do |token|
       VARIABLE_LOWERCASE_TYPES.include?(token.type)

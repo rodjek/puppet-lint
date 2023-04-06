@@ -1,6 +1,3 @@
-# encoding: utf-8
-
-require 'pp'
 require 'strscan'
 require 'set'
 require 'puppet-lint/lexer/token'
@@ -56,27 +53,27 @@ class PuppetLint::Lexer
   # From https://github.com/puppetlabs/puppet/blob/master/lib/puppet/pops/parser/lexer2.rb#L116-L137
   # or thereabouts
   KEYWORDS = {
-    'case'     => true,
-    'class'    => true,
-    'default'  => true,
-    'define'   => true,
-    'import'   => true,
-    'if'       => true,
-    'elsif'    => true,
-    'else'     => true,
+    'case' => true,
+    'class' => true,
+    'default' => true,
+    'define' => true,
+    'import' => true,
+    'if' => true,
+    'elsif' => true,
+    'else' => true,
     'inherits' => true,
-    'node'     => true,
-    'and'      => true,
-    'or'       => true,
-    'undef'    => true,
-    'false'    => true,
-    'true'     => true,
-    'in'       => true,
-    'unless'   => true,
+    'node' => true,
+    'and' => true,
+    'or' => true,
+    'undef' => true,
+    'false' => true,
+    'true' => true,
+    'in' => true,
+    'unless' => true,
     'function' => true,
-    'type'     => true,
-    'attr'     => true,
-    'private'  => true,
+    'type' => true,
+    'attr' => true,
+    'private' => true
   }.freeze
 
   # Internal: A Hash whose keys are Strings representing reserved keywords in
@@ -86,9 +83,9 @@ class PuppetLint::Lexer
   # Currently unused
   APP_MANAGEMENT_TOKENS = {
     'application' => true,
-    'consumes'    => true,
-    'produces'    => true,
-    'site'        => true,
+    'consumes' => true,
+    'produces' => true,
+    'site' => true
   }.freeze
 
   # Internal: A Hash whose keys are Symbols representing token types which
@@ -104,7 +101,7 @@ class PuppetLint::Lexer
     IF: true,
     ELSIF: true,
     LPAREN: true,
-    EQUALS: true,
+    EQUALS: true
   }.freeze
 
   # Internal: some commonly used regular expressions
@@ -112,7 +109,7 @@ class PuppetLint::Lexer
   # \v == vertical tab
   # \f == form feed
   # \p{Zs} == ASCII + Unicode non-linebreaking whitespace
-  WHITESPACE_RE = RUBY_VERSION == '1.8.7' ? %r{[\t\v\f ]} : %r{[\t\v\f\p{Zs}]}
+  WHITESPACE_RE = (RUBY_VERSION == '1.8.7') ? %r{[\t\v\f ]} : %r{[\t\v\f\p{Zs}]}
 
   LINE_END_RE = %r{(?:\r\n|\r|\n)}.freeze
 
@@ -182,7 +179,7 @@ class PuppetLint::Lexer
     COMMENT: true,
     MLCOMMENT: true,
     SLASH_COMMENT: true,
-    INDENT: true,
+    INDENT: true
   }.freeze
 
   # Internal: Access the internal token storage.
@@ -203,7 +200,7 @@ class PuppetLint::Lexer
     i = 0
 
     while i < code.size
-      chunk = code[i..-1]
+      chunk = code[i..]
 
       found = false
 
@@ -233,12 +230,12 @@ class PuppetLint::Lexer
         tokens << new_token(:VARIABLE, var_name, opts)
 
       elsif %r{\A'.*?'}m.match?(chunk)
-        str_content = StringScanner.new(code[i + 1..-1]).scan_until(%r{(\A|[^\\])(\\\\)*'}m)
+        str_content = StringScanner.new(code[i + 1..]).scan_until(%r{(\A|[^\\])(\\\\)*'}m)
         length = str_content.size + 1
         tokens << new_token(:SSTRING, str_content[0..-2])
 
       elsif chunk.start_with?('"')
-        slurper = PuppetLint::Lexer::StringSlurper.new(code[i + 1..-1])
+        slurper = PuppetLint::Lexer::StringSlurper.new(code[i + 1..])
         begin
           string_segments = slurper.parse
           process_string_segments(string_segments)
@@ -271,7 +268,7 @@ class PuppetLint::Lexer
         tokens << new_token(:MLCOMMENT, mlcomment, raw: mlcomment_raw)
 
       elsif chunk.match(%r{\A/.*?/}m) && possible_regex?
-        str_content = StringScanner.new(code[i + 1..-1]).scan_until(%r{(\A|[^\\])(\\\\)*/}m)
+        str_content = StringScanner.new(code[i + 1..]).scan_until(%r{(\A|[^\\])(\\\\)*/}m)
         length = str_content.size + 1
         tokens << new_token(:REGEX, str_content[0..-2])
 
@@ -286,7 +283,7 @@ class PuppetLint::Lexer
           length += indent.size
         else
           heredoc_tag = heredoc_queue.shift
-          slurper = PuppetLint::Lexer::StringSlurper.new(code[i + length..-1])
+          slurper = PuppetLint::Lexer::StringSlurper.new(code[i + length..])
           heredoc_segments = slurper.parse_heredoc(heredoc_tag)
           process_heredoc_segments(heredoc_segments)
           length += slurper.consumed_chars
@@ -298,7 +295,7 @@ class PuppetLint::Lexer
 
         unless heredoc_queue.empty?
           heredoc_tag = heredoc_queue.shift
-          slurper = PuppetLint::Lexer::StringSlurper.new(code[i + length..-1])
+          slurper = PuppetLint::Lexer::StringSlurper.new(code[i + length..])
           heredoc_segments = slurper.parse_heredoc(heredoc_tag)
           process_heredoc_segments(heredoc_segments)
           length += slurper.consumed_chars
@@ -419,11 +416,11 @@ class PuppetLint::Lexer
         lexer = PuppetLint::Lexer.new
         lexer.tokenise(segment[1])
         lexer.tokens.each_with_index do |t, i|
-          type = i.zero? && t.interpolated_variable? ? :VARIABLE : t.type
+          type = (i.zero? && t.interpolated_variable?) ? :VARIABLE : t.type
           tokens << new_token(type, t.value, raw: t.raw)
         end
       when :UNENC_VAR
-        tokens << new_token(:UNENC_VARIABLE, segment[1].gsub(%r{\A\$}, ''))
+        tokens << new_token(:UNENC_VARIABLE, segment[1].delete_prefix('$'))
       else
         tokens << new_token(:DQMID, segment[1])
       end
@@ -451,11 +448,11 @@ class PuppetLint::Lexer
         lexer = PuppetLint::Lexer.new
         lexer.tokenise(segment[1])
         lexer.tokens.each_with_index do |t, i|
-          type = i.zero? && t.interpolated_variable? ? :VARIABLE : t.type
+          type = (i.zero? && t.interpolated_variable?) ? :VARIABLE : t.type
           tokens << new_token(type, t.value, raw: t.raw)
         end
       when :UNENC_VAR
-        tokens << new_token(:UNENC_VARIABLE, segment[1].gsub(%r{\A\$}, ''))
+        tokens << new_token(:UNENC_VARIABLE, segment[1].delete_prefix('$'))
       else
         tokens << new_token(:HEREDOC_MID, segment[1])
       end

@@ -179,10 +179,10 @@ class PuppetLint::CheckPlugin
   # Returns a Hash of default problem information.
   def default_info
     @default_info ||= {
-      check: self.class.const_get('NAME'),
+      check: self.class.const_get(:NAME),
       fullpath: fullpath,
       path: path,
-      filename: filename,
+      filename: filename
     }
   end
 
@@ -202,14 +202,10 @@ class PuppetLint::CheckPlugin
     problem[:kind] = kind
     problem.merge!(default_info) { |_key, v1, _v2| v1 }
 
-    unless [:warning, :error, :fixed].include?(kind)
-      raise ArgumentError, 'unknown value passed for kind'
-    end
+    raise ArgumentError, 'unknown value passed for kind' unless [:warning, :error, :fixed].include?(kind)
 
     [:message, :line, :column, :check].each do |attr|
-      unless problem.key?(attr)
-        raise ArgumentError, "problem hash must contain #{attr.inspect}"
-      end
+      raise ArgumentError, "problem hash must contain #{attr.inspect}" unless problem.key?(attr)
     end
 
     @problems << problem
