@@ -117,7 +117,7 @@ PuppetLint.new_check(:legacy_facts) do
 
       # This matches legacy facts defined in the fact hash that use the top scope
       # fact assignment.
-      if token.value.start_with?('::facts[')
+      if token.value.start_with?("::facts['")
         fact_name = token.value.match(%r{::facts\['(.*)'\]})[1]
 
       # This matches legacy facts defined in the fact hash.
