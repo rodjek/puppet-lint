@@ -5,9 +5,9 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
-## [v4.0.0-rc.1](https://github.com/puppetlabs/puppet-lint/tree/v4.0.0-rc.1) - 2023-04-13
+## [v4.0.0](https://github.com/puppetlabs/puppet-lint/tree/v4.0.0) - 2023-04-21
 
-[Full Changelog](https://github.com/puppetlabs/puppet-lint/compare/v3.4.0...v4.0.0-rc.1)
+[Full Changelog](https://github.com/puppetlabs/puppet-lint/compare/v3.4.0...v4.0.0)
 
 ### Changed
 - (CONT-811) Add Ruby 3.2 support [#113](https://github.com/puppetlabs/puppet-lint/pull/113) ([GSPatton](https://github.com/GSPatton))
