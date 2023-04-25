@@ -115,14 +115,9 @@ PuppetLint.new_check(:legacy_facts) do
     tokens.select { |x| LEGACY_FACTS_VAR_TYPES.include?(x.type) }.each do |token|
       fact_name = ''
 
-      # This matches legacy facts defined in the fact hash that use the top scope
-      # fact assignment.
-      if token.value.match(%r{::facts\['(.*)'\]})
-        fact_name = token.value.match(%r{::facts\['(.*)'\]})[1]
-
       # This matches legacy facts defined in the fact hash.
-      elsif token.value.match(%r{facts\['(.*)'\]})
-        fact_name = token.value.match(%r{facts\['(.*)'\]})[1]
+      if (match = (token.value.match(%r{(::)?facts\['(.*)'\]}) || token.value.match(%r{(::)?facts\[(.*)\]})))
+        fact_name = match[2]
 
       # This matches using legacy facts in a the new structured fact. For
       # example this would match 'uuid' in $facts['uuid'] so it can be converted

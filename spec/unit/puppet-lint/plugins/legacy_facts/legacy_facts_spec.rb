@@ -126,7 +126,7 @@ describe 'legacy_facts' do
       let(:code) { '$::facts[osfamily]' }
 
       it 'detects a single problem' do
-        expect(problems).to have(0).problem
+        expect(problems).to have(1).problem
       end
     end
   end
