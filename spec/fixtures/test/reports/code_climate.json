@@ -33,6 +33,6 @@
       }
     },
     "fingerprint": "e34cf289e008446b633d1be7cf58120e",
-    "content": "Test the manifest tokens for any parameterised classes or defined types that take parameters and record a warning if there are any optional parameters listed before required parameters. See [this page](https://puppet.com/docs/puppet/latest/style_guide.html#display-order-of-parameters) for more information about the `parameter_order` check."
+    "content": "Test the manifest tokens for any parameterised classes or defined types that take parameters and record a warning if there are any optional parameters listed before required parameters. See [this page](https://puppet.com/docs/puppet/latest/style_guide.html#params-display-order) for more information about the `parameter_order` check."
   }
 ]
