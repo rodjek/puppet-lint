@@ -121,6 +121,14 @@ describe 'legacy_facts' do
         expect(problems).to have(1).problem
       end
     end
+
+    context 'top scoped fact variable using unquoted legacy facts hash variable in interpolation' do
+      let(:code) { '$::facts[osfamily]' }
+
+      it 'detects a single problem' do
+        expect(problems).to have(1).problem
+      end
+    end
   end
 
   context 'with fix enabled' do
