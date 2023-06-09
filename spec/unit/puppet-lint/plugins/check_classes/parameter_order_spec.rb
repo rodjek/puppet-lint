@@ -135,19 +135,6 @@ describe 'parameter_order' do
       it { expect(problems).to have(0).problem }
     end
 
-    context "#{type} parameter with Optional data type" do
-      let(:code) do
-        <<-END
-          #{type} test(
-            String $test = 'value',
-            Optional[String] $optional,
-          ) { }
-        END
-      end
-
-      it { expect(problems).to have(0).problems }
-    end
-
     context "#{type} parameter with array operation" do
       let(:code) do
         <<-END
@@ -164,6 +151,73 @@ describe 'parameter_order' do
       end
 
       it { expect(problems).to have(0).problems }
+    end
+
+    context "#{type} parameters of Optional type are just regular parameters" do
+      let(:code) do
+        <<-END
+          #{type} test (
+            String $param1 = '',
+            Optional[Boolean] $param2,
+          ) { }
+        END
+      end
+
+      it { expect(problems).to have(1).problems }
+    end
+
+    [['Custom::Type1', 'Custom::Type2'], ['Custom::Type1', 'String'], ['String', 'Custom::Type2']].each_with_index do |testtypes, i| # rubocop:disable Performance/CollectionLiteralInLoop
+      context "#{type} parameters of custom type - no values - #{i}" do
+        let(:code) do
+          <<-END
+            #{type} test (
+              #{testtypes[0]} $param1,
+              #{testtypes[0]} $param2,
+            ) { }
+          END
+        end
+
+        it { expect(problems).to have(0).problems }
+      end
+
+      context "#{type} parameters of custom type - two values - #{i}" do
+        let(:code) do
+          <<-END
+            #{type} test (
+              #{testtypes[0]} $param1 = 'foo',
+              #{testtypes[1]} $param2 = 'bar',
+            ) { }
+          END
+        end
+
+        it { expect(problems).to have(0).problems }
+      end
+
+      context "#{type} parameters of custom type - one value, wrong order - #{i}" do
+        let(:code) do
+          <<-END
+            #{type} test (
+              #{testtypes[0]} $param1 = 'foo',
+              #{testtypes[1]} $param2,
+            ) { }
+          END
+        end
+
+        it { expect(problems).to have(1).problems }
+      end
+
+      context "#{type} parameters of custom type - one value, right order - #{i}" do
+        let(:code) do
+          <<-END
+            #{type} test (
+              #{testtypes[0]} $param1,
+              #{testtypes[1]} $param2 = 'bar',
+            ) { }
+          END
+        end
+
+        it { expect(problems).to have(0).problems }
+      end
     end
   end
 end

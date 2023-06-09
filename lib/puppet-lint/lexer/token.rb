@@ -30,7 +30,7 @@ class PuppetLint::Lexer
     # etc) in the manifest.
     attr_accessor :next_code_token
 
-    # Public: Gets/sets the previous code tokne (skips whitespace,
+    # Public: Gets/sets the previous code token (skips whitespace,
     # comments, etc) in the manifest.
     attr_accessor :prev_code_token
 

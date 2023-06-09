@@ -37,7 +37,7 @@ PuppetLint.new_check(:parameter_order) do
           column: token.column,
           description: 'Test the manifest tokens for any parameterised classes or defined types that take ' \
                        'parameters and record a warning if there are any optional parameters listed before required parameters.',
-          help_uri: 'https://puppet.com/docs/puppet/latest/style_guide.html#display-order-of-parameters',
+          help_uri: 'https://puppet.com/docs/puppet/latest/style_guide.html#params-display-order',
         )
       end
     end
@@ -48,17 +48,15 @@ PuppetLint.new_check(:parameter_order) do
     return false unless token.prev_code_token
 
     [
-      :LPAREN, # First parameter, no type specification
-      :COMMA,  # Subsequent parameter, no type specification
-      :TYPE,   # Parameter with simple type specification
-      :RBRACK, # Parameter with complex type specification
+      :LPAREN,   # First parameter, no type specification
+      :COMMA,    # Subsequent parameter, no type specification
+      :TYPE,     # Parameter with simple type specification
+      :RBRACK,   # Parameter with complex type specification
+      :CLASSREF, # Parameter with custom type specification
     ].include?(token.prev_code_token.type)
   end
 
   def required_parameter?(token)
-    data_type = token.prev_token_of(:TYPE, skip_blocks: true)
-    return false if data_type && data_type.value == 'Optional'
-
     return !(token.prev_code_token && token.prev_code_token.type == :EQUALS) if token.next_code_token.nil? || [:COMMA, :RPAREN].include?(token.next_code_token.type)
 
     false
