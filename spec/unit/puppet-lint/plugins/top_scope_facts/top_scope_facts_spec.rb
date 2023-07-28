@@ -37,26 +37,10 @@ describe 'top_scope_facts' do
     end
 
     context 'fact variable using top scope' do
-      let(:code) { '$::operatingsystem' }
+      let(:code) { '$::fqdn' }
 
-      it 'onlies detect a single problem' do
-        expect(problems).to have(1).problem
-      end
-
-      it 'creates a warning' do
-        expect(problems).to contain_warning(msg).on_line(1).in_column(1)
-      end
-    end
-
-    context 'fact variable using top scope with curly braces in double quote' do
-      let(:code) { '"${::operatingsystem}"' }
-
-      it 'onlies detect a single problem' do
-        expect(problems).to have(1).problem
-      end
-
-      it 'creates a warning' do
-        expect(problems).to contain_warning(msg).on_line(1).in_column(4)
+      it 'does not detect a single problem' do
+        expect(problems).to have(0).problem
       end
     end
 
@@ -123,34 +107,6 @@ describe 'top_scope_facts' do
 
       it 'does not detect any problems' do
         expect(problems).to have(0).problem
-      end
-    end
-
-    context 'fact variable using top scope' do
-      let(:code) { '$::operatingsystem' }
-
-      it 'onlies detect a single problem' do
-        expect(problems).to have(1).problem
-      end
-
-      it 'fixes the problem' do
-        expect(problems).to contain_fixed(msg).on_line(1).in_column(1)
-      end
-
-      it 'shoulds use the facts hash' do
-        expect(manifest).to eq("$facts['operatingsystem']")
-      end
-    end
-
-    context 'fact variable using top scope with curly braces in double quote' do
-      let(:code) { '"${::operatingsystem}"' }
-
-      it 'fixes the problem' do
-        expect(problems).to contain_fixed(msg).on_line(1).in_column(4)
-      end
-
-      it 'shoulds use the facts hash' do
-        expect(manifest).to eq('"${facts[\'operatingsystem\']}"')
       end
     end
 

@@ -17,7 +17,17 @@ TOP_SCOPE_FACTS_VAR_TYPES = Set[:VARIABLE, :UNENC_VARIABLE]
 
 PuppetLint.new_check(:top_scope_facts) do
   def check
-    whitelist = ['trusted', 'facts'] + (PuppetLint.configuration.top_scope_variables || [])
+    whitelist = ['trusted', 'facts', 'architecture', 'augeasversion', 'bios_release_date', 'bios_vendor', 'bios_version',
+                 'boardassettag', 'boardmanufacturer', 'boardproductname', 'boardserialnumber', 'chassisassettag', 'chassistype', 'domain',
+                 'fqdn', 'gid', 'hardwareisa', 'hardwaremodel', 'hostname', 'id', 'ipaddress', 'ipaddress6', 'lsbdistcodename',
+                 'lsbdistdescription', 'lsbdistid', 'lsbdistrelease', 'lsbmajdistrelease', 'lsbminordistrelease', 'lsbrelease',
+                 'macaddress', 'macosx_buildversion', 'macosx_productname', 'macosx_productversion', 'macosx_productversion_major',
+                 'macosx_productversion_minor', 'manufacturer', 'memoryfree', 'memorysize', 'netmask', 'netmask6', 'network', 'network6',
+                 'operatingsystem', 'operatingsystemmajrelease', 'operatingsystemrelease', 'osfamily', 'physicalprocessorcount',
+                 'processorcount', 'productname', 'rubyplatform', 'rubysitedir', 'rubyversion', 'selinux', 'selinux_config_mode',
+                 'selinux_config_policy', 'selinux_current_mode', 'selinux_enforced', 'selinux_policyversion', 'serialnumber',
+                 'swapencrypted', 'swapfree', 'swapsize', 'system32', 'uptime', 'uptime_days', 'uptime_hours', 'uptime_seconds',
+                 'uuid', 'xendomains', 'zonename'] + (PuppetLint.configuration.top_scope_variables || [])
     whitelist = whitelist.join('|')
     tokens.select { |x| TOP_SCOPE_FACTS_VAR_TYPES.include?(x.type) }.each do |token|
       next unless %r{^::}.match?(token.value)
