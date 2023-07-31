@@ -5,12 +5,22 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org).
 
+## [v4.0.1](https://github.com/puppetlabs/puppet-lint/tree/v4.0.1) - 2023-07-31
+
+[Full Changelog](https://github.com/puppetlabs/puppet-lint/compare/v4.0.0...v4.0.1)
+
+### Fixed
+
+- (CAT-1167) Fix failing legacy fact autocorrector [#138](https://github.com/puppetlabs/puppet-lint/pull/138) ([LukasAud](https://github.com/LukasAud))
+- (GH-122) Fix bad detection of optional parameters out of order [#123](https://github.com/puppetlabs/puppet-lint/pull/123) ([tiandrey](https://github.com/tiandrey))
+- Do not crash when referring to a fact key without quoting it [#119](https://github.com/puppetlabs/puppet-lint/pull/119) ([chutzimir](https://github.com/chutzimir))
+
 ## [v4.0.0](https://github.com/puppetlabs/puppet-lint/tree/v4.0.0) - 2023-04-21
 
 [Full Changelog](https://github.com/puppetlabs/puppet-lint/compare/v3.4.0...v4.0.0)
 
 ### Changed
-- (CONT-811) Add Ruby 3.2 support [#113](https://github.com/puppetlabs/puppet-lint/pull/113) ([GSPatton](https://github.com/GSPatton))
+- (CONT-811) Add Ruby 3.2 support and Remove support for Ruby 2.5 [#113](https://github.com/puppetlabs/puppet-lint/pull/113) ([GSPatton](https://github.com/GSPatton))
 
 ## [v3.4.0](https://github.com/puppetlabs/puppet-lint/tree/v3.4.0) - 2023-04-05
 
