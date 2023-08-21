@@ -22,7 +22,7 @@ group :acceptance do
 end
 
 group :development do
-    gem 'github_changelog_generator', require: false
+    gem 'github_changelog_generator', '~> 1.15.0', require: false
     gem 'faraday-retry', require: false
     gem 'pry', require: false
     gem 'pry-byebug', require: false
